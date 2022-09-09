@@ -1,0 +1,102 @@
+@Library('gematik-jenkins-shared-library') _
+  
+def CREDENTIAL_ID_GEMATIK_GIT = 'GITLAB.tst_tt_build.Username_Password'
+def REPO_URL = createGitUrl('git/refImpl/tools/gematik-referenzvalidator.git')
+def BRANCH = 'master'
+def JIRA_PROJECT_ID = 'REFV'
+def GITLAB_PROJECT_ID = '1057'
+def TITLE_TEXT = 'Release'
+def ARTIFACT_ID = "de.gematik.refv.reference-validator"
+def ARTIFACT_ID_LIST = "de.gematik.refv.reference-validator"
+def GROUP_ID_PATH = "de/gematik"
+def GROUP_ID = "de.gematik"
+def POM_PATH = 'de.gematik.refv.referencevalidator/pom.xml'
+def IMAGE_NAME = "refv/referencevalidator"
+def DOCKER_PULL_VERSION = "latest"
+
+pipeline {
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
+    }
+    agent { label 'k8-maven' }
+  
+    parameters {
+        //!!! RELEASE_VERION ist ein Eingabeparameter in Jenkins (siehe https://wiki.gematik.de/pages/viewpage.action?pageId=442577145#JenkinsReleasePipeline(Executables)-Nutzereingaben )
+        string(name: 'NEW_VERSION', defaultValue: '', description: 'Bitte die nächste Version für das Projekt eingeben, format [0-9]+.[0-9]+.[0-9]+ \nHinweis: Version 0.0.[0-9] ist keine gültige Version!')
+    }
+  
+    stages {
+        stage('Initialise') {
+            steps {
+                checkVersion(NEW_VERSION) // Eingabe erfolgt über Benutzerinteraktion beim Start des Jobs
+            }
+        }
+  
+        stage('Checkout') {
+            steps {
+                git branch: BRANCH,
+                    credentialsId: CREDENTIAL_ID_GEMATIK_GIT,
+                    url: REPO_URL
+            }
+        }
+  
+  
+        stage('Environment') {
+            environment {
+                LATEST = nexusGetLatestVersion(RELEASE_VERSION, ARTIFACT_ID, GROUP_ID).trim()
+                TAG_NAME = 'Release/ReleaseBuild'
+            }
+            stages {
+                stage('Create Release-Tag') {
+                    steps {
+                        gitCreateAndPushTag(JIRA_PROJECT_ID, "${TAG_NAME}-${LATEST}", BRANCH)
+                    }
+                }
+  
+                stage('Create GitLab Release') {
+                    steps {
+                        gitLabCreateRelease(JIRA_PROJECT_ID, GITLAB_PROJECT_ID, LATEST, ARTIFACT_ID, GROUP_ID_PATH, TITLE_TEXT, RELEASE_VERSION, "${TAG_NAME}-${LATEST}")
+                    }
+                }
+  
+                stage('Release Jira-Version') {
+                    steps {
+                        jiraReleaseVersion(JIRA_PROJECT_ID, RELEASE_VERSION)
+                    }
+                }
+                stage('Create New Jira-Version') {
+                    steps {
+                        jiraCreateNewVersion(JIRA_PROJECT_ID, NEW_VERSION)
+                    }
+                }
+                stage('UpdateProject with new Version') {
+                    steps {
+                        mavenSetVersion("${NEW_VERSION}-SNAPSHOT", POM_PATH)
+                        gitPushVersionUpdate(JIRA_PROJECT_ID, "${NEW_VERSION}-SNAPSHOT", BRANCH)
+                    }
+                } 
+                stage('deleteOldArtifacts') {
+                    steps {
+                        nexusDeleteArtifacts(RELEASE_VERSION, ARTIFACT_ID_LIST, GROUP_ID)
+                     }
+                }
+
+//                stage('Retag Docker Image'){
+//                    steps {
+//                        script {
+//                            dockerPull(IMAGE_NAME, DOCKER_PULL_VERSION)
+//                            dockerReTagImage(IMAGE_NAME, RELEASE_VERSION)
+//                            dockerPushImage(IMAGE_NAME, RELEASE_VERSION)
+//                        }
+//                    }
+//                }
+            }
+        }
+    }
+    post {
+        always {
+//            dockerRemoveLocalImage(IMAGE_NAME, RELEASE_VERSION)
+        }
+    }
+}
