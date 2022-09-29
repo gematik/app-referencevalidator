@@ -1,0 +1,17 @@
+<Organization xmlns="http://hl7.org/fhir">
+  <id value="TIOrganizationExample001" />
+  <meta>
+    <profile value="https://gematik.de/fhir/directory/StructureDefinition/TIOrganization" />
+  </meta>
+  <identifier>
+    <type>
+      <coding>
+        <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+        <code value="PRN" />
+      </coding>
+    </type>
+    <system value="http://fhir.de/StructureDefinition/identifier-telematik-id" />
+    <value value="9-2.58.00000040" />
+  </identifier>
+  <name value="gematik GmbH" />
+</Organization>

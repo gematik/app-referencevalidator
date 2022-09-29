@@ -1,0 +1,46 @@
+{
+	"resourceType":"StructureDefinition",
+	"url":"http://example.com/fhir/StructureDefinition/patient-1a-extensions-derived",
+	"version":"0.1",
+	"name":"PatientWithExtensionsDerived",
+	"title":"Patient Profile 1 - 1a Extensions Derived",
+	"status":"active",
+	"experimental":false,
+	"date":"2019",
+	"publisher":"gematik",
+	"contact": [
+		{
+			"telecom": [
+				{
+					"system":"email",
+					"value":"example@example.org"
+				}
+			]
+		}
+	],
+	"description":"Profile of Patient with extensions",
+	"copyright":"(c) gematik",
+	"fhirVersion":"4.0.0",
+	"kind":"resource",
+	"abstract":false,
+	"type":"Patient",
+	"baseDefinition":"http://example.com/fhir/StructureDefinition/patient-1a-extensions",
+	"derivation":"constraint",
+	"differential":{
+		"element": [
+			{
+				"id":"Patient.extension:bla",
+				"path":"Patient.extension",
+				"sliceName":"bla",
+				"type": [
+					{
+						"code":"Extension",
+						"profile": [
+							"http://example.com/fhir/StructureDefinition/patient-bla"
+						]
+					}
+				]
+			}
+		]
+	}
+}

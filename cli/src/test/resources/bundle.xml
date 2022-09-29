@@ -1,0 +1,6 @@
+<Bundle xmlns="http://hl7.org/fhir">
+    <id value="fb16b9fb-eca9-4a64-b257-083ac87c9c9c"/>
+    <meta>
+    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle"/>
+    </meta>
+</Bundle>

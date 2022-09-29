@@ -1,12 +1,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <modules>
+    <module>commons</module>
+    <module>core</module>
+    <module>valmodule-erp</module>
+    <module>cli</module>
+  </modules>
+
   <groupId>de.gematik.refv</groupId>
   <artifactId>referencevalidator</artifactId>
-  <packaging>jar</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <version>0.1.0</version>
   <name>gematik Referenzvalidator</name>
-  <url>https://github.com/gematik/referencevalidator</url>
+  <description>Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren.</description>
+  <url>https://github.com/gematik/app-referencevalidator</url>
+
+  <scm>
+    <url>https://github.com/gematik/app-referencevalidator</url>
+    <connection>scm:git:git://github.com/gematik/app-referencevalidator.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:gematik/app-referencevalidator.git</developerConnection>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/gematik/app-referencevalidator/issues</url>
+  </issueManagement>
+
+  <organization>
+    <name>gematik GmbH</name>
+    <url>http://www.gematik.de</url>
+  </organization>
 
   <licenses>
     <license>
@@ -15,17 +39,402 @@
     </license>
   </licenses>
 
+  <developers>
+    <developer>
+      <name>gematik</name>
+      <email>referenzvalidator@gematik.de</email>
+      <url>https://gematik.github.io/</url>
+      <organization>gematik GmbH</organization>
+      <organizationUrl>https://www.gematik.de/</organizationUrl>
+    </developer>
+  </developers>
+
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <url>${releaseDeploymentRepository}</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <url>${snapshotDeploymentRepository}</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+
+    <version.surefire>3.0.0-M7</version.surefire>
+    <maven.compiler.release>11</maven.compiler.release>
+    <version.compiler>3.7.0</version.compiler>
+    <version.hapi-fhir-validation>6.1.1</version.hapi-fhir-validation>
+    <version.lombok>1.18.24</version.lombok>
+    <version.log4j2>2.19.0</version.log4j2>
+    <version.slf4j-api>2.0.2</version.slf4j-api>
+    <version.slf4j-log4j>2.0.2</version.slf4j-log4j>
+    <version.junit-jupiter-api>5.9.1</version.junit-jupiter-api>
+    <version.jackson-data-format>2.13.4</version.jackson-data-format>
+    <version.woodstox>6.3.1</version.woodstox>
+    <version.site>3.6</version.site>
+    <version.maven-release>2.5.3</version.maven-release>
+    <version.jar>3.0.2</version.jar>
+    <version.build.helper>3.0.0</version.build.helper>
+    <version.maven-source-plugin>3.0.1</version.maven-source-plugin>
+    <version.maven-javadoc-plugin>3.0.1</version.maven-javadoc-plugin>
+    <version.buildnumber>1.4</version.buildnumber>
+    <version.picocli>4.6.3</version.picocli>
+    <version.mockito>4.8.0</version.mockito>
+    <version.jacoco>0.8.8</version.jacoco>
+
+    <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco-it/jacoco.xml,**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.junit.reportPaths>
+      target/surefire-reports,target/failsafe-reports/
+    </sonar.junit.reportPaths>
   </properties>
+
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${version.jacoco}</version>
+        <executions>
+          <execution>
+            <id>default-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-prepare-agent-integration</id>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-report</id>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-report-integration</id>
+            <goals>
+              <goal>report-integration</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${version.surefire}</version>
+        <configuration>
+          <excludes>
+            <exclude>**/*LocalTest.java</exclude>
+            <exclude>**/*IT.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M7</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${version.build.helper}</version>
+          <executions>
+            <execution>
+              <id>remove-old-artifacts</id>
+              <phase>package</phase>
+              <goals>
+                <goal>remove-project-artifact</goal>
+              </goals>
+              <configuration>
+                <removeAll>true</removeAll><!-- remove all versions of built artifacts
+									including all versions. Install phase will regenerate -->
+                <failOnError>false</failOnError>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <version>${version.buildnumber}</version>
+          <executions>
+            <execution>
+              <phase>validate</phase>
+              <goals>
+                <goal>create</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <format>{0,date,yyyy-MM-dd HH:mm:ss}</format>
+            <items>
+              <item>timestamp</item>
+            </items>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${version.maven-source-plugin}</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${version.maven-javadoc-plugin}</version>
+          <configuration>
+            <doclint>none</doclint>
+          </configuration>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.jar}</version>
+          <configuration>
+            <archive>
+              <manifestEntries>
+                <Build-Version>
+                  ${project.version}
+                </Build-Version>
+                <Build-Date>${buildNumber}</Build-Date>
+              </manifestEntries>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${version.maven-release}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${version.site}</version>
+          <configuration>
+            <locales>de</locales>
+            <inputEncoding>UTF-8</inputEncoding>
+            <outputEncoding>UTF-8</outputEncoding>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${version.slf4j-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-reload4j</artifactId>
+        <version>${version.slf4j-log4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${version.log4j2}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${version.log4j2}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${version.junit-jupiter-api}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <scope>provided</scope>
+        <version>${version.lombok}</version>
+      </dependency>
   </dependencies>
+
+
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${version.slf4j-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-reload4j</artifactId>
+        <version>${version.slf4j-log4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${version.log4j2}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${version.log4j2}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${version.junit-jupiter-api}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>ca.uhn.hapi.fhir</groupId>
+        <artifactId>hapi-fhir-validation</artifactId>
+        <version>${version.hapi-fhir-validation}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>hapi-fhir-jpaserver-model</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>ca.uhn.hapi.fhir</groupId>
+        <artifactId>hapi-fhir-structures-r4</artifactId>
+        <version>${version.hapi-fhir-validation}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>ca.uhn.hapi.fhir</groupId>
+        <artifactId>hapi-fhir-validation-resources-r4</artifactId>
+        <version>${version.hapi-fhir-validation}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.woodstox</groupId>
+        <artifactId>woodstox-core</artifactId>
+        <version>${version.woodstox}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
+        <version>${version.jackson-data-format}</version>
+      </dependency>
+      <dependency>
+        <groupId>info.picocli</groupId>
+        <artifactId>picocli</artifactId>
+        <version>${version.picocli}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${version.mockito}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <profiles>
+
+    <profile>
+      <id>owasp</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>7.2.1</version>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>external</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.0.1</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <configuration>
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
+                    <arg>loopback</arg>
+                  </gpgArguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.13</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>false</autoReleaseAfterClose>
+              <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
 </project>
