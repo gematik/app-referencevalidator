@@ -36,15 +36,15 @@ public class GenericValidatorFactory {
             Collection<String> packageFilenames,
             Collection<String> codeSystemsToIgnore
             )  {
-            var npmPackageSupport = new NpmPackageLoader().loadPackagesAndCreatePrePopulatedValidationSupport(ctx, packageFilenames);
+            var npmPackageSupport = new NpmPackageLoader(ctx).loadPackagesAndCreatePrePopulatedValidationSupport(packageFilenames);
 
             IValidationSupport validationSupport = ctx.getValidationSupport();
 
             var validationSupportChain = new ValidationSupportChain(
                     npmPackageSupport,
                     validationSupport,
-                    new FixedSnapshotGeneratingValidationSupport(ctx)
-                    ,new IgnoreMissingValueSetValidationSupport(ctx, codeSystemsToIgnore)
+                    new FixedSnapshotGeneratingValidationSupport(ctx),
+                    new IgnoreMissingValueSetValidationSupport(ctx, codeSystemsToIgnore)
             );
 
             FhirInstanceValidator hapiValidatorModule = new FhirInstanceValidator(
