@@ -11,7 +11,7 @@
   <groupId>de.gematik.refv</groupId>
   <artifactId>referencevalidator</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <name>gematik Referenzvalidator</name>
   <description>Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren.</description>
   <url>https://github.com/gematik/app-referencevalidator</url>
@@ -67,13 +67,13 @@
     <version.surefire>3.0.0-M7</version.surefire>
     <maven.compiler.release>11</maven.compiler.release>
     <version.compiler>3.7.0</version.compiler>
-    <version.hapi-fhir-validation>6.1.1</version.hapi-fhir-validation>
+    <version.hapi-fhir-validation>6.1.2</version.hapi-fhir-validation>
     <version.lombok>1.18.24</version.lombok>
     <version.log4j2>2.19.0</version.log4j2>
-    <version.slf4j-api>2.0.2</version.slf4j-api>
-    <version.slf4j-log4j>2.0.2</version.slf4j-log4j>
+    <version.slf4j-api>2.0.3</version.slf4j-api>
+    <version.slf4j-log4j>2.0.3</version.slf4j-log4j>
     <version.junit-jupiter-api>5.9.1</version.junit-jupiter-api>
-    <version.jackson-data-format>2.13.4</version.jackson-data-format>
+    <version.jackson-data-format>2.14.0-rc2</version.jackson-data-format>
     <version.woodstox>6.3.1</version.woodstox>
     <version.site>3.6</version.site>
     <version.maven-release>2.5.3</version.maven-release>
@@ -83,7 +83,7 @@
     <version.maven-javadoc-plugin>3.0.1</version.maven-javadoc-plugin>
     <version.buildnumber>1.4</version.buildnumber>
     <version.picocli>4.6.3</version.picocli>
-    <version.mockito>4.8.0</version.mockito>
+    <version.mockito>4.8.1</version.mockito>
     <version.jacoco>0.8.8</version.jacoco>
 
     <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco-it/jacoco.xml,**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
@@ -300,6 +300,22 @@
 
   <dependencyManagement>
     <dependencies>
+      <!--
+      The following transitive dependencies have security issues in earlier versions and
+      therefore their version have been manually fixed
+       -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
+        <version>1.10.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.21</version>
+      </dependency>
+      <!-- End of fixed versions -->
+
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>

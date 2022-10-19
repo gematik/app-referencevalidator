@@ -126,11 +126,21 @@ Der Referenzvalidator wird als Java-Bibliothek und als Konsolenanwendung verteil
 
 #### Konsolenanwendung
 
-Für die Verwendung der Konsolenanwendung soll lediglich das Release-Paket entpackt werden. 
+Für die Verwendung der Konsolenanwendung soll die Datei `referencevalidator-cli.jar` in einem beliebigen Ordner im Dateisystem abgelegt werden.
 
 #### Java-Bibliothek
 
-Die Installation als Java-Bibliothek kann zur Zeit nur manuell erfolgen, indem die referencevalidatror-lib.jar dem Classpath einer Anwendung hinzugefügt wird. Veröffentlichung in Maven Central und Einbindung als Maven-Dependency sind in Planung.
+Der Referenzvalidator wird zur Einbindung in andere Projekte auf [Maven Central](https://search.maven.org/artifact/de.gematik.refv/referencevalidator) veröffentlicht. Bei der Einbindung ist darauf zu achten, dass genau die angegebenen Versionen der Abhängigkeiten, insbesondere der HAPI-Bibliothekten (`ca.uhn.hapi.fhir`), zur Laufzeit eingebunden sind.
+
+Beispiel zur Einbindung des Referenzvalidator:
+
+    <dependency>
+          <groupId>de.gematik.refv</groupId>
+          <artifactId>referencevalidator-lib</artifactId>
+          <version>${version.referencevalidator}</version>
+    </dependency>
+
+Die Versionsangabe `${version.referencevalidator}` soll mit der gewünschten einzubindenden Referenzvalidator-Version ersetzt werden. 
 
 ## Verwendung
 
@@ -146,7 +156,7 @@ Folgende Beispiele veranschaulichen die Verwendung vom Referenzvalidator in eine
 
 Validierung einer FHIR-Ressource aus einer Datei:
 
-    ValidationModule erpModule = ValidationModuleFactory.createValidationModule(SupportedValidationModule.ERP);
+    ValidationModule erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);
     Path path = Paths.get("c:/temp/KBV_PR_ERP_Bundle.xml");
     ValidationResult result = erpModule.validateFile(path);
     System.out.println(result.isValid());
@@ -154,7 +164,7 @@ Validierung einer FHIR-Ressource aus einer Datei:
 
 Validierung einer FHIR-Ressource als String:
 
-    ValidationModule erpModule = ValidationModuleFactory.createValidationModule(SupportedValidationModule.ERP);
+    ValidationModule erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);
     String fhirRessource = "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
         + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
         + "    <meta>\n"
