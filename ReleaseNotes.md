@@ -2,6 +2,11 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 0.1.2
+
+## changed
+- javadoc and source code packaging for maven central releases
+
 ## Release 0.1.1
 
 ### changed
