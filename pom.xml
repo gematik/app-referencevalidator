@@ -11,7 +11,7 @@
   <groupId>de.gematik.refv</groupId>
   <artifactId>referencevalidator</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.2</version>
+  <version>0.1.3</version>
   <name>gematik Referenzvalidator</name>
   <description>Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren.</description>
   <url>https://github.com/gematik/app-referencevalidator</url>
@@ -78,8 +78,9 @@
     <version.maven-release>2.5.3</version.maven-release>
     <version.jar>3.0.2</version.jar>
     <version.build.helper>3.0.0</version.build.helper>
-    <version.maven-source-plugin>3.0.1</version.maven-source-plugin>
-    <version.maven-javadoc-plugin>3.0.1</version.maven-javadoc-plugin>
+    <version.maven-source-plugin>3.2.1</version.maven-source-plugin>
+    <version.maven-javadoc-plugin>3.4.1</version.maven-javadoc-plugin>
+    <version.maven-assembly-plugin>3.4.2</version.maven-assembly-plugin>
     <version.buildnumber>1.4</version.buildnumber>
     <version.picocli>4.6.3</version.picocli>
     <version.mockito>4.8.1</version.mockito>
@@ -262,6 +263,11 @@
             <inputEncoding>UTF-8</inputEncoding>
             <outputEncoding>UTF-8</outputEncoding>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${version.maven-assembly-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -450,7 +456,6 @@
             <configuration>
               <serverId>ossrh</serverId>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>false</autoReleaseAfterClose>
               <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
             </configuration>
           </plugin>

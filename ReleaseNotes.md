@@ -2,9 +2,14 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 0.1.3
+
+### changed
+- configuration for maven assembly and maven central deployment
+
 ## Release 0.1.2
 
-## changed
+### changed
 - javadoc and source code packaging for maven central releases
 
 ## Release 0.1.1
