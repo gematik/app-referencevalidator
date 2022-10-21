@@ -25,10 +25,14 @@ import java.util.Collection;
 import java.util.List;
 
 public class NpmPackageLoader {
+    private NpmPackageValidationSupportCache npmCache;
 
-    public PrePopulatedValidationSupport loadPackagesAndCreatePrePopulatedValidationSupport(FhirContext ctx,
-                                                                                            Collection<String> packageFilesToLoad) throws IOException {
-        NpmPackageValidationSupportCache npmCache = new NpmPackageValidationSupportCache(ctx);
+    public NpmPackageLoader(final FhirContext ctx) {
+        this.npmCache = new NpmPackageValidationSupportCache(ctx);
+    }
+
+    public PrePopulatedValidationSupport loadPackagesAndCreatePrePopulatedValidationSupport(
+            Collection<String> packageFilesToLoad) throws IOException {
 
         List<String> correctedURIs = new ArrayList<>(packageFilesToLoad.size());
 
@@ -37,7 +41,5 @@ public class NpmPackageLoader {
         }
         return npmCache.createPrePopulatedValidationSupport(correctedURIs);
     }
-
-
 
 }
