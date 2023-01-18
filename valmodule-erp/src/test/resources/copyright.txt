@@ -1,0 +1,2 @@
+DAV Example files are copied from https://github.com/DAV-ABDA/eRezept-Referenzvalidator/tree/478e8a2e3f0e24f54a331d561f518eeb2817ed58/core/src/test/resources
+Copyright 2022 Deutscher Apothekerverband (DAV), Apache License, Version 2.0

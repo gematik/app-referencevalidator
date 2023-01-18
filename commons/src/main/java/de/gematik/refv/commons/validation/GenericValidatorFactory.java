@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -18,42 +18,59 @@ package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.IValidationSupport;
+import ca.uhn.fhir.util.ClasspathUtil;
 import ca.uhn.fhir.validation.FhirValidator;
-import de.gematik.refv.commons.validation.support.NpmPackageLoader;
-import de.gematik.refv.commons.validation.support.FixedSnapshotGeneratingValidationSupport;
 import de.gematik.refv.commons.validation.support.IgnoreMissingValueSetValidationSupport;
+import de.gematik.refv.commons.validation.support.PipedCanonicalCoreResourcesValidationSupport;
 import lombok.SneakyThrows;
+import org.hl7.fhir.common.hapi.validation.support.NpmPackageValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
+import org.hl7.fhir.r4.model.StructureDefinition;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collection;
 
 public class GenericValidatorFactory {
 
-        @SneakyThrows
+    @SneakyThrows
     public FhirValidator createInstance(
             FhirContext ctx,
             Collection<String> packageFilenames,
-            Collection<String> codeSystemsToIgnore
-            )  {
-            var npmPackageSupport = new NpmPackageLoader().loadPackagesAndCreatePrePopulatedValidationSupport(ctx, packageFilenames);
+            Collection<String> patches,
+            Collection<String> codeSystemsToIgnore) {
 
-            IValidationSupport validationSupport = ctx.getValidationSupport();
+        var npmPackageSupport = new NpmPackageValidationSupport(ctx);
+        for (String packagePath : packageFilenames) {
+            npmPackageSupport.loadPackageFromClasspath("package/" + packagePath);
+        }
+
+        for (String patch :
+                patches) {
+            InputStream is = ClasspathUtil.loadResourceAsStream("package/patches/" + patch);
+            var reader = new InputStreamReader(is);
+            var newResource = ctx.newJsonParser().parseResource(StructureDefinition.class, reader);
+            reader.close();
+            npmPackageSupport.addResource(newResource);
+        }
+
+        IValidationSupport validationSupport = ctx.getValidationSupport();
 
             var validationSupportChain = new ValidationSupportChain(
                     npmPackageSupport,
                     validationSupport,
-                    new FixedSnapshotGeneratingValidationSupport(ctx)
-                    ,new IgnoreMissingValueSetValidationSupport(ctx, codeSystemsToIgnore)
+                    new IgnoreMissingValueSetValidationSupport(ctx, codeSystemsToIgnore),
+                    new PipedCanonicalCoreResourcesValidationSupport(ctx)
             );
 
-            FhirInstanceValidator hapiValidatorModule = new FhirInstanceValidator(
-                    validationSupportChain);
-            hapiValidatorModule.setErrorForUnknownProfiles(true);
-            hapiValidatorModule.setNoExtensibleWarnings(true);
-            hapiValidatorModule.setAnyExtensionsAllowed(false);
-            FhirValidator fhirValidator = ctx.newValidator();
-            fhirValidator.registerValidatorModule(hapiValidatorModule);
-            return fhirValidator;
-        }
+        FhirInstanceValidator hapiValidatorModule = new FhirInstanceValidator(
+                validationSupportChain);
+        hapiValidatorModule.setErrorForUnknownProfiles(true);
+        hapiValidatorModule.setNoExtensibleWarnings(true);
+        hapiValidatorModule.setAnyExtensionsAllowed(false);
+        FhirValidator fhirValidator = ctx.newValidator();
+        fhirValidator.registerValidatorModule(hapiValidatorModule);
+        return fhirValidator;
+    }
 }

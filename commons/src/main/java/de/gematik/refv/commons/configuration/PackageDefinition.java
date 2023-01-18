@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,12 @@ import java.util.Objects;
 public class PackageDefinition {
     private String filename;
     private List<PackageReference> dependencies;
+    private List<String> patches;
     private List<ValidationMessageTransformation> validationMessageTransformations;
     public List<ValidationMessageTransformation> getValidationMessageTransformations() {
         return Objects.requireNonNullElseGet(validationMessageTransformations, LinkedList::new);
+    }
+    public List<String> getPatches() {
+        return Objects.requireNonNullElseGet(patches, LinkedList::new);
     }
 }

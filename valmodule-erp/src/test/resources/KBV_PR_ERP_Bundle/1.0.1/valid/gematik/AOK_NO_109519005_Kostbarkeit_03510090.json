@@ -1,0 +1,373 @@
+{
+  "resourceType": "Bundle",
+  "id": "80f212e1-42dc-4691-a257-0ef2f01de7fd",
+  "meta": {
+    "lastUpdated": "2021-11-12T11:08:17.2415449+01:00",
+    "profile": [ "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.1" ]
+  },
+  "identifier": {
+    "system": "https://gematik.de/fhir/NamingSystem/PrescriptionID",
+    "value": "160.000.074.296.768.39"
+  },
+  "type": "document",
+  "timestamp": "2021-11-12T11:08:17.2415449+01:00",
+  "entry": [ {
+    "fullUrl": "http://pvs.praxis.local/Composition/d8dee9ad-6d84-41af-8d1d-748c3c563cba",
+    "resource": {
+      "resourceType": "Composition",
+      "id": "d8dee9ad-6d84-41af-8d1d-748c3c563cba",
+      "meta": {
+        "profile": [ "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Composition|1.0.1" ]
+      },
+      "extension": [ {
+        "url": "https://fhir.kbv.de/StructureDefinition/KBV_EX_FOR_Legal_basis",
+        "valueCoding": {
+          "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_STATUSKENNZEICHEN",
+          "code": "00"
+        }
+      } ],
+      "status": "final",
+      "type": {
+        "coding": [ {
+          "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_FORMULAR_ART",
+          "code": "e16A"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/34070baf-8eb9-4265-abb6-f51208bb4acd"
+      },
+      "date": "2021-11-12T11:08:08.8046753+01:00",
+      "author": [ {
+        "reference": "Practitioner/74996a40-d335-4abd-a393-dde0f4bdd88e",
+        "type": "Practitioner"
+      }, {
+        "type": "Device",
+        "identifier": {
+          "system": "https://fhir.kbv.de/NamingSystem/KBV_NS_FOR_Pruefnummer",
+          "value": "Y/400/1910/36/462"
+        }
+      } ],
+      "title": "elektronische Arzneimittelverordnung",
+      "custodian": {
+        "reference": "Organization/8d8c91fa-0075-4512-aba3-3b73856c32d2"
+      },
+      "section": [ {
+        "code": {
+          "coding": [ {
+            "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_Section_Type",
+            "code": "Prescription"
+          } ]
+        },
+        "entry": [ {
+          "reference": "MedicationRequest/d35922d1-add1-4d78-b2b3-2fbb90c2cd2d"
+        } ]
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_Section_Type",
+            "code": "Coverage"
+          } ]
+        },
+        "entry": [ {
+          "reference": "Coverage/4cddf31d-5558-47f1-9bb4-a86329dcafa4"
+        } ]
+      } ]
+    }
+  }, {
+    "fullUrl": "http://pvs.praxis.local/Patient/34070baf-8eb9-4265-abb6-f51208bb4acd",
+    "resource": {
+      "resourceType": "Patient",
+      "id": "34070baf-8eb9-4265-abb6-f51208bb4acd",
+      "meta": {
+        "profile": [ "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Patient|1.0.3" ]
+      },
+      "identifier": [ {
+        "use": "official",
+        "type": {
+          "coding": [ {
+            "system": "http://fhir.de/CodeSystem/identifier-type-de-basis",
+            "code": "GKV"
+          } ]
+        },
+        "system": "http://fhir.de/NamingSystem/gkv/kvid-10",
+        "value": "X110433327"
+      } ],
+      "name": [ {
+        "use": "official",
+        "family": "von Schinder Graf Freiherr Schaumberg",
+        "_family": {
+          "extension": [ {
+            "url": "http://fhir.de/StructureDefinition/humanname-namenszusatz",
+            "valueString": "von Schinder"
+          }, {
+            "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix",
+            "valueString": "Graf Freiherr"
+          }, {
+            "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
+            "valueString": "Schinder"
+          } ]
+        },
+        "given": [ "Prof. Dr. Karl-Friederich" ]
+      } ],
+      "birthDate": "1964-04-04",
+      "address": [ {
+        "type": "both",
+        "line": [ "Siegburger Str. 155" ],
+        "_line": [ {
+          "extension": [ {
+            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+            "valueString": "Siegburger Str."
+          }, {
+            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+            "valueString": "155"
+          } ]
+        } ],
+        "city": "Köln",
+        "postalCode": "51105",
+        "country": "D"
+      } ]
+    }
+  }, {
+    "fullUrl": "http://pvs.praxis.local/Practitioner/74996a40-d335-4abd-a393-dde0f4bdd88e",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "74996a40-d335-4abd-a393-dde0f4bdd88e",
+      "meta": {
+        "profile": [ "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Practitioner|1.0.3" ]
+      },
+      "identifier": [ {
+        "use": "official",
+        "type": {
+          "coding": [ {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "LANR"
+          } ]
+        },
+        "system": "https://fhir.kbv.de/NamingSystem/KBV_NS_Base_ANR",
+        "value": "770235434"
+      } ],
+      "name": [ {
+        "use": "official",
+        "family": "Thiele",
+        "_family": {
+          "extension": [ {
+            "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
+            "valueString": "Thiele"
+          } ]
+        },
+        "given": [ "Wilhelm" ],
+        "prefix": [ "Dr. med." ],
+        "_prefix": [ {
+          "extension": [ {
+            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier",
+            "valueCode": "AC"
+          } ]
+        } ]
+      } ],
+      "qualification": [ {
+        "code": {
+          "coding": [ {
+            "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Qualification_Type",
+            "code": "00"
+          } ]
+        }
+      }, {
+        "code": {
+          "text": "Allgemeinmedizin"
+        }
+      } ]
+    }
+  }, {
+    "fullUrl": "http://pvs.praxis.local/Organization/8d8c91fa-0075-4512-aba3-3b73856c32d2",
+    "resource": {
+      "resourceType": "Organization",
+      "id": "8d8c91fa-0075-4512-aba3-3b73856c32d2",
+      "meta": {
+        "profile": [ "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Organization|1.0.3" ]
+      },
+      "identifier": [ {
+        "use": "official",
+        "type": {
+          "coding": [ {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "BSNR"
+          } ]
+        },
+        "system": "https://fhir.kbv.de/NamingSystem/KBV_NS_Base_BSNR",
+        "value": "666666666"
+      } ],
+      "name": "KIM-x2-HBS",
+      "telecom": [ {
+        "system": "phone",
+        "value": "0123456789-11111"
+      } ],
+      "address": [ {
+        "type": "both",
+        "line": [ "Im Kappelhof 1" ],
+        "_line": [ {
+          "extension": [ {
+            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+            "valueString": "Im Kappelhof"
+          }, {
+            "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+            "valueString": "1"
+          } ]
+        } ],
+        "city": "Eltville",
+        "postalCode": "65331",
+        "country": "D"
+      } ]
+    }
+  }, {
+    "fullUrl": "http://pvs.praxis.local/Medication/25341d1b-ff4c-4ae9-8e33-e1e895514b4c",
+    "resource": {
+      "resourceType": "Medication",
+      "id": "25341d1b-ff4c-4ae9-8e33-e1e895514b4c",
+      "meta": {
+        "profile": [ "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_PZN|1.0.1" ]
+      },
+      "extension": [ {
+        "url": "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Category",
+        "valueCoding": {
+          "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_Medication_Category",
+          "code": "00"
+        }
+      }, {
+        "url": "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Vaccine",
+        "valueBoolean": false
+      }, {
+        "url": "http://fhir.de/StructureDefinition/normgroesse",
+        "valueCode": "N1"
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/ifa/pzn",
+          "code": "03510090"
+        } ],
+        "text": "Isogalen 20 mg Weichkapseln"
+      },
+      "form": {
+        "coding": [ {
+          "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_DARREICHUNGSFORM",
+          "code": "WKA"
+        } ]
+      },
+      "amount": {
+        "numerator": {
+          "value": 30,
+          "unit": "St"
+        },
+        "denominator": {
+          "value": 1
+        }
+      }
+    }
+  }, {
+    "fullUrl": "http://pvs.praxis.local/Coverage/4cddf31d-5558-47f1-9bb4-a86329dcafa4",
+    "resource": {
+      "resourceType": "Coverage",
+      "id": "4cddf31d-5558-47f1-9bb4-a86329dcafa4",
+      "meta": {
+        "profile": [ "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Coverage|1.0.3" ]
+      },
+      "extension": [ {
+        "url": "http://fhir.de/StructureDefinition/gkv/besondere-personengruppe",
+        "valueCoding": {
+          "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_PERSONENGRUPPE",
+          "code": "00"
+        }
+      }, {
+        "url": "http://fhir.de/StructureDefinition/gkv/dmp-kennzeichen",
+        "valueCoding": {
+          "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_DMP",
+          "code": "00"
+        }
+      }, {
+        "url": "http://fhir.de/StructureDefinition/gkv/versichertenart",
+        "valueCoding": {
+          "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_VERSICHERTENSTATUS",
+          "code": "1"
+        }
+      } ],
+      "status": "active",
+      "type": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/versicherungsart-de-basis",
+          "code": "GKV"
+        } ]
+      },
+      "beneficiary": {
+        "reference": "Patient/34070baf-8eb9-4265-abb6-f51208bb4acd"
+      },
+      "payor": [ {
+        "identifier": {
+          "system": "http://fhir.de/NamingSystem/arge-ik/iknr",
+          "value": "109519005"
+        },
+        "display": "AOK Nordost"
+      } ]
+    }
+  }, {
+    "fullUrl": "http://pvs.praxis.local/MedicationRequest/d35922d1-add1-4d78-b2b3-2fbb90c2cd2d",
+    "resource": {
+      "resourceType": "MedicationRequest",
+      "id": "d35922d1-add1-4d78-b2b3-2fbb90c2cd2d",
+      "meta": {
+        "profile": [ "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription|1.0.1" ]
+      },
+      "extension": [ {
+        "url": "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_StatusCoPayment",
+        "valueCoding": {
+          "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_StatusCoPayment",
+          "code": "0"
+        }
+      }, {
+        "url": "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_EmergencyServicesFee",
+        "valueBoolean": false
+      }, {
+        "url": "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_BVG",
+        "valueBoolean": false
+      }, {
+        "url": "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Multiple_Prescription",
+        "extension": [ {
+          "url": "Kennzeichen",
+          "valueBoolean": false
+        } ]
+      } ],
+      "status": "active",
+      "intent": "order",
+      "medicationReference": {
+        "reference": "Medication/25341d1b-ff4c-4ae9-8e33-e1e895514b4c"
+      },
+      "subject": {
+        "reference": "Patient/34070baf-8eb9-4265-abb6-f51208bb4acd"
+      },
+      "authoredOn": "2021-11-12",
+      "requester": {
+        "reference": "Practitioner/74996a40-d335-4abd-a393-dde0f4bdd88e"
+      },
+      "insurance": [ {
+        "reference": "Coverage/4cddf31d-5558-47f1-9bb4-a86329dcafa4"
+      } ],
+      "note": [ {
+        "text": "Verschreibungshoechstmenge"
+      } ],
+      "dosageInstruction": [ {
+        "extension": [ {
+          "url": "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_DosageFlag",
+          "valueBoolean": false
+        } ]
+      } ],
+      "dispenseRequest": {
+        "quantity": {
+          "value": 1,
+          "system": "http://unitsofmeasure.org",
+          "code": "{Package}"
+        }
+      },
+      "substitution": {
+        "allowedBoolean": true
+      }
+    }
+  } ]
+}

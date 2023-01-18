@@ -1,0 +1,16 @@
+<List xmlns="http://hl7.org/fhir">
+    <id value="2b00af56-bebe-4d84-9170-fd3e0c223a6b"/>
+    <meta>
+        <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_List|1.3"/>
+    </meta>
+    <status value="current"/>
+    <mode value="working"/>
+    <entry>
+        <item>
+            <identifier>
+                <system value="https://fhir.gkvsv.de/NamingSystem/GKVSV_NS_Dateiname"/>
+                <value value="ARZFHR21062"/>
+            </identifier>
+        </item>
+    </entry>
+</List>

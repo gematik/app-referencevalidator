@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,15 @@ package de.gematik.refv.commons.validation.support;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.ConceptValidationOptions;
 import ca.uhn.fhir.context.support.ValidationSupportContext;
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.common.hapi.validation.support.BaseValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
+import org.hl7.fhir.utilities.validation.ValidationMessage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 
 /**
  * Modified from <a href="https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/478e8a2e3f0e24f54a331d561f518eeb2817ed58/core/src/main/java/de/abda/fhir/validator/core/support/IgnoreMissingValueSetValidationSupport.java">https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/478e8a2e3f0e24f54a331d561f518eeb2817ed58/core/src/main/java/de/abda/fhir/validator/core/support/IgnoreMissingValueSetValidationSupport.java</a>
@@ -38,7 +39,9 @@ import java.util.Map;
  */
 public class IgnoreMissingValueSetValidationSupport extends BaseValidationSupport {
 
-    private final Map<String, String> codeSystemsToIgnore = new HashMap<>();
+    private final Collection<String> codeSystemsToIgnore = new HashSet<>();
+
+    public static final String CODE_SYSTEM_IS_IGNORED_MESSAGE = "Code system has been ignored due to module configuration";
 
     /**
      * Constructor
@@ -48,24 +51,26 @@ public class IgnoreMissingValueSetValidationSupport extends BaseValidationSuppor
         super(theFhirContext);
         for (String codeSystemToIgnore :
                 codeSystemsToIgnore) {
-            this.codeSystemsToIgnore.put(codeSystemToIgnore,String.format("This module has no support for code system %s", codeSystemToIgnore));
+            if(StringUtils.isEmpty(codeSystemToIgnore))
+                throw new IllegalArgumentException("Empty code systems to ignore are not allowed");
+            this.codeSystemsToIgnore.add(codeSystemToIgnore);
         }
     }
 
     @Override
     public boolean isCodeSystemSupported(ValidationSupportContext theValidationSupportContext, String theCodeSystem) {
-        return theCodeSystem != null && codeSystemsToIgnore.containsKey(theCodeSystem);
+        return theCodeSystem != null && codeSystemsToIgnore.contains(theCodeSystem);
     }
 
     @Nullable
     @Override
     public CodeValidationResult validateCode(@Nonnull ValidationSupportContext theValidationSupportContext,@Nonnull ConceptValidationOptions theOptions, String theCodeSystem, String theCode, String theDisplay, String theValueSetUrl) {
-        if (theCodeSystem != null && codeSystemsToIgnore.containsKey(theCodeSystem)) {
+        if (theCodeSystem != null && codeSystemsToIgnore.contains(theCodeSystem)) {
             CodeValidationResult result = new CodeValidationResult();
             result.setSeverity(IssueSeverity.INFORMATION);
+            result.setSeverityCode(ValidationMessage.IssueSeverity.INFORMATION.toCode());
             result.setCodeSystemName(theCodeSystem);
-            result.setCode(theCode);
-            result.setMessage(codeSystemsToIgnore.get(theCodeSystem));
+            result.setMessage(CODE_SYSTEM_IS_IGNORED_MESSAGE);
             return result;
         } else return null;
     }

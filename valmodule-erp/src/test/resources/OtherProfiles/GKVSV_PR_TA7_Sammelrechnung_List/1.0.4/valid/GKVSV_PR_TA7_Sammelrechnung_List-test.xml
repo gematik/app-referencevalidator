@@ -1,0 +1,38 @@
+<List xmlns="http://hl7.org/fhir">
+    <id value="54bfd925-79f6-4b7a-8a29-0524c9b375d9" />
+    <meta>
+        <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Sammelrechnung_List|1.0.4" />
+    </meta>
+    <status value="current" />
+    <mode value="working" />
+    <entry>
+        <item>
+            <reference value="urn:uuid:529d741c-7ad8-41d8-97c3-9aabbdd084b2" />
+        </item>
+    </entry>
+    <entry>
+        <item>
+            <reference value="urn:uuid:529d741c-7ad8-41d8-97c3-9aabbdd084a3" />
+        </item>
+    </entry>
+    <entry>
+        <item>
+            <reference value="urn:uuid:529d741c-7ad8-41d8-97c3-9aabbdd084b4" />
+        </item>
+    </entry>
+    <entry>
+        <item>
+            <reference value="urn:uuid:529d741c-7ad8-41d8-97c3-9aabbdd084a5" />
+        </item>
+    </entry>
+    <entry>
+        <item>
+            <reference value="urn:uuid:529d741c-7ad8-41d8-97c3-9aabbdd084b6" />
+        </item>
+    </entry>
+    <entry>
+        <item>
+            <reference value="urn:uuid:529d741c-7ad8-41d8-97c3-9aabbdd08aa7" />
+        </item>
+    </entry>
+</List>

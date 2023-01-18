@@ -1,0 +1,25 @@
+<Organization xmlns="http://hl7.org/fhir">
+    <id value="2.16.840.1.113883.19.5"/>
+    <meta>
+        <profile value="https://gematik.de/fhir/StructureDefinition/ErxOrganization|1.1.1" />
+    </meta>
+    <text>
+        <status value="generated"/>
+        <div xmlns="http://www.w3.org/1999/xhtml">
+
+            <p> Good Health Clinic</p>
+
+        </div>
+    </text>
+    <identifier>
+        <system value="https://gematik.de/fhir/NamingSystem/TelematikID"/>
+        <value value="urn:oid:2.16.840.1.113883.19.5"/>
+    </identifier>
+    <active value="true"/>
+    <type id="test"/>
+    <name value="Good Health Clinic"/>
+    <address>
+        <city value="Berlin"/>
+        <postalCode value="10555"/>
+    </address>
+</Organization>

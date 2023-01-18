@@ -14,6 +14,8 @@ fhirPackages:
             packageVersion: "0.9.13"
       1.0.2:
         filename: "kbv.ita.erp-1.0.2.tgz"
+        patches:
+          - "Some-Patched-SD-From-kbv.ita.erp-1.0.2.json"
         dependencies:
           - packageName: "dav.kbv.sfhir.cs.vs"
             packageVersion: "1.0.3"
@@ -99,6 +101,12 @@ fhirPackages:
         dependencies:
           - packageName: "de.basisprofil.r4"
             packageVersion: "9.9.9"
+  simplevalidationmodule.test:
+    packageVersions:
+      1.0.0:
+        filename: "simplevalidationmodule.test-1.0.0.tgz"
+        patches:
+          - "profile-differential-patient-r4-patch-gender-required.json"
 
 ### Definition unterstützer Profile:
 supportedProfiles:
@@ -141,6 +149,19 @@ supportedProfiles:
       1.0.0:
         requiredPackage:
           packageName: "package.with.non.existing.version.dependency"
+          packageVersion: "1.0.0"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle":
+    profileVersions:
+      1.0.2:
+        requiredPackage:
+          packageName: "kbv.ita.erp"
+          packageVersion: "1.0.2"
+  "http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "simplevalidationmodule.test"
           packageVersion: "1.0.0"
 
 ignoredCodeSystems:

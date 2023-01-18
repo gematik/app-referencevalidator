@@ -28,7 +28,7 @@ Nutzungsszenarien E-Rezept-Prüfmodul
 Entwicklungsunterstützung
 -------------------------
 
-Ein PVS\-Hersteller möchte bereits während der Implementierung des E-Rezept-Moduls die Validität von seinen zu Testzwecken erzeugten VO-Datensätzen überprüfen. Zu diesem Zweck verwendet er den Referenzvalidator als Standalone Konsolenanwendung und prüft die aus seinem System erzeugten Dateien auf Korrektheit.
+Ein Primärsystemhersteller-Hersteller möchte bereits während der Implementierung des E-Rezept-Moduls die Validität von seinen zu Testzwecken erzeugten VO-Datensätzen überprüfen. Zu diesem Zweck verwendet er den Referenzvalidator als Standalone Konsolenanwendung und prüft die aus seinem System erzeugten Dateien auf Korrektheit.
 
 Schiedsrichter-Szenario
 -----------------------
@@ -55,7 +55,7 @@ Ein Apothekenrechenzentrum muss wissen, ob ein E-Rezept den technischen Verarbei
 Weiterentwicklung der Profile
 -----------------------------
 
-Eine Organisation, die mit Profilierung von E-Rezept-Ressourcen beauftragt ist, entwickelt die Profildefinitionen kontinuierlich weiter. Zur Prüfung der Validität der neuen Profile, der neuen Beispieldatensätze und der Konformität der alten Datensätze zu den neuen Profilen, wird der Referenzvalidator hinzugezogen. Dieser wird entweder manuell auf neuen Profilen und Beispieldatensätzen aufgerufen oder in die CI-Pipelines integriert.
+Eine Organisation, die mit Profilierung von E-Rezept-Ressourcen beauftragt ist, entwickelt die Profildefinitionen kontinuierlich weiter. Zur Prüfung der Validität der neuen Profile und der neuen Beispieldatensätze, wird der Referenzvalidator hinzugezogen. Dieser wird entweder manuell auf neuen Profilen und Beispieldatensätzen aufgerufen oder in die CI-Pipelines integriert.
 
 E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
 ========================================================================
@@ -78,7 +78,7 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
     </tr>
     <tr>
         <td class="confluenceTd" colspan="1">1</td>
-        <td class="confluenceTd"><p>Ein<strong> Entwickler vom PVS-, AVS-, Apothekenrechenzentrum-,
+        <td class="confluenceTd"><p>Ein<strong> Entwickler vom PVS/KIS-, AVS-, Apothekenrechenzentrum-,
             Annahmestellen-Software, E-Rezept-App</strong> muss ein Werkzeug verfügbar haben, mit dem FHIR-Ressourcen,
             die bei E-Rezepten zum Einsatz kommen, gegen gültige FHIR-Profile/Profilversionen validiert werden können
             (aktuell gültige oder demnächst gültige). Damit soll die Qualitätssicherung der Anpassungen an
@@ -94,55 +94,48 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
         <td class="confluenceTd" colspan="1">
             <div class="content-wrapper"><p>1.1.1. Der Referenzvalidator muss E-Rezept-FHIR-Ressourcen
                 (<strong>Bundles</strong>) als Eingabe akzeptieren können. <span
-                        class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span></p>
+                        class="status-macro aui-lozenge aui-lozenge-success"><i></i></span></p>
                 <p>1.1.2. Der Referenzvalidator muss E-Rezept-FHIR-Ressourcen (<strong>Bundle-Bestandteile</strong>) als
-                    Eingabe akzeptieren können. <span class="status-macro aui-lozenge"><i>(Backlog)</i></span></p>
+                    Eingabe akzeptieren können. <span class="status-macro aui-lozenge"><i></i></span></p>
                 <p>1.2.1. <span class="inline-comment-marker" data-ref="c7803a56-22d4-4157-8b57-bc567a20f468">Der Referenzvalidator muss Zugriff auf die aktuell gültigen FHIR-Profile, Profilversionen und Pakete haben und diese mit Hilfe vom HAPI-Referenzvalidator in einer festgelegten Version anwenden können (siehe <a
                         class="external-link"
                         href="https://github.com/gematik/api-erp/blob/master/docs/erp_fhirversion.adoc" rel="nofollow" target="_blank">Profil-Roadmap</a>).</span>
-                    <span class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span></p>
-                <p><span class="inline-comment-marker" data-ref="89f68b58-571c-4666-82ce-a18f04efd976">1.2.2. Das E-Rezept muss als Ergebnis eine Valid / Invalid-Antwort und als Ergänzung die HAPI-Ausgaben bzw. weitere erkannte Konformitätsprobleme ausgeben können. <span
-                        class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span></span></p>
-                <p>1.2.3. Um die Valid / Invalid-Antwort zu produzieren, muss der Referenzvalidator die Vorgaben der
-                    TK300 TA7 Anhang 3 bzgl. der HAPI-Konfiguration und der Interpretationsregeln von HAPI-Ausgaben
-                    (Fehler, Warnungen, Informationen) anwenden. Zukünftige Änderungen werden mit dem Steuergremium des
-                    Prüfmoduls E-Rezept abgestimmt. <span
-                            class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span></p>
+                    </p>
+                <p><span class="inline-comment-marker" data-ref="89f68b58-571c-4666-82ce-a18f04efd976">1.2.2. Das E-Rezept muss als Ergebnis eine Valid / Invalid-Antwort und als Ergänzung die HAPI-Ausgaben bzw. weitere erkannte Konformitätsprobleme ausgeben können. </span></p>
+                <p>1.2.3. Um die Valid / Invalid-Antwort zu produzieren, muss der Referenzvalidator die Konfiguration, die Version und Nachbearbeitungsregeln des HAPI-Validators anwenden, die zwischen den Prozessbeteiligten abgestimmt wurden.</p>
                 <p><span class="inline-comment-marker" data-ref="e0cb712c-cdbd-4bf7-935d-97e8009a54e2">1.2.4. <span
                         class="inline-comment-marker" data-ref="c683ccbe-4d1b-4212-bd4f-341a6b4c11aa">Falls es für den Zeitpunkt</span> mehrere gültige FHIR-Profilversionen gibt ("Übergangsphase"), dann ist das Ergebnis Valide, falls die FHIR-Ressource eine der gültigen Profilversionen referenziert.</span>
-                    <span class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span></p>
+                   </p>
                 <p>1.3.1. Der <span class="inline-comment-marker" data-ref="e3ed44f8-d0b8-4245-9e66-67855c964ab1">Referenzvalidator</span>
                     muss Zugriff auf die bereits veröffentlichten aber potenziell noch nicht verpflichtend geltenden
                     FHIR-Profile/Profilversionen haben (siehe <a class="external-link"
                                                                  href="https://github.com/gematik/api-erp/blob/master/docs/erp_fhirversion.adoc"
-                                                                 rel="nofollow" target="_blank">Profil-Roadmap</a>) <span
-                            class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span></p>
+                                                                 rel="nofollow" target="_blank">Profil-Roadmap</a>) </p>
                 <p>1.3.2. Als <span class="inline-comment-marker" data-ref="212a1d0c-bf8e-4d4e-adac-7b992f2586df">Referenzzeitpunkt</span>
                     zur Gültigkeitsprüfung von referenzierten Profilversionen sollen die Erstellung-Datumsangaben aus
-                    der FHIR-Ressource dienen:</p><span class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span>
+                    der FHIR-Ressource dienen:</p>
                 <ul style="text-align: left;">
-                    <li>Verordnung, Datum der Ausstellung (KBV_PR_ERP_Prescription: MedicationRequest.authoredOn)</li>
-                    <li>MedicationDispense, Abgabedatum (GEM_ERP_PR_MedicationDispense bzw. <span
-                            class="inline-comment-marker" data-ref="1dbb0343-8dea-4739-b2da-2d6902da7e36">Gem_erxMedicationDispense)</span>:
-                        MedicationDispense.whenHandedOver)
+                    <li>Verordnung, Datum der Ausstellung (KBV_PR_ERP_Prescription: MedicationRequest.authoredOn bzw. KBV_PR_ERP_PracticeSupply: SupplyRequest.authoredOn)</li>
+                    <li>MedicationDispense, Abgabedatum (Gem_erxMedicationDispense: MedicationDispense.whenHandedOver - ab 01.07.2023 GEM_ERP_PR_MedicationDispense: Composition.date)
                     </li>
-                    <li>Quittung, Ausstellungsdatum (GEM_ERP_PR_Composition bzw. Gem_erxComposition: Composition.date)
+                    <li>Quittung, Ausstellungsdatum (Gem_erxComposition: Composition.date - ab 01.07.2023 GEM_ERP_PR_Composition: Composition.date)
                     </li>
-                    <li>Abgabedaten, Abgabedatum (DAV_PR_ERP_Abgabeinformationen: MedicationDispense.whenHandedOver)
+                    <li>PKV Patientenrechnung (GEM_ERPCHRG_PR_ChargeItem: ChargeItem.enteredDate)</li>
+                    <li>GKV Abgabedaten, Abgabedatum (DAV_PR_ERP_Abgabeinformationen: MedicationDispense.whenHandedOver)
                     </li>
-                    <li>Abrechnungsdaten, Abrechnungsmonat (GKVSV_PR_TA7_Sammelrechnung_Composition: Composition.date)
+                    <li>PKV Abgabedaten, Abgabedatum (DAV_PKV_PR_ERP_Abgabeinformationen: MedicationDispense.whenHandedOver)</li>
+                    <li>Abrechnungsdaten, Abrechnungsmonat (GKVSV_PR_TA7_Sammelrechnung_Composition: Composition.date - ab 01.07.2023 GKVSV_PR_TA7_Rechnung_Composition: Composition.date)
                     </li>
                 </ul>
                 <p>1.3.3. Der Referenzvalidator kann als Eingabe einen Referenzzeitpunkt akzeptieren, der anstatt der in
                     der Nachricht angegebenen Datumsangabe, zur Bestimmung der zum Zeitpunkt gültigen FHIR-Profilversion
                     verwendet werden soll.</p>
-                <p><span class="status-macro aui-lozenge"><i>(Backlog)</i></span></p>
+                <p></p>
                 <p>1.3.4. <span class="inline-comment-marker" data-ref="1efc68b6-a652-4783-bf78-dc8e41a78b04">Der Referenzvalidator muss als</span>
-                    Eingabe auch FHIR-Ressourcen akzeptieren, die keine explizite Profilangabe aufweisen (E-Rezept
-                    Parameters) <span class="status-macro aui-lozenge"><i>(Backlog)</i></span></p>
+                    Eingabe auch FHIR-Core-Ressourcen akzeptieren, die keine explizite Profilangabe aufweisen (z.B. 
+                    Parameters)</p>
                 <p>1.3.5. <span class="inline-comment-marker" data-ref="59c43bfb-e103-4771-a517-e17cba51bbdc">Der Referenzvalidator muss als</span>
-                    Eingabe auch FHIR-Ressourcen akzeptieren, die als JSON vorliegen (E-Rezept App-Requests) <span
-                            class="status-macro aui-lozenge"><i>(Backlog)</i></span></p></div>
+                    Eingabe auch FHIR-Ressourcen akzeptieren, die als JSON vorliegen</p></div>
         </td>
         <td class="confluenceTd" colspan="1"><br></td>
     </tr>
@@ -158,10 +151,10 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
         <td class="confluenceTd" colspan="1">
             <div class="content-wrapper"><p>2.1.1. Der Referenzvalidator muss FHIR-Ressourcen, deren Ausstellungsdatum
                 <span class="inline-comment-marker" data-ref="fbf6bcc6-f616-477e-8045-78e5a60af619">2 Jahre zurück liegen kann</span>,
-                als Eingabe akzeptieren können. <span class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span>
+                als Eingabe akzeptieren können.
             </p>
                 <p>2.1.2. Der Referenzvalidator muss Zugriff auf die FHIR-Profile, Profilversionen, Pakete der letzten 2
-                    Jahre haben <span class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span>
+                    Jahre haben
                 </p>
                 <p><br></p></div>
         </td>
@@ -175,12 +168,11 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
         <td class="confluenceTd" colspan="1"><p><br></p></td>
         <td class="confluenceTd" colspan="1">
             <div class="content-wrapper"><p>3.1.1 Der Referenzvalidator muss als Open Source bereitgestellt werden.
-                <span class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span></p>
+                </p>
                 <p>3.1.2. Der Referenzvalidator muss als Java 11-Bibliothek und als Konsolenanwendung bereitgestellt
                     werden, damit ein Umbau zum produktionsreifen Dienst bzw. Integration in andere Anwendungen möglich
-                    wird. <span class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span></p>
-                <p>3.1.3 Der Referenzvalidator muss Threadsafe sein <span
-                        class="status-macro aui-lozenge"><i>(Backlog)</i></span></p></div>
+                    wird.</p>
+                <p>3.1.3 Der Referenzvalidator muss Threadsafe sein </p></div>
         </td>
         <td class="confluenceTd" colspan="1"><br></td>
     </tr>
@@ -216,7 +208,7 @@ E-Rezept: Anforderungen an den Entwicklungsprozess
     </tr>
     <tr>
         <td class="confluenceTd">3</td>
-        <td class="confluenceTd">Ein<strong> Entwickler vom PVS-, AVS-, Apothekenrechenzentrum-,
+        <td class="confluenceTd">Ein<strong> Entwickler vom PVS/KIS-, AVS-, Apothekenrechenzentrum-,
             Annahmestellen-Software </strong>muss spätestens 3 Monate vor dem Gültigkeitsbeginn der neuen
             Profilversionen den aktualisierten Referenzvalidator verfügbar haben, mit dem Anpassungen im E-Rezept-Modul
             und Änderungen an den FHIR-Ressourcen getestet werden können &nbsp;
@@ -273,8 +265,7 @@ Referenzvalidator: Infrastrukturelle Anforderungen:
                             <li class="auto-cursor-target">Eine zu validierende FHIR-Ressource aus dem Kontext einer
                                 TI-Anwendung
                             </li>
-                            <li class="auto-cursor-target">Ein zu verwendendes Prüfmodul (E-Rezept, eAU etc.)<br><span
-                                    class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span></li>
+                            <li class="auto-cursor-target">Ein zu verwendendes Prüfmodul (E-Rezept, eAU etc.)</li>
                         </ol>
                     </li>
                     <li>Der Referenzvalidator muss Prüfmodule für unterschiedliche TI-Anwendungen intern verwalten. Ein
@@ -284,7 +275,7 @@ Referenzvalidator: Infrastrukturelle Anforderungen:
                                 erforderlich sind
                             </li>
                             <li>(optional) Paketspezifische Interpretationsregeln der Ausgaben vom
-                                HAPI-Validator<br><span class="status-macro aui-lozenge aui-lozenge-success"><i>(R1.0)</i></span>
+                                HAPI-Validator<br>
                             </li>
                         </ol>
                     </li>

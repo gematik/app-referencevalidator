@@ -32,10 +32,12 @@
 
 ## Über das Projekt
 
-
 Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren. 
 
 Siehe [Use Cases, Anforderungen, Architektur, Entwicklungsprozess](docs/concept/concept.md) für weitere Informationen.
+
+> **Warning**
+> Die Verbindlichkeit vom Referenzvalidator wurde für die Telematikinfrastruktur und ihre Anwendungen noch nicht festgelegt. Für die Validierung der Daten in Abrechnungsprozessen der E-Rezept-Anwendung soll [ABDA Referenzvalidator](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/) eingesetzt werden
 
 ### Release Notes
 
@@ -51,9 +53,10 @@ Siehe [Release Notes](ReleaseNotes.md)
   - Coding/CodeableConcept bindings: Die Code-Angaben in einer Instanz entsprechen der Definition des Kodierungssystems aus dem Profil
   - Constraints/Invariants: Die für die Eigenschaften im Profil definierten Regeln sind eingehalten
 
-Dabei gilt folgendes:
+Ergänzungen zum Standardverhalten des HL7 Java Validators:
 - Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
 - Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis
+- Nicht auflösbare relative Referenzen in Bundles führen zum invaliden Ergebnis 
 
 ### E-Rezept-Modul
 
@@ -61,60 +64,59 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das E-Rezept-Modul wie folg
 - Codes aus den CodeSystemen `http://fhir.de/CodeSystem/ifa/pzn` und `http://fhir.de/CodeSystem/ask` werden nicht validiert
 - Fehler, die bei Validierung von `http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle|1.0.3` im Zusammenhang mit falschen Angaben bei `http://fhir.abda.de/Identifier/DAV-Herstellerschluessel` stehen, werden ignoriert und führen zum **validen** Ergebnis
 
-#### Unterstützte Profile und Versionen
-* https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle
-    * 1.0.1
-    * 1.0.2
-* https://gematik.de/fhir/StructureDefinition/ErxMedicationDispense
-    * 1.0.3
-    * 1.0.3-1 (Instanzen ohne Versionsangaben werden gegen die Version 1.0.3-1 validiert)
-    * 1.1.1
-* https://gematik.de/fhir/StructureDefinition/ErxReceipt
-    * 1.0.3
-    * 1.0.3-1 (Instanzen ohne Versionsangaben werden gegen die Version 1.0.3-1 validiert)
-    * 1.1.1
-* http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle
-    * 1.0.3
-    * 1.1.0
-    * 1.2
-* https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Sammelrechnung_Bundle
-    * 1.0.4
-    * 1.0.5
-    * 1.0.6
-    * 1.1.0
-    * 1.2
+Die aktuell unterstützten Profile und Versionen findet man [hier](supported-profiles.md).
   
 #### Eingebundene Packages (R4) 
 * de.basisprofil.r4-0.9.13.tgz
+* de.basisprofil.r4-1.3.2.tgz
 * kbv.basis-1.1.3.tgz
+* kbv.basis-1.3.0.tgz
 * kbv.ita.for-1.0.3.tgz
+* kbv.ita.for-1.1.0.tgz
 * kbv.ita.erp-1.0.1.tgz
 * kbv.ita.erp-1.0.2.tgz
+* kbv.ita.erp-1.1.0.tgz
 * de.gematik.erezept-workflow.r4-1.0.3-1.tgz
 * de.gematik.erezept-workflow.r4-1.1.1.tgz
+* de.gematik.erezept-workflow.r4-1.2.0.tgz
+* de.gematik.erezept-patientenrechnung.r4-1.0.0.tgz
 * de.abda.erezeptabgabedatenbasis-1.1.0.tgz
 * de.abda.erezeptabgabedatenbasis-1.1.3.tgz
 * de.abda.erezeptabgabedatenbasis-1.2.0.tgz
+* de.abda.erezeptabgabedatenbasis-1.3.0.tgz
 * de.abda.erezeptabgabedaten-1.0.3.tgz
 * de.abda.erezeptabgabedaten-1.1.2.tgz
 * de.abda.erezeptabgabedaten-1.2.0.tgz
+* de.abda.erezeptabgabedaten-1.3.0.tgz
+* de.abda.erezeptabgabedatenpkv-1.1.0.tgz
 * de.gkvsv.erezeptabrechnungsdaten-1.0.4.tgz
 * de.gkvsv.erezeptabrechnungsdaten-1.0.5.tgz
 * de.gkvsv.erezeptabrechnungsdaten-1.0.6.tgz
 * de.gkvsv.erezeptabrechnungsdaten-1.1.0.tgz
 * de.gkvsv.erezeptabrechnungsdaten-1.2.0.tgz
+* de.gkvsv.erezeptabrechnungsdaten-1.3.0.tgz
 
-[Validierungsrelevante Codesysteme und Valuesets der KBV:](https://update.kbv.de/ita-update/DigitaleMuster/ERP/KBV_FHIR_eRP_V1.0.2_zur_Validierung.zip)
+[Validierungsrelevante Codesysteme und Valuesets der KBV:](https://update.kbv.de/ita-update/DigitaleMuster/ERP/)
 * dav.kbv.sfhir.cs.vs-1.0.2-json.tgz
 * dav.kbv.sfhir.cs.vs-1.0.3-json.tgz (Anpassung DARREICHUNGSFORM v1.09 ab 01.04.2022)
+* gematik.kbv.sfhir.cs.vs-1.0.0.tgz (Gültig ab 1.7.2023, [Quelle](https://update.kbv.de/ita-update/DigitaleMuster/ERP/III_2023/KBV_FHIR_eRP_V1.1.0_zur_Validierung.zip))
 
 #### Anpassungen der Packages:
-- delete examples in Packages
-- de.gematik.erezept-workflow.r4-1.0.3-1.tgz
-  - Delete ProFile StructureDefinition-ChargeItem-erxChargeItem.json (keine Relevanz - future use)
+- Beispiele in Packages entfernt
+
+#### Anpassungen der Profile
 - kbv.ita.erp-1.0.1.tgz
-  - Change Profile KBV_PR_ERP_Prescription.json (MedicationRequest.insurance = "type":[{"code":"Reference","targetProfile":["https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Coverage|1.0.3"]}])
-- de.abda.erezeptabgabedatenbasis-1.1.0.tgz -> siehe [ChangeLog.md des ABDA Referenzvalidators](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/main/CHANGELOG.md) - Version 0.9.6
+  - KBV_PR_ERP_Prescription.json
+    - BugFix: Korrektur der Profilreferenz (MedicationRequest.insurance = "type":[{"code":"Reference","targetProfile":["https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Coverage|1.0.3"]}])
+    - Constraint -erp-begrenzungValue hinzugefügt (Die Anzahl der verordneten Packungen darf maximal 999 sein) aufgrund eines [Bugs im HL7 FHIR Validator](https://github.com/hapifhir/org.hl7.fhir.core/issues/967)
+- kbv.ita.erp-1.0.2.tgz
+  - KBV_PR_ERP_Prescription.json
+    - Constraint -erp-begrenzungValue hinzugefügt (Die Anzahl der verordneten Packungen darf maximal 999 sein) aufgrund eines [Bugs im HL7 FHIR Validator](https://github.com/hapifhir/org.hl7.fhir.core/issues/967)
+- de.abda.erezeptabgabedatenbasis-1.1.0.tgz
+  - Extension-DAV-EX-ERP-Rezeptaenderung.json
+  - Extension-DAV-EX-ERP-Zusatzattribute.json
+  - Extension-DAV-EX-ERP-ZusatzdatenHerstellung.json 
+    - Änderungen siehe Version 0.9.6 im [ChangeLog.md des ABDA Referenzvalidators](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/main/CHANGELOG.md) 
 
 ## Erste Schritte
 
@@ -126,7 +128,7 @@ Der Referenzvalidator wird als Java-Bibliothek und als Konsolenanwendung verteil
 
 #### Konsolenanwendung
 
-Für die Verwendung der Konsolenanwendung soll die Datei `referencevalidator-cli.jar` in einem beliebigen Ordner im Dateisystem abgelegt werden.
+Für die Verwendung der Konsolenanwendung soll die Datei `referencevalidator-cli-X.Y.Z.jar` in einem beliebigen Ordner im Dateisystem abgelegt werden.
 
 #### Java-Bibliothek
 
@@ -148,7 +150,7 @@ Die Versionsangabe `${version.referencevalidator}` soll mit der gewünschten ein
 
 Der Referenzvalidator erfordert als Eingabe einen Modulnamen und einen gültigen Pfad zur Datei, die eine FHIR-Ressource enthält:
 
-    java -jar referencevalidator-cli.jar -m erp -i c:\temp\example.xml
+    java -jar referencevalidator-cli-X.Y.Z.jar -m erp -i c:\temp\example.xml
 
 ### Java-Bibliothek
 
@@ -160,7 +162,7 @@ Validierung einer FHIR-Ressource aus einer Datei:
     Path path = Paths.get("c:/temp/KBV_PR_ERP_Bundle.xml");
     ValidationResult result = erpModule.validateFile(path);
     System.out.println(result.isValid());
-    System.out.println(result.getFilteredValidationMessages());
+    System.out.println(result.getValidationMessages());
 
 Validierung einer FHIR-Ressource als String:
 
@@ -174,13 +176,17 @@ Validierung einer FHIR-Ressource als String:
         + "</Bundle>";
     ValidationResult result = erpModule.validateString(fhirRessource);
     System.out.println(result.isValid());
-    System.out.println(result.getFilteredValidationMessages());
+    System.out.println(result.getValidationMessages());
 
 ## Lizenz
 
 Siehe [Apache License, Version 2.0](LICENSE)
 
-Teile des Projekts basieren auf dem [ABDA E-Rezept-Referenzvalidator (Copyright 2022 Deutscher Apothekerverband (DAV))](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/), der unter [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) steht. Modifizierte Quellcodedateien sind im Quellcode als solche gekennzeichnet.  
+## Beiträge zum Projekt und Danksagung
+
+Teile des Projekts basieren auf dem [ABDA E-Rezept-Referenzvalidator (Copyright 2022 Deutscher Apothekerverband (DAV))](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/), der unter [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) steht. Modifizierte Quellcodedateien sind im Quellcode als solche gekennzeichnet.
+
+Die Snapshots für die FHIR-Packages wurden auf Basis vom [Pull Request](https://github.com/gematik/app-referencevalidator/pull/1) von [spectrumK](https://www.spectrumk.de/) und [bakdata](https://bakdata.com/) vorgeneriert und in den Referenzvalidator eingebunden.
 
 ## Kontakt
 

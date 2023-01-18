@@ -1,0 +1,28 @@
+<Organization xmlns="http://hl7.org/fhir">
+    <id value="c1ea9e52-65da-466b-b33c-0e2108689c4e"/>
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Apotheke|1.0.3"/>
+    </meta>
+    <identifier>
+        <system value="http://fhir.de/NamingSystem/arge-ik/iknr"/>
+        <value value="123456789"/>
+    </identifier>
+    <name value="Apotheke München"/>
+    <address>
+        <type value="physical"/>
+        <line value="Taunusstraße 89">
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+                <valueString value="Taunusstraße"/>
+            </extension>
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+                <valueString value="89"/>
+            </extension>
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-additionalLocator">
+                <valueString value="Hinterhaus"/>
+            </extension>
+        </line>
+        <city value="Langen"/>
+        <postalCode value="63225"/>
+        <country value="D"/>
+    </address>
+</Organization>

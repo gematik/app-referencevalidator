@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedList;
 import java.util.List;
 
 class IgnoreMissingValueSetValidationSupportTests {
@@ -42,8 +43,8 @@ class IgnoreMissingValueSetValidationSupportTests {
         Assertions.assertTrue(support.isCodeSystemSupported(new ValidationSupportContext(validationSupportChain),"http://a"));
         var result = support.validateCode(new ValidationSupportContext(validationSupportChain), new ConceptValidationOptions(),"http://a","someCode","display","http://valueset.url");
         Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.isOk());
-        Assertions.assertEquals(IValidationSupport.IssueSeverity.INFORMATION, result.getSeverity());
+        Assertions.assertNull(result.getCode(),"result.getCode() should be empty, otherwise HAPI doesn't produce any ValidationMessages");
+        Assertions.assertEquals(IValidationSupport.IssueSeverity.INFORMATION, result.getSeverity(), "Wrong severity of the code validation result");
     }
 
     @Test
@@ -58,6 +59,15 @@ class IgnoreMissingValueSetValidationSupportTests {
         Assertions.assertFalse(support.isCodeSystemSupported(new ValidationSupportContext(validationSupportChain),"http://c"));
         var result = support.validateCode(new ValidationSupportContext(validationSupportChain), new ConceptValidationOptions(),"http://c","someCode","display","http://valueset.url");
         Assertions.assertNull(result);
+    }
+
+    @Test
+    void testEmptyCodeSystemsAreNotAllowed() {
+        FhirContext fhirContext = FhirContext.forR4();
+        var codeSystemsToIgnore = new LinkedList<String>();
+        codeSystemsToIgnore.add("http://a");
+        codeSystemsToIgnore.add(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new IgnoreMissingValueSetValidationSupport(fhirContext, codeSystemsToIgnore));
     }
 
 }

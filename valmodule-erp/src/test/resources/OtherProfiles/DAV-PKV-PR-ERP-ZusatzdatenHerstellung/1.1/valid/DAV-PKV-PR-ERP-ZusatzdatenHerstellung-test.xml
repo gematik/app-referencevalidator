@@ -1,0 +1,27 @@
+<MedicationDispense xmlns="http://hl7.org/fhir">
+    <id value="9c0dce2f-64ae-4e7a-b045-e844ece179aa"/>
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenHerstellung|1.1"/>
+    </meta>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Zaehler">
+        <valuePositiveInt value="1"/>
+    </extension>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-ZusatzdatenEinheit">
+        <valueReference>
+            <reference value="urn:uuid:b0cddb34-0ab6-4b66-a171-f1532541248d"/>
+        </valueReference>
+    </extension>
+    <status value="completed"/>
+    <medicationCodeableConcept>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/data-absent-reason"/>
+            <code value="not-applicable"/>
+        </coding>
+    </medicationCodeableConcept>
+    <type>
+        <coding>
+            <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-MedicationDispenseTyp"/>
+            <code value="ZusatzdatenHerstellung"/>
+        </coding>
+    </type>
+</MedicationDispense>

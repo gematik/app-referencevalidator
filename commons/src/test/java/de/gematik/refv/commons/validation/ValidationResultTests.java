@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -37,17 +37,17 @@ class ValidationResultTests {
 
     @Test
     void testIsValid() {
-        var resultInfosAndWarnings = new ValidationResult(null, SingleValidationMessageFactory.getMixedValidationMessages().stream().filter(m -> m.getSeverity().equals(ResultSeverityEnum.INFORMATION) || m.getSeverity().equals(ResultSeverityEnum.WARNING)).collect(Collectors.toList()));
+        var resultInfosAndWarnings = new ValidationResult(SingleValidationMessageFactory.getMixedValidationMessages().stream().filter(m -> m.getSeverity().equals(ResultSeverityEnum.INFORMATION) || m.getSeverity().equals(ResultSeverityEnum.WARNING)).collect(Collectors.toList()));
         Assertions.assertTrue(resultInfosAndWarnings.isValid());
 
-        var resultEmpty = new ValidationResult(null, new LinkedList<>());
+        var resultEmpty = new ValidationResult( new LinkedList<>());
         Assertions.assertTrue(resultEmpty.isValid());
     }
 
     private static Stream<ValidationResult> testIsNotValid()  {
-        var resultMixed = new ValidationResult(null, SingleValidationMessageFactory.getMixedValidationMessages());
-        var resultWithErrorsOnly = new ValidationResult(null, SingleValidationMessageFactory.getMixedValidationMessages().stream().filter(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)).collect(Collectors.toList()));
-        var resultWithFatalOnly = new ValidationResult(null, SingleValidationMessageFactory.getMixedValidationMessages().stream().filter(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)).collect(Collectors.toList()));
+        var resultMixed = new ValidationResult(SingleValidationMessageFactory.getMixedValidationMessages());
+        var resultWithErrorsOnly = new ValidationResult(SingleValidationMessageFactory.getMixedValidationMessages().stream().filter(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)).collect(Collectors.toList()));
+        var resultWithFatalOnly = new ValidationResult(SingleValidationMessageFactory.getMixedValidationMessages().stream().filter(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)).collect(Collectors.toList()));
 
         return Stream.of(resultMixed, resultWithErrorsOnly, resultWithFatalOnly);
     }

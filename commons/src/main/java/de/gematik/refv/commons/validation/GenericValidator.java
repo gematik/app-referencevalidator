@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
 
@@ -45,7 +44,9 @@ public class GenericValidator {
 
     private final GenericValidatorFactory genericValidatorFactory;
 
-    private final SeverityLevelTransformator severityLevelTransformator;
+    private final SeverityLevelTransformer severityLevelTransformator;
+
+    private final ProfileCacheStrategy cacheStrategy;
 
     public ValidationResult validate(
             @NonNull
@@ -54,7 +55,13 @@ public class GenericValidator {
             ValidationModuleConfiguration configuration) throws IllegalArgumentException {
 
         Profile profileInResource = getProfileInResource(resourceBody);
+
+        logger.info("Validating against {}...", profileInResource);
+
         var packageDefinition = getPackageDefinitionForProfile(profileInResource, configuration);
+
+        logger.debug("PackageDefinition: {}", packageDefinition);
+
         FhirValidator fhirValidator = getOrCreateCachedFhirValidatorFor(profileInResource, configuration, packageDefinition);
 
         var intermediateResult = fhirValidator.validateWithResult(resourceBody);
@@ -62,9 +69,9 @@ public class GenericValidator {
         logger.debug("Pre-Transformation ValidationResult: Valid: {}, Messages: {}", intermediateResult.isSuccessful(), intermediateResult.getMessages());
 
         var filteredMessages = severityLevelTransformator.applyTransformations(intermediateResult.getMessages(), packageDefinition.getValidationMessageTransformations());
-        var result = new ValidationResult(intermediateResult, filteredMessages);
+        var result = new ValidationResult(filteredMessages);
 
-        logger.debug("Final ValidationResult: {}", result);
+        logger.info("Final ValidationResult: {}", result);
 
         return result;
     }
@@ -72,12 +79,22 @@ public class GenericValidator {
     private FhirValidator getOrCreateCachedFhirValidatorFor(Profile profileInResource, ValidationModuleConfiguration configuration, PackageDefinition packageDefinition) {
         // The Cache helps to reuse initialized HapiValidator instances if the method is invoked on FHIR instances with the same Profile/Version.
         // For single usages (such as in CLI) there is no performance gain
-        hapiValidatorsCache.computeIfAbsent(profileInResource, p -> genericValidatorFactory.createInstance(
-                fhirContext,
-                listPackageNamesToLoad(configuration, packageDefinition),
-                configuration.getIgnoredCodeSystems()
+        if(cacheStrategy == ProfileCacheStrategy.CACHE_PROFILES) {
+            hapiValidatorsCache.computeIfAbsent(profileInResource, p -> genericValidatorFactory.createInstance(
+                    fhirContext,
+                    configuration.listPackageNamesToLoad(packageDefinition),
+                    configuration.getPatchesForPackageAndItsDependencies(packageDefinition),
+                    configuration.getIgnoredCodeSystems()
             ));
-        return hapiValidatorsCache.get(profileInResource);
+            return hapiValidatorsCache.get(profileInResource);
+        }
+
+        return genericValidatorFactory.createInstance(
+                fhirContext,
+                configuration.listPackageNamesToLoad(packageDefinition),
+                configuration.getPatchesForPackageAndItsDependencies(packageDefinition),
+                configuration.getIgnoredCodeSystems()
+        );
     }
 
     private PackageDefinition getPackageDefinitionForProfile(Profile profileInResource, ValidationModuleConfiguration configuration) {
@@ -90,16 +107,10 @@ public class GenericValidator {
     private Profile getProfileInResource(String resourceBody) {
         // Use custom performance-optimized profile extraction due to issues with HAPI XML Parser
         // Parsed XML files are transformed to JSON internally by HAPI and some elements such as XML comments are processed wrongly
-        Optional<Profile> profileOrEmpty = referencedProfileLocator.locateInXml(resourceBody);
+        Optional<Profile> profileOrEmpty = referencedProfileLocator.locate(resourceBody);
         if (profileOrEmpty.isEmpty())
             throw new IllegalArgumentException("FHIR resources without a referenced profile are currently unsupported");
         return profileOrEmpty.get();
     }
 
-    private LinkedList<String> listPackageNamesToLoad(ValidationModuleConfiguration configuration, PackageDefinition packageDefinition) {
-        var packageFilenames = new LinkedList<String>();
-        packageFilenames.add(packageDefinition.getFilename());
-        packageFilenames.addAll(configuration.getDistinctFilenamesFromPackageDependencies(packageDefinition.getDependencies()));
-        return packageFilenames;
-    }
 }

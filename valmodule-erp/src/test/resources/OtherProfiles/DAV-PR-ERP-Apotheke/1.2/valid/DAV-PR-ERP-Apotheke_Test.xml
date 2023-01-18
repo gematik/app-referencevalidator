@@ -1,0 +1,25 @@
+<Organization xmlns="http://hl7.org/fhir">
+    <id value="db08a05f-c8fc-41c2-bb8c-e102ed183c8e"/>
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Apotheke|1.2"/>
+    </meta>
+    <identifier>
+        <system value="http://fhir.de/NamingSystem/arge-ik/iknr"/>
+        <value value="987654321"/>
+    </identifier>
+    <name value="Apotheke am Nordbahnhof"/>
+    <address>
+        <type value="physical"/>
+        <line value="Elisabeth-Schwarzhaupt-Platz 27a">
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+                <valueString value="Taunusstraße"/>
+            </extension>
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+                <valueString value="27a"/>
+            </extension>
+        </line>
+        <city value="Berlin"/>
+        <postalCode value="10115"/>
+        <country value="D"/>
+    </address>
+</Organization>

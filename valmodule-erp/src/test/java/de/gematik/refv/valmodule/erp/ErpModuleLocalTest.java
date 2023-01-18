@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ class ErpModuleLocalTest {
     @Test
     @SneakyThrows
     void testManual() {
-        Path path = Paths.get("src/test/resources/bulk/valid/20210701/Rez_parenterale_Zytostatika_eAbgabedaten.xml");
+        Path path = Paths.get("src/test/resources/KBV_PR_ERP_Bundle/1.0.1/valid/gematik/AOK_NO_109519005_Kostbarkeit_03510090.xml");
         var result = validationModule.validateFile(path);
         Assertions.assertTrue(result.isValid());
     }

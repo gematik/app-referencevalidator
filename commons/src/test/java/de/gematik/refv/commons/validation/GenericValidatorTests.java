@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,18 @@
 package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.util.ClasspathUtil;
 import de.gematik.refv.commons.ReferencedProfileLocator;
-import de.gematik.refv.commons.configuration.PackageDefinition;
-import de.gematik.refv.commons.configuration.PackageDefinitionByVersion;
 import de.gematik.refv.commons.configuration.PackageReference;
 import de.gematik.refv.commons.configuration.PackageReferenceForAProfileVersion;
 import de.gematik.refv.commons.configuration.SupportedProfileVersions;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.exceptions.UnsupportedProfileException;
 import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 class GenericValidatorTests {
 
@@ -46,7 +40,8 @@ class GenericValidatorTests {
                 FhirContext.forR4(),
                 new ReferencedProfileLocator(),
                 new GenericValidatorFactory(),
-                new SeverityLevelTransformator()
+                new SeverityLevelTransformer(),
+                ProfileCacheStrategy.NO_CACHE
         );
     }
 
@@ -79,20 +74,5 @@ class GenericValidatorTests {
                 + "    </meta>\n"
                 + "</Bundle>";
         Assertions.assertThrows(UnsupportedProfileException.class, () -> genericValidator.validate(input, configuration));
-    }
-
-    @Test
-    @SneakyThrows
-    void testValidate() {
-        var configuration = new ValidationModuleConfiguration();
-        var input = ClasspathUtil.loadResourceAsStream("classpath:" + "Organization-TIOrganizationExample001.xml");
-        configuration.getSupportedProfiles().put("https://gematik.de/fhir/directory/StructureDefinition/TIOrganization",new SupportedProfileVersions(new HashMap<>() {{
-            put("0.0.0", new PackageReferenceForAProfileVersion(new PackageReference("de.gematik.fhir.directory", "0.2.0")));
-        }}));
-        configuration.getFhirPackages().put("de.gematik.fhir.directory", new PackageDefinitionByVersion(new HashMap<>() {{
-            put("0.2.0", new PackageDefinition("de.gematik.fhir.directory-0.2.0.tgz", new LinkedList<>(),new LinkedList<>()));
-        }}));
-
-        genericValidator.validate(IOUtils.toString(input, StandardCharsets.UTF_8), configuration);
     }
 }

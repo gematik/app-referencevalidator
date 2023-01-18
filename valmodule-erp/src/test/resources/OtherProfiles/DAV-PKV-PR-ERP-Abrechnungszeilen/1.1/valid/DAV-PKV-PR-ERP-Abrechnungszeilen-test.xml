@@ -1,0 +1,59 @@
+<Invoice xmlns="http://hl7.org/fhir">
+    <id value="cfd49ec7-fd9c-4ab3-865f-f0aaf010ca19" />
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abrechnungszeilen|1.1" />
+    </meta>
+    <status value="issued" />
+    <type>
+        <coding>
+            <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-InvoiceTyp" />
+            <code value="Abrechnungszeilen" />
+        </coding>
+    </type>
+    <lineItem>
+        <sequence value="1" />
+        <chargeItemCodeableConcept>
+            <coding>
+                <system value="http://fhir.de/CodeSystem/ifa/pzn" />
+                <code value="06313728" />
+            </coding>
+        </chargeItemCodeableConcept>
+        <priceComponent>
+            <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-MwStSatz">
+                <valueDecimal value="19.00" />
+            </extension>
+            <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-KostenVersicherter">
+                <extension url="Kategorie">
+                    <valueCodeableConcept>
+                        <coding>
+                            <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-PKV-CS-ERP-KostenVersicherterKategorie" />
+                            <code value="0" />
+                        </coding>
+                    </valueCodeableConcept>
+                </extension>
+                <extension url="Kostenbetrag">
+                    <valueMoney>
+                        <value value="0.00" />
+                        <currency value="EUR" />
+                    </valueMoney>
+                </extension>
+            </extension>
+            <type value="informational" />
+            <factor value="1" />
+            <amount>
+                <value value="30.33" />
+                <currency value="EUR" />
+            </amount>
+        </priceComponent>
+    </lineItem>
+    <totalGross>
+        <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Gesamtzuzahlung">
+            <valueMoney>
+                <value value="0.00" />
+                <currency value="EUR" />
+            </valueMoney>
+        </extension>
+        <value value="30.33" />
+        <currency value="EUR" />
+    </totalGross>
+</Invoice>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -99,6 +99,28 @@ class ValidationModuleConfigurationTests {
 
         assert packageDefinition.isPresent();
         Assertions.assertThrows(UnsupportedPackageException.class, () -> configuration.getDistinctFilenamesFromPackageDependencies(packageDefinition.get().getDependencies()));
+    }
+
+    @Test
+    void testPatchesOfDependencyAreRetrievedCorrectly() {
+        Profile lookupProfile = Profile.parse("https://gematik.de/fhir/StructureDefinition/ErxMedicationDispense|1.1.1");
+        var packageDefinition = configuration.getPackageDefinitionForProfile(lookupProfile);
+        Assertions.assertTrue(packageDefinition.isPresent());
+        var patches = configuration.getPatchesForPackageAndItsDependencies(packageDefinition.get());
+        Assertions.assertFalse(patches.isEmpty());
+        Assertions.assertEquals(1, patches.size());
+        Assertions.assertEquals("kbv.ita.erp-1.0.2/Some-Patched-SD-From-kbv.ita.erp-1.0.2.json", patches.toArray()[0]);
+    }
+
+    @Test
+    void testPatchesOfAPackageAreRetrievedCorrectly() {
+        Profile lookupProfile = Profile.parse("https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.2");
+        var packageDefinition = configuration.getPackageDefinitionForProfile(lookupProfile);
+        Assertions.assertTrue(packageDefinition.isPresent());
+        var patches = configuration.getPatchesForPackageAndItsDependencies(packageDefinition.get());
+        Assertions.assertFalse(patches.isEmpty());
+        Assertions.assertEquals(1, patches.size());
+        Assertions.assertEquals("kbv.ita.erp-1.0.2/Some-Patched-SD-From-kbv.ita.erp-1.0.2.json", patches.toArray()[0]);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 gematik GmbH
+ * Copyright (c) 2023 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@ import de.gematik.refv.commons.configuration.FhirPackageConfigurationLoader;
 import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
 import de.gematik.refv.commons.validation.GenericValidatorFactory;
 import de.gematik.refv.commons.validation.GenericValidator;
-import de.gematik.refv.commons.validation.SeverityLevelTransformator;
+import de.gematik.refv.commons.validation.ProfileCacheStrategy;
+import de.gematik.refv.commons.validation.SeverityLevelTransformer;
 import de.gematik.refv.commons.validation.ValidationModule;
 import de.gematik.refv.valmodule.erp.ErpValidationModule;
 import lombok.NoArgsConstructor;
@@ -42,7 +43,8 @@ public class ValidationModuleFactory {
                 FhirContext.forR4(),
                 new ReferencedProfileLocator(),
                 new GenericValidatorFactory(),
-                new SeverityLevelTransformator()
+                new SeverityLevelTransformer(),
+                ProfileCacheStrategy.CACHE_PROFILES
         );
         var erpValidationModule = new ErpValidationModule(
                 new FhirPackageConfigurationLoader(),

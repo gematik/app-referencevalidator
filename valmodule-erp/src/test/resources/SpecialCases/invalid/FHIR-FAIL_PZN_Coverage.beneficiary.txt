@@ -1,0 +1,15 @@
+Die Referenzen innerhalb des Bundles sind nicht korrekt, weil die FullUrl nicht zur Reference-Url passt.
+
+FullUrl ist http://pvs.praxis.local/fhir/74996a40-d335-4abd-a393-dde0f4bdd88e
+Reference ist Practitioner/74996a40-d335-4abd-a393-dde0f4bdd88e
+
+Die FullUrl müsste also Practitioner enthalten.
+
+Siehe https://www.hl7.org/fhir/bundle.html#references
+
+Der HAPI-Validator meldet dies nur als Warnungen:
+
+Entry 2 matches the reference Practitioner/74996a40-d335-4abd-a393-dde0f4bdd88e by type and id but it's fullUrl http://pvs.praxis.local/fhir/74996a40-d335-4abd-a393-dde0f4bdd88e does not match the full target URL http://pvs.praxis.local/Practitioner/74996a40-d335-4abd-a393-dde0f4bdd88e by Bundle resolution rules
+
+
+ und führt als Folge keine Inhaltsprüfungen der Referenzen durch (auch keine Typprüfungen). In diesem Beispiel müsste der Fehler erkannt werden, dass beneficiary-Referenz eigentlich ein Patient und kein Practicioner sein sollte
