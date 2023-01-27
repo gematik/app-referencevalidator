@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 @CommandLine.Command(
         name="",
@@ -53,12 +54,13 @@ public class ReferenceValidator implements Runnable {
 
     public void run() {
         try {
-            if(!SupportedValidationModule.ERP.toString().equalsIgnoreCase(module)) {
-                logger.error("No module {} found", module);
+            Optional<SupportedValidationModule> supportedValidationModule = SupportedValidationModule.fromString(module);
+            if(supportedValidationModule.isEmpty()) {
+                logger.error("Module [{}] unsupported. Supported modules: {}", module, SupportedValidationModule.values());
                 return;
             }
 
-            ValidationModule validator = factory.createValidationModule(SupportedValidationModule.ERP);
+            ValidationModule validator = factory.createValidationModule(supportedValidationModule.get());
             ValidationResult result = validator.validateFile(filePath);
             logger.info("Validation result: {}", result);
         } catch (Exception e){

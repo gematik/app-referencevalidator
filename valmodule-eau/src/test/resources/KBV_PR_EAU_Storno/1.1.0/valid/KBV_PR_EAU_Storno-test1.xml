@@ -1,0 +1,17 @@
+<List xmlns="http://hl7.org/fhir">
+    <id value="e49bed53-9fe3-47c3-9271-ee07fc919793" />
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno|1.1.0" />
+    </meta>
+    <status value="current" />
+    <mode value="changes" />
+    <entry>
+        <deleted value="true" />
+        <item>
+            <identifier>
+                <system value="urn:ietf:rfc:3986" />
+                <value value="urn:uuid:2ed6995a-ddcb-4af9-af62-80dac413408b" />
+            </identifier>
+        </item>
+    </entry>
+</List>

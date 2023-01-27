@@ -1,4 +1,56 @@
-### Unterstützte Profile und Versionen
+# Unterstützte Profile und eingebundene Packages
+
+<details>
+  <summary>Inhaltsverzeichnis</summary>
+  <ol>
+    <li>
+      <a href="#e-rezept">E-Rezept</a>
+    </li>
+    <li>
+      <a href="#e-rezept">EAU</a>   
+    </li>    
+  </ol>
+</details>
+
+## E-Rezept
+
+### Packages
+* de.basisprofil.r4-0.9.13.tgz
+* de.basisprofil.r4-1.3.2.tgz
+* kbv.basis-1.1.3.tgz
+* kbv.basis-1.3.0.tgz
+* kbv.ita.for-1.0.3.tgz
+* kbv.ita.for-1.1.0.tgz
+* kbv.ita.erp-1.0.1.tgz
+* kbv.ita.erp-1.0.2.tgz
+* kbv.ita.erp-1.1.0.tgz
+* de.gematik.erezept-workflow.r4-1.0.3-1.tgz
+* de.gematik.erezept-workflow.r4-1.1.1.tgz
+* de.gematik.erezept-workflow.r4-1.2.0.tgz
+* de.gematik.erezept-patientenrechnung.r4-1.0.0.tgz
+* de.abda.erezeptabgabedatenbasis-1.1.0.tgz
+* de.abda.erezeptabgabedatenbasis-1.1.3.tgz
+* de.abda.erezeptabgabedatenbasis-1.2.0.tgz
+* de.abda.erezeptabgabedatenbasis-1.3.0.tgz
+* de.abda.erezeptabgabedaten-1.0.3.tgz
+* de.abda.erezeptabgabedaten-1.1.2.tgz
+* de.abda.erezeptabgabedaten-1.2.0.tgz
+* de.abda.erezeptabgabedaten-1.3.0.tgz
+* de.abda.erezeptabgabedatenpkv-1.1.0.tgz
+* de.gkvsv.erezeptabrechnungsdaten-1.0.4.tgz
+* de.gkvsv.erezeptabrechnungsdaten-1.0.5.tgz
+* de.gkvsv.erezeptabrechnungsdaten-1.0.6.tgz
+* de.gkvsv.erezeptabrechnungsdaten-1.1.0.tgz
+* de.gkvsv.erezeptabrechnungsdaten-1.2.0.tgz
+* de.gkvsv.erezeptabrechnungsdaten-1.3.0.tgz
+* [Validierungsrelevante Codesysteme und Valuesets der KBV:](https://update.kbv.de/ita-update/DigitaleMuster/ERP/)
+  * dav.kbv.sfhir.cs.vs-1.0.2-json.tgz
+  * dav.kbv.sfhir.cs.vs-1.0.3-json.tgz (Anpassung DARREICHUNGSFORM v1.09 ab 01.04.2022)
+  * gematik.kbv.sfhir.cs.vs-1.0.0.tgz (Gültig ab 1.7.2023, [Quelle](https://update.kbv.de/ita-update/DigitaleMuster/ERP/III_2023/KBV_FHIR_eRP_V1.1.0_zur_Validierung.zip))
+
+
+### Profile
+
 * http://fhir.abda.de/eRezeptAbgabadaten/StructureDefinition/DAV-PR-ERP-Abgabeinformationen
   * 1.0.3
 
@@ -373,3 +425,55 @@
 * https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_Consent
   * 1.0
 
+## EAU
+
+### Packages
+
+* de.basisprofil.r4-0.9.13.tgz
+* de.basisprofil.r4-1.3.2.tgz
+* kbv.basis-1.1.3.tgz
+* kbv.basis-1.3.0.tgz
+* kbv.ita.for-1.0.3.tgz
+* kbv.ita.for-1.1.0.tgz
+* kbv.ita.eau-1.1.0.tgz
+* kbv.ita.eau-1.0.2.tgz
+* [Validierungsrelevante Codesysteme und Valuesets der KBV:](https://update.kbv.de/ita-update/DigitaleMuster/ERP/)
+  * gematik.kbv.sfhir.cs.vs-1.0.0.tgz ([Quelle](https://update.kbv.de/ita-update/DigitaleMuster/ERP/III_2023/KBV_FHIR_eRP_V1.1.0_zur_Validierung.zip))
+
+### Profile
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Bundle
+  * 1.0.2
+  * 1.1.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Strono_Bundle
+  * 1.0.2
+  * 1.1.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Strono
+  * 1.0.2
+  * 1.1.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Composition
+  * 1.0.2
+  * 1.1.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_AU
+  * 1.0.2
+  * 1.1.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_ICD
+  * 1.0.2
+  * 1.1.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_Text
+  * 1.0.2
+  * 1.1.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_ServiceRequest_steps
+  * 1.0.2
+  * 1.1.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno_Composition
+  * 1.0.2
+  * 1.1.0

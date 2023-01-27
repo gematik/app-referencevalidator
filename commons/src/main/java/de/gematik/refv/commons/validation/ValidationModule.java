@@ -17,6 +17,7 @@
 package de.gematik.refv.commons.validation;
 
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
+import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
 import lombok.NonNull;
 
 import java.io.IOException;
@@ -32,5 +33,5 @@ public interface ValidationModule {
     ValidationResult validateFile(@NonNull String inputPath) throws IllegalArgumentException, IOException;
     ValidationResult validateString(@NonNull String fhirResourceAsString) throws IllegalArgumentException;
     ValidationResult validateFile(Path inputPath) throws IllegalArgumentException, IOException;
-
+    void initialize() throws ValidationModuleInitializationException;
 }

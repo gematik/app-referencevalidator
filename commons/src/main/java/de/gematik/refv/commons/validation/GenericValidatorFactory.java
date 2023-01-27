@@ -27,6 +27,8 @@ import org.hl7.fhir.common.hapi.validation.support.NpmPackageValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
 import org.hl7.fhir.r4.model.StructureDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,6 +36,7 @@ import java.util.Collection;
 
 public class GenericValidatorFactory {
 
+    static Logger logger = LoggerFactory.getLogger(GenericValidatorFactory.class);
     @SneakyThrows
     public FhirValidator createInstance(
             FhirContext ctx,
@@ -48,6 +51,7 @@ public class GenericValidatorFactory {
 
         for (String patch :
                 patches) {
+            logger.info("Applying patch {}...",patch);
             InputStream is = ClasspathUtil.loadResourceAsStream("package/patches/" + patch);
             var reader = new InputStreamReader(is);
             var newResource = ctx.newJsonParser().parseResource(StructureDefinition.class, reader);

@@ -40,6 +40,7 @@ public class ErpValidationModule implements ValidationModule {
 
     static Logger logger = LoggerFactory.getLogger(ErpValidationModule.class);
 
+    private static final String PACKAGES_YAML = "erp-packages.yaml";
     private static final String CODE = "erp";
 
     public String getId() {
@@ -64,7 +65,7 @@ public class ErpValidationModule implements ValidationModule {
 
     public void initialize() throws ValidationModuleInitializationException {
         try {
-            configuration = configurationLoader.getConfiguration();
+            configuration = configurationLoader.getConfiguration(PACKAGES_YAML);
         } catch (IOException e) {
             throw new ValidationModuleInitializationException("Could not load module configuration", e);
         }

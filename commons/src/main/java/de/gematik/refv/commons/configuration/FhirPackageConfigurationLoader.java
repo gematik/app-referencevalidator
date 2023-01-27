@@ -18,7 +18,7 @@ package de.gematik.refv.commons.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,21 +28,15 @@ import java.io.InputStream;
  * Modified from <a href="https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/478e8a2e3f0e24f54a331d561f518eeb2817ed58/core/src/main/java/de/abda/fhir/validator/core/util/FhirPackagePropertiesHelper.java">https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/478e8a2e3f0e24f54a331d561f518eeb2817ed58/core/src/main/java/de/abda/fhir/validator/core/util/FhirPackagePropertiesHelper.java</a>
  * Copyright 2022 Deutscher Apothekerverband (DAV), Apache License, Version 2.0
  */
-@AllArgsConstructor
+
+@NoArgsConstructor
 public class FhirPackageConfigurationLoader {
-
-    private String configurationFilename;
-
-    public FhirPackageConfigurationLoader() {
-        configurationFilename = "packages.yaml";
-    }
-
-    public ValidationModuleConfiguration getConfiguration() throws IOException {
+    public ValidationModuleConfiguration getConfiguration(String packagesYaml) throws IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         ValidationModuleConfiguration validationModuleConfiguration;
-        InputStream packagesConfigFile = FhirPackageConfigurationLoader.class.getClassLoader().getResourceAsStream(configurationFilename);
+        InputStream packagesConfigFile = FhirPackageConfigurationLoader.class.getClassLoader().getResourceAsStream(packagesYaml);
         if(packagesConfigFile == null)
-            throw new IOException("File not found: " + configurationFilename);
+            throw new IOException("File not found: " + packagesYaml);
 
         validationModuleConfiguration = mapper.readValue(packagesConfigFile, ValidationModuleConfiguration.class);
         return validationModuleConfiguration;

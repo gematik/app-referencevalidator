@@ -25,20 +25,15 @@ import de.gematik.refv.commons.validation.GenericValidator;
 import de.gematik.refv.commons.validation.ProfileCacheStrategy;
 import de.gematik.refv.commons.validation.SeverityLevelTransformer;
 import de.gematik.refv.commons.validation.ValidationModule;
+import de.gematik.refv.valmodule.eau.EauValidationModule;
 import de.gematik.refv.valmodule.erp.ErpValidationModule;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @NoArgsConstructor
 public class ValidationModuleFactory {
-    static Logger logger = LoggerFactory.getLogger(ValidationModuleFactory.class);
 
     public ValidationModule createValidationModule(@NonNull SupportedValidationModule module) throws IllegalArgumentException, ValidationModuleInitializationException {
-        if(!SupportedValidationModule.ERP.equals(module))
-            throw new IllegalArgumentException("Unsupported validation module: " + module);
-
         GenericValidator engine = new GenericValidator(
                 FhirContext.forR4(),
                 new ReferencedProfileLocator(),
@@ -46,11 +41,25 @@ public class ValidationModuleFactory {
                 new SeverityLevelTransformer(),
                 ProfileCacheStrategy.CACHE_PROFILES
         );
-        var erpValidationModule = new ErpValidationModule(
-                new FhirPackageConfigurationLoader(),
-                engine
-        );
-        erpValidationModule.initialize();
-        return erpValidationModule;
+
+        ValidationModule result;
+        switch (module) {
+            case ERP:
+                result = new ErpValidationModule(
+                    new FhirPackageConfigurationLoader(),
+                    engine
+                );
+                break;
+            case EAU:
+                result = new EauValidationModule(
+                        new FhirPackageConfigurationLoader(),
+                        engine
+                );
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported validation module: " + module);
+        }
+        result.initialize();
+        return result;
     }
 }

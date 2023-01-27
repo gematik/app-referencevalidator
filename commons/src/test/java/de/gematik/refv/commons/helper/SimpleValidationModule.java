@@ -42,7 +42,10 @@ public class SimpleValidationModule  implements ValidationModule {
 
     static Logger logger = LoggerFactory.getLogger(SimpleValidationModule.class);
 
+    private static final String PACKAGES_YAML = "erp-packages.yaml";
     private static final String CODE = "simple";
+
+    private final String packagesYaml;
 
     public String getId() {
         return CODE;
@@ -60,6 +63,24 @@ public class SimpleValidationModule  implements ValidationModule {
     private final GenericValidator genericValidator;
 
     @SneakyThrows
+    public static SimpleValidationModule createInstance(String packagesYaml) {
+        GenericValidator engine = new GenericValidator(
+                FhirContext.forR4(),
+                new ReferencedProfileLocator(),
+                new GenericValidatorFactory(),
+                new SeverityLevelTransformer(),
+                ProfileCacheStrategy.CACHE_PROFILES
+        );
+        var validationModule = new SimpleValidationModule(
+                new FhirPackageConfigurationLoader(),
+                engine,
+                packagesYaml
+        );
+        validationModule.initialize();
+        return validationModule;
+    }
+
+    @SneakyThrows
     public static SimpleValidationModule createInstance() {
         GenericValidator engine = new GenericValidator(
                 FhirContext.forR4(),
@@ -70,20 +91,22 @@ public class SimpleValidationModule  implements ValidationModule {
         );
         var validationModule = new SimpleValidationModule(
                 new FhirPackageConfigurationLoader(),
-                engine
+                engine,
+                PACKAGES_YAML
         );
         validationModule.initialize();
         return validationModule;
     }
 
-    private SimpleValidationModule(FhirPackageConfigurationLoader configurationLoader, GenericValidator genericValidator) {
+    private SimpleValidationModule(FhirPackageConfigurationLoader configurationLoader, GenericValidator genericValidator, String packagesYaml) {
         this.configurationLoader = configurationLoader;
         this.genericValidator = genericValidator;
+        this.packagesYaml = packagesYaml;
     }
 
     public void initialize() throws ValidationModuleInitializationException {
         try {
-            configuration = configurationLoader.getConfiguration();
+            configuration = configurationLoader.getConfiguration(packagesYaml);
         } catch (IOException e) {
             throw new ValidationModuleInitializationException("Could not load module configuration", e);
         }

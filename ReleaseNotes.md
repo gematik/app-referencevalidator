@@ -2,6 +2,11 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 0.3.0
+
+### added
+- New validation module: eau (Elektronische Arbeitsunfähigkeitsbescheinigungen)
+
 ## Release 0.2.0
 
 ### added

@@ -23,13 +23,6 @@ import org.junit.jupiter.api.Test;
 class ValidationModuleFactoryTest {
 
     @Test
-    void testUnknownModuleThrowsIllegalArgumentException() {
-        var factory = new ValidationModuleFactory();
-        Assertions.assertThrows( IllegalArgumentException.class, () ->
-        factory.createValidationModule(SupportedValidationModule.EAU));
-    }
-
-    @Test
     @SneakyThrows
     void testErpModuleCanBeInstantiated() {
         var erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);

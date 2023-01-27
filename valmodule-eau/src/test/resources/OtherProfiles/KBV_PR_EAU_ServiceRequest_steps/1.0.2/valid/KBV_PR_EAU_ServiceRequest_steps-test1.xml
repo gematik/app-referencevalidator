@@ -1,0 +1,23 @@
+<ServiceRequest xmlns="http://hl7.org/fhir">
+    <id value="5542eb17-00b3-422f-bd75-92d8e7b55ebe" />
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_ServiceRequest_steps|1.0.2" />
+    </meta>
+    <status value="active" />
+    <intent value="proposal" />
+    <code>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_EAU_WeitereSchritte_Type" />
+            <code value="d_arzt" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+    </subject>
+    <requester>
+        <reference value="Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+    </requester>
+    <reasonReference>
+        <reference value="Condition/2f8638b4-cf33-4afe-bdbc-8477b3cc1bac" />
+    </reasonReference>
+</ServiceRequest>

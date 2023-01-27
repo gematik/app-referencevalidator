@@ -17,6 +17,7 @@
 package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.util.ClasspathUtil;
+import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
 import de.gematik.refv.commons.helper.SimpleValidationModule;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
@@ -57,6 +58,11 @@ class SimpleValidationModuleIT {
 
         var result = module.validateString(IOUtils.toString(input, StandardCharsets.UTF_8));
         Assertions.assertFalse(result.isValid());
+    }
+
+    @Test
+    void testValidationInitializationException() {
+        Assertions.assertThrows(ValidationModuleInitializationException.class, () -> SimpleValidationModule.createInstance("non-existing-yaml.yaml"));
     }
 
 }

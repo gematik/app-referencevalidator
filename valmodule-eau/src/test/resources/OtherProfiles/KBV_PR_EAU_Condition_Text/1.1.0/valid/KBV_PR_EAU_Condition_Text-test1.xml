@@ -1,0 +1,21 @@
+<Condition xmlns="http://hl7.org/fhir">
+    <id value="2902efb7-5227-4c43-aee9-34d4a25add21" />
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_Text|1.1.0" />
+    </meta>
+    <verificationStatus>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+            <code value="confirmed" />
+        </coding>
+    </verificationStatus>
+    <code>
+        <text value="Ein sehr kranker Patient" />
+    </code>
+    <subject>
+        <reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+    </subject>
+    <asserter>
+        <reference value="Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+    </asserter>
+</Condition>

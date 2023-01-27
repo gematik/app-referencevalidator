@@ -18,6 +18,8 @@ package de.gematik.refv;
 
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 public enum SupportedValidationModule {
     ERP("erp"),
@@ -28,5 +30,14 @@ public enum SupportedValidationModule {
     @Override
     public String toString() {
         return name;
+    }
+
+    public static Optional<SupportedValidationModule> fromString(String name) {
+        for (SupportedValidationModule b : SupportedValidationModule.values()) {
+            if (b.toString().equalsIgnoreCase(name)) {
+                return Optional.of(b);
+            }
+        }
+        return Optional.empty();
     }
 }

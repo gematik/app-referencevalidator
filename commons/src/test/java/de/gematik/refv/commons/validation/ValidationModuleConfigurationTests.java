@@ -33,12 +33,13 @@ import java.util.stream.Collectors;
 
 class ValidationModuleConfigurationTests {
 
+    private static final String PACKAGES_YAML = "erp-packages.yaml";
     static ValidationModuleConfiguration configuration;
 
     @BeforeAll
     public static void startup() throws IOException {
         FhirPackageConfigurationLoader loader = new FhirPackageConfigurationLoader();
-        configuration = loader.getConfiguration();
+        configuration = loader.getConfiguration(PACKAGES_YAML);
     }
 
     @Test

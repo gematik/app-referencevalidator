@@ -61,9 +61,8 @@ class ReferenceValidatorTest {
     @Test
     void testUnknownModuleInterruptsExecution() {
         Path inputFile = Paths.get("src/non-existingfile.xml");
-        String moduleCode = SupportedValidationModule.EAU.toString();
 
-        new ReferenceValidator(moduleCode, inputFile, factory).run();
+        new ReferenceValidator("unknown-module", inputFile, factory).run();
 
         Mockito.verifyNoInteractions(factory);
     }
