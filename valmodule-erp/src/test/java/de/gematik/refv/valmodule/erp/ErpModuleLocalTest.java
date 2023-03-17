@@ -16,7 +16,8 @@
 
 package de.gematik.refv.valmodule.erp;
 
-import de.gematik.refv.valmodule.erp.helper.TestErpValidationModuleFactory;
+import de.gematik.refv.valmodule.base.ConfigurationBasedValidationModule;
+import de.gematik.refv.valmodule.base.helper.TestConfigurationBasedValidationModuleFactory;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 class ErpModuleLocalTest {
-    private final ErpValidationModule validationModule = TestErpValidationModuleFactory.createInstance();
+    private final ConfigurationBasedValidationModule validationModule = TestConfigurationBasedValidationModuleFactory.createInstance("erp");
 
     @Test
     @SneakyThrows

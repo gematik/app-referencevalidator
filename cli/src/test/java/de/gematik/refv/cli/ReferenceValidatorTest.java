@@ -18,19 +18,15 @@ package de.gematik.refv.cli;
 
 import de.gematik.refv.SupportedValidationModule;
 import de.gematik.refv.ValidationModuleFactory;
-import de.gematik.refv.commons.validation.ValidationModule;
-import de.gematik.refv.valmodule.erp.ErpValidationModule;
+import de.gematik.refv.valmodule.base.ConfigurationBasedValidationModule;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -41,7 +37,7 @@ class ReferenceValidatorTest {
     ValidationModuleFactory factory;
 
     @Mock
-    ErpValidationModule module;
+    ConfigurationBasedValidationModule module;
 
 
     @SneakyThrows

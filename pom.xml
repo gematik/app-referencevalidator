@@ -5,14 +5,15 @@
     <module>commons</module>
     <module>valmodule-erp</module>
     <module>valmodule-eau</module>
+    <module>valmodule-base</module>
     <module>core</module>
-    <module>cli</module>
+    <module>valmodule-isip1</module>
   </modules>
 
   <groupId>de.gematik.refv</groupId>
   <artifactId>referencevalidator</artifactId>
   <packaging>pom</packaging>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
   <name>gematik Referenzvalidator</name>
   <description>Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren.</description>
   <url>https://github.com/gematik/app-referencevalidator</url>
@@ -69,14 +70,14 @@
     <maven.compiler.release>11</maven.compiler.release>
     <version.surefire>3.0.0-M7</version.surefire>
     <version.compiler>3.10.1</version.compiler>
-    <version.hapi-fhir-validation>6.2.4</version.hapi-fhir-validation>
-    <version.lombok>1.18.24</version.lombok>
+    <version.hapi-fhir-validation>6.2.5</version.hapi-fhir-validation>
+    <version.lombok>1.18.26</version.lombok>
     <version.log4j2>2.19.0</version.log4j2>
     <version.slf4j-api>2.0.6</version.slf4j-api>
     <version.slf4j-log4j>2.0.6</version.slf4j-log4j>
     <version.junit-jupiter-api>5.9.2</version.junit-jupiter-api>
-    <version.jackson-data-format>2.14.1</version.jackson-data-format>
-    <version.woodstox>6.4.0</version.woodstox>
+    <version.jackson-data-format>2.14.2</version.jackson-data-format>
+    <version.woodstox>6.5.0</version.woodstox>
     <version.site>3.12.1</version.site>
     <version.maven-release>2.5.3</version.maven-release>
     <version.jar>3.3.0</version.jar>
@@ -464,6 +465,24 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+
+    <profile>
+      <id>modules-excluded-from-deployment</id>
+      <!--
+      According to https://github.com/sonatype/nexus-maven-plugins/tree/master/staging/maven-plugin
+      and https://issues.sonatype.org/browse/NEXUS-9138
+      skipNexusStagingDeployMojo may not be set to true in the last reactor module. Because we don't
+      want to deploy our last module, nor a dummy module, we simply omit the relevant modules when
+      a deploy is in progress.
+      See https://stackoverflow.com/questions/25305850/how-to-disable-nexus-staging-maven-plugin-in-sub-modules
+      -->
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>cli</module>
+      </modules>
     </profile>
 
   </profiles>

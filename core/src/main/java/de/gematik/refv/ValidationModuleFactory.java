@@ -25,15 +25,16 @@ import de.gematik.refv.commons.validation.GenericValidator;
 import de.gematik.refv.commons.validation.ProfileCacheStrategy;
 import de.gematik.refv.commons.validation.SeverityLevelTransformer;
 import de.gematik.refv.commons.validation.ValidationModule;
-import de.gematik.refv.valmodule.eau.EauValidationModule;
-import de.gematik.refv.valmodule.erp.ErpValidationModule;
+import de.gematik.refv.valmodule.base.ConfigurationBasedValidationModule;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+
+import java.io.IOException;
 
 @NoArgsConstructor
 public class ValidationModuleFactory {
 
-    public ValidationModule createValidationModule(@NonNull SupportedValidationModule module) throws IllegalArgumentException, ValidationModuleInitializationException {
+    public ValidationModule createValidationModule(@NonNull SupportedValidationModule module) throws IllegalArgumentException, IOException, ValidationModuleInitializationException {
         GenericValidator engine = new GenericValidator(
                 FhirContext.forR4(),
                 new ReferencedProfileLocator(),
@@ -42,23 +43,11 @@ public class ValidationModuleFactory {
                 ProfileCacheStrategy.CACHE_PROFILES
         );
 
-        ValidationModule result;
-        switch (module) {
-            case ERP:
-                result = new ErpValidationModule(
-                    new FhirPackageConfigurationLoader(),
-                    engine
-                );
-                break;
-            case EAU:
-                result = new EauValidationModule(
-                        new FhirPackageConfigurationLoader(),
-                        engine
-                );
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported validation module: " + module);
-        }
+        ValidationModule result = new ConfigurationBasedValidationModule(
+                module.toString(),
+                new FhirPackageConfigurationLoader(),
+                engine
+        );
         result.initialize();
         return result;
     }

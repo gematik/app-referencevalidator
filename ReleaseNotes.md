@@ -2,6 +2,17 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 0.4.0
+
+### added
+- New validation module: isip1 (Informationstechnische Systeme in der Pflege Stufe 1)
+
+### changed
+- Updated snapshot packages of validation modules erp and eau due to some errors in profiles
+
+### fixed
+- Error correction on validation module eau: for StructureDefinition Extension.seitenlokalisation ([GitHub Issue #3](https://github.com/gematik/app-referencevalidator/issues/3))
+
 ## Release 0.3.0
 
 ### added

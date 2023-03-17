@@ -8,11 +8,38 @@
     </li>
     <li>
       <a href="#e-rezept">EAU</a>   
-    </li>    
+    </li>
+    <li>
+      <a href="#e-rezept">ISiP-1</a>   
+    </li> 
   </ol>
 </details>
 
 ## E-Rezept
+
+### Anpassungen der Packages:
+- Beispiele in Packages entfernt
+- Alle Packages enthalten Snapshots
+
+### Anpassungen der Profile
+- de.gematik.erezept-workflow.r4-1.0.3-1.tgz
+  - ErxChargeItem.json
+    - BugFix: Korrektur der supportiveInformation-Slices (Keine Snapshot-Generierung sonst möglich)
+- de.gematik.erezept-workflow.r4-1.1.1.tgz
+  - ErxCommunicationReply.json 
+    - Communication.about targetProfile: typos: KBV_PR_ERP_Medikament_Freitext, KBV_PR_ERP_Medikament_PZN, KBV_PR_ERP_Medikament_Rezeptur, erxTask. Korrigiert in KBV_PR_ERP_Medication_FreeText, KBV_PR_ERP_Medication_PZN, KBV_PR_ERP_Medication_Compounding, ErxTask
+- kbv.ita.erp-1.0.1.tgz
+  - KBV_PR_ERP_Prescription.json
+    - BugFix: Korrektur der Profilreferenz (MedicationRequest.insurance = "type":[{"code":"Reference","targetProfile":["https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Coverage|1.0.3"]}])
+    - Constraint -erp-begrenzungValue hinzugefügt (Die Anzahl der verordneten Packungen darf maximal 999 sein) aufgrund eines [Bugs im HL7 FHIR Validator](https://github.com/hapifhir/org.hl7.fhir.core/issues/967)
+- kbv.ita.erp-1.0.2.tgz
+  - KBV_PR_ERP_Prescription.json
+    - Constraint -erp-begrenzungValue hinzugefügt (Die Anzahl der verordneten Packungen darf maximal 999 sein) aufgrund eines [Bugs im HL7 FHIR Validator](https://github.com/hapifhir/org.hl7.fhir.core/issues/967)
+- de.abda.erezeptabgabedatenbasis-1.1.0.tgz
+  - Extension-DAV-EX-ERP-Rezeptaenderung.json
+  - Extension-DAV-EX-ERP-Zusatzattribute.json
+  - Extension-DAV-EX-ERP-ZusatzdatenHerstellung.json
+    - Änderungen siehe Version 0.9.6 im [ChangeLog.md des ABDA Referenzvalidators](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/main/CHANGELOG.md)
 
 ### Packages
 * de.basisprofil.r4-0.9.13.tgz
@@ -311,6 +338,7 @@
   * 1.1.1
 
 * https://gematik.de/fhir/StructureDefinition/ErxChargeItem
+  * 1.1.0
   * 1.1.1
 
 * https://gematik.de/fhir/StructureDefinition/ErxCommunicationDispReq
@@ -427,6 +455,11 @@
 
 ## EAU
 
+### Anpassungen der Profile
+- de.basisprofil.r4-0.9.13.tgz
+  - Extension-seitenlokalisation.json
+    - BugFix: Version 0.9.12 auf 0.9.13 korrigiert 
+
 ### Packages
 
 * de.basisprofil.r4-0.9.13.tgz
@@ -477,3 +510,31 @@
 * https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno_Composition
   * 1.0.2
   * 1.1.0
+
+## ISiP-1
+
+### Packages
+
+* de.gematik.isip-1.0.1.tgz
+* kbv.basis-1.2.0.tgz
+* kbv.mio.ueberleitungsbogen-1.0.0-kommentierung.tgz
+* de.gematik.isik-basismodul-2.0.2.tgz
+* de.basisprofil.r4-1.4.0.tgz
+
+### Profile
+
+* https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/ISiPAngehoeriger
+  * 1.0.1
+
+* https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/ISiPPersonImGesundheitswesen
+  * 1.0.1
+
+* https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/ISiPPflegeempfaenger
+  * 1.0.1
+
+* https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/ISiPPflegeepisode
+  * 1.0.1
+
+* https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/IsipOrganization
+  * 1.0.1
+

@@ -1,0 +1,13 @@
+fhirPackages:
+  minimalvalidationmodule.test:
+    packageVersions:
+      1.0.0:
+        filename: "minimalvalidationmodule.test-1.0.0.tgz"
+
+supportedProfiles:
+  "http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "minimalvalidationmodule.test"
+          packageVersion: "1.0.0"

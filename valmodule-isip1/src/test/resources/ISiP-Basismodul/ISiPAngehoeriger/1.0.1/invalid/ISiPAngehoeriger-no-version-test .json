@@ -1,0 +1,50 @@
+{
+  "resourceType": "RelatedPerson",
+  "id": "ExampleISiPAngehoeriger",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/ISiPAngehoeriger"
+    ]
+  },
+  "patient": {
+    "reference": "Patient/ExampleISiPPflegeempfaenger"
+  },
+  "name": [
+    {
+      "family": "Mustermann",
+      "given": [
+        "Maxine"
+      ]
+    }
+  ],
+  "address": [
+    {
+      "type": "both",
+      "line": [
+        "Milchstr. 42"
+      ],
+      "city": "Beispielstadt",
+      "postalCode": "78143",
+      "country": "DE",
+      "non-existing-field": "blabla"
+    }
+  ],
+  "relationship": [
+    {
+      "coding": [
+        {
+          "code": "CHILD",
+          "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+          "display": "child"
+        }
+      ]
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "+49 132 455 325",
+      "use": "home"
+    }
+  ]
+}

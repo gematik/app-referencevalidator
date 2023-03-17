@@ -1,0 +1,1 @@
+- Extension.seitenlokalisation version changed to 0.9.13 (wrong version 0.9.12 in original package, see https://update.kbv.de/ita-update/DigitaleMuster/Korrektur_HL7_Basis_V0_9_13/)

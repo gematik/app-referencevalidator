@@ -31,12 +31,12 @@ import java.io.InputStream;
 
 @NoArgsConstructor
 public class FhirPackageConfigurationLoader {
-    public ValidationModuleConfiguration getConfiguration(String packagesYaml) throws IOException {
+    public ValidationModuleConfiguration getConfiguration(String configurationFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         ValidationModuleConfiguration validationModuleConfiguration;
-        InputStream packagesConfigFile = FhirPackageConfigurationLoader.class.getClassLoader().getResourceAsStream(packagesYaml);
+        InputStream packagesConfigFile = FhirPackageConfigurationLoader.class.getClassLoader().getResourceAsStream(configurationFile);
         if(packagesConfigFile == null)
-            throw new IOException("File not found: " + packagesYaml);
+            throw new IOException("File not found: " + configurationFile);
 
         validationModuleConfiguration = mapper.readValue(packagesConfigFile, ValidationModuleConfiguration.class);
         return validationModuleConfiguration;

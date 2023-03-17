@@ -23,7 +23,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public enum SupportedValidationModule {
     ERP("erp"),
-    EAU("eau");
+    EAU("eau"),
+    ISIP1("isip1");
 
     private final String name;
 

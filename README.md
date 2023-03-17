@@ -64,28 +64,16 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das E-Rezept-Modul wie folg
 - Codes aus den CodeSystemen `http://fhir.de/CodeSystem/ifa/pzn` und `http://fhir.de/CodeSystem/ask` werden nicht validiert
 - Fehler, die bei Validierung von `http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle|1.0.3` im Zusammenhang mit falschen Angaben bei `http://fhir.abda.de/Identifier/DAV-Herstellerschluessel` stehen, werden ignoriert und führen zum **validen** Ergebnis
 
-#### Anpassungen der Packages:
-- Beispiele in Packages entfernt
-
-#### Anpassungen der Profile
-- kbv.ita.erp-1.0.1.tgz
-  - KBV_PR_ERP_Prescription.json
-    - BugFix: Korrektur der Profilreferenz (MedicationRequest.insurance = "type":[{"code":"Reference","targetProfile":["https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Coverage|1.0.3"]}])
-    - Constraint -erp-begrenzungValue hinzugefügt (Die Anzahl der verordneten Packungen darf maximal 999 sein) aufgrund eines [Bugs im HL7 FHIR Validator](https://github.com/hapifhir/org.hl7.fhir.core/issues/967)
-- kbv.ita.erp-1.0.2.tgz
-  - KBV_PR_ERP_Prescription.json
-    - Constraint -erp-begrenzungValue hinzugefügt (Die Anzahl der verordneten Packungen darf maximal 999 sein) aufgrund eines [Bugs im HL7 FHIR Validator](https://github.com/hapifhir/org.hl7.fhir.core/issues/967)
-- de.abda.erezeptabgabedatenbasis-1.1.0.tgz
-  - Extension-DAV-EX-ERP-Rezeptaenderung.json
-  - Extension-DAV-EX-ERP-Zusatzattribute.json
-  - Extension-DAV-EX-ERP-ZusatzdatenHerstellung.json 
-    - Änderungen siehe Version 0.9.6 im [ChangeLog.md des ABDA Referenzvalidators](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/main/CHANGELOG.md) 
-
+Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
 
 ### EAU-Modul
 
 Abweichend vom allgemeinen Prüfumfang verhält sich das eAU-Modul wie folgt:
 - ICD-10-Codes (CodeSysteme `http://fhir.de/CodeSystem/dimdi/icd-10-gm` und `http://fhir.de/CodeSystem/bfarm/icd-10-gm`) werden nicht validiert
+
+Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
+
+### ISIP1-Modul
 
 Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
 
@@ -126,6 +114,7 @@ Der Referenzvalidator erfordert als Eingabe einen Modulnamen und einen gültigen
 Unterstützte Modulnamen:
 - `erp` (E-Rezept)
 - `eau` (Elektronische Arbeitsunfähigkeitsbescheinigung)
+- `isip1` (Informationstechnische Systeme in der Pflege Stufe 1)
 
 ### Java-Bibliothek
 

@@ -6,6 +6,8 @@ fhirPackages:
         filename: "de.basisprofil.r4-1.3.2.tgz"
       0.9.13:
         filename: "de.basisprofil.r4-0.9.13.tgz"
+        patches:
+          - "Extension-seitenlokalisation.json"
         dependencies:
           - packageName: "gematik.kbv.eau.sfhir.cs.vs"
             packageVersion: "1.0.0"

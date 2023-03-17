@@ -16,8 +16,7 @@
 
 package de.gematik.refv.valmodule.eau;
 
-import de.gematik.refv.valmodule.eau.helper.BaseProfileIntegrationTest;
-import de.gematik.refv.valmodule.eau.helper.TestEauValidationModuleFactory;
+import de.gematik.refv.valmodule.base.helper.BaseProfileIntegrationTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -31,7 +30,7 @@ class KBV_PR_EAU_OtherProfilesIT extends BaseProfileIntegrationTest {
 
     @BeforeAll
     void beforeAll() {
-        this.validationModule = TestEauValidationModuleFactory.createNonCachingInstance();
+        super.createValidationModuleNonCachingInstance("eau");
     }
 
     @TestFactory

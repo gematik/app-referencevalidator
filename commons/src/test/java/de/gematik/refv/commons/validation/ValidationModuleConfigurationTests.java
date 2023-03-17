@@ -123,5 +123,4 @@ class ValidationModuleConfigurationTests {
         Assertions.assertEquals(1, patches.size());
         Assertions.assertEquals("kbv.ita.erp-1.0.2/Some-Patched-SD-From-kbv.ita.erp-1.0.2.json", patches.toArray()[0]);
     }
-
 }

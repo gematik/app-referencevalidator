@@ -1,6 +1,7 @@
 package de.gematik.refv.valmodule.eau;
 
-import de.gematik.refv.valmodule.eau.helper.TestEauValidationModuleFactory;
+import de.gematik.refv.valmodule.base.ConfigurationBasedValidationModule;
+import de.gematik.refv.valmodule.base.helper.TestConfigurationBasedValidationModuleFactory;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,7 @@ import java.nio.file.Paths;
 
 class EauModuleLocalTest {
 
-    private final EauValidationModule validationModule = TestEauValidationModuleFactory.createInstance();
+    private final ConfigurationBasedValidationModule validationModule = TestConfigurationBasedValidationModuleFactory.createInstance("eau");
 
     @Test
     @SneakyThrows

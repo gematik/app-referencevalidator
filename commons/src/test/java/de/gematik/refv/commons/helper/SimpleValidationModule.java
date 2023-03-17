@@ -38,14 +38,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class SimpleValidationModule  implements ValidationModule {
+public class SimpleValidationModule implements ValidationModule {
 
     static Logger logger = LoggerFactory.getLogger(SimpleValidationModule.class);
 
-    private static final String PACKAGES_YAML = "erp-packages.yaml";
+    private static final String CONFIGURATION_FILE = "erp-packages.yaml";
     private static final String CODE = "simple";
 
-    private final String packagesYaml;
+    private final String configurationFile;
 
     public String getId() {
         return CODE;
@@ -63,7 +63,7 @@ public class SimpleValidationModule  implements ValidationModule {
     private final GenericValidator genericValidator;
 
     @SneakyThrows
-    public static SimpleValidationModule createInstance(String packagesYaml) {
+    public static SimpleValidationModule createInstance(String configFile) {
         GenericValidator engine = new GenericValidator(
                 FhirContext.forR4(),
                 new ReferencedProfileLocator(),
@@ -74,7 +74,7 @@ public class SimpleValidationModule  implements ValidationModule {
         var validationModule = new SimpleValidationModule(
                 new FhirPackageConfigurationLoader(),
                 engine,
-                packagesYaml
+                configFile
         );
         validationModule.initialize();
         return validationModule;
@@ -92,21 +92,21 @@ public class SimpleValidationModule  implements ValidationModule {
         var validationModule = new SimpleValidationModule(
                 new FhirPackageConfigurationLoader(),
                 engine,
-                PACKAGES_YAML
+                CONFIGURATION_FILE
         );
         validationModule.initialize();
         return validationModule;
     }
 
-    private SimpleValidationModule(FhirPackageConfigurationLoader configurationLoader, GenericValidator genericValidator, String packagesYaml) {
+    private SimpleValidationModule(FhirPackageConfigurationLoader configurationLoader, GenericValidator genericValidator, String configurationFile) {
         this.configurationLoader = configurationLoader;
         this.genericValidator = genericValidator;
-        this.packagesYaml = packagesYaml;
+        this.configurationFile = configurationFile;
     }
 
     public void initialize() throws ValidationModuleInitializationException {
         try {
-            configuration = configurationLoader.getConfiguration(packagesYaml);
+            configuration = configurationLoader.getConfiguration(configurationFile);
         } catch (IOException e) {
             throw new ValidationModuleInitializationException("Could not load module configuration", e);
         }

@@ -952,6 +952,10 @@ supportedProfiles:
 
   "https://gematik.de/fhir/StructureDefinition/ErxChargeItem":
     profileVersions:
+      1.1.0:
+        requiredPackage:
+          packageName: "de.gematik.erezept-workflow.r4"
+          packageVersion: "1.0.3-1"
       1.1.1:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"

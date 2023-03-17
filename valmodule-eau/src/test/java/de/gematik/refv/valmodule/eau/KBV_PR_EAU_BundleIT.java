@@ -16,7 +16,8 @@
 
 package de.gematik.refv.valmodule.eau;
 
-import de.gematik.refv.valmodule.eau.helper.BaseProfileIntegrationTest;
+import de.gematik.refv.valmodule.base.helper.BaseProfileIntegrationTest;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
@@ -26,6 +27,12 @@ import java.util.stream.Stream;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KBV_PR_EAU_BundleIT extends BaseProfileIntegrationTest {
     private static final String DIR = "KBV_PR_EAU_Bundle";
+
+    @BeforeAll
+    void beforeAll() {
+        super.createValidationModule("eau");
+    }
+
     @TestFactory
     Stream<DynamicTest> testValidation() {
         return super.testValidationBase(DIR);

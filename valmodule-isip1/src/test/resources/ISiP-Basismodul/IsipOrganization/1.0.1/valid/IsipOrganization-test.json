@@ -1,0 +1,81 @@
+{
+  "resourceType": "Organization",
+  "id": "ExampleIsipOrganization",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/IsipOrganization|1.0.1"
+    ]
+  },
+  "identifier": [
+    {
+      "system": "https://gematik.de/fhir/sid/telematik-id",
+      "value": "1234567890"
+    }
+  ],
+  "active": true,
+  "name": "Haus am See",
+  "type": [
+    {
+      "coding": [
+        {
+          "code": "42665001",
+          "system": "http://snomed.info/sct",
+          "display": "Nursing home (environment)"
+        }
+      ]
+    }
+  ],
+  "address": [
+    {
+      "type": "both",
+      "line": [
+        "Musterweg 2",
+        "3. Etage"
+      ],
+      "_line": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+              "valueString": "Musterweg"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+              "valueString": "2"
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-additionalLocator",
+              "valueString": "3. Etage"
+            }
+          ]
+        }
+      ],
+      "city": "Musterhausen",
+      "postalCode": "98764",
+      "country": "DE"
+    },
+    {
+      "type": "postal",
+      "line": [
+        "Postfach 8 15"
+      ],
+      "_line": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-postBox",
+              "valueString": "Postfach 8 15"
+            }
+          ]
+        }
+      ],
+      "city": "Musterhausen",
+      "postalCode": "98764",
+      "country": "DE"
+    }
+  ]
+}
