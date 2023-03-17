@@ -2,6 +2,11 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 0.4.1
+
+### fixed
+- Removed snapshot dependency in the core module 
+
 ## Release 0.4.0
 
 ### added
