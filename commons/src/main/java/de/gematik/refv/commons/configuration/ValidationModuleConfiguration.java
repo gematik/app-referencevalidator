@@ -46,6 +46,11 @@ public class ValidationModuleConfiguration {
 
     private List<String> ignoredCodeSystems = new LinkedList<>();
 
+    private List<String> ignoredValueSets = new LinkedList<>();
+
+    private boolean errorOnUnknownProfile;
+    private boolean anyExtensionsAllowed;
+
     public Collection<String> getPatchesForPackageAndItsDependencies(PackageDefinition packageDefinition) {
         var result = new HashSet<String>();
         result.addAll(packageDefinition.getPatches().stream().map(p -> getPathToPatch(packageDefinition.getFilename(), p)).collect(Collectors.toList()));

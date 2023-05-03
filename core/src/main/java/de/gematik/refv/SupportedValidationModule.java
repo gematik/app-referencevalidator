@@ -24,7 +24,10 @@ import java.util.Optional;
 public enum SupportedValidationModule {
     ERP("erp"),
     EAU("eau"),
-    ISIP1("isip1");
+    ISIP1("isip1"),
+    ISIK2("isik2"),
+    ISIK1("isik1");
+
 
     private final String name;
 

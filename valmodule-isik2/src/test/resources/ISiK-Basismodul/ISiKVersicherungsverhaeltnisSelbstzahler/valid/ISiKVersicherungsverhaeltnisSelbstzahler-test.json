@@ -1,0 +1,26 @@
+{
+  "resourceType": "Coverage",
+  "id": "CoveragePrivat",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKVersicherungsverhaeltnisSelbstzahler"
+    ]
+  },
+  "type": {
+    "coding": [
+      {
+        "system": "http://fhir.de/CodeSystem/versicherungsart-de-basis",
+        "code": "SEL"
+      }
+    ]
+  },
+  "status": "active",
+  "beneficiary": {
+    "reference": "Patient/PatientinMusterfrau"
+  },
+  "payor": [
+    {
+      "reference": "Patient/PatientinMusterfrau"
+    }
+  ]
+}

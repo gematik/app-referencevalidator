@@ -82,25 +82,25 @@
   * 1.0.3
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-AbgabedatenBundle
-  * 1.1
+  * 1.2
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-AbgabedatenComposition
-  * 1.1
+  * 1.2
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abgabeinformationen
-  * 1.1
+  * 1.2
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abrechnungszeilen
-  * 1.1
+  * 1.2
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Apotheke
-  * 1.1
+  * 1.2
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenEinheit
-  * 1.1
+  * 1.2
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenHerstellung
-  * 1.1
+  * 1.2
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-AbgabedatenBundle
   * 1.3
@@ -339,6 +339,7 @@
 
 * https://gematik.de/fhir/StructureDefinition/ErxChargeItem
   * 1.1.0
+
   * 1.1.1
 
 * https://gematik.de/fhir/StructureDefinition/ErxCommunicationDispReq
@@ -453,7 +454,11 @@
 * https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_Consent
   * 1.0
 
+
 ## EAU
+
+### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
 
 ### Anpassungen der Profile
 - de.basisprofil.r4-0.9.13.tgz
@@ -513,6 +518,9 @@
 
 ## ISiP-1
 
+### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
+
 ### Packages
 
 * de.gematik.isip-1.0.1.tgz
@@ -538,3 +546,169 @@
 * https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/IsipOrganization
   * 1.0.1
 
+## ISiK-2
+
+### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
+
+### Packages
+
+* de.gematik.isik-basismodul-2.0.5.tgz
+* de.gematik.isik-medikation-2.0.3.tgz
+* de.gematik.isik-terminplanung-2.0.2.tgz
+* de.gematik.isik-vitalparameter-2.0.3.tgz
+
+### Profile
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKAbrechnungsfall
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKAngehoeriger
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKBerichtBundle
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKBerichtSubSysteme
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKBinary
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKCodeSystem
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKDiagnose
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKKontaktGesundheitseinrichtung
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKPatient
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKPersonImGesundheitsberuf
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKProzedur
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKValueSet
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKVersicherungsverhaeltnisGesetzlich
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKVersicherungsverhaeltnisSelbstzahler
+  * 2.0.5
+
+* https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikament
+  * 2.0.2
+
+* https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationTransaction
+  * 2.0.2
+
+* https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationTransactionResponse
+  * 2.0.2
+
+* https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsInformation
+  * 2.0.2
+
+* https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsListe
+  * 2.0.2
+
+* https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsVerabreichung
+  * 2.0.2
+
+* https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsVerordnung
+  * 2.0.2
+
+* https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKKalender
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKMedizinischeBehandlungseinheit
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKNachricht
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKTermin
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKTerminKontaktMitGesundheitseinrichtung
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKTerminblock
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKAtemfrequenz
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKBlutdruck
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKEkg
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKGCS
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKHerzfrequenz
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKoerpergewicht
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKoerpergroesse
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKoerpertemperatur
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKopfumfang
+  * 2.0.3
+
+* https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKSauerstoffsaettigung
+  * 2.0.3
+
+## ISiK-1
+
+### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
+
+### Packages
+
+* de.gematik.isik-basismodul-stufe1-1.0.9.tgz
+
+
+### Profile
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKAngehoeriger
+  * 1.0.9
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKBerichtBundle
+  * 1.0.9
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKBerichtSubSysteme
+  * 1.0.9
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKDiagnose
+  * 1.0.9
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKKontaktGesundheitseinrichtung
+  * 1.0.9
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKPatient
+  * 1.0.9
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKPersonImGesundheitsberuf
+  * 1.0.9
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKProzedur
+  * 1.0.9
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKVersicherungsverhaeltnisGesetzlich
+  * 1.0.9
+
+* https://gematik.de/fhir/ISiK/StructureDefinition/ISiKVersicherungsverhaeltnisSelbstzahler
+  * 1.0.9

@@ -33,6 +33,25 @@ class ConfigurationBasedValidationModuleTests {
     }
 
     @Test
+    void testValidateFileValidNoCache() throws IOException, ValidationModuleInitializationException {
+        GenericValidator genericValidator = new GenericValidator(
+                FhirContext.forR4(),
+                new ReferencedProfileLocator(),
+                new GenericValidatorFactory(),
+                new SeverityLevelTransformer(),
+                ProfileCacheStrategy.NO_CACHE
+        );
+        ConfigurationBasedValidationModule validationModule = new ConfigurationBasedValidationModule(
+                "minimal",
+                new FhirPackageConfigurationLoader(),
+                genericValidator
+        );
+        validationModule.initialize();
+        var result = validationModule.validateFile("src/test/resources/test-minimal-example-valid.xml");
+        Assertions.assertTrue(result.isValid(), result.toString());
+    }
+
+    @Test
     void testValidateFileValid() throws IOException, ValidationModuleInitializationException {
         ConfigurationBasedValidationModule validationModule = new ConfigurationBasedValidationModule(
                 "minimal",

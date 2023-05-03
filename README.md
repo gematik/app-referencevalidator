@@ -77,6 +77,20 @@ Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier
 
 Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
 
+### ISIK2-Modul
+
+Abweichend vom allgemeinen Prüfumfang verhält sich das ISIK2-Modul wie folgt:
+- Codes aus den CodeSystemen `http://snomed.info/sct`, `http://fhir.de/CodeSystem/bfarm/icd-10-gm`, `http://fhir.de/CodeSystem/bfarm/atc` und `http://fhir.de/CodeSystem/bfarm/ops` werden nicht validiert
+- Folgende ValueSets werden nicht validiert: `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenCodesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/DiagnosesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenKategorieSCT`, `https://gematik.de/fhir/isik/v2/Terminplanung/ValueSet/ISiKTerminPriority`, `https://gematik.de/fhir/isik/v2/Medikation/ValueSet/SctRouteOfAdministration` und `http://fhir.de/ValueSet/bfarm/ops`
+
+### ISIK1-Modul
+
+Abweichend vom allgemeinen Prüfumfang verhält sich das ISIK1-Modul wie folgt:
+- Codes aus den CodeSystemen `http://snomed.info/sct`, `http://fhir.de/CodeSystem/bfarm/icd-10-gm` und `http://fhir.de/CodeSystem/bfarm/ops` werden nicht validiert
+- Folgende ValueSets werden nicht validiert: `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenCodesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/DiagnosesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenKategorieSCT` und `http://fhir.de/ValueSet/bfarm/ops`
+
+Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
+
 ## Erste Schritte
 
 ### Voraussetzungen
@@ -115,6 +129,8 @@ Unterstützte Modulnamen:
 - `erp` (E-Rezept)
 - `eau` (Elektronische Arbeitsunfähigkeitsbescheinigung)
 - `isip1` (Informationstechnische Systeme in der Pflege Stufe 1)
+- `isik2` (Informationstechnische Systeme in Krankenhäusern Stufe 2)
+- `isik1` (Informationstechnische Systeme in Krankenhäusern Stufe 1)
 
 ### Java-Bibliothek
 

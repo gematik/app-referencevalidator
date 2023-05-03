@@ -20,7 +20,8 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.IValidationSupport;
 import ca.uhn.fhir.util.ClasspathUtil;
 import ca.uhn.fhir.validation.FhirValidator;
-import de.gematik.refv.commons.validation.support.IgnoreMissingValueSetValidationSupport;
+import de.gematik.refv.commons.validation.support.IgnoreCodeSystemValidationSupport;
+import de.gematik.refv.commons.validation.support.IgnoreValueSetValidationSupport;
 import de.gematik.refv.commons.validation.support.PipedCanonicalCoreResourcesValidationSupport;
 import lombok.SneakyThrows;
 import org.hl7.fhir.common.hapi.validation.support.NpmPackageValidationSupport;
@@ -42,7 +43,11 @@ public class GenericValidatorFactory {
             FhirContext ctx,
             Collection<String> packageFilenames,
             Collection<String> patches,
-            Collection<String> codeSystemsToIgnore) {
+            Collection<String> codeSystemsToIgnore,
+            Collection<String> valueSetsToIgnore,
+            boolean errorOnUnknownProfile,
+            boolean anyExtensionsAllowed
+            ) {
 
         var npmPackageSupport = new NpmPackageValidationSupport(ctx);
         for (String packagePath : packageFilenames) {
@@ -61,18 +66,19 @@ public class GenericValidatorFactory {
 
         IValidationSupport validationSupport = ctx.getValidationSupport();
 
-            var validationSupportChain = new ValidationSupportChain(
-                    npmPackageSupport,
-                    validationSupport,
-                    new IgnoreMissingValueSetValidationSupport(ctx, codeSystemsToIgnore),
-                    new PipedCanonicalCoreResourcesValidationSupport(ctx)
-            );
+        var validationSupportChain = new ValidationSupportChain(
+                new IgnoreCodeSystemValidationSupport(ctx, codeSystemsToIgnore),
+                new IgnoreValueSetValidationSupport(ctx, valueSetsToIgnore),
+                npmPackageSupport,
+                validationSupport,
+                new PipedCanonicalCoreResourcesValidationSupport(ctx)
+        );
 
         FhirInstanceValidator hapiValidatorModule = new FhirInstanceValidator(
                 validationSupportChain);
-        hapiValidatorModule.setErrorForUnknownProfiles(true);
+        hapiValidatorModule.setErrorForUnknownProfiles(errorOnUnknownProfile);
         hapiValidatorModule.setNoExtensibleWarnings(true);
-        hapiValidatorModule.setAnyExtensionsAllowed(false);
+        hapiValidatorModule.setAnyExtensionsAllowed(anyExtensionsAllowed);
         FhirValidator fhirValidator = ctx.newValidator();
         fhirValidator.registerValidatorModule(hapiValidatorModule);
         return fhirValidator;

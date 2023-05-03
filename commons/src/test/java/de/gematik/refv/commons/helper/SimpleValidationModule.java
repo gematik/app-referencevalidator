@@ -63,13 +63,13 @@ public class SimpleValidationModule implements ValidationModule {
     private final GenericValidator genericValidator;
 
     @SneakyThrows
-    public static SimpleValidationModule createInstance(String configFile) {
+    public static SimpleValidationModule createInstance(String configFile, ProfileCacheStrategy cacheStrategy) {
         GenericValidator engine = new GenericValidator(
                 FhirContext.forR4(),
                 new ReferencedProfileLocator(),
                 new GenericValidatorFactory(),
                 new SeverityLevelTransformer(),
-                ProfileCacheStrategy.CACHE_PROFILES
+                cacheStrategy
         );
         var validationModule = new SimpleValidationModule(
                 new FhirPackageConfigurationLoader(),
@@ -81,21 +81,15 @@ public class SimpleValidationModule implements ValidationModule {
     }
 
     @SneakyThrows
-    public static SimpleValidationModule createInstance() {
-        GenericValidator engine = new GenericValidator(
-                FhirContext.forR4(),
-                new ReferencedProfileLocator(),
-                new GenericValidatorFactory(),
-                new SeverityLevelTransformer(),
-                ProfileCacheStrategy.CACHE_PROFILES
-        );
-        var validationModule = new SimpleValidationModule(
-                new FhirPackageConfigurationLoader(),
-                engine,
-                CONFIGURATION_FILE
-        );
-        validationModule.initialize();
-        return validationModule;
+    public static SimpleValidationModule createCachingInstance() {
+        return createInstance(CONFIGURATION_FILE,
+                ProfileCacheStrategy.CACHE_PROFILES);
+    }
+
+    @SneakyThrows
+    public static SimpleValidationModule createNonCachingInstance() {
+        return createInstance(CONFIGURATION_FILE,
+                ProfileCacheStrategy.NO_CACHE);
     }
 
     private SimpleValidationModule(FhirPackageConfigurationLoader configurationLoader, GenericValidator genericValidator, String configurationFile) {

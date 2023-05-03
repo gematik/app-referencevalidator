@@ -1,0 +1,374 @@
+errorOnUnknownProfile: "false"
+anyExtensionsAllowed: "true"
+
+fhirPackages:
+  de.gematik.isik-basismodul:
+    packageVersions:
+      2.0.5:
+        filename: "de.gematik.isik-basismodul-2.0.5.tgz"
+        dependencies:
+          - packageName: "de.basisprofil.r4"
+            packageVersion: "1.4.0"
+          - packageName: "kbv.basis" # Warning!!! Missing dependency TODO: report to ISIK
+            packageVersion: "1.2.0"
+        validationMessageTransformations:
+          - severityLevelFrom: "error"
+            severityLevelTo: "information"
+            locatorString: "Account.subject:PatientISiK"
+            messageId: "Validation_VAL_Profile_Minimum"
+
+  de.gematik.isik-medikation:
+    packageVersions:
+      2.0.2:
+        filename: "de.gematik.isik-medikation-2.0.2.tgz"
+        dependencies:
+          - packageName: "de.medizininformatikinitiative.kerndatensatz.medikation"
+            packageVersion: "1.0.10"
+          - packageName: "hl7.fhir.uv.ips"
+            packageVersion: "1.1.0" ## in package.json 1.0.0 WRONG
+          - packageName: "de.gematik.isik-basismodul"
+            packageVersion: "2.0.5" ## in package.json 2.0.4 WRONG
+
+  de.gematik.isik-terminplanung:
+    packageVersions:
+      2.0.3:
+        filename: "de.gematik.isik-terminplanung-2.0.3.tgz"
+        dependencies:
+          - packageName: "de.gematik.isik-basismodul"
+            packageVersion: "2.0.5"
+        validationMessageTransformations:
+          - severityLevelFrom: "error"
+            severityLevelTo: "information"
+            locatorString: "Appointment.participant:AkteurPatient"
+            messageId: "Validation_VAL_Profile_Minimum"
+
+  de.gematik.isik-vitalparameter:
+    packageVersions:
+      2.0.3:
+        filename: "de.gematik.isik-vitalparameter-2.0.3.tgz"
+        dependencies:
+          - packageName: "de.basisprofil.r4"
+            packageVersion: "1.4.0"
+          - packageName: "de.gematik.isik-basismodul"
+            packageVersion: "2.0.5"
+
+  ihe.mhd.fhir:
+    packageVersions:
+      4.0.1:
+        filename: "ihe.mhd.fhir-4.0.1.tgz"
+
+  dvmd.kdl.r4.2022:
+    packageVersions:
+      2022.1.1:
+        filename: "dvmd.kdl.r4.2022-2022.1.1.tgz"
+
+  hl7.fhir.uv.ips:
+    packageVersions:
+      1.1.0:
+        filename: "hl7.fhir.uv.ips-1.1.0.tgz"
+
+  de.medizininformatikinitiative.kerndatensatz.medikation:
+    packageVersions:
+      1.0.10:
+        filename: "de.medizininformatikinitiative.kerndatensatz.medikation-1.0.10.tgz"
+        dependencies:
+          - packageName: "de.medizininformatikinitiative.kerndatensatz.meta"
+            packageVersion: "1.0.3"
+          - packageName: "hl7.fhir.uv.ips"
+            packageVersion: "1.1.0"
+
+  de.basisprofil.r4:
+    packageVersions:
+      0.9.13:
+        filename: "de.basisprofil.r4-0.9.13.tgz"
+      1.4.0:
+        filename: "de.basisprofil.r4-1.4.0.tgz"
+
+  kbv.basis:
+    packageVersions:
+      1.2.0:
+        filename: "kbv.basis-1.2.0.tgz"
+        dependencies:
+          - packageName: "de.basisprofil.r4"
+            packageVersion: "0.9.13"
+
+  de.medizininformatikinitiative.kerndatensatz.meta:
+    packageVersions:
+      1.0.3:
+        filename: "de.medizininformatikinitiative.kerndatensatz.meta-1.0.3.tgz"
+
+ignoredCodeSystems:
+  - "http://snomed.info/sct"
+  - "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+  - "http://fhir.de/CodeSystem/bfarm/atc"
+  - "http://fhir.de/CodeSystem/bfarm/ops"
+
+ignoredValueSets:
+  - "https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenCodesSCT" # Erfordert eine Expansion von SNOMED-CT (aktuell nicht implementiert)
+  - "https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/DiagnosesSCT"
+  - "https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenKategorieSCT"
+  - "https://gematik.de/fhir/isik/v2/Terminplanung/ValueSet/ISiKTerminPriority" # Erfordert eine Expansion von SNOMED-CT (aktuell nicht implementiert)
+  - "http://fhir.de/ValueSet/bfarm/ops" # Das Code System ist als FHIR nicht vorhanden
+  - "https://gematik.de/fhir/isik/v2/Medikation/ValueSet/SctRouteOfAdministration"
+
+
+supportedProfiles:
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKAbrechnungsfall":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKAngehoeriger":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKBerichtBundle":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKBerichtSubSysteme":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKBinary":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKCodeSystem":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKDiagnose":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKKontaktGesundheitseinrichtung":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKPatient":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKPersonImGesundheitsberuf":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKProzedur":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKValueSet":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKVersicherungsverhaeltnisGesetzlich":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKVersicherungsverhaeltnisSelbstzahler":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-basismodul"
+          packageVersion: "2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikament":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-medikation"
+          packageVersion: "2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationTransaction":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-medikation"
+          packageVersion: "2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationTransactionResponse":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-medikation"
+          packageVersion: "2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsInformation":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-medikation"
+          packageVersion: "2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsListe":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-medikation"
+          packageVersion: "2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsVerabreichung":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-medikation"
+          packageVersion: "2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsVerordnung":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-medikation"
+          packageVersion: "2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKKalender":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-terminplanung"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKMedizinischeBehandlungseinheit":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-terminplanung"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKNachricht":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-terminplanung"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKTermin":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-terminplanung"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKTerminKontaktMitGesundheitseinrichtung":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-terminplanung"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKTerminblock":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-terminplanung"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKAtemfrequenz":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKBlutdruck":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKEkg":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKGCS":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKHerzfrequenz":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKoerpergewicht":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKoerpergroesse":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKoerpertemperatur":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKopfumfang":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKSauerstoffsaettigung":
+    profileVersions:
+      0.0.0:
+        requiredPackage:
+          packageName: "de.gematik.isik-vitalparameter"
+          packageVersion: "2.0.3"
+

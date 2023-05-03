@@ -1,3 +1,6 @@
+errorOnUnknownProfile: "false"
+anyExtensionsAllowed: "true"
+
 fhirPackages:
   de.gematik.isik-basismodul:
     packageVersions:

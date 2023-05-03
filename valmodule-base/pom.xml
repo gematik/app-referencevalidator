@@ -5,7 +5,7 @@
     <parent>
         <artifactId>referencevalidator</artifactId>
         <groupId>de.gematik.refv</groupId>
-        <version>0.4.1</version>
+        <version>0.5.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +14,7 @@
         <dependency>
             <groupId>de.gematik.refv.commons</groupId>
             <artifactId>commons</artifactId>
-            <version>0.4.1</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

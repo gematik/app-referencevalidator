@@ -1,0 +1,35 @@
+{
+  "resourceType": "Condition",
+  "id": "MittelgradigeIntelligenzminderung",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKDiagnose"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "code": "active",
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+      }
+    ]
+  },
+  "code": {
+    "coding": [
+      {
+        "version": "2020",
+        "code": "F71",
+        "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+        "display": "Mittelgradige Intelligenzminderung"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/PatientinMusterfrau"
+  },
+  "encounter": {
+    "reference": "Encounter/Fachabteilungskontakt"
+  },
+  "onsetDateTime": "2019-09-02",
+  "recordedDate": "2021-01-01"
+}

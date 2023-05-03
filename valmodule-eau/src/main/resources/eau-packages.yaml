@@ -1,3 +1,6 @@
+errorOnUnknownProfile: "true"
+anyExtensionsAllowed: "false"
+
 fhirPackages:
   # https://simplifier.net/Basisprofil-DE-R4/~packages
   de.basisprofil.r4:

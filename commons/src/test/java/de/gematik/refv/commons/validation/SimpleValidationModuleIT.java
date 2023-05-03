@@ -31,14 +31,15 @@ class SimpleValidationModuleIT {
     public static final String VALID_FILE = "simplevalidationmodule.test.patient.valid.xml";
     public static final String INVALID_FILE = "simplevalidationmodule.test.patient.invalid.xml";
     public static final String INVALID_FILE_FOR_PATCH = "simplevalidationmodule.test.patch.patient.invalid.xml";
-    private static final SimpleValidationModule module = SimpleValidationModule.createInstance();
+    private static final SimpleValidationModule module = SimpleValidationModule.createCachingInstance();
 
     @Test
     @SneakyThrows
     void testValidInput() {
+        var m = SimpleValidationModule.createNonCachingInstance(); // Create non caching instance to test another code path
         var input = ClasspathUtil.loadResourceAsStream("classpath:" + VALID_FILE);
 
-        var result = module.validateString(IOUtils.toString(input, StandardCharsets.UTF_8));
+        var result = m.validateString(IOUtils.toString(input, StandardCharsets.UTF_8));
         Assertions.assertTrue(result.isValid());
     }
 
@@ -62,7 +63,7 @@ class SimpleValidationModuleIT {
 
     @Test
     void testValidationInitializationException() {
-        Assertions.assertThrows(ValidationModuleInitializationException.class, () -> SimpleValidationModule.createInstance("non-existing-yaml.yaml"));
+        Assertions.assertThrows(ValidationModuleInitializationException.class, () -> SimpleValidationModule.createInstance("non-existing-yaml.yaml", ProfileCacheStrategy.CACHE_PROFILES));
     }
 
 }

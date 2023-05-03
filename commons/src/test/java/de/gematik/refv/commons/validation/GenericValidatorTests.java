@@ -75,4 +75,20 @@ class GenericValidatorTests {
                 + "</Bundle>";
         Assertions.assertThrows(UnsupportedProfileException.class, () -> genericValidator.validate(input, configuration));
     }
+
+    @Test
+    @SneakyThrows
+    void testNoProfileThrowsException() {
+        var configuration = new ValidationModuleConfiguration();
+        configuration.getSupportedProfiles().put("https://bla.bla",new SupportedProfileVersions(new HashMap<>() {{
+            put("1.0.2", new PackageReferenceForAProfileVersion(new PackageReference("unknownpackage", "1.0.0")));
+        }}));
+        var input = "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
+                + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
+                + "    <meta>\n"
+                + "        \n"
+                + "    </meta>\n"
+                + "</Bundle>";
+        Assertions.assertThrows(IllegalArgumentException.class, () -> genericValidator.validate(input, configuration));
+    }
 }

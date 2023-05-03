@@ -19,7 +19,8 @@ package de.gematik.refv.commons.validation;
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.commons.configuration.ValidationMessageTransformation;
-import de.gematik.refv.commons.validation.support.IgnoreMissingValueSetValidationSupport;
+import de.gematik.refv.commons.validation.support.IgnoreCodeSystemValidationSupport;
+import org.apache.commons.lang3.StringUtils;
 import lombok.NonNull;
 import org.hl7.fhir.utilities.i18n.I18nConstants;
 
@@ -43,7 +44,10 @@ public class SeverityLevelTransformer {
                 transformedMessages) {
 
             var transformation = transformations.stream().filter(t -> t.getSeverityLevelFrom().equals(message.getSeverity().getCode()) &&
-                    message.getMessage().contains(t.getLocatorString())
+                    message.getMessage().contains(t.getLocatorString()) &&
+                    (
+                            t.getMessageId() == null || StringUtils.equals(t.getMessageId(), message.getMessageId())
+                    )
             ).findFirst();
             if(transformation.isEmpty()) {
                 continue;
@@ -57,7 +61,7 @@ public class SeverityLevelTransformer {
     private void setIgnoredCodeSystemsToInformation(LinkedList<SingleValidationMessage> messages) {
         for (SingleValidationMessage message:
                 messages) {
-            if(I18nConstants.TERMINOLOGY_PASSTHROUGH_TX_MESSAGE.equals(message.getMessageId()) && message.getMessage().contains(IgnoreMissingValueSetValidationSupport.CODE_SYSTEM_IS_IGNORED_MESSAGE)) {
+            if(I18nConstants.TERMINOLOGY_PASSTHROUGH_TX_MESSAGE.equals(message.getMessageId()) && message.getMessage().contains(IgnoreCodeSystemValidationSupport.CODE_SYSTEM_IS_IGNORED_MESSAGE)) {
                 message.setSeverity(ResultSeverityEnum.INFORMATION);
             }
         }

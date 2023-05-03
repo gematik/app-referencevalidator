@@ -1,5 +1,6 @@
----
-### Definition unterstützer FHIR-Packages:
+errorOnUnknownProfile: "true"
+anyExtensionsAllowed: "false"
+
 fhirPackages:
 # https://simplifier.net/eRezept/~packages
   kbv.ita.erp:
@@ -225,15 +226,24 @@ fhirPackages:
           - severityLevelFrom: "error"
             severityLevelTo: "information"
             locatorString: "'http://fhir.abda.de/Identifier/DAV-Herstellerschluessel' but must be 'http://fhir.de/NamingSystem/arge-ik/iknr'"
+            messageId: "_DT_Fixed_Wrong"
           - severityLevelFrom: "error"
             severityLevelTo: "information"
             locatorString: "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenEinheit"
+            messageId: "Reference_REF_CantMatchChoice"
           - severityLevelFrom: "error"
             severityLevelTo: "information"
             locatorString: "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenHerstellung"
+            messageId: "Reference_REF_CantMatchChoice"
           - severityLevelFrom: "error"
             severityLevelTo: "information"
             locatorString: "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-ZusatzdatenHerstellung"
+            messageId: "Reference_REF_CantMatchChoice"
+          - severityLevelFrom: "error"
+            severityLevelTo: "information"
+            locatorString: "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenEinheit"
+            messageId: "Validation_VAL_Profile_NotSlice"
+
       1.1.2: #KorrekturRelease
         filename: "de.abda.erezeptabgabedaten-1.1.2.tgz"
         dependencies:
@@ -248,11 +258,11 @@ fhirPackages:
             packageVersion: "1.2.0"
           - packageName: "de.basisprofil.r4"
             packageVersion: "0.9.13"
-      1.3.0:
-        filename: "de.abda.erezeptabgabedaten-1.3.0.tgz"
+      1.3.1:
+        filename: "de.abda.erezeptabgabedaten-1.3.1.tgz"
         dependencies:
           - packageName: "de.abda.erezeptabgabedatenbasis"
-            packageVersion: "1.3.0"
+            packageVersion: "1.3.1"
           - packageName: "de.basisprofil.r4"
             packageVersion: "1.3.2"
 
@@ -286,6 +296,12 @@ fhirPackages:
         dependencies:
           - packageName: "de.basisprofil.r4"
             packageVersion: "1.3.2"
+      1.3.1:
+        filename: "de.abda.erezeptabgabedatenbasis-1.3.1.tgz"
+        dependencies:
+          - packageName: "de.basisprofil.r4"
+            packageVersion: "1.3.2"
+
 # https://simplifier.net/Basisprofil-DE-R4/~packages
   de.basisprofil.r4:
     packageVersions:
@@ -296,13 +312,13 @@ fhirPackages:
 
   de.abda.erezeptabgabedatenpkv:
     packageVersions:
-      1.1.0:
-        filename: "de.abda.erezeptabgabedatenpkv-1.1.0.tgz"
+      1.2.0:
+        filename: "de.abda.erezeptabgabedatenpkv-1.2.0.tgz"
         dependencies:
           - packageName: "de.basisprofil.r4"
             packageVersion: "1.3.2"
           - packageName: "de.abda.erezeptabgabedatenbasis"
-            packageVersion: "1.3.0"
+            packageVersion: "1.3.1"
 
   de.gematik.erezept-patientenrechnung.r4:
     packageVersions:
@@ -333,52 +349,52 @@ supportedProfiles:
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-AbgabedatenBundle":
     profileVersions:
-      1.1:
+      1.2:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenpkv"
-          packageVersion: "1.1.0"
+          packageVersion: "1.2.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-AbgabedatenComposition":
     profileVersions:
-      1.1:
+      1.2:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenpkv"
-          packageVersion: "1.1.0"
+          packageVersion: "1.2.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abgabeinformationen":
     profileVersions:
-      1.1:
+      1.2:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenpkv"
-          packageVersion: "1.1.0"
+          packageVersion: "1.2.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abrechnungszeilen":
     profileVersions:
-      1.1:
+      1.2:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenpkv"
-          packageVersion: "1.1.0"
+          packageVersion: "1.2.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Apotheke":
     profileVersions:
-      1.1:
+      1.2:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenpkv"
-          packageVersion: "1.1.0"
+          packageVersion: "1.2.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenEinheit":
     profileVersions:
-      1.1:
+      1.2:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenpkv"
-          packageVersion: "1.1.0"
+          packageVersion: "1.2.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenHerstellung":
     profileVersions:
-      1.1:
+      1.2:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenpkv"
-          packageVersion: "1.1.0"
+          packageVersion: "1.2.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-AbgabedatenBundle":
     profileVersions:
@@ -449,7 +465,7 @@ supportedProfiles:
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedaten"
-          packageVersion: "1.3.0"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenComposition":
     profileVersions:
@@ -471,7 +487,7 @@ supportedProfiles:
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedaten"
-          packageVersion: "1.3.0"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Abgabeinformationen":
     profileVersions:
@@ -488,7 +504,7 @@ supportedProfiles:
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedaten"
-          packageVersion: "1.3.0"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Abrechnungszeilen":
     profileVersions:
@@ -510,7 +526,7 @@ supportedProfiles:
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedaten"
-          packageVersion: "1.3.0"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Apotheke":
     profileVersions:
@@ -532,7 +548,7 @@ supportedProfiles:
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedaten"
-          packageVersion: "1.3.0"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenEinheit":
     profileVersions:
@@ -554,7 +570,7 @@ supportedProfiles:
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedaten"
-          packageVersion: "1.3.0"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenHerstellung":
     profileVersions:
@@ -576,7 +592,7 @@ supportedProfiles:
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedaten"
-          packageVersion: "1.3.0"
+          packageVersion: "1.3.1"
 
   "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_Binary":
     profileVersions:
@@ -956,6 +972,7 @@ supportedProfiles:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
           packageVersion: "1.0.3-1"
+
       1.1.1:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"

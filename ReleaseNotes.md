@@ -2,6 +2,18 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 0.5.0
+
+### added
+- support for the 1.2 version of profiles in de.abda.erezeptabgabedatenpkv (package de.abda.erezeptabgabedatenpkv-1.2.0)
+- New validation module: isik2 (Informationstechnische Systeme in Krankenhäusern Stufe 2)
+- New validation module: isik1 (Informationstechnische Systeme in Krankenhäusern Stufe 1)
+
+### changed
+- removed packages de.abda.erezeptabgabedaten-1.3.0, de.abda.erezeptabgabedatenpkv-1.1.0
+- added packages (erp): de.abda.erezeptabgabedaten-1.3.1, de.abda.erezeptabgabedatenbasis-1.3.1 
+- KBV_CS_SFHIR_KBV_DARREICHUNGSFORM_V1.11.xml integrated
+
 ## Release 0.4.1
 
 ### fixed

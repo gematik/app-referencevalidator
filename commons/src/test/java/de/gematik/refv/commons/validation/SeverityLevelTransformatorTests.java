@@ -35,26 +35,103 @@ class SeverityLevelTransformatorTests {
         var m1 = new SingleValidationMessage();
         m1.setSeverity(ResultSeverityEnum.ERROR);
         m1.setMessage("Error message");
+        m1.setMessageId("testMessageId");
         var m2 = new SingleValidationMessage();
         m2.setSeverity(ResultSeverityEnum.ERROR);
         m2.setMessage("Error message");
+        m2.setMessageId("testMessageId");
         var m3 = new SingleValidationMessage();
         m3.setSeverity(ResultSeverityEnum.WARNING);
         m3.setMessage("Warning message");
+        m3.setMessageId("testMessageId");
         var m4 = new SingleValidationMessage();
         m4.setSeverity(ResultSeverityEnum.INFORMATION);
         m4.setMessage("Warning message");
+        m4.setMessageId("testMessageId");
         var inputMessages = List.of(m1,m2,m3,m4);
 
-        var t1 = new ValidationMessageTransformation("error","information","Error mes");
-        var t2 = new ValidationMessageTransformation("warning","information","Warning mes");
-        var notApplyingTransformation = new ValidationMessageTransformation("information","error","not applying");
-        var transformations = List.of(t1,t2, notApplyingTransformation);
+        var t1 = new ValidationMessageTransformation("error","information","Error mes", "testMessageId");
+        var t2 = new ValidationMessageTransformation("warning","information","Warning mes", "testMessageId");
+        var transformations = List.of(t1,t2);
 
         var transformedMessages = engine.applyTransformations(inputMessages, transformations);
 
         Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
         Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.INFORMATION)));
+    }
+
+    @Test
+    void testTransformationWithNonMatchingLocatorStringDoesntApply() {
+        var m1 = new SingleValidationMessage();
+        m1.setSeverity(ResultSeverityEnum.ERROR);
+        m1.setMessage("Error message");
+        m1.setMessageId("testMessageId");
+        var inputMessages = List.of(m1);
+
+        var notApplyingTransformation = new ValidationMessageTransformation("information","error","not applying", "testMessageId");
+        var transformations = List.of(notApplyingTransformation);
+
+        var transformedMessages = engine.applyTransformations(inputMessages, transformations);
+
+        Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
+        Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)));
+    }
+
+    @Test
+    void testTransformationsWithoutMessageCodeInRuleApplyToAnyMessageCodeInActualMessage() {
+        var m1 = new SingleValidationMessage();
+        m1.setSeverity(ResultSeverityEnum.ERROR);
+        m1.setMessage("Error message");
+        m1.setMessageId("testMessageId");
+        var inputMessages = List.of(m1);
+
+        var t1 = new ValidationMessageTransformation("error","information","Error mes", null);
+        var transformations = List.of(t1);
+
+        var transformedMessages = engine.applyTransformations(inputMessages, transformations);
+
+        Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
+        Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.INFORMATION)));
+    }
+
+    @Test
+    void testTransformationIsNotPerformedOnNonMatchingMessageId() {
+        var m1 = new SingleValidationMessage();
+        m1.setSeverity(ResultSeverityEnum.ERROR);
+        m1.setMessage("Error message");
+        m1.setMessageId(null);
+        var m2 = new SingleValidationMessage();
+        m2.setSeverity(ResultSeverityEnum.ERROR);
+        m2.setMessage("Error message");
+        m2.setMessageId("non matching message id");
+        var inputMessages = List.of(m1, m2);
+
+        var t1 = new ValidationMessageTransformation("error","information","Error mes", "testMessageId");
+        var transformations = List.of(t1);
+
+        var transformedMessages = engine.applyTransformations(inputMessages, transformations);
+
+        Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
+        // Non message has been transformed, thus all messages are still errors
+        Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)));
+    }
+
+    @Test
+    void testTransformationIsNotPerformedOnMatchingLocatorStringButNonMatchingMessageId() {
+        var m1 = new SingleValidationMessage();
+        m1.setSeverity(ResultSeverityEnum.ERROR);
+        m1.setMessage("Error message");
+        m1.setMessageId("testMessageId");
+        var inputMessages = List.of(m1);
+
+        var t1 = new ValidationMessageTransformation("error","information","Error message", "someOtherMessageId");
+        var transformations = List.of(t1);
+
+        var transformedMessages = engine.applyTransformations(inputMessages, transformations);
+
+        Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
+        // Non message has been transformed, thus all messages are still errors
+        Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)));
     }
 
     @Test
@@ -68,6 +145,19 @@ class SeverityLevelTransformatorTests {
         var transformedMessages = engine.applyTransformations(inputMessages, new LinkedList<>());
         Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
         Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)));
+    }
+
+    @Test
+    void testCodeSystemIsIgnoredRuleWorks() {
+        var m1 = new SingleValidationMessage();
+        m1.setSeverity(ResultSeverityEnum.ERROR);
+        m1.setMessage("Code system has been ignored due to module configuration");
+        m1.setMessageId(I18nConstants.TERMINOLOGY_PASSTHROUGH_TX_MESSAGE);
+        var inputMessages = List.of(m1);
+
+        var transformedMessages = engine.applyTransformations(inputMessages, new LinkedList<>());
+        Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
+        Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.INFORMATION)));
     }
 
     @Test

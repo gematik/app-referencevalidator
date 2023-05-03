@@ -1,15 +1,20 @@
 package de.gematik.refv.commons;
 
 
+import de.gematik.refv.commons.configuration.FhirPackageConfigurationLoader;
+import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.IOException;
 import java.util.Optional;
 
 class ReferencedProfileLocatorJSONTests {
     ReferencedProfileLocator locator = new ReferencedProfileLocator();
+    ValidationModuleConfiguration configuration;
+    FhirPackageConfigurationLoader configurationLoader = new FhirPackageConfigurationLoader();
 
     @ParameterizedTest
     @ValueSource(strings = {
@@ -17,6 +22,7 @@ class ReferencedProfileLocatorJSONTests {
             "https://bla.bla"
     })
     void testProfileInCorrectResourceIsExtractedCorrectly(String canonical) {
+        configuration = new ValidationModuleConfiguration();
         Profile profile = Profile.parse(canonical);
         String resource = String.format(
                 "{\n"
@@ -28,7 +34,7 @@ class ReferencedProfileLocatorJSONTests {
                         + "    ],\n"
                         + "  }\n"
                         + "}", profile.getCanonical());
-        Optional<Profile> profileOptional = locator.locate(resource);
+        Optional<Profile> profileOptional = locator.locate(resource, configuration);
         Assertions.assertTrue(profileOptional.isPresent());
         Assertions.assertEquals(profile, profileOptional.get());
     }
@@ -74,7 +80,7 @@ class ReferencedProfileLocatorJSONTests {
                     + "}",
     })
     void testNoProfile(String resource) {
-        Optional<Profile> profileOptional = locator.locate(resource);
+        Optional<Profile> profileOptional = locator.locate(resource, configuration);
         Assertions.assertTrue(profileOptional.isEmpty());
     }
 
@@ -94,11 +100,47 @@ class ReferencedProfileLocatorJSONTests {
                     + "}",
     })
     void corruptedJsonResource(String resource) {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> locator.locate(resource));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> locator.locate(resource, configuration));
     }
 
     @Test
     void testNotJsonResource() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> locator.locate("not a json resource"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> locator.locate("not a json resource", configuration));
+    }
+
+    @Test
+    void testMultipleSupportedProfiles() throws IOException {
+        configuration = configurationLoader.getConfiguration("erp-packages.yaml");
+        String resource =
+                "{\n"
+                        + "\"resourceType\": \"Bundle\",\n"
+                        + "\"id\": \"123456789\",\n"
+                        + " \"meta\": {\n"
+                        + "     \"profile\": [\n"
+                        + "         \"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle\",\n"
+                        + "         \"http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate\"\n"
+                        + "    ],\n"
+                        + "  }\n"
+                        + "}";
+        Assertions.assertDoesNotThrow(() -> locator.locate(resource, configuration));
+    }
+
+    @Test
+    void testMultipleSupportedProfilesFindsCorrectProfile() throws IOException {
+        configuration = configurationLoader.getConfiguration("erp-packages.yaml");
+        String resource =
+                "{\n"
+                        + "\"resourceType\": \"Bundle\",\n"
+                        + "\"id\": \"123456789\",\n"
+                        + " \"meta\": {\n"
+                        + "     \"profile\": [\n"
+                        + "         \"http://unknown.profile1.de\",\n"
+                        + "         \"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle\",\n"
+                        + "         \"http://unknown.profile2.de\"\n"
+                        + "    ],\n"
+                        + "  }\n"
+                        + "}";
+        Optional<Profile> profileOptional = locator.locate(resource, configuration);
+        profileOptional.ifPresent(profile -> Assertions.assertEquals("https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle", profile.getCanonical()));
     }
 }

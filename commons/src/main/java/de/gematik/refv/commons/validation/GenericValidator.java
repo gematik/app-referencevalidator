@@ -54,7 +54,7 @@ public class GenericValidator {
             @NonNull
             ValidationModuleConfiguration configuration) throws IllegalArgumentException {
 
-        Profile profileInResource = getProfileInResource(resourceBody);
+        Profile profileInResource = getProfileInResource(resourceBody, configuration);
 
         logger.info("Validating against {}...", profileInResource);
 
@@ -84,7 +84,10 @@ public class GenericValidator {
                     fhirContext,
                     configuration.listPackageNamesToLoad(packageDefinition),
                     configuration.getPatchesForPackageAndItsDependencies(packageDefinition),
-                    configuration.getIgnoredCodeSystems()
+                    configuration.getIgnoredCodeSystems(),
+                    configuration.getIgnoredValueSets(),
+                    configuration.isErrorOnUnknownProfile(),
+                    configuration.isAnyExtensionsAllowed()
             ));
             return hapiValidatorsCache.get(profileInResource);
         }
@@ -93,7 +96,10 @@ public class GenericValidator {
                 fhirContext,
                 configuration.listPackageNamesToLoad(packageDefinition),
                 configuration.getPatchesForPackageAndItsDependencies(packageDefinition),
-                configuration.getIgnoredCodeSystems()
+                configuration.getIgnoredCodeSystems(),
+                configuration.getIgnoredValueSets(),
+                configuration.isErrorOnUnknownProfile(),
+                configuration.isAnyExtensionsAllowed()
         );
     }
 
@@ -104,10 +110,10 @@ public class GenericValidator {
         return packageDefinition.get();
     }
 
-    private Profile getProfileInResource(String resourceBody) {
+    private Profile getProfileInResource(String resourceBody, ValidationModuleConfiguration configuration) {
         // Use custom performance-optimized profile extraction due to issues with HAPI XML Parser
         // Parsed XML files are transformed to JSON internally by HAPI and some elements such as XML comments are processed wrongly
-        Optional<Profile> profileOrEmpty = referencedProfileLocator.locate(resourceBody);
+        Optional<Profile> profileOrEmpty = referencedProfileLocator.locate(resourceBody, configuration);
         if (profileOrEmpty.isEmpty())
             throw new IllegalArgumentException("FHIR resources without a referenced profile are currently unsupported");
         return profileOrEmpty.get();

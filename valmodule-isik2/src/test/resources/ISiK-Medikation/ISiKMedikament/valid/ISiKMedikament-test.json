@@ -1,0 +1,19 @@
+{
+  "resourceType": "Medication",
+  "id": "ExampleISiKMedikament1",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikament"
+    ]
+  },
+  "code": {
+    "coding": [
+      {
+        "system": "http://fhir.de/CodeSystem/bfarm/atc",
+        "code": "V03AB23",
+        "display": "Acetylcystein"
+      }
+    ]
+  },
+  "status": "active"
+}
