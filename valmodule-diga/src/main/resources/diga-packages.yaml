@@ -1,0 +1,345 @@
+errorOnUnknownProfile: "true"
+anyExtensionsAllowed: "false"
+
+fhirPackages:
+  kbv.mio.diga:
+    packageVersions:
+      1.0.0-festlegung:
+        filename: "kbv.mio.diga-1.0.0-festlegung.tgz"
+        dependencies:
+          - packageName: "kbv.basis"
+            packageVersion: "1.2.1"
+          - packageName: "de.basisprofil.r4"
+            packageVersion: "0.9.13"
+          - packageName: "dav.kbv.sfhir.cs.vs"
+            packageVersion: "1.0.3"
+
+  # https://simplifier.net/Basisprofil-DE-R4/~packages
+  de.basisprofil.r4:
+    packageVersions:
+      0.9.13:
+        filename: "de.basisprofil.r4-0.9.13.tgz"
+        patches:
+          - "Extension-seitenlokalisation.json"
+
+    # https://simplifier.net/Base1x0/~packages
+  kbv.basis:
+    packageVersions:
+      1.2.1:
+        filename: "kbv.basis-1.2.1.tgz"
+        dependencies:
+          - packageName: "de.basisprofil.r4"
+            packageVersion: "0.9.13"
+
+  dav.kbv.sfhir.cs.vs:
+    packageVersions:
+      1.0.3:
+        filename: "dav.kbv.sfhir.cs.vs-1.0.3-json.tgz"
+
+ignoredCodeSystems:
+  - "http://fhir.de/CodeSystem/ifa/pzn"
+  - "http://fhir.de/CodeSystem/dimdi/atc"
+  - "http://hl7.org/fhir/sid/icf-nl"
+
+supportedProfiles:
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_AllergyIntolerance_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Appointment_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Bundle":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_CarePlan_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Composition":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Condition_Problem_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_DeviceDefinition_DIGA":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_DeviceDefinition_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_DIGA":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Encounter_Past_Appointment":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Goal_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_MedicationAdministration_Medication_Intake_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_MedicationStatement_Medication_Request_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Medication_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Assessment_Scale":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Assessment_Score_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Blood_Pressure":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Body_Height":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Body_Temperature":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Body_Weight":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Diary_Entry":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Environmental_Factor_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Functional_Assessment_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Glucose_Concentration":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Head_Circumference":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Heart_Rate":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Life_Style_Factor_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Nutrition_Intake":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Nutrition_Intake_Food_Composition_Types":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Peripheral_Oxygen_Saturation":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Respiratory_Rate":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Organization":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Organization_Manufacturer":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Patient":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Practitioner":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_PractitionerRole":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Procedure_Activity_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Provenance":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_QuestionnaireResponse_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Questionnaire_Free":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_RelatedPerson":
+    profileVersions:
+      1.0.0:
+        requiredPackage:
+          packageName: "kbv.mio.diga"
+          packageVersion: "1.0.0-festlegung"
+

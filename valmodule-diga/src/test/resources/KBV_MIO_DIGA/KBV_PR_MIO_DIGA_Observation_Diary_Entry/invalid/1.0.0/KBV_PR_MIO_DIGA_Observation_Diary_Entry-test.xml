@@ -1,0 +1,53 @@
+<Observation xmlns="http://hl7.org/fhir">
+    <id value="dca59162-3179-11ec-8d3d-0242ac130003" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Diary_Entry|1.0.0" />
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Reference">
+        <valueReference>
+            <reference value="urn:uuid:dca5939c-3179-11ec-8d3d-0242ac130003" />
+        </valueReference>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Reference">
+        <valueReference>
+            <reference value="urn:uuid:d00ab21d-5d9f-4055-9c54-7055aad5bee0" />
+        </valueReference>
+    </extension>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:dca59162-3179-11ec-8d3d-0242ac130003" />
+    </identifier>
+    <status value="final" />
+    <code>
+        <coding>
+            <system value="http://loinc.org" />
+            <version value="2.71" />
+            <code value="51855-5" />
+            <display value="Patient Note">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Tagebucheintrag" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:dca59b4e-3179-11ec-8d3d-0242ac130003" />
+    </subject>
+    <effectiveDateTime value="2021-07-20" />
+    <performer>
+        <reference value="urn:uuid:dca59b4e-3179-11ec-8d3d-0242ac130003" />
+    </performer>
+    <valueString value="Gestern geraucht und heute mit Kopfschmerzen aufgewacht, sind nach Einnhame von Ibuprofen besser geworden!" />
+</Observation>

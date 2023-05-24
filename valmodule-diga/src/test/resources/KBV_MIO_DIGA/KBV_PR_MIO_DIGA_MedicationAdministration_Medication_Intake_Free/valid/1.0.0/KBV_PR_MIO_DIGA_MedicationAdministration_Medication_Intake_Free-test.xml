@@ -1,0 +1,63 @@
+<MedicationAdministration xmlns="http://hl7.org/fhir">
+    <id value="519d7a9e-37ff-11ec-8d3d-0242ac130003" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_MedicationAdministration_Medication_Intake_Free|1.0.0" />
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Reference">
+        <valueReference>
+            <reference value="urn:uuid:326fec3e-37fe-11ec-8d3d-0242ac130003" />
+        </valueReference>
+    </extension>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:519d7a9e-37ff-11ec-8d3d-0242ac130003" />
+    </identifier>
+    <status value="completed" />
+    <medicationReference>
+        <reference value="urn:uuid:7a8e8102-37b7-11ec-8d3d-0242ac130003" />
+    </medicationReference>
+    <subject>
+        <reference value="urn:uuid:dca59b4e-3179-11ec-8d3d-0242ac130003" />
+    </subject>
+    <effectiveDateTime value="2022-01-01" />
+    <reasonCode>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="408381007" />
+            <display value="Migraine prophylaxis (procedure)" />
+        </coding>
+    </reasonCode>
+    <dosage>
+        <route>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="26643006" />
+                <display value="Oral route (qualifier value)">
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                            <valueString value="Oral" />
+                        </extension>
+                    </extension>
+                </display>
+            </coding>
+        </route>
+        <dose>
+            <value value="1" />
+            <unit value="Tabletten" />
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_BMP_DOSIEREINHEIT" />
+            <code value="TAB" />
+        </dose>
+    </dosage>
+</MedicationAdministration>

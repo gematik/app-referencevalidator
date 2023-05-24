@@ -1,0 +1,86 @@
+<Observation xmlns="http://hl7.org/fhir">
+    <id value="c438e5ce-3800-11ec-8d3d-0242ac130003" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Assessment_Scale|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:c438e5ce-3800-11ec-8d3d-0242ac130003" />
+    </identifier>
+    <partOf>
+        <reference value="urn:uuid:dca59d88-3179-11ec-8d3d-0242ac130003" />
+    </partOf>
+    <status value="final" />
+    <category>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="782487009:370132008=30766002" />
+            <display value="Assessment score (observable entity):Scale type (attribute)=Quantitative (qualifier value)">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Kardinalskala" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </category>
+    <code>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="225908003" />
+            <display value="Pain score (observable entity)" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:dca59b4e-3179-11ec-8d3d-0242ac130003" />
+    </subject>
+    <effectiveDateTime value="2020-07-20T08:30:00+01:00" />
+    <valueQuantity>
+        <value value="6" />
+        <unit value="1" />
+        <system value="http://unitsofmeasure.org" />
+        <code value="1" />
+    </valueQuantity>
+    <method>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="446661009" />
+            <display value="Visual analog scale score (observable entity)">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Visuelle Analogskala" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </method>
+    <referenceRange>
+        <low>
+            <value value="1" />
+        </low>
+        <high>
+            <value value="10" />
+        </high>
+        <type>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="278492000" />
+                <display value="Numerical range (qualifier value)" />
+            </coding>
+        </type>
+    </referenceRange>
+</Observation>

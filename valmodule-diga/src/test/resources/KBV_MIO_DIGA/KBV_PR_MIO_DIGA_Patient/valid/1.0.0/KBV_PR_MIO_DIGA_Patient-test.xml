@@ -1,0 +1,95 @@
+<Patient xmlns="http://hl7.org/fhir">
+    <id value="3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-26T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Patient|1.0.0" />
+    </meta>
+    <identifier>
+        <use value="official" />
+        <type>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_Base_identifier_type" />
+                <code value="kvk" />
+                <display value="Krankenversichertenkarte" />
+            </coding>
+        </type>
+        <system value="http://fhir.de/NamingSystem/gkv/kvk-versichertennummer" />
+        <value value="B987654321" />
+    </identifier>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </identifier>
+    <name>
+        <use value="official" />
+        <text value="Erika Mustermann" />
+        <family value="Mustermann">
+            <extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+                <valueString value="Mustermann" />
+            </extension>
+        </family>
+        <given value="Erika" />
+    </name>
+    <telecom>
+        <system value="phone">
+            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                <extension url="content">
+                    <valueString value="Telefonnummer" />
+                </extension>
+            </extension>
+        </system>
+        <value value="017909090" />
+    </telecom>
+    <gender value="female" />
+    <birthDate value="1980-12-30" />
+    <address>
+        <type value="both" />
+        <line value="Musterstra&#223;e 1">
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+                <valueString value="Musterstra&#223;e" />
+            </extension>
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+                <valueString value="1" />
+            </extension>
+        </line>
+        <city value="Berlin" />
+        <postalCode value="10101" />
+        <country value="D" />
+    </address>
+    <communication>
+        <language>
+            <coding>
+                <system value="urn:ietf:bcp:47" />
+                <code value="de" />
+                <display value="German" />
+            </coding>
+        </language>
+    </communication>
+    <communication>
+        <language>
+            <coding>
+                <system value="urn:ietf:bcp:47" />
+                <code value="fi" />
+                <display value="Finnish" />
+            </coding>
+        </language>
+    </communication>
+    <communication>
+        <language>
+            <coding>
+                <system value="urn:ietf:bcp:47" />
+                <code value="fr" />
+                <display value="French" />
+            </coding>
+        </language>
+    </communication>
+</Patient>

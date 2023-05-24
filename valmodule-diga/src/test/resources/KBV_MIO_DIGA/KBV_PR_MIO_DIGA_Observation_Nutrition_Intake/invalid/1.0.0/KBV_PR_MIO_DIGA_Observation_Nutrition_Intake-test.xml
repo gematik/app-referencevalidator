@@ -1,0 +1,151 @@
+<Observation xmlns="http://hl7.org/fhir">
+    <id value="d1e991c6-46ee-4b91-a56d-e40f1c5343cb" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Nutrition_Intake|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:d1e991c6-46ee-4b91-a56d-e40f1c5343cb" />
+    </identifier>
+    <status value="final" />
+    <code>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="255620007" />
+            <display value="Food (substance)" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </subject>
+    <effectiveDateTime value="2021-06-20T14:00:00+01:00" />
+    <hasMember>
+        <reference value="urn:uuid:fd0c2548-512a-4492-92a8-efc0e086e72b" />
+    </hasMember>
+    <hasMember>
+        <reference value="urn:uuid:067c0ec9-4fc6-4f5a-87e5-0893c9325b5e" />
+    </hasMember>
+    <hasMember>
+        <reference value="urn:uuid:213a5629-1dd3-44cb-b829-fbf57a16465f" />
+    </hasMember>
+    <component>
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Nutrition_Intake_Taken">
+            <extension url="einnahmeErfolgt">
+                <extension url="einnahmeErfolgtCode">
+                    <valueCodeableConcept>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="229918000" />
+                            <display value="Food and drink intake (observable entity)" />
+                        </coding>
+                    </valueCodeableConcept>
+                </extension>
+                <extension url="einnahmeErfolgtValue">
+                    <valueBoolean value="true" />
+                </extension>
+            </extension>
+        </extension>
+        <code>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="226575004" />
+                <display value="Naan bread (substance)" />
+            </coding>
+        </code>
+        <valueQuantity>
+            <value value="200" />
+            <unit value="g" />
+            <system value="http://unitsofmeasure.org" />
+            <code value="g" />
+        </valueQuantity>
+    </component>
+    <component>
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Nutrition_Intake_Taken">
+            <extension url="einnahmeErfolgt">
+                <extension url="einnahmeErfolgtCode">
+                    <valueCodeableConcept>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="229918000" />
+                            <display value="Food and drink intake (observable entity)" />
+                        </coding>
+                    </valueCodeableConcept>
+                </extension>
+                <extension url="einnahmeErfolgtValue">
+                    <valueBoolean value="true" />
+                </extension>
+            </extension>
+        </extension>
+        <code>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="227856006" />
+                <display value="Okra curry (substance)" />
+            </coding>
+        </code>
+        <valueQuantity>
+            <value value="300" />
+            <unit value="g" />
+            <system value="http://unitsofmeasure.org" />
+            <code value="g" />
+        </valueQuantity>
+    </component>
+    <component>
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Nutrition_Intake_Taken">
+            <extension url="einnahmeErfolgt">
+                <extension url="einnahmeErfolgtCode">
+                    <valueCodeableConcept>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="229918000" />
+                            <display value="Food and drink intake (observable entity)" />
+                        </coding>
+                    </valueCodeableConcept>
+                </extension>
+                <extension url="einnahmeErfolgtValue">
+                    <valueBoolean value="false" />
+                </extension>
+            </extension>
+            <extension url="begruendungNichtEinnahme">
+                <valueCodeableConcept>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="422587007" />
+                        <display value="Nausea (finding)" />
+                    </coding>
+                </valueCodeableConcept>
+            </extension>
+        </extension>
+        <code>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="67324005" />
+                <display value="Rice (substance)" />
+            </coding>
+        </code>
+        <valueQuantity>
+            <value value="200" />
+            <unit value="g" />
+            <system value="http://unitsofmeasure.org" />
+            <code value="g" />
+        </valueQuantity>
+    </component>
+</Observation>

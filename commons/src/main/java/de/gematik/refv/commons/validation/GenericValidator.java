@@ -71,7 +71,7 @@ public class GenericValidator {
         var filteredMessages = severityLevelTransformator.applyTransformations(intermediateResult.getMessages(), packageDefinition.getValidationMessageTransformations());
         var result = new ValidationResult(filteredMessages);
 
-        logger.info("Final ValidationResult: {}", result);
+        logger.debug("Final ValidationResult: {}", result);
 
         return result;
     }

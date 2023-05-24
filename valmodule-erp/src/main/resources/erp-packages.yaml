@@ -31,8 +31,8 @@ fhirPackages:
             packageVersion: "1.1.3"
           - packageName: "de.basisprofil.r4"
             packageVersion: "0.9.13"
-      1.1.0:
-        filename: "kbv.ita.erp-1.1.0.tgz"
+      1.1.1:
+        filename: "kbv.ita.erp-1.1.1.tgz"
         dependencies:
           - packageName: "gematik.kbv.sfhir.cs.vs"
             packageVersion: "1.0.0"
@@ -128,13 +128,13 @@ fhirPackages:
             packageVersion: "1.0.2"
           - packageName: "de.basisprofil.r4"
             packageVersion: "0.9.13"
-      1.2.0:
-        filename: "de.gematik.erezept-workflow.r4-1.2.0.tgz"
+      1.2.1:
+        filename: "de.gematik.erezept-workflow.r4-1.2.1.tgz"
         dependencies:
           - packageName: "gematik.kbv.sfhir.cs.vs"
             packageVersion: "1.0.0"
           - packageName: "kbv.ita.erp"
-            packageVersion: "1.1.0"
+            packageVersion: "1.1.1"
           - packageName: "kbv.ita.for"
             packageVersion: "1.1.0"
           - packageName: "kbv.basis"
@@ -322,13 +322,13 @@ fhirPackages:
 
   de.gematik.erezept-patientenrechnung.r4:
     packageVersions:
-      1.0.0:
-        filename: "de.gematik.erezept-patientenrechnung.r4-1.0.0.tgz"
+      1.0.1:
+        filename: "de.gematik.erezept-patientenrechnung.r4-1.0.1.tgz"
         dependencies:
           - packageName: "de.basisprofil.r4"
             packageVersion: "1.3.2"
           - packageName: "de.gematik.erezept-workflow.r4"
-            packageVersion: "1.2.0"
+            packageVersion: "1.2.1"
           - packageName: "kbv.ita.for"
             packageVersion: "1.1.0"
           - packageName: "kbv.basis"
@@ -398,52 +398,157 @@ supportedProfiles:
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-AbgabedatenBundle":
     profileVersions:
+      1.1.0:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.1.0"
+
+      1.2:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.2.0"
+
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenbasis"
           packageVersion: "1.3.0"
+
+      1.3.1:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-AbgabedatenComposition":
     profileVersions:
+      1.1.0:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.1.0"
+
+      1.2:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.2.0"
+
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenbasis"
           packageVersion: "1.3.0"
+
+      1.3.1:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-Abgabeinformationen":
     profileVersions:
+      1.1.0:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.1.0"
+
+      1.2:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.2.0"
+
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenbasis"
           packageVersion: "1.3.0"
+
+      1.3.1:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-Abrechnungszeilen":
     profileVersions:
+      1.1.0:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.1.0"
+
+      1.2:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.2.0"
+
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenbasis"
           packageVersion: "1.3.0"
+
+      1.3.1:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-Apotheke":
     profileVersions:
+      1.1.0:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.1.0"
+
+      1.2:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.2.0"
+
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenbasis"
           packageVersion: "1.3.0"
+
+      1.3.1:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-ZusatzdatenEinheit":
     profileVersions:
+      1.1.0:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.1.0"
+
+      1.2:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.2.0"
+
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenbasis"
           packageVersion: "1.3.0"
 
+      1.3.1:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.3.1"
+
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-ZusatzdatenHerstellung":
     profileVersions:
+      1.1.0:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.1.0"
+
+      1.2:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.2.0"
+
       1.3:
         requiredPackage:
           packageName: "de.abda.erezeptabgabedatenbasis"
           packageVersion: "1.3.0"
+
+      1.3.1:
+        requiredPackage:
+          packageName: "de.abda.erezeptabgabedatenbasis"
+          packageVersion: "1.3.1"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle":
     profileVersions:
@@ -809,7 +914,7 @@ supportedProfiles:
       1.1.0:
         requiredPackage:
           packageName: "kbv.ita.erp"
-          packageVersion: "1.1.0"
+          packageVersion: "1.1.1"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Composition":
     profileVersions:
@@ -826,7 +931,7 @@ supportedProfiles:
       1.1.0:
         requiredPackage:
           packageName: "kbv.ita.erp"
-          packageVersion: "1.1.0"
+          packageVersion: "1.1.1"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Compounding":
     profileVersions:
@@ -843,7 +948,7 @@ supportedProfiles:
       1.1.0:
         requiredPackage:
           packageName: "kbv.ita.erp"
-          packageVersion: "1.1.0"
+          packageVersion: "1.1.1"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_FreeText":
     profileVersions:
@@ -860,7 +965,7 @@ supportedProfiles:
       1.1.0:
         requiredPackage:
           packageName: "kbv.ita.erp"
-          packageVersion: "1.1.0"
+          packageVersion: "1.1.1"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Ingredient":
     profileVersions:
@@ -877,7 +982,7 @@ supportedProfiles:
       1.1.0:
         requiredPackage:
           packageName: "kbv.ita.erp"
-          packageVersion: "1.1.0"
+          packageVersion: "1.1.1"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_PZN":
     profileVersions:
@@ -894,7 +999,7 @@ supportedProfiles:
       1.1.0:
         requiredPackage:
           packageName: "kbv.ita.erp"
-          packageVersion: "1.1.0"
+          packageVersion: "1.1.1"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_PracticeSupply":
     profileVersions:
@@ -911,7 +1016,7 @@ supportedProfiles:
       1.1.0:
         requiredPackage:
           packageName: "kbv.ita.erp"
-          packageVersion: "1.1.0"
+          packageVersion: "1.1.1"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription":
     profileVersions:
@@ -928,7 +1033,7 @@ supportedProfiles:
       1.1.0:
         requiredPackage:
           packageName: "kbv.ita.erp"
-          packageVersion: "1.1.0"
+          packageVersion: "1.1.1"
 
   "https://gematik.de/fhir/StructureDefinition/ErxAcceptOperationOutParameters":
     profileVersions:
@@ -1115,131 +1220,131 @@ supportedProfiles:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_AuditEvent":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_BfArMApproval":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Binary":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Bundle":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_CloseOperationInputBundle":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_DispReq":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_InfoReq":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_Reply":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_Representative":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Composition":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Device":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Digest":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_MedicationDispense":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Task":
     profileVersions:
       1.2:
         requiredPackage:
           packageName: "de.gematik.erezept-workflow.r4"
-          packageVersion: "1.2.0"
+          packageVersion: "1.2.1"
 
   "https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_ChargeItem":
     profileVersions:
       1.0:
         requiredPackage:
           packageName: "de.gematik.erezept-patientenrechnung.r4"
-          packageVersion: "1.0.0"
+          packageVersion: "1.0.1"
 
   "https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_Communication_ChargChangeReply":
     profileVersions:
       1.0:
         requiredPackage:
           packageName: "de.gematik.erezept-patientenrechnung.r4"
-          packageVersion: "1.0.0"
+          packageVersion: "1.0.1"
 
   "https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_Communication_ChargChangeReq":
     profileVersions:
       1.0:
         requiredPackage:
           packageName: "de.gematik.erezept-patientenrechnung.r4"
-          packageVersion: "1.0.0"
+          packageVersion: "1.0.1"
 
   "https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_Consent":
     profileVersions:
       1.0:
         requiredPackage:
           packageName: "de.gematik.erezept-patientenrechnung.r4"
-          packageVersion: "1.0.0"
+          packageVersion: "1.0.1"
 

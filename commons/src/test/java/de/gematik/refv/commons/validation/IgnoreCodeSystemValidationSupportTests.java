@@ -31,39 +31,55 @@ import java.util.List;
 
 class IgnoreCodeSystemValidationSupportTests {
 
+    private FhirContext fhirContext = FhirContext.forR4();
+
     @Test
-    void testMissingValueSetsAreIgnored() {
-        FhirContext fhirContext = FhirContext.forR4();
-        var codeSystemsToIgnore = List.of(new String[] {"http://a","http://b"});
+    void testConfiguredCodeSystemsToIgnoreDoNotProduceErrors() {
+        final String systemA = "http://a";
+        final String systemB = "http://b";
+        var codeSystemsToIgnore = List.of(new String[] {systemA, systemB});
         var support = new IgnoreCodeSystemValidationSupport(fhirContext, codeSystemsToIgnore);
 
         ValidationSupportChain validationSupportChain = new ValidationSupportChain(
                 new DefaultProfileValidationSupport(fhirContext)
         );
-        Assertions.assertTrue(support.isCodeSystemSupported(new ValidationSupportContext(validationSupportChain),"http://a"));
-        var result = support.validateCode(new ValidationSupportContext(validationSupportChain), new ConceptValidationOptions(),"http://a","someCode","display","http://valueset.url");
+        ValidationSupportContext context = new ValidationSupportContext(validationSupportChain);
+
+        Assertions.assertTrue(support.isCodeSystemSupported(context, systemA));
+
+        var result = support.validateCode(context, new ConceptValidationOptions(), systemA,"someCode","display","http://valueset.url");
         Assertions.assertNotNull(result);
         Assertions.assertNull(result.getCode(),"result.getCode() should be empty, otherwise HAPI doesn't produce any ValidationMessages");
         Assertions.assertEquals(IValidationSupport.IssueSeverity.INFORMATION, result.getSeverity(), "Wrong severity of the code validation result");
+
+        IValidationSupport.LookupCodeResult lookupCodeResult = support.lookupCode(context, systemA, "a-code", "en-US");
+        Assertions.assertNotNull(lookupCodeResult, "Code lookup for an ignored code system is null while it should not be");
+        Assertions.assertTrue(lookupCodeResult.isFound(), "Code lookup for an ignored code system is unsuccessful while it should be");
     }
 
     @Test
     void testUnregisteredCodesystemsAreUnsupported() {
-        FhirContext fhirContext = FhirContext.forR4();
-        var codeSystemsToIgnore = List.of(new String[] {"http://a","http://b"});
+        final String systemA = "http://a";
+        final String systemB = "http://b";
+        final String systemC = "http://c";
+        var codeSystemsToIgnore = List.of(new String[] {systemA, systemB});
         var support = new IgnoreCodeSystemValidationSupport(fhirContext, codeSystemsToIgnore);
 
         ValidationSupportChain validationSupportChain = new ValidationSupportChain(
                 new DefaultProfileValidationSupport(fhirContext)
         );
-        Assertions.assertFalse(support.isCodeSystemSupported(new ValidationSupportContext(validationSupportChain),"http://c"));
-        var result = support.validateCode(new ValidationSupportContext(validationSupportChain), new ConceptValidationOptions(),"http://c","someCode","display","http://valueset.url");
+        ValidationSupportContext context = new ValidationSupportContext(validationSupportChain);
+
+        Assertions.assertFalse(support.isCodeSystemSupported(context, systemC));
+
+        var result = support.validateCode(context, new ConceptValidationOptions(), systemC,"someCode","display","http://valueset.url");
         Assertions.assertNull(result);
+
+        Assertions.assertNull(support.lookupCode(context, systemC, "c-code", "en-US"), "Code lookup for a code of a not registered system is successful while it shouldn't be");
     }
 
     @Test
     void testEmptyCodeSystemsAreNotAllowed() {
-        FhirContext fhirContext = FhirContext.forR4();
         var codeSystemsToIgnore = new LinkedList<String>();
         codeSystemsToIgnore.add("http://a");
         codeSystemsToIgnore.add(null);

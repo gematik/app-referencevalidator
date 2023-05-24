@@ -50,20 +50,21 @@
 * kbv.ita.for-1.1.0.tgz
 * kbv.ita.erp-1.0.1.tgz
 * kbv.ita.erp-1.0.2.tgz
-* kbv.ita.erp-1.1.0.tgz
-* de.gematik.erezept-workflow.r4-1.0.3-1.tgz
-* de.gematik.erezept-workflow.r4-1.1.1.tgz
-* de.gematik.erezept-workflow.r4-1.2.0.tgz
-* de.gematik.erezept-patientenrechnung.r4-1.0.0.tgz
+* kbv.ita.erp-1.1.1.tgz
+* de.abda.erezeptabgabedaten-1.0.3.tgz
+* de.abda.erezeptabgabedaten-1.1.2.tgz
+* de.abda.erezeptabgabedaten-1.2.0.tgz
+* de.abda.erezeptabgabedaten-1.3.1.tgz
 * de.abda.erezeptabgabedatenbasis-1.1.0.tgz
 * de.abda.erezeptabgabedatenbasis-1.1.3.tgz
 * de.abda.erezeptabgabedatenbasis-1.2.0.tgz
 * de.abda.erezeptabgabedatenbasis-1.3.0.tgz
-* de.abda.erezeptabgabedaten-1.0.3.tgz
-* de.abda.erezeptabgabedaten-1.1.2.tgz
-* de.abda.erezeptabgabedaten-1.2.0.tgz
-* de.abda.erezeptabgabedaten-1.3.0.tgz
-* de.abda.erezeptabgabedatenpkv-1.1.0.tgz
+* de.abda.erezeptabgabedatenbasis-1.3.1.tgz
+* de.abda.erezeptabgabedatenpkv-1.2.0.tgz
+* de.gematik.erezept-patientenrechnung.r4-1.0.1.tgz
+* de.gematik.erezept-workflow.r4-1.0.3-1.tgz
+* de.gematik.erezept-workflow.r4-1.1.1.tgz
+* de.gematik.erezept-workflow.r4-1.2.1.tgz
 * de.gkvsv.erezeptabrechnungsdaten-1.0.4.tgz
 * de.gkvsv.erezeptabrechnungsdaten-1.0.5.tgz
 * de.gkvsv.erezeptabrechnungsdaten-1.0.6.tgz
@@ -103,25 +104,67 @@
   * 1.2
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-AbgabedatenBundle
+  * 1.1.0
+
+  * 1.2
+
   * 1.3
+
+  * 1.3.1
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-AbgabedatenComposition
+  * 1.1.0
+
+  * 1.2
+
   * 1.3
+
+  * 1.3.1
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-Abgabeinformationen
+  * 1.1.0
+
+  * 1.2
+
   * 1.3
+
+  * 1.3.1
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-Abrechnungszeilen
+  * 1.1.0
+
+  * 1.2
+
   * 1.3
+
+  * 1.3.1
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-Apotheke
+  * 1.1.0
+
+  * 1.2
+
   * 1.3
+
+  * 1.3.1
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-ZusatzdatenEinheit
+  * 1.1.0
+
+  * 1.2
+
   * 1.3
 
+  * 1.3.1
+
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-ZusatzdatenHerstellung
+  * 1.1.0
+
+  * 1.2
+
   * 1.3
+
+  * 1.3.1
 
 * http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle
   * 1.0.3
@@ -712,3 +755,144 @@
 
 * https://gematik.de/fhir/ISiK/StructureDefinition/ISiKVersicherungsverhaeltnisSelbstzahler
   * 1.0.9
+
+## DIGA-Toolkit
+
+### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
+
+### Packages
+
+* kbv.mio.diga-1.0.0-festlegung.tgz
+
+
+### Profile
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_AllergyIntolerance_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Appointment_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Bundle
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_CarePlan_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Composition
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Condition_Problem_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_DeviceDefinition_DIGA
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_DeviceDefinition_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_DIGA
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Encounter_Past_Appointment
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Goal_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_MedicationAdministration_Medication_Intake_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_MedicationStatement_Medication_Request_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Medication_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Assessment_Scale
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Assessment_Score_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Blood_Pressure
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Body_Height
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Body_Temperature
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Body_Weight
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Diary_Entry
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Environmental_Factor_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Functional_Assessment_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Glucose_Concentration
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Head_Circumference
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Heart_Rate
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Life_Style_Factor_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Nutrition_Intake
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Nutrition_Intake_Food_Composition_Types
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Peripheral_Oxygen_Saturation
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Respiratory_Rate
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Organization
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Organization_Manufacturer
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Patient
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Practitioner
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_PractitionerRole
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Procedure_Activity_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Provenance
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_QuestionnaireResponse_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Questionnaire_Free
+  * 1.0.0
+
+* https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_RelatedPerson
+  * 1.0.0

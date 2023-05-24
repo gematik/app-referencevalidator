@@ -1,0 +1,40 @@
+<Observation xmlns="http://hl7.org/fhir">
+    <id value="3ce29656-3896-11ec-8d3d-0242ac130003" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-03-01T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Assessment_Score_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:dca579fc-3179-11ec-8d3d-0242ac130003" />
+    </identifier>
+    <status value="final" />
+    <code>
+        <text value="Depression" />
+    </code>
+    <subject>
+        <reference value="urn:uuid:cd0a4346-3882-11ec-8d3d-0242ac130003" />
+    </subject>
+    <effectiveDateTime value="2021-03-01" />
+    <valueQuantity>
+        <value value="21.0" />
+        <unit value="{score}" />
+        <system value="http://unitsofmeasure.org" />
+        <code value="{score}" />
+    </valueQuantity>
+    <note>
+        <text value="Scores on each scale can run from 0 to 56." />
+    </note>
+    <derivedFrom>
+        <reference value="urn:uuid:d4df04fe-3895-11ec-8d3d-0242ac130003" />
+    </derivedFrom>
+</Observation>

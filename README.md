@@ -89,6 +89,12 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das ISIK1-Modul wie folgt:
 - Codes aus den CodeSystemen `http://snomed.info/sct`, `http://fhir.de/CodeSystem/bfarm/icd-10-gm` und `http://fhir.de/CodeSystem/bfarm/ops` werden nicht validiert
 - Folgende ValueSets werden nicht validiert: `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenCodesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/DiagnosesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenKategorieSCT` und `http://fhir.de/ValueSet/bfarm/ops`
 
+### DIGA-Modul
+
+Abweichend vom allgemeinen Prüfumfang verhält sich das DIGA-Modul wie folgt:
+- Codes aus den CodeSystemen `http://fhir.de/CodeSystem/ifa/pzn` und `http://fhir.de/CodeSystem/dimdi/atc` werden nicht validiert
+
+
 Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
 
 ## Erste Schritte
@@ -131,6 +137,12 @@ Unterstützte Modulnamen:
 - `isip1` (Informationstechnische Systeme in der Pflege Stufe 1)
 - `isik2` (Informationstechnische Systeme in Krankenhäusern Stufe 2)
 - `isik1` (Informationstechnische Systeme in Krankenhäusern Stufe 1)
+- `diga` (Digitale Gesundheitsanwendungen)
+
+Weitere Parameter:
+- `-e` - Nur Validierungsmeldungen der Stufen ERROR und FATAL ausgeben (keine INFO und WARN-Meldungen)
+- `-v` - Verbode-Modus mit Debug-Ausgaben
+
 
 ### Java-Bibliothek
 

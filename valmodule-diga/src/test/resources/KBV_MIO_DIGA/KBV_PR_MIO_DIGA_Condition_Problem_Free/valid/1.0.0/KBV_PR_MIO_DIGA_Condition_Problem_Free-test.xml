@@ -1,0 +1,78 @@
+<Condition xmlns="http://hl7.org/fhir">
+    <id value="a515d43d-8324-44e9-ab26-b9dd8b5ef213" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Condition_Problem_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:a515d43d-8324-44e9-ab26-b9dd8b5ef213" />
+    </identifier>
+    <clinicalStatus>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+            <version value="4.0.1" />
+            <code value="resolved" />
+            <display value="Resolved">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Behoben" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </clinicalStatus>
+    <category>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="409586006" />
+            <display value="Complaint (finding)">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Beschwerde" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </category>
+    <severity>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="6736007" />
+            <display value="Moderate">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="mittel" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </severity>
+    <code>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="422587007" />
+            <display value="Nausea (finding)" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </subject>
+    <onsetDateTime value="2021-06-20T14:05:00+01:00" />
+    <abatementDateTime value="2021-06-20T14:05:00+01:00" />
+    <recorder>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </recorder>
+</Condition>

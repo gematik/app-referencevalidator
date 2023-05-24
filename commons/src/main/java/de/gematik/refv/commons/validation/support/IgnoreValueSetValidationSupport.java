@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -38,7 +39,7 @@ public class IgnoreValueSetValidationSupport extends BaseValidationSupport {
 
     private final Collection<String> valueSetsToIgnore = new HashSet<>();
 
-    public static final String VALUE_SET_IS_IGNORED_MESSAGE = "Value set has been ignored due to module configuration";
+    public static final String VALUE_SET_IS_IGNORED_MESSAGE = "Value set {0} has been ignored due to module configuration";
 
     /**
      * Constructor
@@ -76,8 +77,9 @@ public class IgnoreValueSetValidationSupport extends BaseValidationSupport {
             CodeValidationResult result = new CodeValidationResult();
             result.setSeverity(IssueSeverity.INFORMATION);
             result.setSeverityCode(ValidationMessage.IssueSeverity.INFORMATION.toCode());
-            result.setMessage(VALUE_SET_IS_IGNORED_MESSAGE);
-            logger.info("Value set {} has been ignored due to configuration.", valueSet.getUrl());
+            String message = MessageFormat.format(VALUE_SET_IS_IGNORED_MESSAGE, valueSet.getUrl());
+            result.setMessage(message);
+            logger.info(message);
             return result;
         }
 

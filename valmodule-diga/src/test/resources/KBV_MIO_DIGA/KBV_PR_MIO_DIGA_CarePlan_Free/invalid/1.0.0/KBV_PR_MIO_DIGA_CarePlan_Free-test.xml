@@ -1,0 +1,78 @@
+<CarePlan xmlns="http://hl7.org/fhir">
+    <id value="b269f88d-3013-45f1-a9da-62126cd42d04" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_CarePlan_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:b269f88d-3013-45f1-a9da-62126cd42d04" />
+    </identifier>
+    <status value="active">
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+            <extension url="content">
+                <valueString value="Aktiv" />
+            </extension>
+        </extension>
+    </status>
+    <intent value="plan">
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+            <extension url="content">
+                <valueString value="Plan" />
+            </extension>
+        </extension>
+    </intent>
+    <subject>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </subject>
+    <goal>
+        <reference value="urn:uuid:88ca7045-0959-46f1-9a08-5d043ebead38" />
+    </goal>
+    <activity>
+        <detail>
+            <code>
+                <coding>
+                    <system value="http://snomed.info/sct" />
+                    <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                    <code value="308931006" />
+                    <display value="Walking practice (regime/therapy)" />
+                </coding>
+            </code>
+            <reasonCode>
+                <coding>
+                    <system value="http://snomed.info/sct" />
+                    <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                    <code value="414915002" />
+                    <display value="Obese (finding)" />
+                </coding>
+            </reasonCode>
+            <goal>
+                <reference value="urn:uuid:88ca7045-0959-46f1-9a08-5d043ebead38" />
+            </goal>
+            <status value="in-progress" />
+            <doNotPerform value="true" />
+            <scheduledPeriod>
+                <start value="2021-06-01T00:00:00+01:00" />
+                <end value="2021-08-15T00:00:00+01:00" />
+            </scheduledPeriod>
+            <quantity>
+                <value value="6" />
+                <unit value="km/d" />
+                <system value="http://unitsofmeasure.org" />
+                <code value="km/d" />
+            </quantity>
+        </detail>
+    </activity>
+    <note>
+        <text value="Der Patient sollte 6km pro Tag laufen um gesund abzunehmen." />
+    </note>
+</CarePlan>

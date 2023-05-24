@@ -1,0 +1,46 @@
+<Procedure xmlns="http://hl7.org/fhir">
+    <id value="3be97a7c-d300-4a6f-bea9-23cd00374edf" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2015-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Procedure_Activity_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:3be97a7c-d300-4a6f-bea9-23cd00374edf" />
+    </identifier>
+    <status value="completed" />
+    <category>
+        <coding>
+            <system value="http://hl7.org/fhir/sid/icf-nl" />
+            <code value="d920" />
+            <display value="Erholung und Freizeit" />
+        </coding>
+    </category>
+    <code>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="129006008" />
+            <display value="Walking (observable entity)" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </subject>
+    <performedPeriod>
+        <start value="2021-06-20T11:00:00+01:00" />
+        <end value="2021-07-20T13:00:00+01:00" />
+    </performedPeriod>
+    <note>
+        <text value="Bei der Hitze sehr anstrengend" />
+    </note>
+</Procedure>

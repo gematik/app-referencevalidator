@@ -56,10 +56,10 @@ public class GenericValidatorFactory {
 
         for (String patch :
                 patches) {
-            logger.info("Applying patch {}...",patch);
+            logger.debug("Applying patch {}...",patch);
             InputStream is = ClasspathUtil.loadResourceAsStream("package/patches/" + patch);
             var reader = new InputStreamReader(is);
-            var newResource = ctx.newJsonParser().parseResource(StructureDefinition.class, reader);
+            var newResource = ctx.newJsonParser().parseResource(reader);
             reader.close();
             npmPackageSupport.addResource(newResource);
         }

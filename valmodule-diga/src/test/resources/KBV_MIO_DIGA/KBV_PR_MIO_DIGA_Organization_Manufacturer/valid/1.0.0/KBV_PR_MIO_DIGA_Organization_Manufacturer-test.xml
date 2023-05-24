@@ -1,0 +1,21 @@
+<Organization xmlns="http://hl7.org/fhir">
+    <id value="0ca8a37b-3f17-472a-a680-217006098422" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Organization_Manufacturer|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:0ca8a37b-3f17-472a-a680-217006098422" />
+    </identifier>
+    <name value="Device Hersteller" />
+</Organization>

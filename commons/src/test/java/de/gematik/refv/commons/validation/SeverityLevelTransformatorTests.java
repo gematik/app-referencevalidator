@@ -151,7 +151,7 @@ class SeverityLevelTransformatorTests {
     void testCodeSystemIsIgnoredRuleWorks() {
         var m1 = new SingleValidationMessage();
         m1.setSeverity(ResultSeverityEnum.ERROR);
-        m1.setMessage("Code system has been ignored due to module configuration");
+        m1.setMessage("Code system definition is missing");
         m1.setMessageId(I18nConstants.TERMINOLOGY_PASSTHROUGH_TX_MESSAGE);
         var inputMessages = List.of(m1);
 

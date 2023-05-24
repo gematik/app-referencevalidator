@@ -1,0 +1,43 @@
+<Appointment xmlns="http://hl7.org/fhir">
+    <id value="10be6664-6e3c-4b07-bc5b-7d5e716bc12c" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Appointment_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:10be6664-6e3c-4b07-bc5b-7d5e716bc12c" />
+    </identifier>
+    <status value="booked" />
+    <reasonCode>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="284352003" />
+            <display value="Obesity diet education (procedure)" />
+        </coding>
+    </reasonCode>
+    <start value="2021-07-14T09:00:00+01:00" />
+    <end value="2021-07-14T10:00:00+01:00" />
+    <participant>
+        <actor>
+            <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+        </actor>
+        <status value="accepted" />
+    </participant>
+    <participant>
+        <actor>
+            <reference value="urn:uuid:82be1643-46fd-416a-9f77-53deb362074b" />
+        </actor>
+        <status value="accepted" />
+    </participant>
+</Appointment>

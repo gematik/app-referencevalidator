@@ -1,0 +1,132 @@
+<AllergyIntolerance xmlns="http://hl7.org/fhir">
+    <id value="2c2d3dd8-55f9-4dd2-97d4-79d47f02857b" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_AllergyIntolerance_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:2c2d3dd8-55f9-4dd2-97d4-79d47f02857b" />
+    </identifier>
+    <clinicalStatus>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical" />
+            <version value="4.0.1" />
+            <code value="active" />
+            <display value="Active">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Aktiv" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </clinicalStatus>
+    <verificationStatus>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/allergyintolerance-verification" />
+            <version value="4.0.1" />
+            <code value="confirmed" />
+            <display value="Confirmed">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Best&#228;tigt" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </verificationStatus>
+    <type value="intolerance">
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+            <extension url="content">
+                <valueString value="Unvertr&#228;glichkeit (nicht immun-vermittelt)" />
+            </extension>
+        </extension>
+    </type>
+    <category value="food">
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+            <extension url="content">
+                <valueString value="Lebensmittel" />
+            </extension>
+        </extension>
+    </category>
+    <criticality value="low">
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+            <extension url="content">
+                <valueString value="NiedrigesRisiko" />
+            </extension>
+        </extension>
+    </criticality>
+    <code>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="102263004" />
+            <display value="Eggs (edible) (substance)" />
+        </coding>
+    </code>
+    <patient>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </patient>
+    <onsetAge>
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Stage_Life">
+            <valueCodeableConcept>
+                <coding>
+                    <system value="http://snomed.info/sct" />
+                    <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                    <code value="263659003" />
+                    <display value="Adolescence (qualifier value)">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Jugendlicher (Ab Beginn des 13. bis zum vollendeten 18. Lebensjahres)" />
+                            </extension>
+                        </extension>
+                    </display>
+                </coding>
+            </valueCodeableConcept>
+        </extension>
+    </onsetAge>
+    <recorder>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </recorder>
+    <reaction>
+        <manifestation>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="422587007" />
+                <display value="Nausea (finding)">
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                            <valueString value="&#220;belkeit" />
+                        </extension>
+                    </extension>
+                </display>
+            </coding>
+        </manifestation>
+        <severity value="moderate">
+            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                <extension url="content">
+                    <valueString value="mittel" />
+                </extension>
+            </extension>
+        </severity>
+        <exposureRoute>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="26643006" />
+                <display value="Oral route (qualifier value)" />
+            </coding>
+        </exposureRoute>
+    </reaction>
+</AllergyIntolerance>

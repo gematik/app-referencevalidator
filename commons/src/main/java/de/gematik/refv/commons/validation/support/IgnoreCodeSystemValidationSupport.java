@@ -22,7 +22,6 @@ import ca.uhn.fhir.context.support.ValidationSupportContext;
 import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.common.hapi.validation.support.BaseValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
-import org.hl7.fhir.utilities.validation.ValidationMessage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,7 +40,7 @@ public class IgnoreCodeSystemValidationSupport extends BaseValidationSupport {
 
     private final Collection<String> codeSystemsToIgnore = new HashSet<>();
 
-    public static final String CODE_SYSTEM_IS_IGNORED_MESSAGE = "Code system has been ignored due to module configuration";
+    public static final String CODE_SYSTEM_IS_IGNORED_MESSAGE = "Code system definition is missing";
 
     /**
      * Constructor
@@ -67,12 +66,24 @@ public class IgnoreCodeSystemValidationSupport extends BaseValidationSupport {
     public CodeValidationResult validateCode(@Nonnull ValidationSupportContext theValidationSupportContext,@Nonnull ConceptValidationOptions theOptions, String theCodeSystem, String theCode, String theDisplay, String theValueSetUrl) {
         if (theCodeSystem != null && codeSystemsToIgnore.contains(theCodeSystem)) {
             CodeValidationResult result = new CodeValidationResult();
+            // for INFO severity, we don't set the code
+            // cause if we do, the severity is stripped out
+            // (see VersionSpecificWorkerContextWrapper.convertValidationResult)
             result.setSeverity(IssueSeverity.INFORMATION);
-            result.setSeverityCode(ValidationMessage.IssueSeverity.INFORMATION.toCode());
-            result.setCodeSystemName(theCodeSystem);
             result.setMessage(CODE_SYSTEM_IS_IGNORED_MESSAGE);
             return result;
         } else return null;
     }
 
+    @Nullable
+    @Override
+    public LookupCodeResult lookupCode(ValidationSupportContext theValidationSupportContext, String theSystem, String theCode, String theDisplayLanguage) {
+        // filters out error/fatal
+        if (codeSystemsToIgnore.contains(theSystem)) {
+            return new LookupCodeResult()
+                    .setFound(true);
+        }
+
+        return null;
+    }
 }
