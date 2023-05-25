@@ -2,13 +2,14 @@
 
 # Release Notes Gematik Referenzvalidator
 
-## Release 0.6.0
+## Release 0.6.1
 
 ### added
 - New validation module: diga (Digitale Gesundheitsanwendungen)
 - New command line arguments for filtering the output of the validation process
 
 ### changed
+- output of found issues as a table for better readability
 - removed packages de.gematik.erezept-patientenrechnung.r4-1.0.0.tgz, kbv.ita.erp-1.1.0.tgz and de.gematik.erezept-workflow.r4-1.2.0.tgz
 - added packages de.gematik.erezept-patientenrechnung.r4-1.0.1.tgz, kbv.ita.erp-1.1.1.tgz and de.gematik.erezept-workflow.r4-1.2.1.tgz
 

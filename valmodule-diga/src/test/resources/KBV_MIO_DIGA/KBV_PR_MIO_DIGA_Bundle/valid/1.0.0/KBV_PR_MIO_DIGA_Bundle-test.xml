@@ -1,0 +1,1689 @@
+<Bundle xmlns="http://hl7.org/fhir">
+    <id value="5df07ca8-ea84-4016-a85f-a997f47c38f5" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-11-08T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Bundle|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:a64adff1-43f5-4996-8842-17ef6b7db94c" />
+    </identifier>
+    <type value="document" />
+    <timestamp value="2021-11-08T13:28:17Z" />
+    <entry>
+        <fullUrl value="urn:uuid:927fb63a-389a-11ec-8d3d-0242ac130003" />
+        <resource>
+            <Composition>
+                <id value="927fb63a-389a-11ec-8d3d-0242ac130003" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Composition|1.0.0" />
+                </meta>
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Betrachtungszeitraum">
+                    <valuePeriod>
+                        <start value="2021-01-01" />
+                        <end value="2021-03-31" />
+                    </valuePeriod>
+                </extension>
+                <status value="final" />
+                <type>
+                    <coding>
+                        <system value="http://loinc.org" />
+                        <version value="2.71" />
+                        <code value="53576-5" />
+                        <display value="Personal health monitoring report Document" />
+                    </coding>
+                </type>
+                <subject>
+                    <reference value="urn:uuid:cd0a4346-3882-11ec-8d3d-0242ac130003" />
+                </subject>
+                <date value="2021-03-01" />
+                <author>
+                    <reference value="urn:uuid:f06a1eae-388e-11ec-8d3d-0242ac130003" />
+                </author>
+                <title value="DiGA-Export" />
+                <section>
+                    <title value="Fragebögen" />
+                    <code>
+                        <coding>
+                            <system value="http://loinc.org" />
+                            <version value="2.71" />
+                            <code value="74468-0" />
+                            <display value="Questionnaire form definition Document" />
+                        </coding>
+                    </code>
+                    <entry>
+                        <reference value="urn:uuid:d5838314-3893-11ec-8d3d-0242ac130003" />
+                    </entry>
+                    <entry>
+                        <reference value="urn:uuid:d4df04fe-3895-11ec-8d3d-0242ac130003" />
+                    </entry>
+                </section>
+                <section>
+                    <title value="Beurteilungen" />
+                    <code>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="424836000" />
+                            <display value="Assessment section (record artifact)" />
+                        </coding>
+                    </code>
+                    <entry>
+                        <reference value="urn:uuid:3ce29656-3896-11ec-8d3d-0242ac130003" />
+                    </entry>
+                    <entry>
+                        <reference value="urn:uuid:9ddbbfb8-3897-11ec-8d3d-0242ac130003" />
+                    </entry>
+                    <entry>
+                        <reference value="urn:uuid:3bf9a354-3898-11ec-8d3d-0242ac130003" />
+                    </entry>
+                </section>
+            </Composition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:d5838314-3893-11ec-8d3d-0242ac130003" />
+        <resource>
+            <Questionnaire>
+                <id value="d5838314-3893-11ec-8d3d-0242ac130003" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Questionnaire_Free|1.0.0" />
+                </meta>
+                <language value="de" />
+                <url value="https://test.test" />
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:dca579fc-3179-11ec-8d3d-0242ac130003" />
+                </identifier>
+                <version value="1" />
+                <title value="Depressions-Angst-Stress-Skalen (DASS 42)" />
+                <status value="active" />
+                <date value="2020-02-02" />
+                <item>
+                    <linkId value="1" />
+                    <text value="Ich bemerkte, daß ich mich über Kleinigkeiten aufregte" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="2" />
+                    <text value="Ich spürte, daß mein Mund trocken war" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="3" />
+                    <text value="Ich konnte überhaupt keine positiven Gefühle erleben" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="4" />
+                    <text value="Ich hatte Atemprobleme (z.B. übermäßig schnelles Atmen, Atemlosigkeit ohne körperliche Anstrengung)" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="5" />
+                    <text value="Ich konnte einfach nicht in Gang kommen" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="6" />
+                    <text value="Ich tendierte dazu, auf Situationen überzureagieren" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="7" />
+                    <text value="Ich fühlte mich zittrig (z.B. schwach in den Beinen)" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="8" />
+                    <text value="Ich fand es schwierig, mich zu entspannen" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="9" />
+                    <text value="Ich fand mich in Situationen wieder, die mich so ängstlich machten, daß ich sehr froh war, wenn sie vorbei waren" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="10" />
+                    <text value="Ich hatte das Gefühl, nichts zu haben, auf das ich mich freuen konnte" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="11" />
+                    <text value="Ich bemerkte, daß ich mich ziemlich schnell aufregte" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="12" />
+                    <text value="Ich fühlte, daß ich eine Menge Nervenkraft verbrauchte" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="13" />
+                    <text value="Ich fühlte mich traurig und niedergedrückt" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="14" />
+                    <text value="Ich bemerkte, daß ich ungeduldig wurde, wenn ich irgendwie aufgehalten wurde (z.B. im Fahrstuhl, an Ampeln, wenn man mich warten ließ)" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="15" />
+                    <text value="Ich hatte das Gefühl, ohnmächtig zu werden" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="16" />
+                    <text value="Ich fühlte, daß ich das Interesse an allem verloren hatte" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="17" />
+                    <text value="Ich fühlte mich als Person nicht viel wert" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="18" />
+                    <text value="Ich fand mich ziemlich empfindlich" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="19" />
+                    <text value="Ich schwitzte spürbar (z.B. feuchte Hände), ohne daß hohe Temperaturen herrschten oder daß ich mich körperlich anstrengte" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="20" />
+                    <text value="Ich fühlte mich grundlos ängstlich" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="21" />
+                    <text value="Ich hatte das Gefühl, daß das Leben sich nicht lohnt" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="22" />
+                    <text value="Ich fand es schwer, mich zu beruhigen" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="23" />
+                    <text value="Ich hatte Schluckbeschwerden" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="24" />
+                    <text value="Es schien, als könnte ich die Dinge, die ich tat, überhaupt nicht genießen" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="25" />
+                    <text value="Ich war mir über meinen Herzschlag bewußt, ohne daß ich mich körperlich angestrengt hatte (z.B. das Gefühl beschleunigten Herzschlags, das Gefühl, daß der Herzschlag aussetzt)" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="26" />
+                    <text value="Ich fühlte mich niedergeschlagen und traurig" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="27" />
+                    <text value="Ich stellte fest, daß ich sehr reizbar war" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="28" />
+                    <text value="Ich fühlte mich einer Panik nahe" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="29" />
+                    <text value="Ich fand es schwer, mich zu beruhigen, wenn mich etwas geärgert hatte" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="30" />
+                    <text value="Ich befürchtete, daß mich eine einfache, aber ungewohnte Aufgabe aus der Bahn werfen würde" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="31" />
+                    <text value="Ich war nicht in der Lage, mich für irgendetwas zu begeistern" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="32" />
+                    <text value="Ich fand es schwierig zu tolerieren, wenn ich bei einer Tätigkeit unterbrochen wurde" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="33" />
+                    <text value="Ich war in einem Zustand nervöser Anspannung" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="34" />
+                    <text value="Ich fühlte mich ziemlich wertlos" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="35" />
+                    <text value="Ich konnte nichts ertragen, das mich davon abhielt, in meiner Tätigkeit fortzufahren" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="36" />
+                    <text value="Ich fühlte mich erschrocken" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="37" />
+                    <text value="Ich konnte nicht hoffnungsvoll in die Zukunft blicken" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="38" />
+                    <text value="Ich empfand das Leben als sinnlos" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="39" />
+                    <text value="Ich bemerkte, daß ich unruhig wurde" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="40" />
+                    <text value="Ich machte mir Sorgen über Situationen, in denen ich in Panik geraten und mich zum Trottel machen könnte" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="41" />
+                    <text value="Ich zitterte (z.B. an den Händen)" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+                <item>
+                    <linkId value="42" />
+                    <text value="Es fiel mir schwer, die Initiative aufzubringen, Dinge zu tun" />
+                    <type value="integer">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Ganzzahl" />
+                            </extension>
+                        </extension>
+                    </type>
+                    <answerOption>
+                        <valueInteger value="0" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="1" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="2" />
+                    </answerOption>
+                    <answerOption>
+                        <valueInteger value="3" />
+                    </answerOption>
+                </item>
+            </Questionnaire>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:d4df04fe-3895-11ec-8d3d-0242ac130003" />
+        <resource>
+            <QuestionnaireResponse>
+                <id value="d4df04fe-3895-11ec-8d3d-0242ac130003" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_QuestionnaireResponse_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:dca579fc-3179-11ec-8d3d-0242ac130003" />
+                </identifier>
+                <questionnaire value="https://test.test" />
+                <status value="completed" />
+                <subject>
+                    <reference value="urn:uuid:cd0a4346-3882-11ec-8d3d-0242ac130003" />
+                </subject>
+                <authored value="2021-03-01" />
+                <item>
+                    <linkId value="1" />
+                    <answer>
+                        <valueInteger value="0" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="2" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="3" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="4" />
+                    <answer>
+                        <valueInteger value="3" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="5" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="6" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="7" />
+                    <answer>
+                        <valueInteger value="0" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="8" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="9" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="10" />
+                    <answer>
+                        <valueInteger value="3" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="11" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="12" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="13" />
+                    <answer>
+                        <valueInteger value="0" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="14" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="15" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="16" />
+                    <answer>
+                        <valueInteger value="3" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="17" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="18" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="19" />
+                    <answer>
+                        <valueInteger value="0" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="20" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="21" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="22" />
+                    <answer>
+                        <valueInteger value="3" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="23" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="24" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="25" />
+                    <answer>
+                        <valueInteger value="0" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="26" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="27" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="28" />
+                    <answer>
+                        <valueInteger value="3" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="29" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="30" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="31" />
+                    <answer>
+                        <valueInteger value="0" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="32" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="33" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="34" />
+                    <answer>
+                        <valueInteger value="3" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="35" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="36" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="37" />
+                    <answer>
+                        <valueInteger value="0" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="38" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="39" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="40" />
+                    <answer>
+                        <valueInteger value="3" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="41" />
+                    <answer>
+                        <valueInteger value="2" />
+                    </answer>
+                </item>
+                <item>
+                    <linkId value="42" />
+                    <answer>
+                        <valueInteger value="1" />
+                    </answer>
+                </item>
+            </QuestionnaireResponse>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:cd0a4346-3882-11ec-8d3d-0242ac130003" />
+        <resource>
+            <Patient>
+                <id value="cd0a4346-3882-11ec-8d3d-0242ac130003" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-26T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Patient|1.0.0" />
+                </meta>
+                <identifier>
+                    <use value="official" />
+                    <type>
+                        <coding>
+                            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_Base_identifier_type" />
+                            <code value="kvk" />
+                            <display value="Krankenversichertenkarte" />
+                        </coding>
+                    </type>
+                    <system value="http://fhir.de/NamingSystem/gkv/kvk-versichertennummer" />
+                    <value value="C678912345" />
+                </identifier>
+                <identifier>
+                    <use value="official" />
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:123456" />
+                </identifier>
+                <name>
+                    <use value="official" />
+                    <text value="Lieschen Müller" />
+                    <family value="Müller">
+                        <extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+                            <valueString value="Müller" />
+                        </extension>
+                    </family>
+                    <given value="Lieschen" />
+                </name>
+                <telecom>
+                    <system value="phone">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Telefonnummer" />
+                            </extension>
+                        </extension>
+                    </system>
+                    <value value="0178123842" />
+                </telecom>
+                <gender value="female" />
+                <birthDate value="1985-04-05" />
+                <address>
+                    <type value="both" />
+                    <line value="Berliner Straße 1">
+                        <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+                            <valueString value="Berliner Straße" />
+                        </extension>
+                        <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+                            <valueString value="1" />
+                        </extension>
+                    </line>
+                    <city value="Berlin" />
+                    <postalCode value="10101" />
+                    <country value="D" />
+                </address>
+                <communication>
+                    <language>
+                        <coding>
+                            <system value="urn:ietf:bcp:47" />
+                            <code value="de-DE" />
+                            <display value="German (Germany)" />
+                        </coding>
+                    </language>
+                </communication>
+                <communication>
+                    <language>
+                        <coding>
+                            <system value="urn:ietf:bcp:47" />
+                            <code value="fi" />
+                            <display value="Finnish" />
+                        </coding>
+                    </language>
+                </communication>
+                <communication>
+                    <language>
+                        <coding>
+                            <system value="urn:ietf:bcp:47" />
+                            <code value="fr" />
+                            <display value="French" />
+                        </coding>
+                    </language>
+                </communication>
+            </Patient>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:3bf9a354-3898-11ec-8d3d-0242ac130003" />
+        <resource>
+            <Observation>
+                <id value="3bf9a354-3898-11ec-8d3d-0242ac130003" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-03-01T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Assessment_Score_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:dca579fc-3179-11ec-8d3d-0242ac130003" />
+                </identifier>
+                <status value="final" />
+                <code>
+                    <text value="Stress" />
+                </code>
+                <subject>
+                    <reference value="urn:uuid:cd0a4346-3882-11ec-8d3d-0242ac130003" />
+                </subject>
+                <effectiveDateTime value="2021-03-01" />
+                <valueQuantity>
+                    <value value="21.0" />
+                    <unit value="{score}" />
+                    <system value="http://unitsofmeasure.org" />
+                    <code value="{score}" />
+                </valueQuantity>
+                <note>
+                    <text value="Scores on each scale can run from 0 to 56." />
+                </note>
+                <derivedFrom>
+                    <reference value="urn:uuid:d4df04fe-3895-11ec-8d3d-0242ac130003" />
+                </derivedFrom>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:9ddbbfb8-3897-11ec-8d3d-0242ac130003" />
+        <resource>
+            <Observation>
+                <id value="9ddbbfb8-3897-11ec-8d3d-0242ac130003" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-03-01T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Assessment_Score_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:dca579fc-3179-11ec-8d3d-0242ac130003" />
+                </identifier>
+                <status value="final" />
+                <code>
+                    <text value="Anxiety" />
+                </code>
+                <subject>
+                    <reference value="urn:uuid:cd0a4346-3882-11ec-8d3d-0242ac130003" />
+                </subject>
+                <effectiveDateTime value="2021-03-01" />
+                <valueQuantity>
+                    <value value="21.0" />
+                    <unit value="{score}" />
+                    <system value="http://unitsofmeasure.org" />
+                    <code value="{score}" />
+                </valueQuantity>
+                <note>
+                    <text value="Scores on each scale can run from 0 to 56." />
+                </note>
+                <derivedFrom>
+                    <reference value="urn:uuid:d4df04fe-3895-11ec-8d3d-0242ac130003" />
+                </derivedFrom>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:3ce29656-3896-11ec-8d3d-0242ac130003" />
+        <resource>
+            <Observation>
+                <id value="3ce29656-3896-11ec-8d3d-0242ac130003" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-03-01T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Assessment_Score_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:dca579fc-3179-11ec-8d3d-0242ac130003" />
+                </identifier>
+                <status value="final" />
+                <code>
+                    <text value="Depression" />
+                </code>
+                <subject>
+                    <reference value="urn:uuid:cd0a4346-3882-11ec-8d3d-0242ac130003" />
+                </subject>
+                <effectiveDateTime value="2021-03-01" />
+                <valueQuantity>
+                    <value value="21.0" />
+                    <unit value="{score}" />
+                    <system value="http://unitsofmeasure.org" />
+                    <code value="{score}" />
+                </valueQuantity>
+                <note>
+                    <text value="Scores on each scale can run from 0 to 56." />
+                </note>
+                <derivedFrom>
+                    <reference value="urn:uuid:d4df04fe-3895-11ec-8d3d-0242ac130003" />
+                </derivedFrom>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:f06a1eae-388e-11ec-8d3d-0242ac130003" />
+        <resource>
+            <Device>
+                <id value="f06a1eae-388e-11ec-8d3d-0242ac130003" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_DIGA|1.0.0" />
+                </meta>
+                <identifier>
+                    <value value="5678" />
+                </identifier>
+                <definition>
+                    <reference value="urn:uuid:e0c5c93a-388e-11ec-8d3d-0242ac130003" />
+                </definition>
+                <deviceName>
+                    <name value="DiGA 3" />
+                    <type value="model-name">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Modellname" />
+                            </extension>
+                        </extension>
+                    </type>
+                </deviceName>
+                <type>
+                    <coding>
+                        <system value="http://fhir.de/CodeSystem/ifa/pzn" />
+                        <code value="4908802" />
+                    </coding>
+                </type>
+            </Device>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:e0c5c93a-388e-11ec-8d3d-0242ac130003" />
+        <resource>
+            <DeviceDefinition>
+                <id value="e0c5c93a-388e-11ec-8d3d-0242ac130003" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_DeviceDefinition_DIGA|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:dca57c90-3179-11ec-8d3d-0242ac130003" />
+                </identifier>
+                <deviceName>
+                    <name value="DiGA 3" />
+                    <type value="model-name">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Modellname" />
+                            </extension>
+                        </extension>
+                    </type>
+                </deviceName>
+                <type>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="706689003" />
+                        <display value="Application program software (physical object)" />
+                    </coding>
+                </type>
+            </DeviceDefinition>
+        </resource>
+    </entry>
+</Bundle>
