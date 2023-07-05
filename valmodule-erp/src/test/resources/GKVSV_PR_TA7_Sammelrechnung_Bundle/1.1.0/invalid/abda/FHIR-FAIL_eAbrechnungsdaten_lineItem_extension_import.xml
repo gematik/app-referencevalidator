@@ -40,7 +40,7 @@
             <display value="Sammelrechnung"></display>
           </coding>
         </type>
-        <date value="2021-07-31"></date>                <!-- IK des Absenders -->
+        <date value="2021-07-01"></date>                <!-- IK des Absenders -->
         <author>
           <identifier>
             <system value="http://fhir.de/NamingSystem/arge-ik/iknr"></system>
@@ -224,7 +224,7 @@
             <value value="104212505"></value>
           </identifier>
         </recipient>                <!-- Rechnungsdatum -->
-        <date value="2021-04-12T09:31:34.328+00:00"></date>
+        <date value="2021-07-01T09:31:34.328+00:00"></date>
       </Invoice>
     </resource>
   </entry>
@@ -289,7 +289,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -560,7 +560,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -831,7 +831,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -1102,7 +1102,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -1373,7 +1373,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -1644,7 +1644,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -1915,7 +1915,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -2186,7 +2186,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -2457,7 +2457,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -2728,7 +2728,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -2999,7 +2999,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -3270,7 +3270,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -3541,7 +3541,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -3812,7 +3812,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -4083,7 +4083,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -4354,7 +4354,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -4625,7 +4625,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -4896,7 +4896,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -5167,7 +5167,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>
@@ -5438,7 +5438,7 @@
                         <code value="3"></code>
                       </coding>
                     </type>
-                    <date value="2020-03-20T09:31:34.328+00:00"></date>
+                    <date value="2021-07-01T09:31:34.328+00:00"></date>
                     <author>
                       <reference value="https://prescriptionserver.telematik/Device/ErxService"></reference>
                     </author>

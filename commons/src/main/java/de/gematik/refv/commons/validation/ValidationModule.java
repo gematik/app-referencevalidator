@@ -18,20 +18,19 @@ package de.gematik.refv.commons.validation;
 
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
-import lombok.NonNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-/**
- * <p>ValidationModule is currently NOT threadsafe, but it can be reused for validating
- * further FHIR resources in the same or another thread.</p>
- */
 public interface ValidationModule {
     String getId();
     ValidationModuleConfiguration getConfiguration();
-    ValidationResult validateFile(@NonNull String inputPath) throws IllegalArgumentException, IOException;
-    ValidationResult validateString(@NonNull String fhirResourceAsString) throws IllegalArgumentException;
+    ValidationResult validateFile(String inputPath) throws IllegalArgumentException, IOException;
+    ValidationResult validateString(String fhirResourceAsString) throws IllegalArgumentException;
     ValidationResult validateFile(Path inputPath) throws IllegalArgumentException, IOException;
     void initialize() throws ValidationModuleInitializationException;
+
+    ValidationResult validateFile(String inputPath, ValidationOptions validationOptions) throws IllegalArgumentException, IOException;
+    ValidationResult validateString(String fhirResourceAsString, ValidationOptions validationOptions) throws IllegalArgumentException;
+    ValidationResult validateFile(Path inputPath, ValidationOptions validationOptions) throws IllegalArgumentException, IOException;
 }

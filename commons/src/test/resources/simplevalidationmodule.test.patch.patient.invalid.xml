@@ -1,7 +1,7 @@
 <Patient xmlns="http://hl7.org/fhir">
     <id value="66033"/>
     <meta>
-        <profile value="http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate|1.0.0"></profile>
+        <profile value="http://example.gematik.de/fhir/StructureDefinition/patient-patched|1.0.0"></profile>
     </meta>
     <text>
         <status value="generated"/>

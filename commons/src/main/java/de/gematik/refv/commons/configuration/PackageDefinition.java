@@ -19,6 +19,7 @@ package de.gematik.refv.commons.configuration;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +32,8 @@ import java.util.Objects;
 @AllArgsConstructor
 public class PackageDefinition {
     private String filename;
+    private Date validFrom;
+    private Date validTill;
     private List<PackageReference> dependencies;
     private List<String> patches;
     private List<ValidationMessageTransformation> validationMessageTransformations;

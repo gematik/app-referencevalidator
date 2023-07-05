@@ -37,7 +37,6 @@ public class SeverityLevelTransformer {
     ) {
         LinkedList<SingleValidationMessage> transformedMessages = new LinkedList<>(input);
         escalateUnresolvedValueSetsToError(transformedMessages);
-        escalatePossibleReferenceMatchesButWithWrongFullUrls(transformedMessages);
         setIgnoredCodeSystemsToInformation(transformedMessages);
 
         for (SingleValidationMessage message:
@@ -63,15 +62,6 @@ public class SeverityLevelTransformer {
                 messages) {
             if(I18nConstants.TERMINOLOGY_PASSTHROUGH_TX_MESSAGE.equals(message.getMessageId()) && message.getMessage().contains(IgnoreCodeSystemValidationSupport.CODE_SYSTEM_IS_IGNORED_MESSAGE)) {
                 message.setSeverity(ResultSeverityEnum.INFORMATION);
-            }
-        }
-    }
-
-    private void escalatePossibleReferenceMatchesButWithWrongFullUrls(LinkedList<SingleValidationMessage> messages) {
-        for (SingleValidationMessage message:
-                messages) {
-            if(I18nConstants.BUNDLE_BUNDLE_POSSIBLE_MATCH_WRONG_FU.equals(message.getMessageId())) {
-                message.setSeverity(ResultSeverityEnum.ERROR);
             }
         }
     }

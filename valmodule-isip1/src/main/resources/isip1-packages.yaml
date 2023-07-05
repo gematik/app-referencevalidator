@@ -1,102 +1,57 @@
 errorOnUnknownProfile: "false"
 anyExtensionsAllowed: "true"
 
-fhirPackages:
-  de.gematik.isik-basismodul:
-    packageVersions:
-      2.0.2:
-        filename: "de.gematik.isik-basismodul-2.0.2.tgz"
-        dependencies:
-          - packageName: "de.basisprofil.r4"
-            packageVersion: "1.4.0"
-
-  de.gematik.isip:
-    packageVersions:
-      1.0.1:
-        filename: "de.gematik.isip-1.0.1.tgz"
-        dependencies:
-          - packageName: "de.gematik.isik-basismodul"
-            packageVersion: "2.0.2"
-          - packageName: "kbv.mio.ueberleitungsbogen"
-            packageVersion: "1.0.0-kommentierung"
-
-  kbv.mio.ueberleitungsbogen:
-    packageVersions:
-      1.0.0-kommentierung:
-        filename: "kbv.mio.ueberleitungsbogen-1.0.0-kommentierung.tgz"
-        dependencies:
-          - packageName: "kbv.basis"
-            packageVersion: "1.2.0"
-          - packageName: "de.basisprofil.r4"
-            packageVersion: "0.9.13"
-
-  de.basisprofil.r4:
-    packageVersions:
-      0.9.13:
-        filename: "de.basisprofil.r4-0.9.13.tgz"
-      1.4.0:
-        filename: "de.basisprofil.r4-1.4.0.tgz"
-
-  kbv.basis:
-    packageVersions:
-      1.2.0:
-        filename: "kbv.basis-1.2.0.tgz"
-        dependencies:
-          - packageName: "de.basisprofil.r4"
-            packageVersion: "0.9.13"
+dependencyLists:
+  de.gematik.isip-1.0.1:
+    packages:
+      - "de.gematik.isip-1.0.1.tgz"
+      - "de.gematik.isik-basismodul-2.0.2.tgz"
+      - "kbv.mio.ueberleitungsbogen-1.0.0-kommentierung.tgz"
+      - "kbv.basis-1.2.0.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
 
 supportedProfiles:
   "https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/ISiPAngehoeriger":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"
       1.0.1:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"
 
   "https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/ISiPPersonImGesundheitswesen":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"
       1.0.1:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"
 
   "https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/ISiPPflegeempfaenger":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"
       1.0.1:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"
 
   "https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/ISiPPflegeepisode":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"
       1.0.1:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"
 
   "https://gematik.de/fhir/isip/v1/Basismodul/StructureDefinition/IsipOrganization":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"
       1.0.1:
-        requiredPackage:
-          packageName: "de.gematik.isip"
-          packageVersion: "1.0.1"
+        dependencyLists:
+          - "de.gematik.isip-1.0.1"

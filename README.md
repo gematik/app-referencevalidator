@@ -2,6 +2,9 @@
 
 # Gematik Referenzvalidator
 
+![GitHub Latest Pre-Release)](https://img.shields.io/github/v/release/gematik/app-referencevalidator?include_prereleases&label=pre-release&logo=github) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.gematik.refv/referencevalidator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.gematik.refv/referencevalidator) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
+
 <details>
   <summary>Inhaltsverzeichnis</summary>
   <ol>
@@ -52,11 +55,13 @@ Siehe [Release Notes](ReleaseNotes.md)
   - Wertebereiche: Die Wertebereiche von Eigenschaften werden berücksichtigt (einschließlich aufgelistete Codes)
   - Coding/CodeableConcept bindings: Die Code-Angaben in einer Instanz entsprechen der Definition des Kodierungssystems aus dem Profil
   - Constraints/Invariants: Die für die Eigenschaften im Profil definierten Regeln sind eingehalten
+- Prüfung der Gültigkeitszeiträume der in den Instanzen referenzierten Profile
+- Nutzung der FHIR-Package-Abhängigkeiten in Abhängigkeit von dem Instanz-Erstellungszeitpunkt (bspw. der datumsabhängigen [KBV-Schlüsseltabellen](https://applications.kbv.de/overview.xhtml))
 
 Ergänzungen zum Standardverhalten des HL7 Java Validators:
 - Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
 - Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis
-- Nicht auflösbare relative Referenzen in Bundles führen zum invaliden Ergebnis 
+- Nicht auflösbare relative Referenzen in Bundles führen zum invaliden Ergebnis
 
 ### E-Rezept-Modul
 
@@ -64,18 +69,39 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das E-Rezept-Modul wie folg
 - Codes aus den CodeSystemen `http://fhir.de/CodeSystem/ifa/pzn` und `http://fhir.de/CodeSystem/ask` werden nicht validiert
 - Fehler, die bei Validierung von `http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle|1.0.3` im Zusammenhang mit falschen Angaben bei `http://fhir.abda.de/Identifier/DAV-Herstellerschluessel` stehen, werden ignoriert und führen zum **validen** Ergebnis
 
-Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
+#### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
+
+#### Anpassungen der Profile
+- de.gematik.erezept-workflow.r4-1.0.3-1.tgz
+  - ErxChargeItem.json
+    - BugFix: Korrektur der supportiveInformation-Slices (Keine Snapshot-Generierung sonst möglich)
+- de.gematik.erezept-workflow.r4-1.1.1.tgz
+  - ErxCommunicationReply.json
+    - Communication.about targetProfile: typos: KBV_PR_ERP_Medikament_Freitext, KBV_PR_ERP_Medikament_PZN, KBV_PR_ERP_Medikament_Rezeptur, erxTask. Korrigiert in KBV_PR_ERP_Medication_FreeText, KBV_PR_ERP_Medication_PZN, KBV_PR_ERP_Medication_Compounding, ErxTask
+- de.abda.erezeptabgabedatenbasis-1.1.0.tgz
+  - Extension-DAV-EX-ERP-Rezeptaenderung.json
+  - Extension-DAV-EX-ERP-Zusatzattribute.json
+  - Extension-DAV-EX-ERP-ZusatzdatenHerstellung.json
+    - Änderungen siehe Version 0.9.6 im [ChangeLog.md des ABDA Referenzvalidators](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/main/CHANGELOG.md)
 
 ### EAU-Modul
 
 Abweichend vom allgemeinen Prüfumfang verhält sich das eAU-Modul wie folgt:
 - ICD-10-Codes (CodeSysteme `http://fhir.de/CodeSystem/dimdi/icd-10-gm` und `http://fhir.de/CodeSystem/bfarm/icd-10-gm`) werden nicht validiert
 
-Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
+#### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
+
+#### Anpassungen der Profile
+- de.basisprofil.r4-0.9.13.tgz
+  - Extension-seitenlokalisation.json
+    - BugFix: Version 0.9.12 auf 0.9.13 korrigiert
 
 ### ISIP1-Modul
 
-Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
+#### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
 
 ### ISIK2-Modul
 
@@ -83,19 +109,25 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das ISIK2-Modul wie folgt:
 - Codes aus den CodeSystemen `http://snomed.info/sct`, `http://fhir.de/CodeSystem/bfarm/icd-10-gm`, `http://fhir.de/CodeSystem/bfarm/atc` und `http://fhir.de/CodeSystem/bfarm/ops` werden nicht validiert
 - Folgende ValueSets werden nicht validiert: `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenCodesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/DiagnosesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenKategorieSCT`, `https://gematik.de/fhir/isik/v2/Terminplanung/ValueSet/ISiKTerminPriority`, `https://gematik.de/fhir/isik/v2/Medikation/ValueSet/SctRouteOfAdministration` und `http://fhir.de/ValueSet/bfarm/ops`
 
+### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
+
 ### ISIK1-Modul
 
 Abweichend vom allgemeinen Prüfumfang verhält sich das ISIK1-Modul wie folgt:
 - Codes aus den CodeSystemen `http://snomed.info/sct`, `http://fhir.de/CodeSystem/bfarm/icd-10-gm` und `http://fhir.de/CodeSystem/bfarm/ops` werden nicht validiert
 - Folgende ValueSets werden nicht validiert: `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenCodesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/DiagnosesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenKategorieSCT` und `http://fhir.de/ValueSet/bfarm/ops`
 
+#### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
+
 ### DIGA-Modul
 
 Abweichend vom allgemeinen Prüfumfang verhält sich das DIGA-Modul wie folgt:
 - Codes aus den CodeSystemen `http://fhir.de/CodeSystem/ifa/pzn` und `http://fhir.de/CodeSystem/dimdi/atc` werden nicht validiert
 
-
-Die eingebundenen Packages, unterstützte Profile und Versionen findet man [hier](supported-profiles.md).
+#### Anpassungen der Packages:
+- Alle Packages enthalten Snapshots
 
 ## Erste Schritte
 
@@ -107,7 +139,7 @@ Der Referenzvalidator wird als Java-Bibliothek und als Konsolenanwendung verteil
 
 #### Konsolenanwendung
 
-Für die Verwendung der Konsolenanwendung soll die Datei `referencevalidator-cli-X.Y.Z.jar` in einem beliebigen Ordner im Dateisystem abgelegt werden.
+Für die Verwendung der Konsolenanwendung soll die Datei `referencevalidator-cli-X.Y.Z.jar` in einem beliebigen Ordner im Dateisystem abgelegt werden (siehe [Releases](https://github.com/gematik/app-referencevalidator/releases)).  
 
 #### Java-Bibliothek
 
@@ -115,11 +147,13 @@ Der Referenzvalidator wird zur Einbindung in andere Projekte auf [Maven Central]
 
 Beispiel zur Einbindung des Referenzvalidator:
 
+``` XML
     <dependency>
           <groupId>de.gematik.refv</groupId>
           <artifactId>referencevalidator-lib</artifactId>
           <version>${version.referencevalidator}</version>
     </dependency>
+```    
 
 Die Versionsangabe `${version.referencevalidator}` soll mit der gewünschten einzubindenden Referenzvalidator-Version ersetzt werden. 
 
@@ -129,7 +163,7 @@ Die Versionsangabe `${version.referencevalidator}` soll mit der gewünschten ein
 
 Der Referenzvalidator erfordert als Eingabe einen Modulnamen und einen gültigen Pfad zur Datei, die eine FHIR-Ressource enthält:
 
-    java -jar referencevalidator-cli-X.Y.Z.jar -m erp -i c:\temp\example.xml
+    java -jar referencevalidator-cli-X.Y.Z.jar erp c:\temp\example.xml
 
 Unterstützte Modulnamen:
 - `erp` (E-Rezept)
@@ -139,10 +173,13 @@ Unterstützte Modulnamen:
 - `isik1` (Informationstechnische Systeme in Krankenhäusern Stufe 1)
 - `diga` (Digitale Gesundheitsanwendungen)
 
-Weitere Parameter:
-- `-e` - Nur Validierungsmeldungen der Stufen ERROR und FATAL ausgeben (keine INFO und WARN-Meldungen)
-- `-v` - Verbode-Modus mit Debug-Ausgaben
-
+Optionen:
+- `--errors-only` - Nur Validierungsmeldungen der Stufen ERROR und FATAL ausgeben (keine INFO und WARN-Meldungen)
+- `--verbose` - Verbode-Modus mit Debug-Ausgaben
+- `--no-profile-validity-period-check` - Deaktivierung der Zeitraumgültigkeitsprüfung der Profilversionen
+- `--profile` - Angabe einer Profil-Canonical-URL zur Validierung. Falls angegeben, wird die Angabe der Instanz unter meta.profile ignoriert
+- `--module-info` - Ausgabe der unterstützten Profile, Profilversionen und FHIR-Packages zu einem Validierungsmodul
+- `--accepted-encodings` - Komma-separierte Liste mit den zu akzeptierenden Serialisierungsformaten der FHIR-Ressourcen. Unterstützte Werte: `xml`,`json`. Überschreibt die Modul-eigene Konfiguration.
 
 ### Java-Bibliothek
 
@@ -150,14 +187,16 @@ Folgende Beispiele veranschaulichen die Verwendung vom Referenzvalidator in eine
 
 Validierung einer FHIR-Ressource aus einer Datei:
 
-    ValidationModule erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);
-    Path path = Paths.get("c:/temp/KBV_PR_ERP_Bundle.xml");
-    ValidationResult result = erpModule.validateFile(path);
-    System.out.println(result.isValid());
-    System.out.println(result.getValidationMessages());
+``` Java
+        ValidationModule erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);
+        ValidationResult result = erpModule.validateFile("c:/temp/KBV_PR_ERP_Bundle.xml");
+        System.out.println(result.isValid());
+        System.out.println(result.getValidationMessages());
+``` 
 
 Validierung einer FHIR-Ressource als String:
 
+``` Java
     ValidationModule erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);
     String fhirRessource = "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
         + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
@@ -169,6 +208,20 @@ Validierung einer FHIR-Ressource als String:
     ValidationResult result = erpModule.validateString(fhirRessource);
     System.out.println(result.isValid());
     System.out.println(result.getValidationMessages());
+``` 
+
+Die Validierungseinstellungen auch angepasst werden: 
+
+``` Java
+        ValidationModule erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);
+        ValidationOptions options = ValidationOptions.getDefaults();
+        options.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
+        options.setProfiles(List.of("https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.1"));
+        options.setAcceptedEncodings(List.of("xml", "json"));
+        ValidationResult result = erpModule.validateFile("c:/temp/KBV_PR_ERP_Bundle.xml");
+        System.out.println(result.isValid());
+``` 
+Die Anpassung der Validierungseinstellungen soll allerdings nur für Testzwecke erfolgen, da damit die Bewertung der eingegebenen Instanz gegenüber Standardeinstellungen verfälscht wird.  
 
 ## Lizenz
 

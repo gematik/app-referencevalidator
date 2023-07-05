@@ -17,9 +17,7 @@
 package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.context.FhirContext;
-import de.gematik.refv.commons.ReferencedProfileLocator;
-import de.gematik.refv.commons.configuration.PackageReference;
-import de.gematik.refv.commons.configuration.PackageReferenceForAProfileVersion;
+import de.gematik.refv.commons.configuration.ProfileConfiguration;
 import de.gematik.refv.commons.configuration.SupportedProfileVersions;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.exceptions.UnsupportedProfileException;
@@ -29,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
 
 class GenericValidatorTests {
 
@@ -37,11 +36,7 @@ class GenericValidatorTests {
     @BeforeEach
     public void beforeEach() {
         genericValidator = new GenericValidator(
-                FhirContext.forR4(),
-                new ReferencedProfileLocator(),
-                new GenericValidatorFactory(),
-                new SeverityLevelTransformer(),
-                ProfileCacheStrategy.NO_CACHE
+                FhirContext.forR4()
         );
     }
 
@@ -61,10 +56,10 @@ class GenericValidatorTests {
 
     @Test
     @SneakyThrows
-    void testUnknownPackageThrowsException() {
+    void testUnknownDependencyListThrowsException() {
         var configuration = new ValidationModuleConfiguration();
         configuration.getSupportedProfiles().put("https://bla.bla",new SupportedProfileVersions(new HashMap<>() {{
-            put("1.0.2", new PackageReferenceForAProfileVersion(new PackageReference("unknownpackage", "1.0.0")));
+            put("1.0.2", new ProfileConfiguration(List.of("unknownDependencyList"), null));
         }}));
         var input = "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
                 + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
@@ -73,7 +68,7 @@ class GenericValidatorTests {
                 + "        \n"
                 + "    </meta>\n"
                 + "</Bundle>";
-        Assertions.assertThrows(UnsupportedProfileException.class, () -> genericValidator.validate(input, configuration));
+        Assertions.assertThrows(IllegalStateException.class, () -> genericValidator.validate(input, configuration));
     }
 
     @Test
@@ -81,7 +76,7 @@ class GenericValidatorTests {
     void testNoProfileThrowsException() {
         var configuration = new ValidationModuleConfiguration();
         configuration.getSupportedProfiles().put("https://bla.bla",new SupportedProfileVersions(new HashMap<>() {{
-            put("1.0.2", new PackageReferenceForAProfileVersion(new PackageReference("unknownpackage", "1.0.0")));
+            put("1.0.2", new ProfileConfiguration(List.of("unknownDependencyList"), null));
         }}));
         var input = "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
                 + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"

@@ -4,7 +4,7 @@
         <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung|1.0.4" />
     </meta>
     <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_ERP_TA7_Abrechnungszeitraum">
-        <valueDateTime value="2021-03-01" />
+        <valueDateTime value="2021-07-01" />
     </extension>
     <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_ERP_RezeptBundleReferenz">
         <extension url="lineItem">
@@ -35,5 +35,5 @@
             <value value="108516442" />
         </identifier>
     </recipient>
-    <date value="2021-02-01" />
+    <date value="2021-07-01" />
 </Invoice>

@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 public class ValidationResult {
@@ -45,5 +46,13 @@ public class ValidationResult {
 
     public boolean isValid() {
         return getValidationMessages().stream().noneMatch(m -> m.getSeverity() == ResultSeverityEnum.ERROR || m.getSeverity() == ResultSeverityEnum.FATAL);
+    }
+
+    public static ValidationResult createInstance(ResultSeverityEnum severity, String messageId, String diagnostics) {
+        SingleValidationMessage m = new SingleValidationMessage();
+        m.setSeverity(severity);
+        m.setMessageId(messageId);
+        m.setMessage(diagnostics);
+        return new ValidationResult(List.of(m));
     }
 }

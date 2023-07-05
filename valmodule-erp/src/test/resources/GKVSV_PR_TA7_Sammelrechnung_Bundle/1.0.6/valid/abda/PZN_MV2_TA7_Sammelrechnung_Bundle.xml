@@ -46,7 +46,7 @@
             <display value="Sammelrechnung"/>
           </coding>
         </type>
-        <date value="2021-06-30"/>
+        <date value="2021-07-01"/>
         <author>
           <identifier>
             <system value="http://fhir.de/NamingSystem/arge-ik/iknr"/>
@@ -134,7 +134,7 @@
             <value value="101575519"/>
           </identifier>
         </recipient>
-        <date value="2021-07-02"/>
+        <date value="2021-07-01"/>
       </Invoice>
     </resource>
   </entry>
@@ -208,7 +208,7 @@
                         <display value="Receipt"/>
                       </coding>
                     </type>
-                    <date value="2021-06-15T09:30:00Z"/>
+                    <date value="2021-07-01T09:30:00Z"/>
                     <author>
                       <reference value="https://gematik.erppre.de:443/Device"/>
                     </author>

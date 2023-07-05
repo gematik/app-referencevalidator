@@ -28,6 +28,7 @@ import java.util.Optional;
 
 class ReferencedProfileLocatorXMLTests {
 
+    public static final String SIMPLE_PACKAGES_YAML = "simple-packages.yaml";
     ReferencedProfileLocator locator = new ReferencedProfileLocator();
     ValidationModuleConfiguration configuration;
     FhirPackageConfigurationLoader configurationLoader = new FhirPackageConfigurationLoader();
@@ -98,7 +99,7 @@ class ReferencedProfileLocatorXMLTests {
 
     @Test
     void testMultipleSupportedProfiles() throws IOException {
-        configuration = configurationLoader.getConfiguration("erp-packages.yaml");
+        configuration = configurationLoader.getConfiguration(SIMPLE_PACKAGES_YAML);
         String resource =
                 "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
                         + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
@@ -114,19 +115,19 @@ class ReferencedProfileLocatorXMLTests {
 
     @Test
     void testMultipleSupportedProfilesFindsCorrectProfile() throws IOException {
-        configuration = configurationLoader.getConfiguration("erp-packages.yaml");
+        configuration = configurationLoader.getConfiguration(SIMPLE_PACKAGES_YAML);
         String resource =
                 "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
                         + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
                         + "    <meta>\n"
                         + "        <versionId value=\"v2\"/>"
                         + "        <profile value=\"http://unknown.profile1.de\"/>\n"
-                        + "        <profile value=\"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle\"/>\n"
+                        + "        <profile value=\"http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate\"/>\n"
                         + "        <profile value=\"http://unknown.profile2.de\"/>\n"
                         + "        \n"
                         + "    </meta>\n"
                         + "</Bundle>";
         Optional<Profile> profileOptional = locator.locate(resource, configuration);
-        profileOptional.ifPresent(profile -> Assertions.assertEquals("https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle", profile.getCanonical()));
+        profileOptional.ifPresent(profile -> Assertions.assertEquals("http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate", profile.getCanonical()));
     }
 }

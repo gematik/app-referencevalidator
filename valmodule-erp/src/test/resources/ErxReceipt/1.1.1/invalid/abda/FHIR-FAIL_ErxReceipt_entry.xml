@@ -38,7 +38,7 @@
                         <display value="Receipt" />
                     </coding>
                 </type>
-                <date value="2021-03-30T10:40:00.000+00:00" />
+                <date value="2022-01-01T10:40:00.000+00:00" />
                 <author>
                     <reference value="Device/1" />
                 </author>

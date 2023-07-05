@@ -117,7 +117,7 @@
         <subject>
           <reference value="Patient/93866fdc-3e50-4902-a7e9-891b54737b5e" />
         </subject>
-        <authoredOn value="2021-05-27" />
+        <authoredOn value="2022-01-01" />
         <requester>
           <reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
         </requester>

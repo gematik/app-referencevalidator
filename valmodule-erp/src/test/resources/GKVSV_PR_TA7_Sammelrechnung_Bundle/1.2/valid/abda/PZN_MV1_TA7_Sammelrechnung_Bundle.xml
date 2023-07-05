@@ -46,7 +46,7 @@
             <display value="Sammelrechnung"/>
           </coding>
         </type>
-        <date value="2021-05-31"/>
+        <date value="2022-07-01"/>
         <author>
           <identifier>
             <system value="http://fhir.de/NamingSystem/arge-ik/iknr"/>
@@ -108,7 +108,7 @@
           <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung|1.2"/>
         </meta>
         <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_ERP_TA7_Abrechnungszeitraum">
-          <valueDateTime value="2021-05-31"/>
+          <valueDateTime value="2022-07-01"/>
         </extension>
         <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_ERP_RezeptBundleReferenz">
           <extension url="lineItem">
@@ -134,7 +134,7 @@
             <value value="101575519"/>
           </identifier>
         </recipient>
-        <date value="2021-06-02"/>
+        <date value="2022-07-01"/>
       </Invoice>
     </resource>
   </entry>

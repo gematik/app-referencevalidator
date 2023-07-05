@@ -9,7 +9,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.util.stream.Stream;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 class ISiPBasismodulIT extends BaseProfileIntegrationTest {
 
     private static final String DIR = "ISiP-Basismodul";

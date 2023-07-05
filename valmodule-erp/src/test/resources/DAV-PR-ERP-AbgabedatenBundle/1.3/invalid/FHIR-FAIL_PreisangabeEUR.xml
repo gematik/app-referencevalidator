@@ -117,7 +117,7 @@
             <code value="Abgabeinformationen"/>
           </coding>
         </type>
-        <whenHandedOver value="2021-03-30"/>
+        <whenHandedOver value="2023-07-01"/>
       </MedicationDispense>
     </resource>
   </entry>

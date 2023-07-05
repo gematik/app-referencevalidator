@@ -5,7 +5,7 @@
     <parent>
         <artifactId>referencevalidator</artifactId>
         <groupId>de.gematik.refv</groupId>
-        <version>0.6.1</version>
+        <version>0.7.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -30,11 +30,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
 </project>

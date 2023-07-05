@@ -159,17 +159,4 @@ class SeverityLevelTransformatorTests {
         Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
         Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.INFORMATION)));
     }
-
-    @Test
-    void testWrongFullUrlRuleWorks() {
-        var m1 = new SingleValidationMessage();
-        m1.setSeverity(ResultSeverityEnum.WARNING);
-        m1.setMessage("Entry 5 matches the reference Coverage/4cddf31d-5558-47f1-9bb4-a86329dcafa4 by type and id but it's fullUrl http://pvs.praxis.local/Coverage/4cddf31d-5558-47f1-9bb4-a86329dcafa4 does not match the full target URL http://pvs.praxis.local/Coverage/4cddf31d-5558-47f1-9bb4-a86329dcafa4 by Bundle resolution rules");
-        m1.setMessageId(I18nConstants.BUNDLE_BUNDLE_POSSIBLE_MATCH_WRONG_FU);
-        var inputMessages = List.of(m1);
-
-        var transformedMessages = engine.applyTransformations(inputMessages, new LinkedList<>());
-        Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
-        Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)));
-    }
 }

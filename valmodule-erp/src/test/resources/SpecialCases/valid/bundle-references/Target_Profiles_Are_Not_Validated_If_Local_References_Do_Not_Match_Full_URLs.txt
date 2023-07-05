@@ -1,0 +1,10 @@
+Die Referenzen innerhalb des Bundles sind nicht korrekt, weil die FullUrl nicht zur Reference-Url passt.
+
+FullUrl der Composition ist http://pvs.praxis.local/fhir/d8dee9ad-6d84-41af-8d1d-748c3c563cba
+Reference ist Organization/8d8c91fa-0075-4512-aba3-3b73856c32d2
+
+Die FullUrl müsste also Composition enthalten.
+
+Siehe https://www.hl7.org/fhir/bundle.html#references
+
+Der HAPI-Validator meldet dies nur als Warnung und führt als Folge keine Inhaltsprüfungen der Referenzen durch (auch keine Typprüfungen). In diesem Beispiel müsste der Fehler erkannt werden, dass subject-Referenz eigentlich eine Organisation und kein Patient sein sollte

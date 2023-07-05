@@ -23,7 +23,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import java.util.stream.Stream;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 class GKVSV_PR_TA7_Sammelrechnung_BundleIT extends BaseProfileIntegrationTest {
     private static final String DIR = "GKVSV_PR_TA7_Sammelrechnung_Bundle";
 

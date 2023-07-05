@@ -1,31 +1,12 @@
 errorOnUnknownProfile: "false"
 anyExtensionsAllowed: "true"
 
-fhirPackages:
-  de.gematik.isik-basismodul-stufe1:
-    packageVersions:
-      1.0.9:
-        filename: "de.gematik.isik-basismodul-stufe1-1.0.9.tgz"
-        dependencies:
-          - packageName: "de.basisprofil.r4"
-            packageVersion: "1.4.0"
-          - packageName: "kbv.basis"
-            packageVersion: "1.2.0"
-
-  de.basisprofil.r4:
-    packageVersions:
-      0.9.13:
-        filename: "de.basisprofil.r4-0.9.13.tgz"
-      1.4.0:
-        filename: "de.basisprofil.r4-1.4.0.tgz"
-
-  kbv.basis:
-    packageVersions:
-      1.2.0:
-        filename: "kbv.basis-1.2.0.tgz"
-        dependencies:
-          - packageName: "de.basisprofil.r4"
-            packageVersion: "0.9.13"
+dependencyLists:
+  de.gematik.isik-basismodul-stufe1-1.0.9:
+    packages:
+      - "de.gematik.isik-basismodul-stufe1-1.0.9.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz"
 
 ignoredCodeSystems:
   - "http://snomed.info/sct"
@@ -42,70 +23,77 @@ supportedProfiles:
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKAngehoeriger":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
 
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKBerichtBundle":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
+
 
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKBerichtSubSysteme":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
+
+
 
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKDiagnose":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
+
+
 
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKKontaktGesundheitseinrichtung":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
+
+
 
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKPatient":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
+
+
 
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKPersonImGesundheitsberuf":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
+
+
 
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKProzedur":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
+
+
 
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKVersicherungsverhaeltnisGesetzlich":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
+
+
 
   "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKVersicherungsverhaeltnisSelbstzahler":
     profileVersions:
       0.0.0:
-        requiredPackage:
-          packageName: "de.gematik.isik-basismodul-stufe1"
-          packageVersion: "1.0.9"
+        dependencyLists:
+          - "de.gematik.isik-basismodul-stufe1-1.0.9"
+
+
 

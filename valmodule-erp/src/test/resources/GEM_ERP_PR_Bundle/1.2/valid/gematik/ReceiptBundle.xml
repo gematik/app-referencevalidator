@@ -34,7 +34,7 @@
             <display value="Receipt" />
           </coding>
         </type>
-        <date value="2022-03-18T15:29:00+00:00" />
+        <date value="2023-07-01T15:29:00+00:00" />
         <author>
           <reference value="https://erp.zentral.erp.splitdns.ti-dienste.de/Device/1" />
         </author>

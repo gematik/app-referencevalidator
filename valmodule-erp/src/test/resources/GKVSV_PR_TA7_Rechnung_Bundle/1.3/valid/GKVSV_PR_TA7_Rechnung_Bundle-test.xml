@@ -49,9 +49,9 @@
                         <code value="6"/>
                     </coding>
                 </type>
-                <date value="2021-05-31">
+                <date value="2023-07-31">
                     <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_ERP_TA7_Rechnungsdatum">
-                        <valueDateTime value="2021-06-10"/>
+                        <valueDateTime value="2023-07-10"/>
                     </extension>
                 </date>
                 <author>

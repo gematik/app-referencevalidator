@@ -19,6 +19,5 @@
         <family value="Lux-Brennard"/>
         <given value="Marie"/>
     </name>
-    <gender value="female"/>
-    <birthDate value="1998-04-17"/>
+    <birthDate value="2023-01-01"/>
 </Patient>

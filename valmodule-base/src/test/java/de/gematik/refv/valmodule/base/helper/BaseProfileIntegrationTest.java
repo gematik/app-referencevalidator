@@ -4,12 +4,18 @@ import de.gematik.refv.valmodule.base.ConfigurationBasedValidationModule;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+
+@Execution(ExecutionMode.CONCURRENT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BaseProfileIntegrationTest {
 
     protected ConfigurationBasedValidationModule validationModule;
@@ -18,12 +24,8 @@ public abstract class BaseProfileIntegrationTest {
         this.validationModule = TestConfigurationBasedValidationModuleFactory.createInstance(module);
     }
 
-    protected void createValidationModuleNonCachingInstance(String module) {
-        this.validationModule = TestConfigurationBasedValidationModuleFactory.createNonCachingInstance(module);
-    }
-
     @SneakyThrows
-    private void validateFile(Path path) {
+    protected void validateFile(Path path) {
         var result = validationModule.validateFile(path);
         boolean isValid = ValidFolderDetector.isInValidFolder(path);
         Assertions.assertEquals(isValid, result.isValid(),result.toString());

@@ -137,7 +137,7 @@
                         <code value="Abgabeinformationen" />
                     </coding>
                 </type>
-                <whenHandedOver value="2022-03-25" />
+                <whenHandedOver value="2023-07-01" />
                 <substitution>
                     <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Rezeptaenderung">
                         <extension url="ArtRezeptaenderung">

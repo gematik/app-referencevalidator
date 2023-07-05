@@ -31,6 +31,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class SupportedProfileVersions {
     // Key: Profile name
-    private Map<String, PackageReferenceForAProfileVersion> profileVersions;
+    private Map<String, ProfileConfiguration> profileVersions;
 
 }

@@ -41,10 +41,10 @@
         </type>
         <when value="2022-02-14T08:39:25+01:00" />
         <who>
-            <reference value="https://www.bundesdruckerei.de/" />
+            <reference value="https://www.bundesdruckerei.de/Organization/1" />
         </who>
         <onBehalfOf>
-            <reference value="https://www.bfarm.de/" />
+            <reference value="https://www.bfarm.de/Organization/1" />
         </onBehalfOf>
         <sigFormat value="application/pkcs7-mime" />
         <data value="MIII FQYJ KoZI hvcN AQcC oIII BjCC CAIC AQEx DzAN Bglg hkgB ZQME AgEF ADAL" />

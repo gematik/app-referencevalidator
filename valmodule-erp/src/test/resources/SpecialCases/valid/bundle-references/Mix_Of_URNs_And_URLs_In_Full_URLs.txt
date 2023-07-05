@@ -1,0 +1,10 @@
+Die Referenzen innerhalb des Bundles sind nicht korrekt, weil die FullUrl der Composition eine URN während die section-Referenz eine relative Url ist.
+
+FullUrl ist urn:uuid:11092158-933f-450c-88f9-aa941f443687
+Reference ist Binary/PrescriptionDigest-160.000.001.811.582.27
+
+Die Auflösung ist bei dieser Konstellation nicht möglich - siehe https://www.hl7.org/fhir/bundle.html#references
+
+Der HAPI-Validator meldet dies allerdings nur als Warnung:
+
+Entry 2 matches the reference Binary/PrescriptionDigest-160.000.001.811.582.27 by type and id but it's fullUrl https://test.gematik.de/Binary/PrescriptionDigest-160.000.001.811.582.27 does not match the full target URL urn:uuid:PrescriptionDigest-160.000.001.811.582.27 by Bundle resolution rules

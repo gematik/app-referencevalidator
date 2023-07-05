@@ -16,7 +16,7 @@
   <groupId>de.gematik.refv</groupId>
   <artifactId>referencevalidator</artifactId>
   <packaging>pom</packaging>
-  <version>0.6.1</version>
+  <version>0.7.0</version>
   <name>gematik Referenzvalidator</name>
   <description>Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren.</description>
   <url>https://github.com/gematik/app-referencevalidator</url>
@@ -71,15 +71,17 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <version.surefire>3.0.0-M7</version.surefire>
     <version.compiler>3.10.1</version.compiler>
-    <version.hapi-fhir-validation>6.2.5</version.hapi-fhir-validation>
+    <version.hapi-fhir-validation>6.6.1</version.hapi-fhir-validation>
     <version.lombok>1.18.26</version.lombok>
-    <version.log4j2>2.19.0</version.log4j2>
-    <version.slf4j-api>2.0.6</version.slf4j-api>
-    <version.slf4j-log4j>2.0.6</version.slf4j-log4j>
+    <version.log4j2>2.20.0</version.log4j2>
+    <version.slf4j-api>2.0.7</version.slf4j-api>
+    <version.slf4j-log4j>2.0.7</version.slf4j-log4j>
     <version.junit-jupiter-api>5.9.2</version.junit-jupiter-api>
-    <version.jackson-data-format>2.14.2</version.jackson-data-format>
+    <version.jackson-data-format>2.15.2</version.jackson-data-format>
     <version.woodstox>6.5.0</version.woodstox>
     <version.site>3.12.1</version.site>
     <version.maven-release>2.5.3</version.maven-release>
@@ -93,12 +95,12 @@
     <version.mockito>4.11.0</version.mockito>
     <version.jacoco>0.8.8</version.jacoco>
     <version.maven-failsafe-plugin>3.0.0-M7</version.maven-failsafe-plugin>
+    <version.maven-enforcer-plugin>3.3.0</version.maven-enforcer-plugin>
 
     <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco-it/jacoco.xml,**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.junit.reportPaths>
       target/surefire-reports,target/failsafe-reports/
     </sonar.junit.reportPaths>
-    <version.dependency-check-maven>7.2.1</version.dependency-check-maven>
     <version.nexus-staging-maven-plugin>1.6.13</version.nexus-staging-maven-plugin>
     <version.maven-gpg-plugin>3.0.1</version.maven-gpg-plugin>
   </properties>
@@ -186,9 +188,6 @@
           </excludes>
         </configuration>
       </plugin>
-
-
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -202,11 +201,48 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${version.maven-enforcer-plugin}</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDuplicatePomDependencyVersions/>
+                <dependencyConvergence/>
+                <reactorModuleConvergence/>
+                <requireJavaVersion>
+                  <version>${maven.compiler.release}</version>
+                </requireJavaVersion>
+                <requireMavenVersion>
+                  <version>3.8</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
     <pluginManagement>
       <plugins>
-
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <configuration>
+            <format>ALL</format>
+            <failBuildOnCVSS>0</failBuildOnCVSS>
+            <suppressionFiles>
+              <suppressionsFile>owasp-suppressions.xml</suppressionsFile>
+            </suppressionFiles>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
@@ -251,6 +287,9 @@
           <version>${version.jar}</version>
           <configuration>
             <archive>
+              <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
               <manifestEntries>
                 <Build-Version>
                   ${project.version}
@@ -290,21 +329,25 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>${version.slf4j-api}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
         <version>${version.slf4j-log4j}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
         <version>${version.log4j2}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
         <version>${version.log4j2}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -333,7 +376,55 @@
         <artifactId>commons-compress</artifactId>
         <version>1.22</version>
       </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>32.1.1-jre</version>
+      </dependency>
+
+      <!--
+     The following transitive dependencies do not converge (see maven-enforcer-plugin) and are therefore fixed
+     -->
+      <dependency>
+        <groupId>org.checkerframework</groupId>
+        <artifactId>checker-qual</artifactId>
+        <version>3.33.0</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.15</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_annotations</artifactId>
+        <version>2.18.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>2.15.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>2.15.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.15.2</version>
+      </dependency>
+      <dependency>
+        <groupId>ca.uhn.hapi.fhir</groupId>
+        <artifactId>hapi-fhir-base</artifactId>
+        <version>6.6.1</version>
+      </dependency>
+
+
       <!-- End of fixed versions -->
+
+
 
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -374,6 +465,10 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -384,6 +479,10 @@
           <exclusion>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -422,11 +521,7 @@
       <id>owasp</id>
       <build>
         <plugins>
-          <plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <version>${version.dependency-check-maven}</version>
-          </plugin>
+
         </plugins>
       </build>
     </profile>

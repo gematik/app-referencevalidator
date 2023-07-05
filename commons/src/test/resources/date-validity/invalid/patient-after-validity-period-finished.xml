@@ -1,0 +1,24 @@
+<Patient xmlns="http://hl7.org/fhir">
+    <id value="66033"/>
+    <meta>
+        <profile value="http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate|1.0.0"></profile>
+    </meta>
+    <text>
+        <status value="generated"/>
+        <div xmlns="http://www.w3.org/1999/xhtml">bla</div>
+    </text>
+    <identifier>
+        <system value="urn:oid:1.3.182.4.4"/>
+        <value value="1998041799999"/>
+    </identifier>
+    <identifier>
+        <system value="urn:ietf:rfc:3986"/>
+        <value value="urn:uuid:647515ed-0d5e-4c99-b23d-073fbc593f76"/>
+    </identifier>
+    <name>
+        <family value="Lux-Brennard"/>
+        <given value="Marie"/>
+    </name>
+    <gender value="female"/>
+    <birthDate value="2023-03-01"/>
+</Patient>

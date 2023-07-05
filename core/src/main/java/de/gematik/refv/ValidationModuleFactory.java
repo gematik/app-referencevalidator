@@ -17,30 +17,22 @@
 package de.gematik.refv;
 
 import ca.uhn.fhir.context.FhirContext;
-import de.gematik.refv.commons.ReferencedProfileLocator;
 import de.gematik.refv.commons.configuration.FhirPackageConfigurationLoader;
 import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
-import de.gematik.refv.commons.validation.GenericValidatorFactory;
 import de.gematik.refv.commons.validation.GenericValidator;
-import de.gematik.refv.commons.validation.ProfileCacheStrategy;
-import de.gematik.refv.commons.validation.SeverityLevelTransformer;
 import de.gematik.refv.commons.validation.ValidationModule;
 import de.gematik.refv.valmodule.base.ConfigurationBasedValidationModule;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 
 @NoArgsConstructor
+@Slf4j
 public class ValidationModuleFactory {
 
-    public ValidationModule createValidationModule(@NonNull SupportedValidationModule module) throws IllegalArgumentException, IOException, ValidationModuleInitializationException {
+    public ValidationModule createValidationModule(@NonNull SupportedValidationModule module) throws IllegalArgumentException, ValidationModuleInitializationException {
         GenericValidator engine = new GenericValidator(
-                FhirContext.forR4(),
-                new ReferencedProfileLocator(),
-                new GenericValidatorFactory(),
-                new SeverityLevelTransformer(),
-                ProfileCacheStrategy.CACHE_PROFILES
+                FhirContext.forR4()
         );
 
         ValidationModule result = new ConfigurationBasedValidationModule(

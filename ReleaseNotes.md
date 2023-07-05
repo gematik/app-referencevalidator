@@ -2,6 +2,24 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 0.7.0
+
+### added
+- Profile validity period checks based on instance creation date
+- New parameter to set a profile for validation
+- Output of release version and help on empty input
+- New parameter to print supported profiles and FHIR packages of a validation module
+- New parameter to override module setting on accepted encodings 
+- KBV_CS_SFHIR_KBV_DARREICHUNGSFORM_V1.12.xml integrated for ERP and EAU modules
+
+### changed
+- Usage of different FHIR package dependencies based on the instance creation date
+- Performance optimization (memory consumption, multithreading)
+- Module name and input file are passed directly to the command line tool instead of using -m and -i parameters respectively
+- Upgrade to HAPI 6.6.1
+- E-Rezept module accepts only XML encoding by default
+
+
 ## Release 0.6.1
 
 ### added
@@ -19,11 +37,12 @@
 - support for the 1.2 version of profiles in de.abda.erezeptabgabedatenpkv (package de.abda.erezeptabgabedatenpkv-1.2.0)
 - New validation module: isik2 (Informationstechnische Systeme in Krankenhäusern Stufe 2)
 - New validation module: isik1 (Informationstechnische Systeme in Krankenhäusern Stufe 1)
+- KBV_CS_SFHIR_KBV_DARREICHUNGSFORM_V1.11.xml integrated
 
 ### changed
 - removed packages de.abda.erezeptabgabedaten-1.3.0, de.abda.erezeptabgabedatenpkv-1.1.0
 - added packages (erp): de.abda.erezeptabgabedaten-1.3.1, de.abda.erezeptabgabedatenbasis-1.3.1 
-- KBV_CS_SFHIR_KBV_DARREICHUNGSFORM_V1.11.xml integrated
+
 
 ## Release 0.4.1
 

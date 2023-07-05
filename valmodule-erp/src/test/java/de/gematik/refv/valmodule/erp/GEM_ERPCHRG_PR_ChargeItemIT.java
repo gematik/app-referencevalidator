@@ -7,7 +7,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import java.util.stream.Stream;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 class GEM_ERPCHRG_PR_ChargeItemIT extends BaseProfileIntegrationTest {
     private static final String DIR = "GEM_ERPCHRG_PR_ChargeItem";
 

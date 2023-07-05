@@ -20,47 +20,78 @@ import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.SupportedValidationModule;
 import de.gematik.refv.ValidationModuleFactory;
+import de.gematik.refv.commons.validation.ProfileValidityPeriodCheckStrategy;
 import de.gematik.refv.commons.validation.ValidationModule;
+import de.gematik.refv.commons.validation.ValidationOptions;
 import de.gematik.refv.commons.validation.ValidationResult;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.log4j.Category;
 import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
-import java.nio.file.Path;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Optional;
 
 @CommandLine.Command(
-        name="",
-        description = "Validates a file"
+        name="java -jar referencevalidator-cli.jar",
+        description = "The validator checks conformance of FHIR resources to the underlying specification based on pre-compiled FHIR-/terminology packages and pre-defined validation configuration"
 )
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReferenceValidator implements Runnable {
 
-    @CommandLine.Option(names = {"-m", "--module"}, required = true)
+    @CommandLine.Parameters(paramLabel = "VALIDATION_MODULE", description = "Choice of a validation module (erp, eau, isik1, isik2, isip1, diga)")
     private String module;
 
-    @CommandLine.Option(names = {"-i", "--input"}, required = true)
-    private Path filePath;
+    @CommandLine.Parameters(paramLabel = "FILE", description = "Input file", defaultValue = "")
+    private File file;
 
-    @CommandLine.Option(names = {"-e", "--errors-only"}, required = false)
+    @CommandLine.Option(names = {"-e", "--errors-only"}, description = "Print only errors in the validation results", required = false)
     private boolean isOnlyErrorsInOutput;
 
-    @CommandLine.Option(names = {"-v", "--verbose"}, required = false)
+    @CommandLine.Option(names = {"-v", "--verbose"}, description = "Print debug log messages", required = false)
     private boolean isVerbose;
 
+    @CommandLine.Option(names = {"-nvp", "--no-profile-validity-period-check"}, description = "Disable profile validity period check", required = false, defaultValue = "false")
+    private boolean isNoInstanceValidityCheck;
+
+    @CommandLine.Option(names = {"-p", "--profile"}, description = "Canonical url of a profile to validate against", required = false)
+    private String profile;
+
+    @CommandLine.Option(names = {"-mi", "--module-info"}, description = "Print profiles supported by a module", required = false)
+    private boolean showModuleConfiguration;
+
+    @CommandLine.Option(names = {"-ae", "--accepted-encodings"}, description = "Encodings to accept (XML,JSON). Overwrites the module internal setting.", required = false)
+    private List<String> acceptedEncodings;
     static Logger logger = LoggerFactory.getLogger(ReferenceValidator.class);
 
-    private ValidationModuleFactory factory;
+    private ValidationModuleFactory factory = new ValidationModuleFactory();
 
+    @SneakyThrows
     public static void main(String[] args) {
-        var cli = new CommandLine(new ReferenceValidator(null, null, false, false, new ValidationModuleFactory())).setCaseInsensitiveEnumValuesAllowed(true);
-        cli.execute(args);
+        showInfo();
+        var cli = new CommandLine(new ReferenceValidator()).setCaseInsensitiveEnumValuesAllowed(true);
+        if(args.length == 0) {
+            try(ByteArrayOutputStream out1 = new ByteArrayOutputStream()) {
+                PrintWriter out = new PrintWriter(out1);
+                cli.usage(out);
+                logWithLineBreak(out1.toString());
+            }
+        }
+        else
+            cli.execute(args);
+    }
+
+    private static void logWithLineBreak(String output) {
+        logger.info("\r\n{}", output);
     }
 
     public void run() {
@@ -68,7 +99,6 @@ public class ReferenceValidator implements Runnable {
             if(isVerbose) {
                 configureAllLoggersToDebug();
             }
-
             Optional<SupportedValidationModule> supportedValidationModule = SupportedValidationModule.fromString(module);
             if(supportedValidationModule.isEmpty()) {
                 logger.error("Module [{}] unsupported. Supported modules: {}", module, SupportedValidationModule.values());
@@ -76,14 +106,41 @@ public class ReferenceValidator implements Runnable {
             }
 
             ValidationModule validator = factory.createValidationModule(supportedValidationModule.get());
-            ValidationResult result = validator.validateFile(filePath);
+
+            if(showModuleConfiguration) {
+                String moduleConfiguration = new ModuleConfigurationPrinter().moduleConfigurationToString(validator.getConfiguration());
+                logWithLineBreak(moduleConfiguration);
+                return;
+            }
+            ValidationOptions validationOptions = ValidationOptions.getDefaults();
+            if(profile != null)
+                validationOptions.getProfiles().add(profile);
+            if(acceptedEncodings != null && !acceptedEncodings.isEmpty())
+                validationOptions.setAcceptedEncodings(acceptedEncodings);
+            if(isNoInstanceValidityCheck)
+                validationOptions.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
+
+            ValidationResult result = validator.validateFile(file.toPath(), validationOptions);
 
             String outputMessage = buildOutputMessage(result);
-            logger.info("\r\n{}", outputMessage);
+            logWithLineBreak(outputMessage);
         } catch (Exception e){
             logger.error("Exception", e);
         }
     }
+
+    private static void showInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\r\ngematik Referencevalidator " + ReferenceValidator.class.getPackage().getImplementationVersion());
+        sb.append("\r\nJava:   " + System.getProperty("java.version")
+                + " from " + System.getProperty("java.home")
+                + " on " + System.getProperty("os.arch")
+                + " (" + System.getProperty("sun.arch.data.model") + "bit). "
+                + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB available\r\n");
+        logger.info("{}",sb);
+    }
+
+
 
     private static void configureAllLoggersToDebug() {
         org.apache.log4j.Logger logger4j = org.apache.log4j.Logger.getRootLogger();

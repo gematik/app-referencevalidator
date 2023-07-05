@@ -23,7 +23,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import java.util.stream.Stream;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 class GEM_ERP_PR_BundleIT extends BaseProfileIntegrationTest {
     private static final String DIR = "GEM_ERP_PR_Bundle";
 

@@ -119,7 +119,7 @@
             <subject>
                <reference value="Patient/cc73d2d3-9c0e-462c-b037-fa2c09f401ea"/>
             </subject>
-            <authoredOn value="2022-10-19"/>
+            <authoredOn value="2023-07-01"/>
             <requester>
                <reference value="Practitioner/20d20c17-6eb3-4407-8b0a-1be3bf6701af"/>
             </requester>

@@ -3,6 +3,7 @@ package de.gematik.refv.commons;
 
 import de.gematik.refv.commons.configuration.FhirPackageConfigurationLoader;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
+import de.gematik.refv.commons.helper.SimpleValidationModule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 class ReferencedProfileLocatorJSONTests {
+    public static final String SIMPLE_PACKAGES_YAML = "simple-packages.yaml";
     ReferencedProfileLocator locator = new ReferencedProfileLocator();
     ValidationModuleConfiguration configuration;
     FhirPackageConfigurationLoader configurationLoader = new FhirPackageConfigurationLoader();
@@ -110,7 +112,7 @@ class ReferencedProfileLocatorJSONTests {
 
     @Test
     void testMultipleSupportedProfiles() throws IOException {
-        configuration = configurationLoader.getConfiguration("erp-packages.yaml");
+        configuration = configurationLoader.getConfiguration("simple-packages.yaml");
         String resource =
                 "{\n"
                         + "\"resourceType\": \"Bundle\",\n"
@@ -127,20 +129,20 @@ class ReferencedProfileLocatorJSONTests {
 
     @Test
     void testMultipleSupportedProfilesFindsCorrectProfile() throws IOException {
-        configuration = configurationLoader.getConfiguration("erp-packages.yaml");
+        configuration = configurationLoader.getConfiguration(SIMPLE_PACKAGES_YAML);
         String resource =
                 "{\n"
-                        + "\"resourceType\": \"Bundle\",\n"
+                        + "\"resourceType\": \"Patient\",\n"
                         + "\"id\": \"123456789\",\n"
                         + " \"meta\": {\n"
                         + "     \"profile\": [\n"
                         + "         \"http://unknown.profile1.de\",\n"
-                        + "         \"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle\",\n"
+                        + "         \"http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate\",\n"
                         + "         \"http://unknown.profile2.de\"\n"
                         + "    ],\n"
                         + "  }\n"
                         + "}";
         Optional<Profile> profileOptional = locator.locate(resource, configuration);
-        profileOptional.ifPresent(profile -> Assertions.assertEquals("https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle", profile.getCanonical()));
+        profileOptional.ifPresent(profile -> Assertions.assertEquals("http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate", profile.getCanonical()));
     }
 }

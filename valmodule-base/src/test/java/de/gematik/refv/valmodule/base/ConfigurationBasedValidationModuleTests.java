@@ -1,13 +1,10 @@
 package de.gematik.refv.valmodule.base;
 
 import ca.uhn.fhir.context.FhirContext;
-import de.gematik.refv.commons.ReferencedProfileLocator;
 import de.gematik.refv.commons.configuration.FhirPackageConfigurationLoader;
 import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
 import de.gematik.refv.commons.validation.GenericValidator;
-import de.gematik.refv.commons.validation.GenericValidatorFactory;
-import de.gematik.refv.commons.validation.ProfileCacheStrategy;
-import de.gematik.refv.commons.validation.SeverityLevelTransformer;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,94 +17,46 @@ import java.nio.file.Path;
 class ConfigurationBasedValidationModuleTests {
 
     private static GenericValidator engine;
+    private static ConfigurationBasedValidationModule validationModule;
 
     @BeforeAll
+    @SneakyThrows
     static void beforeAll() {
         engine = new GenericValidator(
-                FhirContext.forR4(),
-                new ReferencedProfileLocator(),
-                new GenericValidatorFactory(),
-                new SeverityLevelTransformer(),
-                ProfileCacheStrategy.CACHE_PROFILES
+                FhirContext.forR4()
         );
-    }
-
-    @Test
-    void testValidateFileValidNoCache() throws IOException, ValidationModuleInitializationException {
-        GenericValidator genericValidator = new GenericValidator(
-                FhirContext.forR4(),
-                new ReferencedProfileLocator(),
-                new GenericValidatorFactory(),
-                new SeverityLevelTransformer(),
-                ProfileCacheStrategy.NO_CACHE
-        );
-        ConfigurationBasedValidationModule validationModule = new ConfigurationBasedValidationModule(
-                "minimal",
-                new FhirPackageConfigurationLoader(),
-                genericValidator
-        );
-        validationModule.initialize();
-        var result = validationModule.validateFile("src/test/resources/test-minimal-example-valid.xml");
-        Assertions.assertTrue(result.isValid(), result.toString());
-    }
-
-    @Test
-    void testValidateFileValid() throws IOException, ValidationModuleInitializationException {
-        ConfigurationBasedValidationModule validationModule = new ConfigurationBasedValidationModule(
+        validationModule = new ConfigurationBasedValidationModule(
                 "minimal",
                 new FhirPackageConfigurationLoader(),
                 engine
         );
         validationModule.initialize();
+    }
+
+    @Test
+    void testValidateFileValid() throws IOException{
+
         var result = validationModule.validateFile("src/test/resources/test-minimal-example-valid.xml");
         Assertions.assertTrue(result.isValid(), result.toString());
     }
 
     @Test
-    void testValidateStringValid() throws IOException, ValidationModuleInitializationException {
-        ConfigurationBasedValidationModule validationModule = new ConfigurationBasedValidationModule(
-                "minimal",
-                new FhirPackageConfigurationLoader(),
-                engine
-        );
-        validationModule.initialize();
+    void testValidateStringValid() throws IOException {
         String fhirResourceAsString = Files.readString(Path.of("src/test/resources/test-minimal-example-valid.xml"), StandardCharsets.UTF_8);
         var result = validationModule.validateString(fhirResourceAsString);
         Assertions.assertTrue(result.isValid(), result.toString());
     }
 
     @Test
-    void testValidateFileWithPathValid() throws IOException, ValidationModuleInitializationException {
-        ConfigurationBasedValidationModule validationModule = new ConfigurationBasedValidationModule(
-                "minimal",
-                new FhirPackageConfigurationLoader(),
-                engine
-        );
-        validationModule.initialize();
+    void testValidateFileWithPathValid() throws IOException {
         var result = validationModule.validateFile(Path.of("src/test/resources/test-minimal-example-valid.xml"));
         Assertions.assertTrue(result.isValid(), result.toString());
     }
 
     @Test
-    void testValidateFileInvalid() throws IOException, ValidationModuleInitializationException {
-        ConfigurationBasedValidationModule validationModule = new ConfigurationBasedValidationModule(
-                "minimal",
-                new FhirPackageConfigurationLoader(),
-                engine
-        );
-        validationModule.initialize();
+    void testValidateFileInvalid() throws IOException {
         var result = validationModule.validateFile("src/test/resources/test-minimal-example-invalid.xml");
         Assertions.assertFalse(result.isValid(), result.toString());
-    }
-
-    @Test
-    void testInitialize() {
-        ConfigurationBasedValidationModule validationModule = new ConfigurationBasedValidationModule(
-                "minimal",
-                new FhirPackageConfigurationLoader(),
-                engine
-        );
-        Assertions.assertDoesNotThrow(validationModule::initialize);
     }
 
     @Test

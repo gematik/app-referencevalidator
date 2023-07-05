@@ -19,30 +19,27 @@ package de.gematik.refv.commons.helper;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
-import de.gematik.refv.commons.ReferencedProfileLocator;
 import de.gematik.refv.commons.configuration.FhirPackageConfigurationLoader;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
 import de.gematik.refv.commons.validation.GenericValidator;
-import de.gematik.refv.commons.validation.GenericValidatorFactory;
-import de.gematik.refv.commons.validation.ProfileCacheStrategy;
-import de.gematik.refv.commons.validation.SeverityLevelTransformer;
 import de.gematik.refv.commons.validation.ValidationModule;
+import de.gematik.refv.commons.validation.ValidationOptions;
+import de.gematik.refv.commons.validation.ValidationResult;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
+@Slf4j
 public class SimpleValidationModule implements ValidationModule {
 
-    static Logger logger = LoggerFactory.getLogger(SimpleValidationModule.class);
-
-    private static final String CONFIGURATION_FILE = "erp-packages.yaml";
+    private static final String CONFIGURATION_FILE = "simple-packages.yaml";
     private static final String CODE = "simple";
 
     private final String configurationFile;
@@ -63,13 +60,10 @@ public class SimpleValidationModule implements ValidationModule {
     private final GenericValidator genericValidator;
 
     @SneakyThrows
-    public static SimpleValidationModule createInstance(String configFile, ProfileCacheStrategy cacheStrategy) {
+    public static SimpleValidationModule createInstance(String configFile) {
+        FhirContext fhirContext = FhirContext.forR4();
         GenericValidator engine = new GenericValidator(
-                FhirContext.forR4(),
-                new ReferencedProfileLocator(),
-                new GenericValidatorFactory(),
-                new SeverityLevelTransformer(),
-                cacheStrategy
+                fhirContext
         );
         var validationModule = new SimpleValidationModule(
                 new FhirPackageConfigurationLoader(),
@@ -78,18 +72,6 @@ public class SimpleValidationModule implements ValidationModule {
         );
         validationModule.initialize();
         return validationModule;
-    }
-
-    @SneakyThrows
-    public static SimpleValidationModule createCachingInstance() {
-        return createInstance(CONFIGURATION_FILE,
-                ProfileCacheStrategy.CACHE_PROFILES);
-    }
-
-    @SneakyThrows
-    public static SimpleValidationModule createNonCachingInstance() {
-        return createInstance(CONFIGURATION_FILE,
-                ProfileCacheStrategy.NO_CACHE);
     }
 
     private SimpleValidationModule(FhirPackageConfigurationLoader configurationLoader, GenericValidator genericValidator, String configurationFile) {
@@ -104,6 +86,29 @@ public class SimpleValidationModule implements ValidationModule {
         } catch (IOException e) {
             throw new ValidationModuleInitializationException("Could not load module configuration", e);
         }
+    }
+
+    @Override
+    public ValidationResult validateFile(@NonNull String inputPath, @NonNull ValidationOptions validationOptions) throws IllegalArgumentException {
+        return validateFile(Paths.get(inputPath), validationOptions);
+    }
+
+    @Override
+    public ValidationResult validateString(String fhirResourceAsString, @NonNull ValidationOptions validationOptions) {
+        var result = genericValidator.validate(
+                fhirResourceAsString,
+                getConfiguration(),
+                validationOptions);
+        log.info("Validation result: {}", result);
+        return result;
+    }
+
+    @Override
+    @SneakyThrows
+    public ValidationResult validateFile(Path inputPath, @NonNull ValidationOptions validationOptions) {
+        log.info("Reading input file {}...", inputPath);
+        String body = Files.readString(inputPath, StandardCharsets.UTF_8);
+        return validateString(body, validationOptions);
     }
 
     /**
@@ -124,10 +129,7 @@ public class SimpleValidationModule implements ValidationModule {
      */
     public de.gematik.refv.commons.validation.ValidationResult validateString(@NonNull String fhirResourceAsString) throws IllegalArgumentException {
 
-        return genericValidator.validate(
-                fhirResourceAsString,
-                getConfiguration()
-        );
+        return validateString(fhirResourceAsString, ValidationOptions.getDefaults());
     }
 
     /**
@@ -137,8 +139,6 @@ public class SimpleValidationModule implements ValidationModule {
      * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage} as key
      */
     public de.gematik.refv.commons.validation.ValidationResult validateFile(@NonNull Path inputPath) throws IllegalArgumentException, IOException {
-        logger.info("Reading input file {}...", inputPath);
-        String body = Files.readString(inputPath, StandardCharsets.UTF_8);
-        return validateString(body);
+        return validateFile(inputPath, ValidationOptions.getDefaults());
     }
 }

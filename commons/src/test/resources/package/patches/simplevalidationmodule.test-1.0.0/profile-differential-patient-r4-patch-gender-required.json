@@ -1,6 +1,6 @@
 {
 	"resourceType": "StructureDefinition",
-	"url": "http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate",
+	"url": "http://example.gematik.de/fhir/StructureDefinition/patient-patched",
 	"version": "1.0.0",
 	"name": "PatientWithDataOnBirthDate",
 	"title": "PATCH Test Patient with Data on Birthdate",

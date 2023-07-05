@@ -46,7 +46,7 @@
             <display value="Sammelrechnung"/>
           </coding>
         </type>
-        <date value="2021-12-31"/>
+        <date value="2022-01-01"/>
         <author>
           <identifier>
             <system value="http://fhir.de/NamingSystem/arge-ik/iknr"/>

@@ -46,7 +46,7 @@
             <display value="Sammelrechnung" />
           </coding>
         </type>
-        <date value="2021-05-31" />
+        <date value="2022-01-01" />
         <author>
           <identifier>
             <system value="http://fhir.de/NamingSystem/arge-ik/iknr" />
@@ -134,7 +134,7 @@
             <value value="121191241" />
           </identifier>
         </recipient>
-        <date value="2021-06-10" />
+        <date value="2022-01-01" />
       </Invoice>
     </resource>
   </entry>

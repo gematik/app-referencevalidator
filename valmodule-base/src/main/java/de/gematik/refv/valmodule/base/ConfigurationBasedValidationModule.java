@@ -7,6 +7,7 @@ import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
 import de.gematik.refv.commons.validation.GenericValidator;
 import de.gematik.refv.commons.validation.ValidationModule;
+import de.gematik.refv.commons.validation.ValidationOptions;
 import de.gematik.refv.commons.validation.ValidationResult;
 import lombok.NonNull;
 import org.slf4j.Logger;
@@ -50,6 +51,31 @@ public class ConfigurationBasedValidationModule implements ValidationModule {
         }
     }
 
+    @Override
+    public ValidationResult validateFile(@NonNull String inputFile, ValidationOptions validationOptions) throws IllegalArgumentException, IOException {
+        return validateFile(Path.of(inputFile), validationOptions);
+    }
+
+    @Override
+    public ValidationResult validateString(String fhirResourceAsString, ValidationOptions validationOptions) {
+        var result = genericValidator.validate(
+                fhirResourceAsString,
+                getConfiguration(),
+                validationOptions
+        );
+
+        logger.debug("ValidationResult: {}", result);
+
+        return result;
+    }
+
+    @Override
+    public ValidationResult validateFile(Path inputPath, ValidationOptions validationOptions) throws IllegalArgumentException, IOException {
+        logger.info("Reading input file {}...", inputPath);
+        String body = Files.readString(inputPath, StandardCharsets.UTF_8);
+        return validateString(body, validationOptions);
+    }
+
     /**
      * Validates the given File
      *
@@ -57,7 +83,7 @@ public class ConfigurationBasedValidationModule implements ValidationModule {
      * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage} as key
      */
     public ValidationResult validateFile(@NonNull String inputFile) throws IllegalArgumentException, IOException {
-        return validateFile(Path.of(inputFile));
+        return validateFile(inputFile, ValidationOptions.getDefaults());
     }
 
     /**
@@ -67,11 +93,7 @@ public class ConfigurationBasedValidationModule implements ValidationModule {
      * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage} as key
      */
     public ValidationResult validateString(@NonNull String fhirResourceAsString) throws IllegalArgumentException {
-
-        return genericValidator.validate(
-                fhirResourceAsString,
-                getConfiguration()
-        );
+        return validateString(fhirResourceAsString, ValidationOptions.getDefaults());
     }
 
     /**
@@ -81,8 +103,6 @@ public class ConfigurationBasedValidationModule implements ValidationModule {
      * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage} as key
      */
     public ValidationResult validateFile(@NonNull Path inputPath) throws IllegalArgumentException, IOException {
-        logger.info("Reading input file {}...", inputPath);
-        String body = Files.readString(inputPath, StandardCharsets.UTF_8);
-        return validateString(body);
+        return validateFile(inputPath, ValidationOptions.getDefaults());
     }
 }
