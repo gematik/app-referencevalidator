@@ -17,10 +17,10 @@
 package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.support.IValidationSupport;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.common.hapi.validation.support.NpmPackageValidationSupport;
-import org.hl7.fhir.common.hapi.validation.support.PrePopulatedValidationSupport;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,19 +29,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PackageCache {
     private FhirContext fhirContext;
 
-    private Map<String, PrePopulatedValidationSupport> packages = new ConcurrentHashMap<>();
+    private Map<String, IValidationSupport> packages = new ConcurrentHashMap<>();
 
     public PackageCache(FhirContext fhirContext) {
         this.fhirContext = fhirContext;
     }
 
 
-    public PrePopulatedValidationSupport addOrGet(String packagePath) {
+    public IValidationSupport addOrGet(String packagePath) {
         return packages.computeIfAbsent(packagePath, path -> createPrePopulatedSupportFromPackage(packagePath));
     }
 
     @SneakyThrows
-    private PrePopulatedValidationSupport createPrePopulatedSupportFromPackage(String packagePath) {
+    private IValidationSupport createPrePopulatedSupportFromPackage(String packagePath) {
         log.info("Loading package " + packagePath + "...");
         NpmPackageValidationSupport validationSupport = new NpmPackageValidationSupport(fhirContext);
         validationSupport.loadPackageFromClasspath("package/" + packagePath);

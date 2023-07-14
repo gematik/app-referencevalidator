@@ -63,7 +63,8 @@ class UsageExamplesLocalTest {
         options.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
         options.setProfiles(List.of("https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.1"));
         options.setAcceptedEncodings(List.of("xml", "json"));
-        ValidationResult result = erpModule.validateFile("c:/temp/KBV_PR_ERP_Bundle.xml");
+        ValidationResult result = erpModule.validateFile("c:/temp/KBV_PR_ERP_Bundle.xml", options);
         System.out.println(result.isValid());
+        System.out.println(result.getValidationMessages());
     }
 }

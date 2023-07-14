@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,13 +51,14 @@ public class GenericValidator {
     private final HapiFhirValidatorFactory hapiFhirValidatorFactory;
 
     private final SeverityLevelTransformer severityLevelTransformator;
-
+    private final ConcurrentHashMap<DependencyList, FhirValidator> hapiFhirValidatorCache;
 
     public GenericValidator(FhirContext context) {
         this.fhirContext = context;
         this.referencedProfileLocator = new ReferencedProfileLocator();
         this.hapiFhirValidatorFactory = new HapiFhirValidatorFactory(fhirContext);
         this.severityLevelTransformator = new SeverityLevelTransformer();
+        this.hapiFhirValidatorCache = new ConcurrentHashMap<>();
     }
 
     public ValidationResult validate(
@@ -174,11 +176,12 @@ public class GenericValidator {
     private ValidationResult validateUsingDependencyList(String resourceBody, ValidationModuleConfiguration configuration, DependencyList dependencyList, Profile profileInResource, String userDefinedProfile) {
         log.debug("Applying dependency list: {}", dependencyList);
 
-        FhirValidator fhirValidator = hapiFhirValidatorFactory.createInstance(
+        var fhirValidator = hapiFhirValidatorCache.computeIfAbsent(dependencyList, k ->
+                hapiFhirValidatorFactory.createInstance(
                 dependencyList.getPackages(),
                 dependencyList.getPatches(),
                 configuration
-        );
+        ));
 
         var options = new ca.uhn.fhir.validation.ValidationOptions();
         if(userDefinedProfile != null)

@@ -2,6 +2,20 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 0.7.1
+
+### added
+- kbv.ita.eau 1.1.1 integrated
+- de.gematik.erezept-workflow.r4 1.2.2 integrated
+- de.abda.erezeptabgabedatenbasis 1.2.1 integrated
+
+### changed
+- corrections in ERP and EAU FHIR-Package dependencies
+- resources with profiles from kbv.ita.erp#1.0.2 can now be validated if embedded into GEM_ERP_PR_MedicationDispense 1.2-resources
+- fixed Java example in README.md for usage of ValidationOptions
+- performance optimizations
+- no INFO or WARNINGS if not in verbose mode
+
 ## Release 0.7.0
 
 ### added

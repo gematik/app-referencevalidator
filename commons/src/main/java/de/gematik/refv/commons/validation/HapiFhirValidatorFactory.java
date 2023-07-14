@@ -17,7 +17,6 @@
 package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.context.support.IValidationSupport;
 import ca.uhn.fhir.util.ClasspathUtil;
 import ca.uhn.fhir.validation.FhirValidator;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
@@ -25,6 +24,7 @@ import de.gematik.refv.commons.validation.support.IgnoreCodeSystemValidationSupp
 import de.gematik.refv.commons.validation.support.IgnoreValueSetValidationSupport;
 import de.gematik.refv.commons.validation.support.PipedCanonicalCoreResourcesValidationSupport;
 import lombok.SneakyThrows;
+import org.hl7.fhir.common.hapi.validation.support.CachingValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.PrePopulatedValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
@@ -68,18 +68,17 @@ public class HapiFhirValidatorFactory {
             patchesPrePopulatedValidationSupport.addResource(newResource);
         }
 
-        IValidationSupport validationSupport = fhirContext.getValidationSupport();
-
+        var validationSupport = fhirContext.getValidationSupport();
         var validationSupportChain = new ValidationSupportChain(
-                new IgnoreCodeSystemValidationSupport(fhirContext, codeSystemsToIgnore),
-                new IgnoreValueSetValidationSupport(fhirContext, valueSetsToIgnore),
-                validationSupport,
+                new CachingValidationSupport(new IgnoreCodeSystemValidationSupport(fhirContext, codeSystemsToIgnore)),
+                new CachingValidationSupport(new IgnoreValueSetValidationSupport(fhirContext, valueSetsToIgnore)),
+                new CachingValidationSupport(validationSupport),
                 new PipedCanonicalCoreResourcesValidationSupport(fhirContext),
                 patchesPrePopulatedValidationSupport
         );
 
         for (String packagePath : packageFilenames) {
-            PrePopulatedValidationSupport prePopulatedValidationSupport = packageCache.addOrGet(packagePath);
+            var prePopulatedValidationSupport = packageCache.addOrGet(packagePath);
             validationSupportChain.addValidationSupport(prePopulatedValidationSupport);
         }
 

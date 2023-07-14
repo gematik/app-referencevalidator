@@ -17,7 +17,7 @@ dependencyLists:
       - "de.basisprofil.r4-0.9.13/Extension-seitenlokalisation.json"
     packages:
       - "kbv.ita.eau-1.0.2.tgz"
-      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "gematik.kbv.eau.sfhir.cs.vs-1.0.0.tgz"
       - "kbv.ita.for-1.0.3.tgz"
       - "kbv.basis-1.1.3.tgz"
       - "de.basisprofil.r4-0.9.13.tgz"
@@ -25,11 +25,9 @@ dependencyLists:
     validTill: "2023-06-30"
 
   kbv.ita.eau.1.1.0:
-    patches:
-      - "de.basisprofil.r4-0.9.13/Extension-seitenlokalisation.json"
     packages:
-      - "kbv.ita.eau-1.1.0.tgz"
-      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "kbv.ita.eau-1.1.1.tgz"
+      - "gematik.kbv.eau.sfhir.cs.vs-1.1.0.tgz"
       - "kbv.ita.for-1.1.0.tgz"
       - "kbv.basis-1.3.0.tgz"
       - "de.basisprofil.r4-1.3.2.tgz"

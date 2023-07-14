@@ -16,7 +16,7 @@
   <groupId>de.gematik.refv</groupId>
   <artifactId>referencevalidator</artifactId>
   <packaging>pom</packaging>
-  <version>0.7.0</version>
+  <version>0.7.1</version>
   <name>gematik Referenzvalidator</name>
   <description>Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren.</description>
   <url>https://github.com/gematik/app-referencevalidator</url>
@@ -80,7 +80,7 @@
     <version.log4j2>2.20.0</version.log4j2>
     <version.slf4j-api>2.0.7</version.slf4j-api>
     <version.slf4j-log4j>2.0.7</version.slf4j-log4j>
-    <version.junit-jupiter-api>5.9.2</version.junit-jupiter-api>
+    <version.junit-jupiter-api>5.9.3</version.junit-jupiter-api>
     <version.jackson-data-format>2.15.2</version.jackson-data-format>
     <version.woodstox>6.5.0</version.woodstox>
     <version.site>3.12.1</version.site>

@@ -227,7 +227,7 @@ public class ReferenceValidator implements Runnable {
         if(isAtLeastOneErrorInMessages(results))
             return true;
 
-        return !isOnlyErrorsInOutput;
+        return isVerbose;
     }
 
     private static boolean isAtLeastOneErrorInMessages(ValidationResult results) {

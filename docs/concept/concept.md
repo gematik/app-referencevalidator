@@ -91,7 +91,8 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
                         class="external-link"
                         href="https://github.com/gematik/api-erp/blob/master/docs/erp_fhirversion.adoc" rel="nofollow" target="_blank">Profil-Roadmap</a>). Insbesondere sollen die im Kontext von E-Rezept eingesetzten <a href="https://applications.kbv.de/overview.xhtml" target="_blank">Schlüsseltabellen der KBV</a> sowie deren Gültigkeitszeiträume und Release-Zyklen berücksichtigt werden. 
                     </p>
-                <p>1.2.2. Das E-Rezept muss als Ergebnis eine Valid / Invalid-Antwort und als Ergänzung weitere eventuell erkannte Konformitätsprobleme ausgeben können.</p>
+                    <p>Die Auswahl der FHIR-Packages, die zur Validierung hinzugezogen werden müssen, richtet sich nach den von der jeweiligen Standardisierungsorganisation festgelegten Abhängigkeiten des FHIR-Packages, das für das jeweilige Profil verbindlich ist. Abweichend davon und falls verfügbar müssen FHIR-Packages der Abhängigkeiten mit der höchsten Patch-Versionnummer eingesetzt werden (auch rückwirkend). Als Zeitpunkt zur Auswahl der geltenden Terminologien dienen die <a href="#creation-date-elements">Erstellungszeitpunktangaben</a> aus den zu validierenden Ressourcen.
+                <p>1.2.2. Das E-Rezept muss als Ergebnis eine Valid / Invalid-Antwort und, falls Invalid, als Ergänzung weitere eventuell erkannte Konformitätsprobleme ausgeben können. </p>
                 <p>1.2.3. Um die Valid / Invalid-Antwort zu produzieren, muss der Referenzvalidator die <a href="#validation-configuration">Validierung-Konfiguration</a> und <a href="#result-interpretation">Interpretationsregeln</a> anwenden. </p>
                 <p>1.2.4. Der Referenzvalidator kann als Startparameter eine unterstützte Profil-URL akzeptieren, um die Konformität der eingegebenen Instanz zu dem zugrundeliegenden Profil zu überprüfen.</p>
                 <p>1.3.1. Der Referenzvalidator
@@ -381,6 +382,7 @@ Referenzvalidator: Infrastrukturelle Anforderungen
                         </ol>
                     </li>
                     <li>1.1.3. Der Referenzvalidator muss die Release-Version, unterstützten Module, Profile, Profilversionen, Gültigkeitszeiträume, FHIR-Paket-Abhängigkeiten als Information ausgeben können</li>
+                    <li>1.1.4. Mittels eines Startparameters muss der Referenzvalidator interne Protokolle und sämtliche Validierungsmeldungen unabhängig vom Validierungsergebnis ausgeben können.</li>
                 </ul>
                 <p><br></p></div>
         </td>
