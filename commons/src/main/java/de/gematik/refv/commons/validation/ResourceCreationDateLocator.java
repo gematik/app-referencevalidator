@@ -46,7 +46,7 @@ public class ResourceCreationDateLocator {
         if(creationDate == null) // Date could not be parsed
             throw new DataFormatException(String.format("Could not parse date %s", creationDateList.get(0).toString()));
 
-        return Optional.of(LocalDate.ofInstant(creationDate.toInstant(), ZoneId.systemDefault()));
+        return Optional.of(LocalDate.ofInstant(creationDate.toInstant(), ZoneId.of("Europe/Berlin")));
     }
 
 }

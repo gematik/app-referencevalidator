@@ -2,6 +2,12 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 0.7.2
+
+### changed
+- setting the timezone for determining FHIR package lists to Europe/Berlin instead of default system timezone
+- bumping dependencies
+
 ## Release 0.7.1
 
 ### added

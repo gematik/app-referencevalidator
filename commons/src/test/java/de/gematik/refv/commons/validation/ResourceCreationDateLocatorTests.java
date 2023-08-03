@@ -18,13 +18,31 @@ package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.DataFormatException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.TimeZone;
 
 class ResourceCreationDateLocatorTests {
     ResourceCreationDateLocator locator = new ResourceCreationDateLocator(FhirContext.forR4());
+
+    static TimeZone systemTimeZone;
+    @BeforeAll
+    static void beforeAll() {
+        systemTimeZone = TimeZone.getDefault();
+        // Simulate reference validator running on a misconfigured machine.
+        // This is potentially dangerous, because the setting may influence other tests running in parallel, but no better solution has been found yet
+        TimeZone.setDefault(TimeZone.getTimeZone("America/Thule"));
+    }
+
+    @AfterAll
+    static void afterAll() {
+        TimeZone.setDefault(systemTimeZone);
+    }
 
     @Test
     void testDateFormatIsSupported() {
@@ -49,7 +67,23 @@ class ResourceCreationDateLocatorTests {
     }
 
     @Test
+    void testDateTimeIsConvertedToGermanTimeZone() {
+        String resource =
+                "<Patient xmlns=\"http://hl7.org/fhir\">\n"
+                        + "    <birthDate value=\"2023-06-30T22:00:00+00:00\" />\n" // corresponds to 2023-07-01 in Germany (UTC+1 in winter or UTC+2 in summer)
+                        + "</Patient>";
+
+        var result = locator.findCreationDateIn(resource, "birthDate");
+
+        Assertions.assertTrue(result.isPresent());
+        LocalDate expectedGermanDate = LocalDate.of(2023, 07, 01);
+        Assertions.assertEquals(expectedGermanDate, result.get());
+    }
+
+    @Test
     void testMissingDateElementIsSupported() {
+        System.out.println(ZoneId.systemDefault());
+
         String resource =
                 "<Patient xmlns=\"http://hl7.org/fhir\">\n"
                         + "</Patient>";
