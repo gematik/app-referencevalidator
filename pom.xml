@@ -11,12 +11,13 @@
     <module>valmodule-isik2</module>
     <module>valmodule-isik1</module>
     <module>valmodule-diga</module>
+    <module>valmodule-core</module>
   </modules>
 
   <groupId>de.gematik.refv</groupId>
   <artifactId>referencevalidator</artifactId>
   <packaging>pom</packaging>
-  <version>0.7.2</version>
+  <version>1.0.0</version>
   <name>gematik Referenzvalidator</name>
   <description>Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren.</description>
   <url>https://github.com/gematik/app-referencevalidator</url>
@@ -78,7 +79,7 @@
     <version.hapi-fhir-validation>6.6.2</version.hapi-fhir-validation>
     <version.lombok>1.18.28</version.lombok>
     <version.log4j2>2.20.0</version.log4j2>
-    <version.slf4j-api>2.0.7</version.slf4j-api>
+    <version.slf4j-api>2.0.9</version.slf4j-api>
     <version.slf4j-log4j>2.0.7</version.slf4j-log4j>
     <version.junit-jupiter-api>5.9.3</version.junit-jupiter-api>
     <version.jackson-data-format>2.15.2</version.jackson-data-format>
@@ -379,7 +380,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>32.1.1-jre</version>
+        <version>32.1.2-jre</version>
       </dependency>
       <dependency>
         <groupId>org.thymeleaf</groupId>
@@ -393,7 +394,7 @@
       <dependency>
         <groupId>org.checkerframework</groupId>
         <artifactId>checker-qual</artifactId>
-        <version>3.33.0</version>
+        <version>3.37.0</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>

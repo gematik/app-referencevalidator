@@ -23,9 +23,11 @@ import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.validation.support.IgnoreCodeSystemValidationSupport;
 import de.gematik.refv.commons.validation.support.IgnoreValueSetValidationSupport;
 import de.gematik.refv.commons.validation.support.PipedCanonicalCoreResourcesValidationSupport;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.hl7.fhir.common.hapi.validation.support.CachingValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.PrePopulatedValidationSupport;
+import org.hl7.fhir.common.hapi.validation.support.SnapshotGeneratingValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
 import org.slf4j.Logger;
@@ -47,11 +49,12 @@ public class HapiFhirValidatorFactory {
         this.fhirContext = fhirContext;
         packageCache = new PackageCache(fhirContext);
     }
+
     @SneakyThrows
     public FhirValidator createInstance(
-            Collection<String> packageFilenames,
+            @NonNull Collection<String> packageFilenames,
             Collection<String> patches,
-            ValidationModuleConfiguration configuration) {
+            @NonNull ValidationModuleConfiguration configuration) {
         Collection<String> codeSystemsToIgnore = configuration.getIgnoredCodeSystems();
         Collection<String> valueSetsToIgnore = configuration.getIgnoredValueSets();
         boolean errorOnUnknownProfile = configuration.isErrorOnUnknownProfile();
@@ -60,7 +63,7 @@ public class HapiFhirValidatorFactory {
         var patchesPrePopulatedValidationSupport = new PrePopulatedValidationSupport(fhirContext);
         for (String patch :
                 patches) {
-            logger.debug("Applying patch {}...",patch);
+            logger.info("Applying patch {}...",patch);
             InputStream is = ClasspathUtil.loadResourceAsStream("package/patches/" + patch);
             var reader = new InputStreamReader(is);
             var newResource = fhirContext.newJsonParser().parseResource(reader);
@@ -70,6 +73,7 @@ public class HapiFhirValidatorFactory {
 
         var validationSupport = fhirContext.getValidationSupport();
         var validationSupportChain = new ValidationSupportChain(
+                new SnapshotGeneratingValidationSupport(fhirContext),
                 new CachingValidationSupport(new IgnoreCodeSystemValidationSupport(fhirContext, codeSystemsToIgnore)),
                 new CachingValidationSupport(new IgnoreValueSetValidationSupport(fhirContext, valueSetsToIgnore)),
                 new CachingValidationSupport(validationSupport),

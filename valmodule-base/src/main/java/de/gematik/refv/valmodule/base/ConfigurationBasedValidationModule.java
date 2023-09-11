@@ -58,7 +58,7 @@ public class ConfigurationBasedValidationModule implements ValidationModule {
 
     @Override
     public ValidationResult validateString(String fhirResourceAsString, ValidationOptions validationOptions) {
-        var result = genericValidator.validate(
+        ValidationResult result = genericValidator.validate(
                 fhirResourceAsString,
                 getConfiguration(),
                 validationOptions
@@ -68,6 +68,7 @@ public class ConfigurationBasedValidationModule implements ValidationModule {
 
         return result;
     }
+
 
     @Override
     public ValidationResult validateFile(Path inputPath, ValidationOptions validationOptions) throws IllegalArgumentException, IOException {

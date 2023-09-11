@@ -106,7 +106,7 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
                     der Nachricht angegebenen Datumsangabe, zur Bestimmung der zum Zeitpunkt gültigen FHIR-Profilversion
                     verwendet werden soll. (siehe Use Case Bestätigungsverfahren)</p>
                 <p></p>
-                <p>1.3.4.<b>*</b> Der Referenzvalidator kann mittels eines
+                <p>1.3.4. Der Referenzvalidator kann mittels eines
                     Startparameters auch FHIR-Core-Ressourcen validieren, die keine explizite Profilangabe aufweisen (z.B. 
                     Parameters).</p>
                 <p>1.3.5. Der Referenzvalidator kann als Startparameter die zu unterstützenden Instanzformate (XML und/oder JSON) akzeptieren. Standardmäßig soll nur XML akzeptiert werden.</p>
@@ -382,7 +382,7 @@ Referenzvalidator: Infrastrukturelle Anforderungen
                         </ol>
                     </li>
                     <li>1.1.3. Der Referenzvalidator muss die Release-Version, unterstützten Module, Profile, Profilversionen, Gültigkeitszeiträume, FHIR-Paket-Abhängigkeiten als Information ausgeben können</li>
-                    <li>1.1.4. Mittels eines Startparameters muss der Referenzvalidator interne Protokolle und sämtliche Validierungsmeldungen unabhängig vom Validierungsergebnis ausgeben können.</li>
+                    <li>1.1.4. Mittels eines Startparameters muss der Referenzvalidator interne Protokolle und sämtliche Validierungsmeldungen unabhängig vom Validierungsergebnis ausgeben können. Ohne den Parameter enthalten die Validierungsmeldungen des Validators nur die eventuell aufgedeckten Validierungsfehler.</li>
                 </ul>
                 <p><br></p></div>
         </td>
@@ -448,7 +448,9 @@ Im Rahmen der Weiterentwicklung kommen auch Testfälle aus Eskalationsfällen un
 Veröffentlichung
 ----------------
 
-Perspektivisch sollen Prüfmodule und der TI-Validator unabhängig voneinander versioniert und veröffentlicht werden können. In der ersten Ausbaustufe wird allerdings der Referenzvalidator samt aller Prüfmodule bereitgestellt. Die Änderungen an den Prüfmodulen werden explizit kommuniziert. 
+Die Validierungsmodule des Referenzvalidators werden unabhängig voneinander nach dem Schema MAJOR.MINOR versioniert, um deren Entwicklungsstand zu kommunizieren. Die MINOR-Version wird inkrementiert, falls neue Profile oder neue ValueSets in das Validierungsmodul integriert werden, ohne dass sich das Validierungsverhalten bei älteren Profilen oder älteren FHIR-Instanzen ändert (z.B. Ergänzung des E-Rezept-Validierungsmoduls um neue E-Rezept-Profile). Falls sich das Validierungsverhalten bei älteren Instanzen aufgrund von bspw. signifikanten Änderungen an der HAPI-Engine ändert (sog. Breaking Change), dann wird die MAJOR-Version des Validierungsmoduls inkrementiert. 
+
+Der Referenzvalidator wird samt aller Validierungsmodule bereitgestellt und wird als Produkt nach [SemVer](https://semver.org/lang/de/) versioniert. Die Änderungen an den Prüfmodulen sowie an dem Referenzvalidator als Produkt werden explizit kommuniziert. 
 
 Die Prozess-Anforderungen aus den jeweiligen TI-Anwendungen (z.B. [E-Rezept](#e-rezept-anforderungen-an-den-entwicklungsprozess)) müssen beachtet werden. So wird für eine neue Version des Prüfmoduls E-Rezept eine Integrationstestphase eingeplant, bevor die neue Version die alte in ihrer Rolle des [Schiedsrichters](#e-rezept-technische-verarbeitbarkeit-schiedsrichter-rolle-und-problemlösungsverfahren) ablösen kann.
 
@@ -507,7 +509,7 @@ Abgrenzung zu anderen Projekten
 ABDA Referenzvalidator
 ----------------------
 
-Unter [https://github.com/DAV-ABDA/eRezept-Referenzvalidator/](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/) wird der ABDA E-Rezept-Referenzvalidator entwickelt, der den verbindlichen Status einer Schiedsrichterinstanz für die Apotheken und Krankenkassen hat. Teile des Referenzvalidators sind in das Prüfmodul E-Rezept des gematik Referenzvalidators eingeflossen. Der gematik Referenzvalidators soll perspektivisch den ABDA E-Rezept-Referenzvalidator in seiner Funktion ablösen (das Vorgehen zur Ablösung wird mit der TK300 abgestimmt).
+Unter [https://github.com/DAV-ABDA/eRezept-Referenzvalidator/](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/) wird der ABDA E-Rezept-Referenzvalidator entwickelt, der vor dem gematik Referenzvalidator den verbindlichen Status einer Schiedsrichterinstanz für die Apotheken und Krankenkassen hatte. Teile des Referenzvalidators sind in das Prüfmodul E-Rezept des gematik Referenzvalidators eingeflossen. Die Ablösung des ABDA E-Rezept-Referenzvalidators in seiner Funktion durch den gematik Referenzvalidators wird in der [Technische Anlage 7, Anhang 2, zur Arzneimittelabrechnungsvereinbarung gemäß § 300 Absatz 3 SGB V](https://www.gkv-datenaustausch.de/leistungserbringer/apotheken/apotheken.jsp) festgelegt.
 
 Neben E-Rezept-Prüfmodul unterstützt der Referenzvalidator noch weitere Anwendungen. 
 

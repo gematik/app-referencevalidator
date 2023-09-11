@@ -27,6 +27,7 @@ public class ValidationOptions {
     private List<String> profiles = new LinkedList<>();
     private List<String> acceptedEncodings = new LinkedList<>();
     private ProfileValidityPeriodCheckStrategy profileValidityPeriodCheckStrategy;
+    private ValidationMessagesFilter validationMessagesFilter;
 
     private ValidationOptions() {
     }
@@ -34,6 +35,7 @@ public class ValidationOptions {
     public static ValidationOptions getDefaults() {
         ValidationOptions options = new ValidationOptions();
         options.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.VALIDATE);
+        options.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ERRORS_ONLY);
         return options;
     }
 }

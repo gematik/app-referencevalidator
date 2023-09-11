@@ -17,6 +17,7 @@
 package de.gematik.refv;
 
 import de.gematik.refv.commons.validation.ProfileValidityPeriodCheckStrategy;
+import de.gematik.refv.commons.validation.ValidationMessagesFilter;
 import de.gematik.refv.commons.validation.ValidationModule;
 import de.gematik.refv.commons.validation.ValidationOptions;
 import de.gematik.refv.commons.validation.ValidationResult;
@@ -34,7 +35,7 @@ class UsageExamplesLocalTest {
     @Test
     void validateFile() {
         ValidationModule erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);
-        ValidationResult result = erpModule.validateFile("c:/temp/KBV_PR_ERP_Bundle.xml");
+        ValidationResult result = erpModule.validateFile("src/test/resources/SimpleMedicationRequest.xml");
         System.out.println(result.isValid());
         System.out.println(result.getValidationMessages());
     }
@@ -63,7 +64,8 @@ class UsageExamplesLocalTest {
         options.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
         options.setProfiles(List.of("https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.1"));
         options.setAcceptedEncodings(List.of("xml", "json"));
-        ValidationResult result = erpModule.validateFile("c:/temp/KBV_PR_ERP_Bundle.xml", options);
+        options.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
+        ValidationResult result = erpModule.validateFile("src/test/resources/SimpleMedicationRequest.xml", options);
         System.out.println(result.isValid());
         System.out.println(result.getValidationMessages());
     }

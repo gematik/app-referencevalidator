@@ -2,6 +2,21 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 1.0.0
+
+### added
+- core validation module: validation of FHIR core resources
+
+### changed
+- error message on a violated profile validity period has been extended with information on the profile validity period
+- start parameter --errors-only removed as it already corresponds to the default behavior 
+
+### fixed
+- suppression of profiling errors from the de.abda.erezeptabgabedaten-1.0.3.tgz FHIR package now works independently of the current system locale
+- comma-separated lists of accepted encodings were ignored. the behavior has been fixed
+- ERP module: validity end date of the de.gematik.erezept-workflow.r4-1.0.3-1.tgz package has been set to 31.12.2021 (cf. [E-Rezept FHIR-Package Versionsmanagement](https://github.com/gematik/api-erp/blob/265d9718d1b06b805d7acaac36bdb751ec724cde/docs/erp_fhirversion.adoc))
+- by calling the validator using the Java API the output contained all types of messages (INFO, WARNING, ERROR, FATAL). this was in contrast to the CLI, which contained ERROR and FATAL messages only by default. now, the API call returns ERROR and FATAL messages by default as well and its behavior can be adjusted using the ValidationOptions.setValidationMessagesFilter method.   
+
 ## Release 0.7.2
 
 ### changed

@@ -90,6 +90,7 @@ class ValidityPeriodIT {
     void testLatestDependencyListIsAppliedIfValidationOfTimePeriodIsDisabled() {
         var validationOptions = ValidationOptions.getDefaults();
         validationOptions.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
+        validationOptions.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
         var result = validationModule.validateFile("src/test/resources/date-validity/invalid/patient-before-validity-period-started.xml", validationOptions);
         Assertions.assertFalse(result.isValid(), result.toString());
         var warningExists = result.getValidationMessages().stream().anyMatch(m -> m.getSeverity().equals(ResultSeverityEnum.WARNING) && m.getMessageId().equals(GenericValidator.WARN_REFV_VALIDITY_PERIOD_CHECK_DISABLED));

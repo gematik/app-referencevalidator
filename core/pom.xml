@@ -5,7 +5,7 @@
     <parent>
         <artifactId>referencevalidator</artifactId>
         <groupId>de.gematik.refv</groupId>
-        <version>0.7.2</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -45,6 +45,11 @@
         <dependency>
             <groupId>de.gematik.refv.valmodule</groupId>
             <artifactId>valmodule-diga</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.gematik.refv.valmodule</groupId>
+            <artifactId>valmodule-core</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

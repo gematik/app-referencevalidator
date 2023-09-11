@@ -40,7 +40,8 @@ Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressource
 Siehe [Use Cases, Anforderungen, Architektur, Entwicklungsprozess](docs/concept/concept.md) für weitere Informationen.
 
 > **Warning**
-> Die Verbindlichkeit vom Referenzvalidator wurde für die Telematikinfrastruktur und ihre Anwendungen noch nicht festgelegt. Für die Validierung der Daten in Abrechnungsprozessen der E-Rezept-Anwendung soll [ABDA Referenzvalidator](https://github.com/DAV-ABDA/eRezept-Referenzvalidator/) eingesetzt werden
+> Die Verbindlichkeit des E-Rezept-Moduls vom Referenzvalidator in Abrechnungsprozessen wird in der [Technische Anlage 7, Anhang 2, zur Arzneimittelabrechnungsvereinbarung gemäß § 300 Absatz 3 SGB V](https://www.gkv-datenaustausch.de/leistungserbringer/apotheken/apotheken.jsp) festgelegt. Siehe auch [E-Rezept: Technische Verarbeitbarkeit, Schiedsrichter-Rolle und Problemlösungsverfahren](docs/concept/concept.md#e-rezept-technische-verarbeitbarkeit-schiedsrichter-rolle-und-probleml%C3%B6sungsverfahren).
+> Die Verbindlichkeit anderer Validierungsmodule wurde bisher nicht festgelegt. Es besteht lediglich eine Nutzungsempfehlung seitens der gematik.
 
 ### Release Notes
 
@@ -58,16 +59,26 @@ Siehe [Release Notes](ReleaseNotes.md)
 - Prüfung der Gültigkeitszeiträume der in den Instanzen referenzierten Profile
 - Nutzung der FHIR-Package-Abhängigkeiten in Abhängigkeit von dem Instanz-Erstellungszeitpunkt (bspw. der datumsabhängigen [KBV-Schlüsseltabellen](https://applications.kbv.de/overview.xhtml))
 
-Ergänzungen zum Standardverhalten des HL7 Java Validators:
-- Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
-- Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis
-- Nicht auflösbare relative Referenzen in Bundles führen zum invaliden Ergebnis
+### Unterstützte Validierungsmodule
+
+| **Modul**                                                       | **Version** |
+|-----------------------------------------------------------------|-------------|
+| E-Rezept                                                        | 1.0         |
+| Elektronische Arbeitsunfähigkeitsbescheinigung                  | 0.9         |
+| FHIR Core                                                       | 1.0         |
+| Informationstechnische Systeme in Krankenhäusern (ISIK) Stufe 1 | 1.0         |
+| Informationstechnische Systeme in Krankenhäusern (ISIK) Stufe 2 | 1.0         |
+| Informationstechnische Systeme in der Pflege (ISIP) Stufe 1     | 1.0         |
+| DiGA Toolkit                                                    | 0.9         |
+
 
 ### E-Rezept-Modul
 
 Abweichend vom allgemeinen Prüfumfang verhält sich das E-Rezept-Modul wie folgt:
 - Codes aus den CodeSystemen `http://fhir.de/CodeSystem/ifa/pzn` und `http://fhir.de/CodeSystem/ask` werden nicht validiert
 - Fehler, die bei Validierung von `http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle|1.0.3` im Zusammenhang mit falschen Angaben bei `http://fhir.abda.de/Identifier/DAV-Herstellerschluessel` stehen, werden ignoriert und führen zum **validen** Ergebnis
+- Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
+- Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis
 
 #### Anpassungen der Packages:
 - Alle Packages enthalten Snapshots
@@ -89,6 +100,8 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das E-Rezept-Modul wie folg
 
 Abweichend vom allgemeinen Prüfumfang verhält sich das eAU-Modul wie folgt:
 - ICD-10-Codes (CodeSysteme `http://fhir.de/CodeSystem/dimdi/icd-10-gm` und `http://fhir.de/CodeSystem/bfarm/icd-10-gm`) werden nicht validiert
+- Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
+- Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis 
 
 #### Anpassungen der Packages:
 - Alle Packages enthalten Snapshots
@@ -125,9 +138,15 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das ISIK1-Modul wie folgt:
 
 Abweichend vom allgemeinen Prüfumfang verhält sich das DIGA-Modul wie folgt:
 - Codes aus den CodeSystemen `http://fhir.de/CodeSystem/ifa/pzn` und `http://fhir.de/CodeSystem/dimdi/atc` werden nicht validiert
+- Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
+- Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis
 
 #### Anpassungen der Packages:
 - Alle Packages enthalten Snapshots
+
+### CORE-Modul
+
+Der Referenzvalidator bietet die Möglichkeit, FHIR Core-Ressourcen zu validieren. Beim Aufruf des core-Validierungsmoduls ist die Angabe einer Profil-Canonical-URL zur Validierung erforderlich (siehe [Optionen der Konsolenanwendung](#konsolenanwendung-1)).
 
 ## Erste Schritte
 
@@ -171,11 +190,11 @@ Unterstützte Modulnamen:
 - `isip1` (Informationstechnische Systeme in der Pflege Stufe 1)
 - `isik2` (Informationstechnische Systeme in Krankenhäusern Stufe 2)
 - `isik1` (Informationstechnische Systeme in Krankenhäusern Stufe 1)
-- `diga` (Digitale Gesundheitsanwendungen)
+- `diga` (DiGA Toolkit)
+- `core` (FHIR Core)
 
 Optionen:
-- `--errors-only` - Nur Validierungsmeldungen der Stufen ERROR und FATAL ausgeben (keine INFO und WARN-Meldungen)
-- `--verbose` - Verbode-Modus mit Debug-Ausgaben
+- `--verbose` - Verbode-Modus mit Debug-Protokoll-Ausgaben und INFORMATION- bzw. WARNING-Validierungsnachrichten 
 - `--no-profile-validity-period-check` - Deaktivierung der Zeitraumgültigkeitsprüfung der Profilversionen
 - `--profile` - Angabe einer Profil-Canonical-URL zur Validierung. Falls angegeben, wird die Angabe der Instanz unter meta.profile ignoriert
 - `--module-info` - Ausgabe der unterstützten Profile, Profilversionen und FHIR-Packages zu einem Validierungsmodul
@@ -218,6 +237,7 @@ Die Validierungseinstellungen auch angepasst werden:
         options.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
         options.setProfiles(List.of("https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.1"));
         options.setAcceptedEncodings(List.of("xml", "json"));
+        options.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
         ValidationResult result = erpModule.validateFile("c:/temp/KBV_PR_ERP_Bundle.xml", options);
         System.out.println(result.isValid());
         System.out.println(result.getValidationMessages());

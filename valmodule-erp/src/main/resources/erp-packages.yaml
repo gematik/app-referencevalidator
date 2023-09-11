@@ -1,3 +1,4 @@
+version: "1.0"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
@@ -25,7 +26,7 @@ dependencyLists:
       - "kbv.basis-1.1.3.tgz"
       - "de.basisprofil.r4-0.9.13.tgz"
     validFrom: "2021-07-01"
-    validTill: "2022-01-31"
+    validTill: "2022-01-31" # 31.12.2021 + Übergangszeit 1 Monat
 
   kbv.ita.erp.1.0.2:
     packages:
@@ -92,7 +93,7 @@ dependencyLists:
       - "kbv.basis-1.1.3.tgz"
       - "de.basisprofil.r4-0.9.13.tgz"
     validFrom: "2021-07-01"
-    validTill: "2022-01-31" # 2021-12-31 + Übergangszeit 1M
+    validTill: "2021-12-31"
 
   de.gematik.erezept-workflow.r4.1.1.1:
     packages:
@@ -169,7 +170,7 @@ dependencyLists:
     validationMessageTransformations:
       - severityLevelFrom: "error"
         severityLevelTo: "information"
-        locatorString: "'http://fhir.abda.de/Identifier/DAV-Herstellerschluessel' but must be 'http://fhir.de/NamingSystem/arge-ik/iknr'"
+        locatorString: http:\/\/fhir\.abda\.de\/Identifier\/DAV-Herstellerschluessel['"][^'"]+['"]http:\/\/fhir\.de\/NamingSystem\/arge-ik\/iknr
         messageId: "_DT_Fixed_Wrong"
       - severityLevelFrom: "error"
         severityLevelTo: "information"

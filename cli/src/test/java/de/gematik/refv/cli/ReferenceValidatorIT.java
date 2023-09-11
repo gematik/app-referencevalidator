@@ -59,7 +59,7 @@ class ReferenceValidatorIT {
 
     @Test
     void testValidationAgainstProfile() {
-        String input = "isik1 src/test/resources/isik1-test.json -p https://gematik.de/fhir/ISiK/StructureDefinition/ISiKDiagnose";
+        String input = "isik1 src/test/resources/isik1-test.json -p https://gematik.de/fhir/ISiK/StructureDefinition/ISiKDiagnose -v";
         String [] args = input.split(" ");
 
         ReferenceValidator.main(args);
@@ -73,13 +73,13 @@ class ReferenceValidatorIT {
 
     @Test
     void testOnlyErrorsInOutput() {
-        String input = "isik1 src/test/resources/isik1-test-errors.json -e";
+        String input = "isik1 src/test/resources/isik1-test-errors.json";
         String [] args = input.split(" ");
 
         ReferenceValidator.main(args);
 
         boolean isValid = appender.getLogs().stream().noneMatch(l -> l.getMessage().toString().contains("INFORMATION")) && appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("ERROR"));
-        Assertions.assertTrue(isValid,"Information message found in output - only errors are allowed");
+        Assertions.assertTrue(isValid,"Information message found in output - only errors are allowed by default");
     }
 
     @Test
@@ -92,6 +92,19 @@ class ReferenceValidatorIT {
         boolean isValid = appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("ERROR"));
         Assertions.assertTrue(isValid,"Errors have not been found in output but expected");
     }
+
+    @Test
+    void testAcceptedEncodingsListIsParsedCorrectly() {
+        String input = "isik1 src/test/resources/isik1-test.json --accepted-encodings xml,json";
+        String [] args = input.split(" ");
+
+        ReferenceValidator.main(args);
+
+        boolean isValid = appender.getLogs().stream().noneMatch(l -> l.getMessage().toString().contains("ERROR"));
+        Assertions.assertTrue(isValid,"Errors have been found in output but none expected");
+    }
+
+
 
     @Test
     void testNoValidityPeriodCheck() {

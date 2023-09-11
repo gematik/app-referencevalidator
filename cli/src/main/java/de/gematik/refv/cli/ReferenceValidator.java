@@ -21,6 +21,7 @@ import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.SupportedValidationModule;
 import de.gematik.refv.ValidationModuleFactory;
 import de.gematik.refv.commons.validation.ProfileValidityPeriodCheckStrategy;
+import de.gematik.refv.commons.validation.ValidationMessagesFilter;
 import de.gematik.refv.commons.validation.ValidationModule;
 import de.gematik.refv.commons.validation.ValidationOptions;
 import de.gematik.refv.commons.validation.ValidationResult;
@@ -38,6 +39,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @CommandLine.Command(
@@ -54,10 +56,7 @@ public class ReferenceValidator implements Runnable {
     @CommandLine.Parameters(paramLabel = "FILE", description = "Input file", defaultValue = "")
     private File file;
 
-    @CommandLine.Option(names = {"-e", "--errors-only"}, description = "Print only errors in the validation results", required = false)
-    private boolean isOnlyErrorsInOutput;
-
-    @CommandLine.Option(names = {"-v", "--verbose"}, description = "Print debug log messages", required = false)
+    @CommandLine.Option(names = {"-v", "--verbose"}, description = "Print debug log messages and INFORMATION/WARNING validation messages", required = false)
     private boolean isVerbose;
 
     @CommandLine.Option(names = {"-nvp", "--no-profile-validity-period-check"}, description = "Disable profile validity period check", required = false, defaultValue = "false")
@@ -69,7 +68,7 @@ public class ReferenceValidator implements Runnable {
     @CommandLine.Option(names = {"-mi", "--module-info"}, description = "Print profiles supported by a module", required = false)
     private boolean showModuleConfiguration;
 
-    @CommandLine.Option(names = {"-ae", "--accepted-encodings"}, description = "Encodings to accept (XML,JSON). Overwrites the module internal setting.", required = false)
+    @CommandLine.Option(names = {"-ae", "--accepted-encodings"}, split = ",", description = "Encodings to accept (XML,JSON). Overwrites the module internal setting.", required = false)
     private List<String> acceptedEncodings;
     static Logger logger = LoggerFactory.getLogger(ReferenceValidator.class);
 
@@ -119,6 +118,8 @@ public class ReferenceValidator implements Runnable {
                 validationOptions.setAcceptedEncodings(acceptedEncodings);
             if(isNoInstanceValidityCheck)
                 validationOptions.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
+            if(isVerbose)
+                validationOptions.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
 
             ValidationResult result = validator.validateFile(file.toPath(), validationOptions);
 
@@ -136,10 +137,10 @@ public class ReferenceValidator implements Runnable {
                 + " from " + System.getProperty("java.home")
                 + " on " + System.getProperty("os.arch")
                 + " (" + System.getProperty("sun.arch.data.model") + "bit). "
-                + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB available\r\n");
+                + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB available");
+        sb.append("\r\nLocale: " + Locale.getDefault() + "\r\n");
         logger.info("{}",sb);
     }
-
 
 
     private static void configureAllLoggersToDebug() {
@@ -165,11 +166,7 @@ public class ReferenceValidator implements Runnable {
 
         if(isDetailsShouldBePrinted(results)
         ) {
-            if(isOnlyErrorsInOutput){
-                sb.append("See ")
-                        .append((getCountFor(ResultSeverityEnum.ERROR, results) + getCountFor(ResultSeverityEnum.FATAL, results)))
-                        .append(" errors below.\n\n");
-            } else {
+            if(isVerbose){
                 sb.append("See ")
                         .append(getCountFor(ResultSeverityEnum.ERROR, results) + getCountFor(ResultSeverityEnum.FATAL, results))
                         .append(" errors, ")
@@ -177,6 +174,11 @@ public class ReferenceValidator implements Runnable {
                         .append(" warnings and ")
                         .append(getCountFor(ResultSeverityEnum.INFORMATION, results))
                         .append(" other notes below.\n\n");
+            }
+            else {
+                sb.append("See ")
+                        .append((getCountFor(ResultSeverityEnum.ERROR, results) + getCountFor(ResultSeverityEnum.FATAL, results)))
+                        .append(" errors below.\n\n");
             }
 
             sb.append("  ")
@@ -195,9 +197,6 @@ public class ReferenceValidator implements Runnable {
             int count = 1;
 
             for (SingleValidationMessage message : results.getValidationMessages()) {
-                if (isOnlyErrorsInOutput && !isErrorMessage(message)) {
-                    continue;
-                }
                 sb.append("  ")
                         .append(padRight("" + count++, 4))
                         .append(padRight(message.getSeverity().toString(), 13))

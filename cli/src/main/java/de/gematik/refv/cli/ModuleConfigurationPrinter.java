@@ -21,9 +21,14 @@ import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 public class ModuleConfigurationPrinter {
     public String moduleConfigurationToString(ValidationModuleConfiguration configuration) {
         StringBuilder sb = new StringBuilder();
+        addVersion(configuration, sb);
         addSupportedProfiles(configuration, sb);
         addFHIRPackages(configuration, sb);
         return sb.toString();
+    }
+
+    private void addVersion(ValidationModuleConfiguration configuration, StringBuilder sb) {
+        sb.append("\r\nVersion: " + configuration.getVersion());
     }
 
     private static void addFHIRPackages(ValidationModuleConfiguration configuration, StringBuilder sb) {
@@ -48,7 +53,7 @@ public class ModuleConfigurationPrinter {
     }
 
     private static void addSupportedProfiles(ValidationModuleConfiguration configuration, StringBuilder sb) {
-        sb.append("Supported profiles:");
+        sb.append("\r\nSupported profiles:");
         for (var profileEntrySet :
                 configuration.getSupportedProfiles().entrySet()) {
             sb.append("\r\n  * " + profileEntrySet.getKey());

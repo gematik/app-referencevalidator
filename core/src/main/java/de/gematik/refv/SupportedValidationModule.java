@@ -27,7 +27,8 @@ public enum SupportedValidationModule {
     ISIP1("isip1"),
     ISIK2("isik2"),
     ISIK1("isik1"),
-    DIGA("diga");
+    DIGA("diga"),
+    CORE("core");
 
 
     private final String name;

@@ -40,6 +40,7 @@ public class ValidationModuleConfiguration {
 
     private boolean errorOnUnknownProfile;
     private boolean anyExtensionsAllowed;
+    private String version;
 
 
     public ProfileConfiguration getSupportedProfileConfigurationOrThrow(Profile profile) {
@@ -58,6 +59,14 @@ public class ValidationModuleConfiguration {
             var profileVersions = supportedProfiles.get(baseCanonical).getProfileVersions();
             if(profileVersions.containsKey(lookupVersion))
                 return Optional.of(profileVersions.get(lookupVersion));
+        }
+
+        if(supportedProfiles.isEmpty()) {
+            var allDependencyLists = dependencyLists.keySet().stream().findFirst();
+            if(allDependencyLists.isEmpty())
+                throw new IllegalStateException("Supported profiles are not explicitly defined and no dependency lists found. Define at least one dependency list");
+
+            return Optional.of(new ProfileConfiguration(List.of(allDependencyLists.get()), null));
         }
         return Optional.empty();
     }

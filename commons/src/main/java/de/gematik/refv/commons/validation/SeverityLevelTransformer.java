@@ -26,6 +26,8 @@ import org.hl7.fhir.utilities.i18n.I18nConstants;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SeverityLevelTransformer {
 
@@ -43,7 +45,7 @@ public class SeverityLevelTransformer {
                 transformedMessages) {
 
             var transformation = transformations.stream().filter(t -> t.getSeverityLevelFrom().equals(message.getSeverity().getCode()) &&
-                    message.getMessage().contains(t.getLocatorString()) &&
+                    messageMatchesPattern(message.getMessage(), t.getLocatorString()) &&
                     (
                             t.getMessageId() == null || StringUtils.equals(t.getMessageId(), message.getMessageId())
                     )
@@ -55,6 +57,12 @@ public class SeverityLevelTransformer {
             message.setSeverity(ResultSeverityEnum.fromCode(transformation.get().getSeverityLevelTo()));
         }
         return transformedMessages;
+    }
+
+    private static boolean messageMatchesPattern(String message, String locator) {
+        Pattern pattern = Pattern.compile(locator);
+        Matcher matcher = pattern.matcher(message);
+        return matcher.find();
     }
 
     private void setIgnoredCodeSystemsToInformation(LinkedList<SingleValidationMessage> messages) {
