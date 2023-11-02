@@ -1,0 +1,60 @@
+<Device xmlns="http://hl7.org/fhir">
+    <id value="8307c06b-63f4-48b5-8e62-cf2669324782" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:8307c06b-63f4-48b5-8e62-cf2669324782" />
+    </identifier>
+    <definition>
+        <reference value="urn:uuid:9515f3bb-8e84-45e5-b28a-220021ceba91" />
+    </definition>
+    <udiCarrier>
+        <deviceIdentifier value="1234512345YR" />
+    </udiCarrier>
+    <serialNumber value="12345" />
+    <deviceName>
+        <name value="K&#246;rperwaage" />
+        <type value="user-friendly-name">
+            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                <extension url="content">
+                    <valueString value="Benutzerfreundlicher Name" />
+                </extension>
+            </extension>
+        </type>
+    </deviceName>
+    <modelNumber value="12345" />
+    <type>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="19892000" />
+            <display value="Scale, device (physical object)" />
+        </coding>
+    </type>
+    <version>
+        <type>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="464644004" />
+                <display value="Scale application software (physical object)" />
+            </coding>
+        </type>
+        <value value="4.01" />
+    </version>
+    <patient>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </patient>
+</Device>

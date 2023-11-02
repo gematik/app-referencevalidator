@@ -1,0 +1,20 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "CodeSystemExample",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKCodeSystem"
+    ]
+  },
+  "url": "http://example.org/fhir/CodeSystem/TestKatalog",
+  "version": "3.0.0",
+  "name": "TestKatalog",
+  "status": "active",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "test",
+      "definition": "Dies ist ein Test-Code"
+    }
+  ]
+}

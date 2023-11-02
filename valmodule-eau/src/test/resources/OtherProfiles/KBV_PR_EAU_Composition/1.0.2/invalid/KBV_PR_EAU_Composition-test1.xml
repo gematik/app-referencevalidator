@@ -1,0 +1,130 @@
+<Composition xmlns="http://hl7.org/fhir">
+    <id value="edb656ba-671c-40d7-9161-b8f8c2365297" />
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Composition|1.0.2" />
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_FOR_Legal_basis">
+        <valueCoding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_STATUSKENNZEICHEN" />
+            <code value="01" />
+        </valueCoding>
+    </extension>
+    <status value="final" />
+    <type>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_EAU_AU_Type" />
+            <code value="unknown-code" />
+        </coding>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_FORMULAR_ART" />
+            <code value="e010" />
+        </coding>
+    </type>
+    <subject>
+        <reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+    </subject>
+    <date value="2020-02-03" />
+    <author>
+        <reference value="Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+        <type value="Practitioner" />
+    </author>
+    <author>
+        <type value="Device" />
+        <identifier>
+            <system value="https://fhir.kbv.de/NamingSystem/KBV_NS_FOR_Pruefnummer" />
+            <value value="KBV-Pruefnummer" />
+        </identifier>
+    </author>
+    <title value="Arbeitsunf&#228;higkeit" />
+    <custodian>
+        <reference value="Organization/cf042e44-086a-4d51-9c77-172f9a972e3b" />
+    </custodian>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+                <code value="ICD" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="Condition/a246b026-c47c-4257-abed-9887ed7996eb" />
+        </entry>
+    </section>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+                <code value="ICD" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="Condition/854ff3b2-f0ca-41f9-9bd1-0204f51a847e" />
+        </entry>
+    </section>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+                <code value="ICD" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="Condition/065b2388-e4da-40ac-a459-2f392a0a41d9" />
+        </entry>
+    </section>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+                <code value="ICD" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="Condition/bc96a462-2ecf-4c63-9b22-bc02bb8f1155" />
+        </entry>
+    </section>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+                <code value="AU_Condition" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="Condition/2f8638b4-cf33-4afe-bdbc-8477b3cc1bac" />
+        </entry>
+    </section>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+                <code value="Coverage" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="Coverage/1b1ffb6e-eb05-43d7-87eb-e7818fe9661a" />
+        </entry>
+    </section>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+                <code value="AU_weiter" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="ServiceRequest/5542eb17-00b3-422f-bd75-92d8e7b55ebe" />
+        </entry>
+    </section>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+                <code value="FOR_PractitionerRole" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="PractitionerRole/8f1ba38d-c4c1-4c49-ac2a-7ff0e56bc150" />
+        </entry>
+    </section>
+</Composition>

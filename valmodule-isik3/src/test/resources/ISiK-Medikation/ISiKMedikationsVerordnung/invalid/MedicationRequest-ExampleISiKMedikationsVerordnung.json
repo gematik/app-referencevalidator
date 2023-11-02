@@ -1,0 +1,55 @@
+{
+  "resourceType": "MedicationRequest",
+  "id": "ExampleISiKMedikationsVerordnung",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationsVerordnung"
+    ]
+  },
+  "unknown-element":{
+
+  },
+  "dosageInstruction": [
+    {
+      "doseAndRate": [
+        {
+          "doseQuantity": {
+            "system": "http://unitsofmeasure.org",
+            "value": 1,
+            "unit": "unknown",
+            "code": "1"
+          }
+        }
+      ],
+      "timing": {
+        "repeat": {
+          "when": [
+            "MORN",
+            "NOON",
+            "EVE"
+          ]
+        }
+      }
+    }
+  ],
+  "status": "active",
+  "intent": "order",
+  "medicationReference": {
+    "reference": "Medication/ExampleISiKMedikament1"
+  },
+  "subject": {
+    "reference": "Patient/PatientinMusterfrau"
+  },
+  "encounter": {
+    "reference": "Encounter/Versorgungsstellenkontakt"
+  },
+  "authoredOn": "2021-07-01",
+  "requester": {
+    "reference": "Practitioner/PractitionerWalterArzt"
+  },
+  "reasonReference": [
+    {
+      "reference": "Condition/BehandlungsDiagnoseFreitext"
+    }
+  ]
+}

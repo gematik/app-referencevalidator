@@ -1,0 +1,12 @@
+de.gematik.erezept-workflow.r4-1.0.3-1:
+- in StructureDefinition-ChargeItem-erxChargeItem.json:
+  - ChargeItem.supportingInformation:prescriptionItem - slice definition wrong and has been adjusted
+  - ChargeItem.supportingInformation:receipt - slice definition wrong and has been adjusted to be compiled
+  - ChargeItem.supportingInformation:receipt.signature.type - removed as it is defined in the profile being referenced
+
+- in ErxCommunicationReply: Communication.about targetProfile: typos: KBV_PR_ERP_Medikament_Freitext, KBV_PR_ERP_Medikament_PZN, KBV_PR_ERP_Medikament_Rezeptur, erxTask
+  - heißt eigentlich: KBV_PR_ERP_Medication_FreeText, KBV_PR_ERP_Medication_PZN, KBV_PR_ERP_Medication_Compounding, ErxTask
+
+de.gematik.erezept-workflow.r4-1.0.3-1
+- in StructureDefinition-AuditEvent-ErxAuditEvent.json: AuditEvent.entity.what targetProfile: ErxCommunication existiert nicht
+  - entfernt

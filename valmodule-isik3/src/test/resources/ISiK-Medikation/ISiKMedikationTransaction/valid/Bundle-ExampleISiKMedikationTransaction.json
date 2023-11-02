@@ -1,0 +1,96 @@
+{
+  "resourceType": "Bundle",
+  "id": "ExampleISiKMedikationTransaction",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationTransaction"
+    ]
+  },
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "http://my.source.server.local/fhir/MedicationStatement/ExampleISiKMedikationsInformation1",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "ExampleISiKMedikationsInformation1",
+        "meta": {
+          "profile": [
+            "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationsInformation"
+          ]
+        },
+        "dosage": [
+          {
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "system": "http://unitsofmeasure.org",
+                  "value": 1,
+                  "unit": "Brausetablette",
+                  "code": "1"
+                }
+              }
+            ],
+            "timing": {
+              "repeat": {
+                "when": [
+                  "MORN",
+                  "NOON",
+                  "EVE"
+                ]
+              }
+            }
+          }
+        ],
+        "status": "active",
+        "medicationReference": {
+          "reference": "Medication/ExampleISiKMedikament1"
+        },
+        "subject": {
+          "reference": "Patient/PatientinMusterfrau"
+        },
+        "context": {
+          "reference": "Encounter/Versorgungsstellenkontakt"
+        },
+        "effectivePeriod": {
+          "start": "2021-07-01"
+        },
+        "dateAsserted": "2021-07-01",
+        "reasonReference": [
+          {
+            "reference": "Condition/BehandlungsDiagnoseFreitext"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "http://my.target.fhir.server.local/MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "http://my.source.server.local/fhir/Medication/ExampleISiKMedikament1",
+      "resource": {
+        "resourceType": "Medication",
+        "id": "ExampleISiKMedikament1",
+        "meta": {
+          "profile": [
+            "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikament"
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/atc",
+              "code": "V03AB23",
+              "display": "Acetylcystein"
+            }
+          ]
+        },
+        "status": "active"
+      },
+      "request": {
+        "method": "POST",
+        "url": "http://my.target.fhir.server.local/Medication"
+      }
+    }
+  ]
+}

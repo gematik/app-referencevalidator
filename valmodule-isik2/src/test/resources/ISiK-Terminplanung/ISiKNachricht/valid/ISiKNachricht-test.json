@@ -1,0 +1,28 @@
+{
+  "resourceType": "Communication",
+  "id": "ISiKNachrichtExample",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKNachricht"
+    ]
+  },
+  "status": "completed",
+  "subject": {
+    "reference": "Patient/ISiKPatientExample"
+  },
+  "recipient": [
+    {
+      "display": "Dr. Martina Musterfrau",
+      "reference": "Practitioner/ISiKPractitionerExample"
+    }
+  ],
+  "sender": {
+    "display": "Dr. Erika Gabler",
+    "reference": "Patient/ISiKPatientExample"
+  },
+  "payload": [
+    {
+      "contentString": "Dies ist eine Testnachricht!"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+Das Constraint ist im Profil http://fhir.de/StructureDefinition/identifier-kzva vom de.basisprofil 0.9.13 fordert mindestens 9 Zeichen, aber nicht genau 9 (siehe expression):
+
+{
+        "key": "zanr-2",
+        "severity": "warning",
+        "human": "Die KZVAbrechnungsnummer muss 9-stellig numerisch sein",
+        "expression": "matches('[0-9]{9}')",
+        "source": "http://fhir.de/StructureDefinition/identifier-kzva"
+}
+
+Daher werden Abrechnungsnummern mit Abrechnungsnummern mit mehr als 9 Zeichen als valide betrachtet.
+
+Hintergrund:
+
+In vielen Profil-Constraints wird die matches-Funktion mit einem regulären Ausdruck verwendet, man vergisst aber oft die umschließenden Symbole ^ $ obwohl der Match mit dem gesamten String gewünscht ist. Dies führt zu fachlich invaliden Instanzen, die dem Profilconstraint aber entsprechen. 
+
+Details:
+
+Nach der Aktualisierung des Validators auf HAPI 6.2.0 sind Abweichungen im Validierungsverhalten aufgefallen - Instanzen, dessen Profile in Constraint reguläre Ausdrücke verwendet haben (z. B. matches('[0-9]{9}'), wurden anders validiert als vorher. So wurden Instanzen, die das vorherige Beispielconstraint verletzen, indem sie einen Wert z.B. aus 20 Ziffern hatten als valide anerkannt, obwohl frühere Versionen vom Validator sie als invalide interpretiert haben.
+
+Die Ursache liegt an einem zweifachen Fehler:
+# Der Profilersteller beabsichtigt mit hoher Wahrscheinlichkeit, dass der gesamte String dem regulären Ausdruck entspricht, vergisst aber den Ausdruck mit ^ und $ zu umschließen (siehe FHIRPath-Spezifikation,] und vom FHIRPath empfohlene Syntax der regulären Ausdrücke)
+# Der HL7 FHIR Validator bis Version 5.3.39 (integriert in HAPI) hat standardmäßig und fälschlicherweise den regulären Ausdruck auf den gesamten String angewendet (siehe Erklärung z.B. hier: http://https://stackoverflow.com/a/8923446]
+
+Beide Fehler gleichzeitig haben dazu geführt, dass die "falschen" regulären Ausdrücke in Profilen nicht auffallen - es sei denn, man verwendet andere Validatoren als HL7 FHIR-basierte (z.B. Firely, Simplifier, etc.)
+
+Mit der Korrektur https://github.com/hapifhir/org.hl7.fhir.core/pull/769 (ab 5.3.39 und HAPI ab 6.2.0), hat HL7 FHIR Validator die Interpretation der regulären Ausdrücke korrigiert und wendet sie so an, wie der empfohlene Syntax es genau meint. Der obere Beispielausdruck führt z.B. dazu, dass auch Teilstrings gematcht werden. Falls der Profilersteller dies nicht möchte, soll der Ausdruck nun mit ^ und $ umschlossen werden: matches('^[0-9]{9}$')

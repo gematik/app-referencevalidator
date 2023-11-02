@@ -1,0 +1,12 @@
+Das Constraint ist im Profil http://fhir.de/StructureDefinition/identifier-zanr vom de.basisprofil 0.9.13 fordert mindestens 9 Zeichen, aber nicht genau 9 (siehe expression):
+
+{
+  <constraint>
+                <key value="zanr-2" />
+                <severity value="warning" />
+                <human value="Die ZANR bestehend aus 7-stelliger Zahnarztnummer + 2-stelliger Fachbezeichnung muss 9-stellig numerisch sein" />
+                <expression value="matches(&#39;[0-9]{9}&#39;)" />
+                <source value="http://fhir.de/StructureDefinition/identifier-zanr" />
+            </constraint>
+
+Daher werden die Nummern mit mehr als 9 Zeichen als valide betrachtet.

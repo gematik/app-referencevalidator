@@ -1,3 +1,164 @@
-# Release 0.1.0
+![gematik GmbH](docs/img/Gematik_Logo_Flag.png)
 
-- TODO
+# Release Notes Gematik Referenzvalidator
+
+## Release 1.1.0
+
+### added
+- New validation module: ISIK-3 (Informationstechnische Systeme in Krankenhäusern Stufe 3)
+
+### changed
+- ERP module: Breaking Change! UCUM validation is not obligatory anymore. Non-valid UCUM codes produce warnings but do not cause instances to become invalid
+- ERP module: new packages de.abda.eRezeptAbgabedaten 1.3.2 and kbv.ita.erp.1.1.2 integrated
+- ISIK-1 module: removed unnecessary package de.basisprofil.r4-0.9.13.tgz
+- ISIK-2 module: removed unnecessary packages de.basisprofil.r4-0.9.13.tgz, dvmd.kdl.r4.2022-2022.1.1.tgz, hl7.fhir.uv.ips-1.1.0.tgz and ihe.mhd.fhir-4.0.1.tgz
+
+### fixed
+- fixed a bug, where comments in xml files resulted in misleading informational validation messages
+
+## Release 1.0.0
+
+### added
+- core validation module: validation of FHIR core resources
+
+### changed
+- error message on a violated profile validity period has been extended with information on the profile validity period
+- start parameter --errors-only removed as it already corresponds to the default behavior 
+
+### fixed
+- suppression of profiling errors from the de.abda.erezeptabgabedaten-1.0.3.tgz FHIR package now works independently of the current system locale
+- comma-separated lists of accepted encodings were ignored. the behavior has been fixed
+- ERP module: validity end date of the de.gematik.erezept-workflow.r4-1.0.3-1.tgz package has been set to 31.12.2021 (cf. [E-Rezept FHIR-Package Versionsmanagement](https://github.com/gematik/api-erp/blob/265d9718d1b06b805d7acaac36bdb751ec724cde/docs/erp_fhirversion.adoc))
+- by calling the validator using the Java API the output contained all types of messages (INFO, WARNING, ERROR, FATAL). this was in contrast to the CLI, which contained ERROR and FATAL messages only by default. now, the API call returns ERROR and FATAL messages by default as well and its behavior can be adjusted using the ValidationOptions.setValidationMessagesFilter method.   
+
+## Release 0.7.2
+
+### changed
+- setting the timezone for determining FHIR package lists to Europe/Berlin instead of default system timezone
+- bumping dependencies
+
+## Release 0.7.1
+
+### added
+- kbv.ita.eau 1.1.1 integrated
+- de.gematik.erezept-workflow.r4 1.2.2 integrated
+- de.abda.erezeptabgabedatenbasis 1.2.1 integrated
+
+### changed
+- corrections in ERP and EAU FHIR-Package dependencies
+- resources with profiles from kbv.ita.erp#1.0.2 can now be validated if embedded into GEM_ERP_PR_MedicationDispense 1.2-resources
+- fixed Java example in README.md for usage of ValidationOptions
+- performance optimizations
+- no INFO or WARNINGS if not in verbose mode
+
+## Release 0.7.0
+
+### added
+- Profile validity period checks based on instance creation date
+- New parameter to set a profile for validation
+- Output of release version and help on empty input
+- New parameter to print supported profiles and FHIR packages of a validation module
+- New parameter to override module setting on accepted encodings 
+- KBV_CS_SFHIR_KBV_DARREICHUNGSFORM_V1.12.xml integrated for ERP and EAU modules
+
+### changed
+- Usage of different FHIR package dependencies based on the instance creation date
+- Performance optimization (memory consumption, multithreading)
+- Module name and input file are passed directly to the command line tool instead of using -m and -i parameters respectively
+- Upgrade to HAPI 6.6.1
+- E-Rezept module accepts only XML encoding by default
+
+
+## Release 0.6.1
+
+### added
+- New validation module: diga (Digitale Gesundheitsanwendungen)
+- New command line arguments for filtering the output of the validation process
+
+### changed
+- output of found issues as a table for better readability
+- removed packages de.gematik.erezept-patientenrechnung.r4-1.0.0.tgz, kbv.ita.erp-1.1.0.tgz and de.gematik.erezept-workflow.r4-1.2.0.tgz
+- added packages de.gematik.erezept-patientenrechnung.r4-1.0.1.tgz, kbv.ita.erp-1.1.1.tgz and de.gematik.erezept-workflow.r4-1.2.1.tgz
+
+## Release 0.5.0
+
+### added
+- support for the 1.2 version of profiles in de.abda.erezeptabgabedatenpkv (package de.abda.erezeptabgabedatenpkv-1.2.0)
+- New validation module: isik2 (Informationstechnische Systeme in Krankenhäusern Stufe 2)
+- New validation module: isik1 (Informationstechnische Systeme in Krankenhäusern Stufe 1)
+- KBV_CS_SFHIR_KBV_DARREICHUNGSFORM_V1.11.xml integrated
+
+### changed
+- removed packages de.abda.erezeptabgabedaten-1.3.0, de.abda.erezeptabgabedatenpkv-1.1.0
+- added packages (erp): de.abda.erezeptabgabedaten-1.3.1, de.abda.erezeptabgabedatenbasis-1.3.1 
+
+
+## Release 0.4.1
+
+### fixed
+- Removed snapshot dependency in the core module 
+
+## Release 0.4.0
+
+### added
+- New validation module: isip1 (Informationstechnische Systeme in der Pflege Stufe 1)
+
+### changed
+- Updated snapshot packages of validation modules erp and eau due to some errors in profiles
+
+### fixed
+- Error correction on validation module eau: for StructureDefinition Extension.seitenlokalisation ([GitHub Issue #3](https://github.com/gematik/app-referencevalidator/issues/3))
+
+## Release 0.3.0
+
+### added
+- New validation module: eau (Elektronische Arbeitsunfähigkeitsbescheinigungen)
+
+## Release 0.2.0
+
+### added
+- Support for released FHIR-packages (12/2022)
+- Support for all profiles of the included packages (except of DAV-PR-ERP-AbgabedatenComposition, DAV-PKV-PR-ERP-AbgabedatenComposition, which do not enable reference resolution)
+- Support for input files in JSON format
+
+### changed
+- Profiles from the included packages have been converted to snapshots to decrease start-up and validation time
+- Bumped dependencies. 
+
+> **Warning**
+> Staring from the version 5.6.39 of the HL7 FHIR Validator and the version 6.2.0 of HAPI FHIR Server the evaluation algorithm of regular expressions [has changed](https://github.com/hapifhir/org.hl7.fhir.core/pull/769/commits/535a9cd9c90dc0c9c9a1cb145e8059eba947468a)! Regular expressions without wrapping ^ and $ are now applied to parts of the input and not to the whole string. Instances, which were not valid before, may become valid with the newest versions of the HL7 FHIR Validator. 
+
+- Explicitly excluded CodeSystems in a validation module lead to informational validation messages
+- Relative references, which do not exactly match any fullUrl of any entry in a bundle, lead to error validation messages and to invalid instances (see [Reference resolution rules in a bundle](https://build.fhir.org/bundle.html#references))
+- Change of the ValidationResult object:
+  - Intermediate HAPI validation results removed from the final results object (external manipulation of FHIR context is otherwise possible. Intermediate results can still be found in log output of the validator)
+  - Method name to get validation messages changed to getValidationMessages
+- Missing ValueSet-definitions in an included package lead to error validation messages and to invalid instances 
+- Required changes in profiles are stored separately as "patches" (see Anpassungen der Packages in [README.md](README.md))
+
+### fixed
+- piped canonicals in meta.profile of core resources are now resolved correctly and do not lead to invalid instances
+
+## Release 0.1.3
+
+### changed
+- configuration for maven assembly and maven central deployment
+
+## Release 0.1.2
+
+### changed
+- javadoc and source code packaging for maven central releases
+
+## Release 0.1.1
+
+### changed
+- Updates of dependencies
+- README.md: examples of maven integration and usage of reference validator
+
+## Release 0.1.0
+
+### added
+
+- Concept with Use Cases, Requirements, Architecture, Development Process
+- Generic validation infrastructure
+- First version of ErpModule

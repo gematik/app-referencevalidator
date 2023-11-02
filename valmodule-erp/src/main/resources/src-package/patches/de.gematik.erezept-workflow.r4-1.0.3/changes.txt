@@ -1,0 +1,8 @@
+- in ErxCommunicationReply: Communication.about targetProfile: typos: KBV_PR_ERP_Medikament_Freitext, KBV_PR_ERP_Medikament_PZN, KBV_PR_ERP_Medikament_Rezeptur, erxTask
+  - heißt eigentlich: KBV_PR_ERP_Medication_FreeText, KBV_PR_ERP_Medication_PZN, KBV_PR_ERP_Medication_Compounding, ErxTask
+
+- in StructureDefinition-AuditEvent-ErxAuditEvent.json: AuditEvent.entity.what targetProfile: ErxCommunication existiert nicht
+  - entfernt
+
+- in StructureDefinition-Task-ERxTask.json: Task.identifier:PrescriptionID type: "https://gematik.de/fhir/StructureDefinition/erxPrescriptionID"
+  - muss eigentlich: "https://gematik.de/fhir/StructureDefinition/ErxPrescriptionID"

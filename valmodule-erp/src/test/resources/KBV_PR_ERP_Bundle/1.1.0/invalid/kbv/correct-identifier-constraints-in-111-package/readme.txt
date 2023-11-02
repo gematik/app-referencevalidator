@@ -1,0 +1,1 @@
+Im 1.1.1. Package von KBV haben einige Constraints die Möglichkeit der URN-Referenzierung nicht berücksichtigt. Diese Beispielinstanzen nutzen allerdings URL-Referenzierung - die Constraints werden daher korrekt ausgewertet und erkennen inhaltliche Fehler.

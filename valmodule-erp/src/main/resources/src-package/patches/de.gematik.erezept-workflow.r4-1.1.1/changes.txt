@@ -1,0 +1,3 @@
+de.gematik.erezept-workflow.r4-1.1.1:
+- in ErxCommunicationReply: Communication.about targetProfile: typos: KBV_PR_ERP_Medikament_Freitext, KBV_PR_ERP_Medikament_PZN, KBV_PR_ERP_Medikament_Rezeptur, erxTask
+  - heißt eigentlich: KBV_PR_ERP_Medication_FreeText, KBV_PR_ERP_Medication_PZN, KBV_PR_ERP_Medication_Compounding, ErxTask

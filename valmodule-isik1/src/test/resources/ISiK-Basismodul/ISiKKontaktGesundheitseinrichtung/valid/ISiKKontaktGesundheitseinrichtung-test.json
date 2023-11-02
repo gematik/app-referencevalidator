@@ -1,0 +1,153 @@
+{
+  "resourceType": "Encounter",
+  "id": "encounter",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/ISiK/StructureDefinition/ISiKKontaktGesundheitseinrichtung"
+    ]
+  },
+  "extension": [
+    {
+      "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+      "extension": [
+        {
+          "url": "ErsteUndZweiteStelle",
+          "valueCoding": {
+            "code": "01",
+            "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+            "display": "Krankenhausbehandlung, vollstationär"
+          }
+        },
+        {
+          "url": "DritteStelle",
+          "valueCoding": {
+            "code": "0",
+            "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+            "display": "Anderes"
+          }
+        },
+        {
+          "url": "VierteStelle",
+          "valueCoding": {
+            "code": "1",
+            "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+            "display": "Normalfall"
+          }
+        }
+      ]
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "VN",
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+          }
+        ]
+      },
+      "system": "https://test.krankenhaus.de/fhir/sid/fallnr",
+      "value": "0123456789"
+    }
+  ],
+  "status": "finished",
+  "class": {
+    "code": "IMP",
+    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+  },
+  "type": [
+    {
+      "coding": [
+        {
+          "code": "operation",
+          "system": "http://fhir.de/CodeSystem/kontaktart-de"
+        }
+      ]
+    },
+    {
+      "coding": [
+        {
+          "code": "versorgungsstellenkontakt",
+          "system": "http://fhir.de/CodeSystem/Kontaktebene"
+        }
+      ]
+    }
+  ],
+  "serviceType": {
+    "coding": [
+      {
+        "code": "0100",
+        "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/test"
+  },
+  "period": {
+    "start": "2021-02-12",
+    "end": "2021-02-13"
+  },
+  "diagnosis": [
+    {
+      "condition": {
+        "reference": "Condition/test"
+      },
+      "use": {
+        "coding": [
+          {
+            "code": "CC",
+            "system": "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+            "display": "Hauptdiagnose"
+          }
+        ]
+      }
+    }
+  ],
+  "hospitalization": {
+    "admitSource": {
+      "coding": [
+        {
+          "code": "E",
+          "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass"
+        }
+      ]
+    },
+    "dischargeDisposition": {
+      "extension": [
+        {
+          "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
+          "extension": [
+            {
+              "url": "ErsteUndZweiteStelle",
+              "valueCoding": {
+                "code": "01",
+                "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
+                "display": "Behandlung regulär beendet"
+              }
+            },
+            {
+              "url": "DritteStelle",
+              "valueCoding": {
+                "code": "1",
+                "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
+                "display": "arbeitsfähig entlassen"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "location": [
+    {
+      "location": {
+        "display": "Krankenhaus XYZ"
+      }
+    }
+  ],
+  "serviceProvider": {
+    "display": "Fachabteilung XYZ"
+  }
+}

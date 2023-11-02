@@ -1,0 +1,8 @@
+<Binary xmlns="http://hl7.org/fhir">
+    <id value="example"/>
+    <meta>
+        <profile value="https://gematik.de/fhir/StructureDefinition/ErxBinary|1.0.3-1" />
+    </meta>
+    <contentType value="application/pkcs7-mime"/>
+    <data value="1"/>
+</Binary>

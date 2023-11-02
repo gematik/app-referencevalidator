@@ -1,0 +1,57 @@
+<MedicationRequest xmlns="http://hl7.org/fhir">
+    <id value="0587787f-3f1b-4578-a412-ce5bae8215b9"/>
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription|1.1.0"/>
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_FOR_StatusCoPayment">
+        <valueCoding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_StatusCoPayment"/>
+            <code value="0"/>
+        </valueCoding>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_EmergencyServicesFee">
+        <valueBoolean value="false"/>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_BVG">
+        <valueBoolean value="false"/>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Multiple_Prescription">
+        <extension url="Kennzeichen">
+            <valueBoolean value="false"/>
+        </extension>
+    </extension>
+    <status value="active"/>
+    <intent value="order"/>
+    <medicationReference>
+        <reference value="Medication/03758a20-5f15-4d10-a0ea-c8a594cea651"/>
+    </medicationReference>
+    <subject>
+        <reference value="Patient/fc0d145b-09b4-4af6-b477-935c1862ac7f"/>
+    </subject>
+    <authoredOn value="2023-07-01" />
+    <requester>
+        <reference value="Practitioner/0c4e1a54-8a42-4d3d-a12c-0bbf2db48570"/>
+    </requester>
+    <insurance>
+        <reference value="Coverage/69b3bbb6-2d37-4676-baf1-af97ba2ba4ad"/>
+    </insurance>
+    <note>
+        <text value="Patient erneut auf Anwendung der Schmelztabletten hinweisen"/>
+    </note>
+    <dosageInstruction>
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_DosageFlag">
+            <valueBoolean value="true"/>
+        </extension>
+        <text value="1x täglich"/>
+    </dosageInstruction>
+    <dispenseRequest>
+        <quantity>
+            <value value="1"/>
+            <system value="http://unitsofmeasure.org"/>
+            <code value="{Package}"/>
+        </quantity>
+    </dispenseRequest>
+    <substitution>
+        <allowedBoolean value="false"/>
+    </substitution>
+</MedicationRequest>

@@ -1,0 +1,35 @@
+<Organization xmlns="http://hl7.org/fhir">
+    <id value="d9dba626-8679-4736-a1bf-4f14c1ffdcb1" />
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Apotheke|1.2" />
+    </meta>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-EX-ERP-Bankverbindung">
+        <extension url="Kontoinhaber">
+            <valueString value="Martha Pfahl" />
+        </extension>
+        <extension url="IBAN">
+            <valueString value= "1" />
+        </extension>
+        <extension url="BIC">
+            <valueString value="BYLADEM1001" />
+        </extension>
+    </extension>
+    <identifier>
+        <system value="http://fhir.de/sid/arge-ik/iknr" />
+        <value value="123456789" />
+    </identifier>
+    <name value="Adler-Apotheke" />
+    <address>
+        <type value="physical" />
+        <line value="Taunusstraße 89">
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+                <valueString value="Taunusstraße" />
+            </extension>
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+                <valueString value="89" />
+            </extension>
+        </line>
+        <postalCode value="63225" />
+        <country value="D" />
+    </address>
+</Organization>

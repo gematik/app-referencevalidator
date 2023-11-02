@@ -1,0 +1,177 @@
+{
+  "resourceType": "Encounter",
+  "id": "Fachabteilungskontakt",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKKontaktGesundheitseinrichtung"
+    ]
+  },
+  "type": [
+    {
+      "coding": [
+        {
+          "code": "operation",
+          "system": "http://fhir.de/CodeSystem/kontaktart-de"
+        }
+      ]
+    },
+    {
+      "coding": [
+        {
+          "code": "abteilungskontakt",
+          "system": "http://fhir.de/CodeSystem/Kontaktebene"
+        }
+      ]
+    }
+  ],
+  "extension": [
+    {
+      "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+      "extension": [
+        {
+          "url": "ErsteUndZweiteStelle",
+          "valueCoding": {
+            "code": "01",
+            "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+            "display": "Krankenhausbehandlung, vollstationär"
+          }
+        },
+        {
+          "url": "DritteStelle",
+          "valueCoding": {
+            "code": "0",
+            "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+            "display": "Anderes"
+          }
+        },
+        {
+          "url": "VierteStelle",
+          "valueCoding": {
+            "code": "1",
+            "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+            "display": "Normalfall"
+          }
+        }
+      ]
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "VN",
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+          }
+        ]
+      },
+      "system": "https://test.krankenhaus.de/fhir/sid/besuchsnummer",
+      "value": "0123456789"
+    }
+  ],
+  "status": "finished",
+  "class": {
+    "code": "IMP",
+    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+  },
+  "serviceType": {
+    "coding": [
+      {
+        "code": "0100",
+        "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/PatientinMusterfrau"
+  },
+  "period": {
+    "start": "2021-02-12",
+    "end": "2021-02-13"
+  },
+  "diagnosis": [
+    {
+      "condition": {
+        "reference": "Condition/BehandlungsDiagnoseFreitext"
+      },
+      "use": {
+        "coding": [
+          {
+            "code": "treatment-diagnosis",
+            "system": "http://fhir.de/CodeSystem/KontaktDiagnoseProzedur"
+          }
+        ]
+      }
+    }
+  ],
+  "account": [
+    {
+      "reference": "Account/AbrechnungsfallAmbulant",
+      "identifier": {
+        "value": "XZY"
+      }
+    }
+  ],
+  "hospitalization": {
+    "admitSource": {
+      "coding": [
+        {
+          "code": "E",
+          "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass"
+        }
+      ]
+    },
+    "dischargeDisposition": {
+      "extension": [
+        {
+          "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
+          "extension": [
+            {
+              "url": "ErsteUndZweiteStelle",
+              "valueCoding": {
+                "code": "01",
+                "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
+                "display": "Behandlung regulär beendet"
+              }
+            },
+            {
+              "url": "DritteStelle",
+              "valueCoding": {
+                "code": "1",
+                "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
+                "display": "arbeitsfähig entlassen"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "location": [
+    {
+      "physicalType": {
+        "coding": [
+          {
+            "code": "bd",
+            "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+            "display": "Bed"
+          }
+        ]
+      },
+      "location": {
+        "identifier": {
+          "system": "https://test.krankenhaus.de/fhir/sid/locationid",
+          "value": "123"
+        },
+        "display": "Bett 123"
+      }
+    }
+  ],
+  "serviceProvider": {
+    "identifier": {
+      "system": "https://test.krankenhaus.de/fhir/sid/fachabteilungsid",
+      "value": "XYZ"
+    },
+    "display": "Fachabteilung XYZ"
+  }
+}

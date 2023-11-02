@@ -1,0 +1,105 @@
+<Medication xmlns="http://hl7.org/fhir">
+    <id value="7a8e8102-37b7-11ec-8d3d-0242ac130003" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Medication_Free|1.0.0" />
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Medication_Type">
+        <valueCodeableConcept>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="763158003" />
+                <display value="Medicinal product (product)">
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                            <valueString value="Fertigarzneimittel" />
+                        </extension>
+                    </extension>
+                </display>
+            </coding>
+        </valueCodeableConcept>
+    </extension>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:7a8e8102-37b7-11ec-8d3d-0242ac130003" />
+    </identifier>
+    <code>
+        <coding>
+            <system value="http://fhir.de/CodeSystem/ifa/pzn" />
+            <version value="0.2" />
+            <code value="00105928" />
+            <display value="AMITRIPTYLIN-neuraxpharm 75 mg Filmtabletten" />
+        </coding>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="778301005" />
+            <display value="Product containing only amitriptyline in oral dose form (medicinal product form)" />
+        </coding>
+        <coding>
+            <system value="http://fhir.de/CodeSystem/dimdi/atc" />
+            <version value="18.0" />
+            <code value="N06AA09" />
+            <display value="amitriptyline" />
+        </coding>
+    </code>
+    <form>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_DARREICHUNGSFORM" />
+            <version value="1.08" />
+            <code value="TAB" />
+            <display value="Tabletten" />
+        </coding>
+    </form>
+    <amount>
+        <numerator>
+            <value value="50" />
+            <unit value="Tablet (basic dose form)" />
+            <system value="http://snomed.info/sct" />
+            <code value="385055001" />
+        </numerator>
+        <denominator>
+            <value value="1" />
+            <unit value="1" />
+            <system value="http://unitsofmeasure.org" />
+            <code value="1" />
+        </denominator>
+    </amount>
+    <ingredient>
+        <itemCodeableConcept>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="372726002" />
+                <display value="Amitriptyline (substance)" />
+            </coding>
+        </itemCodeableConcept>
+        <strength>
+            <numerator>
+                <value value="50" />
+                <unit value="/mg" />
+                <system value="http://unitsofmeasure.org" />
+                <code value="/mg" />
+            </numerator>
+            <denominator>
+                <value value="1" />
+                <unit value="Tablet (basic dose form)" />
+                <system value="http://snomed.info/sct" />
+                <code value="385055001" />
+            </denominator>
+        </strength>
+    </ingredient>
+    <batch>
+        <expirationDate value="2021-12-01" />
+    </batch>
+</Medication>

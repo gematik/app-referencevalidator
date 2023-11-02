@@ -1,0 +1,31 @@
+<Medication xmlns="http://hl7.org/fhir">
+    <id value="bd9c93a5-1172-4971-87a9-351504db765e" />
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_PZN|1.0.1" />
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Category">
+        <valueCoding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_Medication_Category" />
+            <code value="00" />
+        </valueCoding>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Vaccine">
+        <valueBoolean value="true" />
+    </extension>
+    <extension url="http://fhir.de/StructureDefinition/normgroesse">
+        <valueCode value="N1" />
+    </extension>
+    <code>
+        <coding>
+            <system value="http://fhir.de/CodeSystem/ifa/pzn" />
+            <code value="10259495" />
+        </coding>
+        <text value="FSME-IMMUN 0,5 ml Erwachsene" />
+    </code>
+    <form>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_DARREICHUNGSFORM" />
+            <code value="FER" />
+        </coding>
+    </form>
+</Medication>

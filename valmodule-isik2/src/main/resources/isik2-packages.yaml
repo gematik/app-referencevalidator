@@ -1,0 +1,283 @@
+version: "1.0"
+errorOnUnknownProfile: "false"
+anyExtensionsAllowed: "true"
+
+dependencyLists:
+  de.gematik.isik-basismodul.2.0.5:
+    packages:
+      - "de.gematik.isik-basismodul-2.0.5.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz" # Warning!!! Missing dependency declaration in original package
+    validationMessageTransformations:
+      - severityLevelFrom: "error"
+        severityLevelTo: "information"
+        locatorString: "Account.subject:PatientISiK"
+        messageId: "Validation_VAL_Profile_Minimum"
+
+  de.gematik.isik-medikation.2.0.2:
+    packages:
+      - "de.gematik.isik-medikation-2.0.2.tgz"
+      - "de.medizininformatikinitiative.kerndatensatz.medikation-1.0.10.tgz"
+      - "de.medizininformatikinitiative.kerndatensatz.meta-1.0.3.tgz"
+      - "hl7.fhir.uv.ips-1.0.0.tgz"
+      - "de.gematik.isik-basismodul-2.0.5.tgz" ## in package.json 2.0.4 WRONG
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz"
+
+  de.gematik.isik-terminplanung.2.0.3:
+    packages:
+      - "de.gematik.isik-terminplanung-2.0.3.tgz"
+      - "de.gematik.isik-basismodul-2.0.5.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz"
+    validationMessageTransformations:
+      - severityLevelFrom: "error"
+        severityLevelTo: "information"
+        locatorString: "Appointment.participant:AkteurPatient"
+        messageId: "Validation_VAL_Profile_Minimum"
+
+  de.gematik.isik-vitalparameter.2.0.3:
+    packages:
+      - "de.gematik.isik-vitalparameter-2.0.3.tgz"
+      - "de.gematik.isik-basismodul-2.0.5.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz"
+
+ignoredCodeSystems:
+  - "http://snomed.info/sct"
+  - "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+  - "http://fhir.de/CodeSystem/bfarm/atc"
+  - "http://fhir.de/CodeSystem/bfarm/ops"
+
+ignoredValueSets:
+  - "https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenCodesSCT" # Erfordert eine Expansion von SNOMED-CT (aktuell nicht implementiert)
+  - "https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/DiagnosesSCT"
+  - "https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenKategorieSCT"
+  - "https://gematik.de/fhir/isik/v2/Terminplanung/ValueSet/ISiKTerminPriority" # Erfordert eine Expansion von SNOMED-CT (aktuell nicht implementiert)
+  - "http://fhir.de/ValueSet/bfarm/ops" # Das Code System ist als FHIR nicht vorhanden
+  - "https://gematik.de/fhir/isik/v2/Medikation/ValueSet/SctRouteOfAdministration"
+
+
+supportedProfiles:
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKAbrechnungsfall":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKAngehoeriger":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKBerichtBundle":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKBerichtSubSysteme":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKBinary":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKCodeSystem":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKDiagnose":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKKontaktGesundheitseinrichtung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKPatient":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKPersonImGesundheitsberuf":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKProzedur":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKValueSet":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKVersicherungsverhaeltnisGesetzlich":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKVersicherungsverhaeltnisSelbstzahler":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul.2.0.5"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikament":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation.2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationTransaction":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation.2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationTransactionResponse":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation.2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsInformation":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation.2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsListe":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation.2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsVerabreichung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation.2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Medikation/StructureDefinition/ISiKMedikationsVerordnung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation.2.0.2"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKKalender":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKMedizinischeBehandlungseinheit":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKNachricht":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKTermin":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKTerminKontaktMitGesundheitseinrichtung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKTerminblock":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKAtemfrequenz":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKBlutdruck":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKEkg":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKGCS":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKHerzfrequenz":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKoerpergewicht":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKoerpergroesse":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKoerpertemperatur":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKKopfumfang":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+
+  "https://gematik.de/fhir/isik/v2/VitalwerteUndKoerpermasse/StructureDefinition/ISiKSauerstoffsaettigung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter.2.0.3"
+

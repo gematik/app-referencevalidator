@@ -1,0 +1,13 @@
+<List xmlns="http://hl7.org/fhir">
+    <id value="ec403db0-c79a-450a-bc1c-8d2d67bc4bfd" />
+    <meta>
+        <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Sammelrechnung_List|1.0.6" />
+    </meta>
+    <status value="current" />
+    <mode value="working" />
+    <entry>
+        <item>
+            <reference value="Bundle/207e63cc-cc80-4c88-9bca-21a59c6d10dc" />
+        </item>
+    </entry>
+</List>

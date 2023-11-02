@@ -1,0 +1,114 @@
+{
+  "resourceType": "Bundle",
+  "id": "Suchergebnis-Beispiel",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Dokumentenaustausch/StructureDefinition/ISiKDokumentenSuchergebnisse"
+    ]
+  },
+  "type": "searchset",
+  "total": 1,
+  "entry": [
+    {
+      "fullUrl": "http://meinfhirserver.de/DocumentReference/dok-beispiel",
+      "resource": {
+        "resourceType": "DocumentReference",
+        "id": "dok-beispiel-server",
+        "meta": {
+          "security": [
+            {
+              "code": "HTEST",
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason"
+            }
+          ],
+          "profile": [
+            "https://gematik.de/fhir/isik/v3/Dokumentenaustausch/StructureDefinition/ISiKDokumentenMetadaten"
+          ]
+        },
+        "masterIdentifier": {
+          "system": "urn:ietf:rfc:3986",
+          "value": "urn:oid:1.2.840.113556.1.8000.2554.58783.21864.3474.19410.44358.58254.41281.46340"
+        },
+        "type": {
+          "coding": [
+            {
+              "system": "http://dvmd.de/fhir/CodeSystem/kdl",
+              "code": "PT130102",
+              "display": "Molekularpathologiebefund"
+            },
+            {
+              "code": "PATH",
+              "system": "http://ihe-d.de/CodeSystem/IHEXDStypeCode",
+              "display": "Pathologiebefundberichte"
+            }
+          ]
+        },
+        "status": "current",
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "BEF",
+                "system": "http://ihe-d.de/CodeSystems/IHEXDSclassCode",
+                "display": "Befundbericht"
+              }
+            ]
+          }
+        ],
+        "description": "Molekularpathologiebefund vom 31.12.21",
+        "subject": {
+          "reference": "Patient/PatientinMusterfrau"
+        },
+        "securityLabel": [
+          {
+            "coding": [
+              {
+                "code": "N",
+                "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality"
+              }
+            ]
+          }
+        ],
+        "content": [
+          {
+            "attachment": {
+              "contentType": "application/pdf",
+              "url": "https://mein-Dokumentenserver/dokumente/1.2.840.113556.1.8000.2554.58783.21864.3474.19410.44358.58254.41281.46340.pdf",
+              "language": "de",
+              "creation": "2020-12-31T23:50:50-05:00"
+            },
+            "format": {
+              "code": "urn:ihe:iti:xds:2017:mimeTypeSufficient",
+              "system": "http://ihe.net/fhir/ihe.formatcode.fhir/CodeSystem/formatcode",
+              "display": "mimeType Sufficient"
+            }
+          }
+        ],
+        "context": {
+          "facilityType": {
+            "coding": [
+              {
+                "code": "KHS",
+                "system": "http://ihe-d.de/CodeSystems/PatientBezogenenGesundheitsversorgung",
+                "display": "Krankenhaus"
+              }
+            ]
+          },
+          "practiceSetting": {
+            "coding": [
+              {
+                "code": "ALLG",
+                "system": "http://ihe-d.de/CodeSystems/AerztlicheFachrichtungen"
+              }
+            ]
+          },
+          "encounter": [
+            {
+              "reference": "Encounter/BeispielBesuch"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+acceptedEncodings:
+  - "xml"
+
+dependencyLists:
+  package.with.non.existing.dependency:
+    packages:
+      - "package.with.non.existing.dependency-1.0.0.tgz"
+      - "non.existing.dependency-1.0.0.tgz"
+  dependencyList1: # birthDate.min -> 1; gender.min -> 0
+    validFrom: "2023-01-01"
+    validTill: "2023-01-31"
+    packages:
+      - "simplevalidationmodule.test-1.0.0.tgz"
+  dependencyList2: # birthDate.min -> 1; gender.min -> 1
+    validFrom: "2023-02-01"
+    validTill: "2023-02-28"
+    packages:
+      - "simplevalidationmodule.test-1.0.1.tgz"
+
+  dependencyList3:
+    patches:
+      - "simplevalidationmodule.test-1.0.0/profile-differential-patient-r4-patch-gender-required.json" # birthDate.min -> 1; gender.min -> 1
+    packages:
+      - "simplevalidationmodule.test-1.0.0.tgz"
+
+supportedProfiles:
+  "https://profile-with-unknown-dependencylist":
+    profileVersions:
+      1.0.0:
+        dependencyLists:
+          - "unknownDependencyList"
+
+  "https://profile-with-unknown-package-dependency":
+    profileVersions:
+      1.0.0:
+        dependencyLists:
+          - "package.with.non.existing.dependency"
+
+  "http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate":
+    profileVersions:
+      1.0.0:
+        dependencyLists:
+          - "dependencyList1"
+          - "dependencyList2"
+        creationDateLocator: "birthDate"
+
+  "http://example.gematik.de/fhir/StructureDefinition/patient-patched":
+    profileVersions:
+      1.0.0:
+        dependencyLists:
+          - "dependencyList3"
+  "http://hl7.org/fhir/StructureDefinition/Medication":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "dependencyList1"
+
+  "http://hl7.org/fhir/StructureDefinition/Bundle":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "dependencyList1"
+
+ignoredCodeSystems:
+  - "http://fhir.de/CodeSystem/ifa/pzn"
+  - "http://fhir.de/CodeSystem/ask"

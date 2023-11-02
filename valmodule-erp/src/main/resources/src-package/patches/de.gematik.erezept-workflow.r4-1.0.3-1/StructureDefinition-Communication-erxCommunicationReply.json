@@ -1,0 +1,226 @@
+{
+  "resourceType": "StructureDefinition",
+  "meta": {
+    "lastUpdated": "2020-04-16T13:43:30.128+00:00"
+  },
+  "url": "https://gematik.de/fhir/StructureDefinition/ErxCommunicationReply",
+  "version": "1.0.3-1",
+  "name": "Gem_erxCommunicationReply",
+  "title": "Reply from Provider to Patient",
+  "status": "draft",
+  "date": "2020-04-16T13:43:27.7930941+00:00",
+  "description": "Ressource used for the communication of the reply to dispense/info request from provider to patient/representative",
+  "fhirVersion": "4.0.1",
+  "mapping": [
+    {
+      "identity": "workflow",
+      "uri": "http://hl7.org/fhir/workflow",
+      "name": "Workflow Pattern"
+    },
+    {
+      "identity": "w5",
+      "uri": "http://hl7.org/fhir/fivews",
+      "name": "FiveWs Pattern Mapping"
+    },
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    }
+  ],
+  "kind": "resource",
+  "abstract": true,
+  "type": "Communication",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Communication",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Communication.basedOn",
+        "path": "Communication.basedOn",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "https://gematik.de/fhir/StructureDefinition/ErxTask"
+            ],
+            "aggregation": [
+              "referenced"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.basedOn.reference",
+        "path": "Communication.basedOn.reference",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.status",
+        "path": "Communication.status",
+        "fixedCode": "unknown"
+      },
+      {
+        "id": "Communication.about",
+        "path": "Communication.about",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_FreeText",
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_PZN",
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Compounding",
+              "https://gematik.de/fhir/StructureDefinition/ErxTask"
+            ],
+            "aggregation": [
+              "contained"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.about.reference",
+        "path": "Communication.about.reference",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.sent",
+        "path": "Communication.sent",
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.received",
+        "path": "Communication.received",
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.recipient",
+        "path": "Communication.recipient",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "http://hl7.org/fhir/StructureDefinition/Patient",
+              "http://hl7.org/fhir/StructureDefinition/RelatedPerson"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.recipient.identifier",
+        "path": "Communication.recipient.identifier",
+        "min": 1,
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": [
+              "http://fhir.de/StructureDefinition/identifier-kvid-10"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.sender",
+        "path": "Communication.sender",
+        "definition": "Message sender - set by ePrescription server using client AuthN-Credential\r\nThe entity (e.g. person, organization) which was the source of the communication.",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "http://hl7.org/fhir/StructureDefinition/Organization",
+              "http://hl7.org/fhir/StructureDefinition/Practitioner",
+              "http://hl7.org/fhir/StructureDefinition/PractitionerRole",
+              "http://hl7.org/fhir/StructureDefinition/HealthcareService"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.sender.identifier",
+        "path": "Communication.sender.identifier",
+        "min": 1,
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": [
+              "http://fhir.de/StructureDefinition/identifier-kvid-10",
+              "https://gematik.de/fhir/StructureDefinition/BaseTelematikID"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.payload",
+        "path": "Communication.payload",
+        "min": 1,
+        "max": "1",
+        "mustSupport": true
+      },
+      {
+        "id": "Communication.payload.extension",
+        "path": "Communication.payload.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "Communication.payload.extension:OfferedSupplyOptions",
+        "path": "Communication.payload.extension",
+        "sliceName": "OfferedSupplyOptions",
+        "short": "Offered supply options by pharmacy",
+        "definition": "In a communication reply a pharmacy may state its available supply options, whether to serve customers at the store, send medication by messenger or use parcel shippment",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://gematik.de/fhir/StructureDefinition/SupplyOptionsType"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "Communication.payload.extension:AvailabilityStatus",
+        "path": "Communication.payload.extension",
+        "sliceName": "AvailabilityStatus",
+        "short": "Availability Status of queried medication",
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://gematik.de/fhir/StructureDefinition/AvailabilityStateExtension"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "Communication.payload.content[x]",
+        "path": "Communication.payload.content[x]",
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "mustSupport": true
+      }
+    ]
+  }
+}

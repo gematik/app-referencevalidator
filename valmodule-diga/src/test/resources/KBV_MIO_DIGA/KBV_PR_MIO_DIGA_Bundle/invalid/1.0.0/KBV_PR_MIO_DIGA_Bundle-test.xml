@@ -1,0 +1,1769 @@
+<Bundle xmlns="http://hl7.org/fhir">
+    <id value="264de85e-ebfc-45df-b214-203fdac71ccd" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-11-08T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Bundle|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:264de85e-ebfc-45df-b214-203fdac71ccd" />
+    </identifier>
+    <type value="document" />
+    <timestamp value="2021-11-08T13:28:17Z" />
+    <entry>
+        <fullUrl value="urn:uuid:a17df8be-d470-4614-9f89-dcb66f682614" />
+        <resource>
+            <Observation>
+                <id value="a17df8be-d470-4614-9f89-dcb66f682614" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:a17df8be-d470-4614-9f89-dcb66f682614" />
+                </identifier>
+                <status value="final" />
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="262285001" />
+                        <display value="Weight decreased (finding)" />
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:f2e8c16e-baef-4132-aa8f-eefb910503fa" />
+        <resource>
+            <Observation>
+                <id value="f2e8c16e-baef-4132-aa8f-eefb910503fa" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:f2e8c16e-baef-4132-aa8f-eefb910503fa" />
+                </identifier>
+                <status value="final" />
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="282475008" />
+                        <display value="Unable to run (finding)" />
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <effectiveDateTime value="2021-06-20T08:00:00+01:00" />
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:82be1643-46fd-416a-9f77-53deb362074b" />
+        <resource>
+            <Practitioner>
+                <id value="82be1643-46fd-416a-9f77-53deb362074b" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-26T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Practitioner|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:82be1643-46fd-416a-9f77-53deb362074b" />
+                </identifier>
+                <name>
+                    <use value="official" />
+                    <text value="Emil Di&#228;tassistent" />
+                    <family value="Di&#228;tassistent">
+                        <extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+                            <valueString value="Di&#228;tassistent" />
+                        </extension>
+                    </family>
+                    <given value="Emil" />
+                </name>
+                <telecom>
+                    <system value="phone">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Telefonnummer" />
+                            </extension>
+                        </extension>
+                    </system>
+                    <value value="012378123" />
+                </telecom>
+                <qualification>
+                    <code>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="159033005" />
+                            <display value="Dietitian (occupation)" />
+                        </coding>
+                    </code>
+                </qualification>
+            </Practitioner>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:3be97a7c-d300-4a6f-bea9-23cd00374edf" />
+        <resource>
+            <Procedure>
+                <id value="3be97a7c-d300-4a6f-bea9-23cd00374edf" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2015-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Procedure_Activity_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:3be97a7c-d300-4a6f-bea9-23cd00374edf" />
+                </identifier>
+                <status value="completed" />
+                <category>
+                    <coding>
+                        <system value="http://hl7.org/fhir/sid/icf-nl" />
+                        <code value="d920" />
+                        <display value="Erholung und Freizeit" />
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="129006008" />
+                        <display value="Walking (observable entity)" />
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <performedPeriod>
+                    <start value="2021-06-20T11:00:00+01:00" />
+                    <end value="2021-07-20T13:00:00+01:00" />
+                </performedPeriod>
+                <note>
+                    <text value="Bei der Hitze sehr anstrengend" />
+                </note>
+            </Procedure>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:05bbc5bb-7a89-4d24-a1e1-1bd59b077962" />
+        <resource>
+            <Practitioner>
+                <id value="05bbc5bb-7a89-4d24-a1e1-1bd59b077962" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-26T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Practitioner|1.0.0" />
+                </meta>
+                <identifier>
+                    <use value="official" />
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="LANR" />
+                            <display value="Lifelong physician number" />
+                        </coding>
+                    </type>
+                    <system value="https://fhir.kbv.de/NamingSystem/KBV_NS_Base_ANR" />
+                    <value value="123412312" />
+                </identifier>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:05bbc5bb-7a89-4d24-a1e1-1bd59b077962" />
+                </identifier>
+                <name>
+                    <use value="official" />
+                    <text value="Dr. med. Michaela M&#252;ller" />
+                    <family value="M&#252;ller">
+                        <extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+                            <valueString value="M&#252;ller" />
+                        </extension>
+                    </family>
+                    <given value="Michaela" />
+                    <prefix value="Dr. med.">
+                        <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier">
+                            <valueCode value="AC" />
+                        </extension>
+                    </prefix>
+                </name>
+                <telecom>
+                    <system value="email">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Email" />
+                            </extension>
+                        </extension>
+                    </system>
+                    <value value="michaela@m&#252;ller.de" />
+                </telecom>
+                <telecom>
+                    <system value="phone">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Telefonnummer" />
+                            </extension>
+                        </extension>
+                    </system>
+                    <value value="030934913" />
+                </telecom>
+                <address>
+                    <type value="both" />
+                    <text value="M&#252;llerstra&#223;e 2, 10203 Berlin" />
+                    <line value="M&#252;llerstra&#223;e 2">
+                        <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+                            <valueString value="M&#252;llerstra&#223;e" />
+                        </extension>
+                        <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+                            <valueString value="2" />
+                        </extension>
+                    </line>
+                    <city value="Berlin" />
+                    <postalCode value="10203" />
+                    <country value="D" />
+                </address>
+                <qualification>
+                    <code>
+                        <coding>
+                            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_BAR2_WBO" />
+                            <version value="1.16" />
+                            <code value="010" />
+                            <display value="FA Allgemeinmedizin" />
+                        </coding>
+                    </code>
+                </qualification>
+            </Practitioner>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+        <resource>
+            <Patient>
+                <id value="3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-26T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Patient|1.0.0" />
+                </meta>
+                <identifier>
+                    <use value="official" />
+                    <type>
+                        <coding>
+                            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_Base_identifier_type" />
+                            <code value="kvk" />
+                            <display value="Krankenversichertenkarte" />
+                        </coding>
+                    </type>
+                    <system value="http://fhir.de/NamingSystem/gkv/kvk-versichertennummer" />
+                    <value value="B987654321" />
+                </identifier>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </identifier>
+                <name>
+                    <use value="official" />
+                    <text value="Erika Mustermann" />
+                    <family value="Mustermann">
+                        <extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+                            <valueString value="Mustermann" />
+                        </extension>
+                    </family>
+                    <given value="Erika" />
+                </name>
+                <telecom>
+                    <system value="phone">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Telefonnummer" />
+                            </extension>
+                        </extension>
+                    </system>
+                    <value value="017909090" />
+                </telecom>
+                <gender value="female" />
+                <birthDate value="1980-12-30" />
+                <address>
+                    <type value="both" />
+                    <line value="Musterstra&#223;e 1">
+                        <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+                            <valueString value="Musterstra&#223;e" />
+                        </extension>
+                        <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+                            <valueString value="1" />
+                        </extension>
+                    </line>
+                    <city value="Berlin" />
+                    <postalCode value="10101" />
+                    <country value="D" />
+                </address>
+                <communication>
+                    <language>
+                        <coding>
+                            <system value="urn:ietf:bcp:47" />
+                            <code value="de" />
+                            <display value="German" />
+                        </coding>
+                    </language>
+                </communication>
+                <communication>
+                    <language>
+                        <coding>
+                            <system value="urn:ietf:bcp:47" />
+                            <code value="fi" />
+                            <display value="Finnish" />
+                        </coding>
+                    </language>
+                </communication>
+                <communication>
+                    <language>
+                        <coding>
+                            <system value="urn:ietf:bcp:47" />
+                            <code value="fr" />
+                            <display value="French" />
+                        </coding>
+                    </language>
+                </communication>
+            </Patient>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:0ca8a37b-3f17-472a-a680-217006098422" />
+        <resource>
+            <Organization>
+                <id value="0ca8a37b-3f17-472a-a680-217006098422" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Organization_Manufacturer|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:0ca8a37b-3f17-472a-a680-217006098422" />
+                </identifier>
+                <name value="Device Hersteller" />
+            </Organization>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:d1e991c6-46ee-4b91-a56d-e40f1c5343cb" />
+        <resource>
+            <Observation>
+                <id value="d1e991c6-46ee-4b91-a56d-e40f1c5343cb" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Nutrition_Intake|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:d1e991c6-46ee-4b91-a56d-e40f1c5343cb" />
+                </identifier>
+                <status value="final" />
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="255620007" />
+                        <display value="Food (substance)" />
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <effectiveDateTime value="2021-06-20T14:00:00+01:00" />
+                <hasMember>
+                    <reference value="urn:uuid:fd0c2548-512a-4492-92a8-efc0e086e72b" />
+                </hasMember>
+                <hasMember>
+                    <reference value="urn:uuid:067c0ec9-4fc6-4f5a-87e5-0893c9325b5e" />
+                </hasMember>
+                <hasMember>
+                    <reference value="urn:uuid:213a5629-1dd3-44cb-b829-fbf57a16465f" />
+                </hasMember>
+                <component>
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Nutrition_Intake_Taken">
+                        <extension url="einnahmeErfolgt">
+                            <extension url="einnahmeErfolgtCode">
+                                <valueCodeableConcept>
+                                    <coding>
+                                        <system value="http://snomed.info/sct" />
+                                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                                        <code value="229918000" />
+                                        <display value="Food and drink intake (observable entity)" />
+                                    </coding>
+                                </valueCodeableConcept>
+                            </extension>
+                            <extension url="einnahmeErfolgtValue">
+                                <valueBoolean value="true" />
+                            </extension>
+                        </extension>
+                    </extension>
+                    <code>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="226575004" />
+                            <display value="Naan bread (substance)" />
+                        </coding>
+                    </code>
+                    <valueQuantity>
+                        <value value="200" />
+                        <unit value="g" />
+                        <system value="http://unitsofmeasure.org" />
+                        <code value="g" />
+                    </valueQuantity>
+                </component>
+                <component>
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Nutrition_Intake_Taken">
+                        <extension url="einnahmeErfolgt">
+                            <extension url="einnahmeErfolgtCode">
+                                <valueCodeableConcept>
+                                    <coding>
+                                        <system value="http://snomed.info/sct" />
+                                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                                        <code value="229918000" />
+                                        <display value="Food and drink intake (observable entity)" />
+                                    </coding>
+                                </valueCodeableConcept>
+                            </extension>
+                            <extension url="einnahmeErfolgtValue">
+                                <valueBoolean value="true" />
+                            </extension>
+                        </extension>
+                    </extension>
+                    <code>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="227856006" />
+                            <display value="Okra curry (substance)" />
+                        </coding>
+                    </code>
+                    <valueQuantity>
+                        <value value="300" />
+                        <unit value="g" />
+                        <system value="http://unitsofmeasure.org" />
+                        <code value="g" />
+                    </valueQuantity>
+                </component>
+                <component>
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Nutrition_Intake_Taken">
+                        <extension url="einnahmeErfolgt">
+                            <extension url="einnahmeErfolgtCode">
+                                <valueCodeableConcept>
+                                    <coding>
+                                        <system value="http://snomed.info/sct" />
+                                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                                        <code value="229918000" />
+                                        <display value="Food and drink intake (observable entity)" />
+                                    </coding>
+                                </valueCodeableConcept>
+                            </extension>
+                            <extension url="einnahmeErfolgtValue">
+                                <valueBoolean value="false" />
+                            </extension>
+                        </extension>
+                        <extension url="begruendungNichtEinnahme">
+                            <valueCodeableConcept>
+                                <coding>
+                                    <system value="http://snomed.info/sct" />
+                                    <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                                    <code value="422587007" />
+                                    <display value="Nausea (finding)" />
+                                </coding>
+                            </valueCodeableConcept>
+                        </extension>
+                    </extension>
+                    <code>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="67324005" />
+                            <display value="Rice (substance)" />
+                        </coding>
+                    </code>
+                    <valueQuantity>
+                        <value value="200" />
+                        <unit value="g" />
+                        <system value="http://unitsofmeasure.org" />
+                        <code value="g" />
+                    </valueQuantity>
+                </component>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:213a5629-1dd3-44cb-b829-fbf57a16465f" />
+        <resource>
+            <Observation>
+                <id value="213a5629-1dd3-44cb-b829-fbf57a16465f" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Nutrition_Intake_Food_Composition_Types|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:213a5629-1dd3-44cb-b829-fbf57a16465f" />
+                </identifier>
+                <status value="final" />
+                <category>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="229957008" />
+                        <display value="Food composition types (substance)">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Detail &#252;ber die Gesamtzusammensetzung" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="787787004" />
+                        <display value="Energy intake (observable entity)" />
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <effectiveDateTime value="2021-06-20T14:00:00+01:00" />
+                <valueQuantity>
+                    <value value="800" />
+                    <unit value="kcal" />
+                    <system value="http://unitsofmeasure.org" />
+                    <code value="kcal" />
+                </valueQuantity>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:067c0ec9-4fc6-4f5a-87e5-0893c9325b5e" />
+        <resource>
+            <Observation>
+                <id value="067c0ec9-4fc6-4f5a-87e5-0893c9325b5e" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Nutrition_Intake_Food_Composition_Types|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:067c0ec9-4fc6-4f5a-87e5-0893c9325b5e" />
+                </identifier>
+                <status value="final" />
+                <category>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="229957008" />
+                        <display value="Food composition types (substance)">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Detail &#252;ber die Gesamtzusammensetzung" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="788472008" />
+                        <display value="Carbohydrate intake (observable entity)" />
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <effectiveDateTime value="2021-06-20T14:00:00+01:00" />
+                <valueQuantity>
+                    <value value="300" />
+                    <unit value="g" />
+                    <system value="http://unitsofmeasure.org" />
+                    <code value="g" />
+                </valueQuantity>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:fd0c2548-512a-4492-92a8-efc0e086e72b" />
+        <resource>
+            <Observation>
+                <id value="fd0c2548-512a-4492-92a8-efc0e086e72b" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Nutrition_Intake_Food_Composition_Types|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:fd0c2548-512a-4492-92a8-efc0e086e72b" />
+                </identifier>
+                <status value="final" />
+                <category>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="229957008" />
+                        <display value="Food composition types (substance)">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Detail &#252;ber die Gesamtzusammensetzung" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="874875003" />
+                        <display value="Protein and protein derivative intake (observable entity)" />
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <effectiveDateTime value="2021-06-20T14:00:00+01:00" />
+                <valueQuantity>
+                    <value value="100" />
+                    <unit value="g" />
+                    <system value="http://unitsofmeasure.org" />
+                    <code value="g" />
+                </valueQuantity>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:59c41b9f-ef59-4372-81df-2a79a66934c7" />
+        <resource>
+            <Observation>
+                <id value="59c41b9f-ef59-4372-81df-2a79a66934c7" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Heart_Rate|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:59c41b9f-ef59-4372-81df-2a79a66934c7" />
+                </identifier>
+                <status value="final" />
+                <category>
+                    <coding>
+                        <system value="http://terminology.hl7.org/CodeSystem/observation-category" />
+                        <code value="vital-signs" />
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://loinc.org" />
+                        <version value="2.71" />
+                        <code value="8867-4" />
+                        <display value="Heart rate">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Herzfrequenz" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="364075005" />
+                        <display value="Heart rate (observable entity)">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Herzfrequenz (Herzfrequenz)" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <effectiveDateTime value="2021-06-20T12:00:00+01:00" />
+                <valueQuantity>
+                    <value value="120" />
+                    <unit value="per minute" />
+                    <system value="http://unitsofmeasure.org" />
+                    <code value="/min" />
+                </valueQuantity>
+                <device>
+                    <reference value="urn:uuid:310abf1c-8f61-4a9e-ab27-2697c0947a2e" />
+                </device>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:8084a8ca-d11e-42eb-a97a-7164d0df9224" />
+        <resource>
+            <Observation>
+                <id value="8084a8ca-d11e-42eb-a97a-7164d0df9224" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Functional_Assessment_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:8084a8ca-d11e-42eb-a97a-7164d0df9224" />
+                </identifier>
+                <status value="final" />
+                <category>
+                    <coding>
+                        <system value="http://hl7.org/fhir/sid/icf-nl" />
+                        <code value="b730-b749" />
+                        <display value="Funktionen der Muskeln" />
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="282462008" />
+                        <display value="Ability to run (observable entity)" />
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <effectiveDateTime value="2021-06-20T12:00:00+01:00" />
+                <hasMember>
+                    <reference value="urn:uuid:f2e8c16e-baef-4132-aa8f-eefb910503fa" />
+                </hasMember>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:7c119101-1b7e-4a09-ba82-ad88d801ea38" />
+        <resource>
+            <Observation>
+                <id value="7c119101-1b7e-4a09-ba82-ad88d801ea38" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Body_Weight|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:7c119101-1b7e-4a09-ba82-ad88d801ea38" />
+                </identifier>
+                <status value="final" />
+                <category>
+                    <coding>
+                        <system value="http://terminology.hl7.org/CodeSystem/observation-category" />
+                        <code value="vital-signs" />
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="363808001" />
+                        <display value="Measured body weight (observable entity)">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Koerpergewicht (K&#246;rpergewicht)" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                    <coding>
+                        <system value="http://loinc.org" />
+                        <version value="2.71" />
+                        <code value="29463-7" />
+                        <display value="Body weight">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="K&#246;rpergewicht" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <effectiveDateTime value="2021-06-20T12:00:00+01:00" />
+                <valueQuantity>
+                    <value value="105" />
+                    <unit value="kg" />
+                    <system value="http://unitsofmeasure.org" />
+                    <code value="kg" />
+                </valueQuantity>
+                <bodySite>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20210731" />
+                        <code value="38266002" />
+                        <display value="Entire body as a whole (body structure)">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Gesamtk&#246;rper" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </bodySite>
+                <device>
+                    <reference value="urn:uuid:8307c06b-63f4-48b5-8e62-cf2669324782" />
+                </device>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:95ae8353-6805-4a81-a921-30a41ef68fc9" />
+        <resource>
+            <Observation>
+                <id value="95ae8353-6805-4a81-a921-30a41ef68fc9" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Body_Weight|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:95ae8353-6805-4a81-a921-30a41ef68fc9" />
+                </identifier>
+                <status value="final" />
+                <category>
+                    <coding>
+                        <system value="http://terminology.hl7.org/CodeSystem/observation-category" />
+                        <code value="vital-signs" />
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="784399000" />
+                        <display value="Self reported body weight (observable entity)">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Koerpergewicht (K&#246;rpergewicht)" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                    <coding>
+                        <system value="http://loinc.org" />
+                        <version value="2.71" />
+                        <code value="29463-7" />
+                        <display value="Body weight">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="K&#246;rpergewicht" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <effectiveDateTime value="2021-06-13T00:00:00+01:00" />
+                <valueQuantity>
+                    <value value="110" />
+                    <unit value="kg" />
+                    <system value="http://unitsofmeasure.org" />
+                    <code value="kg" />
+                </valueQuantity>
+                <bodySite>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20210731" />
+                        <code value="38266002" />
+                        <display value="Entire body as a whole (body structure)">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Gesamtk&#246;rper" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </bodySite>
+            </Observation>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:88ca7045-0959-46f1-9a08-5d043ebead38" />
+        <resource>
+            <Goal>
+                <id value="88ca7045-0959-46f1-9a08-5d043ebead38" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Goal_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:88ca7045-0959-46f1-9a08-5d043ebead38" />
+                </identifier>
+                <lifecycleStatus value="planned">
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                            <valueString value="Geplant" />
+                        </extension>
+                    </extension>
+                </lifecycleStatus>
+                <description>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="1055210001" />
+                        <display value="Target parameter (observable entity)" />
+                    </coding>
+                </description>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <startDate value="2021-06-01" />
+                <target>
+                    <measure>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="27113001" />
+                            <display value="Body weight (observable entity)" />
+                        </coding>
+                    </measure>
+                    <detailQuantity>
+                        <value value="-10.0" />
+                        <unit value="kg" />
+                        <system value="http://unitsofmeasure.org" />
+                        <code value="kg" />
+                    </detailQuantity>
+                    <dueDate value="2021-08-15" />
+                </target>
+                <outcomeReference>
+                    <reference value="urn:uuid:a17df8be-d470-4614-9f89-dcb66f682614" />
+                </outcomeReference>
+            </Goal>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:310abf1c-8f61-4a9e-ab27-2697c0947a2e" />
+        <resource>
+            <Device>
+                <id value="310abf1c-8f61-4a9e-ab27-2697c0947a2e" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:310abf1c-8f61-4a9e-ab27-2697c0947a2e" />
+                </identifier>
+                <definition>
+                    <reference value="urn:uuid:82269e10-8a13-4c08-9cf9-fff7698cf1d3" />
+                </definition>
+                <udiCarrier>
+                    <deviceIdentifier value="54321543214L" />
+                </udiCarrier>
+                <serialNumber value="54321" />
+                <deviceName>
+                    <name value="Fitnessuhr" />
+                    <type value="user-friendly-name">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Benutzerfreundlicher Name" />
+                            </extension>
+                        </extension>
+                    </type>
+                </deviceName>
+                <modelNumber value="54321" />
+                <type>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="702527008" />
+                        <display value="Cardiovascular monitor (physical object)" />
+                    </coding>
+                </type>
+                <version>
+                    <type>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="701834004" />
+                            <display value="Single-patient physiologic monitoring system application software (physical object)" />
+                        </coding>
+                    </type>
+                    <value value="5.3" />
+                </version>
+                <patient>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </patient>
+            </Device>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:8307c06b-63f4-48b5-8e62-cf2669324782" />
+        <resource>
+            <Device>
+                <id value="8307c06b-63f4-48b5-8e62-cf2669324782" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:8307c06b-63f4-48b5-8e62-cf2669324782" />
+                </identifier>
+                <definition>
+                    <reference value="urn:uuid:9515f3bb-8e84-45e5-b28a-220021ceba91" />
+                </definition>
+                <udiCarrier>
+                    <deviceIdentifier value="1234512345YR" />
+                </udiCarrier>
+                <serialNumber value="12345" />
+                <deviceName>
+                    <name value="K&#246;rperwaage" />
+                    <type value="user-friendly-name">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Benutzerfreundlicher Name" />
+                            </extension>
+                        </extension>
+                    </type>
+                </deviceName>
+                <modelNumber value="12345" />
+                <type>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="19892000" />
+                        <display value="Scale, device (physical object)" />
+                    </coding>
+                </type>
+                <version>
+                    <type>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="464644004" />
+                            <display value="Scale application software (physical object)" />
+                        </coding>
+                    </type>
+                    <value value="4.01" />
+                </version>
+                <patient>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </patient>
+            </Device>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:ec4e110f-8cbf-42c9-aaad-562f5e8d0f87" />
+        <resource>
+            <Device>
+                <id value="ec4e110f-8cbf-42c9-aaad-562f5e8d0f87" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_DIGA|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:ec4e110f-8cbf-42c9-aaad-562f5e8d0f87" />
+                </identifier>
+                <definition>
+                    <reference value="urn:uuid:cbe7afbf-5899-49fc-b0a3-5b71906073d5" />
+                </definition>
+                <deviceName>
+                    <name value="DiGA 2" />
+                    <type value="model-name">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Modellname" />
+                            </extension>
+                        </extension>
+                    </type>
+                </deviceName>
+                <type>
+                    <coding>
+                        <system value="http://fhir.de/CodeSystem/ifa/pzn" />
+                        <code value="12345678" />
+                    </coding>
+                </type>
+            </Device>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:82269e10-8a13-4c08-9cf9-fff7698cf1d3" />
+        <resource>
+            <DeviceDefinition>
+                <id value="82269e10-8a13-4c08-9cf9-fff7698cf1d3" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_DeviceDefinition_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:82269e10-8a13-4c08-9cf9-fff7698cf1d3" />
+                </identifier>
+                <manufacturerReference>
+                    <reference value="urn:uuid:0ca8a37b-3f17-472a-a680-217006098422" />
+                </manufacturerReference>
+                <deviceName>
+                    <name value="Fitnessuhr" />
+                    <type value="user-friendly-name">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Benutzerfreundlicher Name" />
+                            </extension>
+                        </extension>
+                    </type>
+                </deviceName>
+                <modelNumber value="54321" />
+                <type>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="49062001" />
+                        <display value="Device (physical object)" />
+                    </coding>
+                </type>
+            </DeviceDefinition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:9515f3bb-8e84-45e5-b28a-220021ceba91" />
+        <resource>
+            <DeviceDefinition>
+                <id value="9515f3bb-8e84-45e5-b28a-220021ceba91" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_DeviceDefinition_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:9515f3bb-8e84-45e5-b28a-220021ceba91" />
+                </identifier>
+                <manufacturerReference>
+                    <reference value="urn:uuid:0ca8a37b-3f17-472a-a680-217006098422" />
+                </manufacturerReference>
+                <deviceName>
+                    <name value="K&#246;rperwaage" />
+                    <type value="user-friendly-name">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Benutzerfreundlicher Name" />
+                            </extension>
+                        </extension>
+                    </type>
+                </deviceName>
+                <modelNumber value="12345" />
+                <type>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="49062001" />
+                        <display value="Device (physical object)" />
+                    </coding>
+                </type>
+            </DeviceDefinition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:cbe7afbf-5899-49fc-b0a3-5b71906073d5" />
+        <resource>
+            <DeviceDefinition>
+                <id value="cbe7afbf-5899-49fc-b0a3-5b71906073d5" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_DeviceDefinition_DIGA|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:cbe7afbf-5899-49fc-b0a3-5b71906073d5" />
+                </identifier>
+                <deviceName>
+                    <name value="DiGA 2" />
+                    <type value="model-name">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="Modellname" />
+                            </extension>
+                        </extension>
+                    </type>
+                </deviceName>
+                <type>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="706689003" />
+                        <display value="Application program software (physical object)" />
+                    </coding>
+                </type>
+            </DeviceDefinition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:a515d43d-8324-44e9-ab26-b9dd8b5ef213" />
+        <resource>
+            <Condition>
+                <id value="a515d43d-8324-44e9-ab26-b9dd8b5ef213" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Condition_Problem_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:a515d43d-8324-44e9-ab26-b9dd8b5ef213" />
+                </identifier>
+                <clinicalStatus>
+                    <coding>
+                        <system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+                        <version value="4.0.1" />
+                        <code value="resolved" />
+                        <display value="Resolved">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Behoben" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </clinicalStatus>
+                <category>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="409586006" />
+                        <display value="Complaint (finding)">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Beschwerde" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </category>
+                <severity>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="6736007" />
+                        <display value="Moderate">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="mittel" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </severity>
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="422587007" />
+                        <display value="Nausea (finding)" />
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <onsetDateTime value="2021-06-20T14:05:00+01:00" />
+                <abatementDateTime value="2021-06-20T14:05:00+01:00" />
+                <recorder>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </recorder>
+            </Condition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:b269f88d-3013-45f1-a9da-62126cd42d04" />
+        <resource>
+            <CarePlan>
+                <id value="b269f88d-3013-45f1-a9da-62126cd42d04" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_CarePlan_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:b269f88d-3013-45f1-a9da-62126cd42d04" />
+                </identifier>
+                <status value="active">
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                            <valueString value="Aktiv" />
+                        </extension>
+                    </extension>
+                </status>
+                <intent value="plan">
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                            <valueString value="Plan" />
+                        </extension>
+                    </extension>
+                </intent>
+                <subject>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </subject>
+                <goal>
+                    <reference value="urn:uuid:88ca7045-0959-46f1-9a08-5d043ebead38" />
+                </goal>
+                <activity>
+                    <detail>
+                        <code>
+                            <coding>
+                                <system value="http://snomed.info/sct" />
+                                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                                <code value="308931006" />
+                                <display value="Walking practice (regime/therapy)" />
+                            </coding>
+                        </code>
+                        <reasonCode>
+                            <coding>
+                                <system value="http://snomed.info/sct" />
+                                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                                <code value="414915002" />
+                                <display value="Obese (finding)" />
+                            </coding>
+                        </reasonCode>
+                        <goal>
+                            <reference value="urn:uuid:88ca7045-0959-46f1-9a08-5d043ebead38" />
+                        </goal>
+                        <status value="in-progress" />
+                        <doNotPerform value="true" />
+                        <scheduledPeriod>
+                            <start value="2021-06-01T00:00:00+01:00" />
+                            <end value="2021-08-15T00:00:00+01:00" />
+                        </scheduledPeriod>
+                        <quantity>
+                            <value value="6" />
+                            <unit value="km/d" />
+                            <system value="http://unitsofmeasure.org" />
+                            <code value="km/d" />
+                        </quantity>
+                    </detail>
+                </activity>
+                <note>
+                    <text value="Der Patient sollte 6km pro Tag laufen um gesund abzunehmen." />
+                </note>
+            </CarePlan>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:10be6664-6e3c-4b07-bc5b-7d5e716bc12c" />
+        <resource>
+            <Appointment>
+                <id value="10be6664-6e3c-4b07-bc5b-7d5e716bc12c" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Appointment_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:10be6664-6e3c-4b07-bc5b-7d5e716bc12c" />
+                </identifier>
+                <status value="booked" />
+                <reasonCode>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="284352003" />
+                        <display value="Obesity diet education (procedure)" />
+                    </coding>
+                </reasonCode>
+                <start value="2021-07-14T09:00:00+01:00" />
+                <end value="2021-07-14T10:00:00+01:00" />
+                <participant>
+                    <actor>
+                        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                    </actor>
+                    <status value="accepted" />
+                </participant>
+                <participant>
+                    <actor>
+                        <reference value="urn:uuid:82be1643-46fd-416a-9f77-53deb362074b" />
+                    </actor>
+                    <status value="accepted" />
+                </participant>
+            </Appointment>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:2c2d3dd8-55f9-4dd2-97d4-79d47f02857b" />
+        <resource>
+            <AllergyIntolerance>
+                <id value="2c2d3dd8-55f9-4dd2-97d4-79d47f02857b" />
+                <meta>
+                    <versionId value="1" />
+                    <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+                    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_AllergyIntolerance_Free|1.0.0" />
+                </meta>
+                <identifier>
+                    <type>
+                        <coding>
+                            <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                            <version value="2.9" />
+                            <code value="RI" />
+                            <display value="Resource identifier" />
+                        </coding>
+                    </type>
+                    <system value="urn:ietf:rfc:3986" />
+                    <value value="urn:uuid:2c2d3dd8-55f9-4dd2-97d4-79d47f02857b" />
+                </identifier>
+                <clinicalStatus>
+                    <coding>
+                        <system value="http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical" />
+                        <version value="4.0.1" />
+                        <code value="active" />
+                        <display value="Active">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Aktiv" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </clinicalStatus>
+                <verificationStatus>
+                    <coding>
+                        <system value="http://terminology.hl7.org/CodeSystem/allergyintolerance-verification" />
+                        <version value="4.0.1" />
+                        <code value="confirmed" />
+                        <display value="Confirmed">
+                            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                <extension url="content">
+                                    <valueString value="Best&#228;tigt" />
+                                </extension>
+                            </extension>
+                        </display>
+                    </coding>
+                </verificationStatus>
+                <type value="intolerance">
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                            <valueString value="Unvertr&#228;glichkeit (nicht immun-vermittelt)" />
+                        </extension>
+                    </extension>
+                </type>
+                <category value="food">
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                            <valueString value="Lebensmittel" />
+                        </extension>
+                    </extension>
+                </category>
+                <criticality value="low">
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                            <valueString value="NiedrigesRisiko" />
+                        </extension>
+                    </extension>
+                </criticality>
+                <code>
+                    <coding>
+                        <system value="http://snomed.info/sct" />
+                        <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                        <code value="102263004" />
+                        <display value="Eggs (edible) (substance)" />
+                    </coding>
+                </code>
+                <patient>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </patient>
+                <onsetAge>
+                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Stage_Life">
+                        <valueCodeableConcept>
+                            <coding>
+                                <system value="http://snomed.info/sct" />
+                                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                                <code value="263659003" />
+                                <display value="Adolescence (qualifier value)">
+                                    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                        <extension url="content">
+                                            <valueString value="Jugendlicher (Ab Beginn des 13. bis zum vollendeten 18. Lebensjahres)" />
+                                        </extension>
+                                    </extension>
+                                </display>
+                            </coding>
+                        </valueCodeableConcept>
+                    </extension>
+                </onsetAge>
+                <recorder>
+                    <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+                </recorder>
+                <reaction>
+                    <manifestation>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="422587007" />
+                            <display value="Nausea (finding)">
+                                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                                    <extension url="content">
+                                        <valueString value="&#220;belkeit" />
+                                    </extension>
+                                </extension>
+                            </display>
+                        </coding>
+                    </manifestation>
+                    <severity value="moderate">
+                        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                            <extension url="content">
+                                <valueString value="mittel" />
+                            </extension>
+                        </extension>
+                    </severity>
+                    <exposureRoute>
+                        <coding>
+                            <system value="http://snomed.info/sct" />
+                            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                            <code value="26643006" />
+                            <display value="Oral route (qualifier value)" />
+                        </coding>
+                    </exposureRoute>
+                </reaction>
+            </AllergyIntolerance>
+        </resource>
+    </entry>
+</Bundle>

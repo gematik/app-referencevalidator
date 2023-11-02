@@ -1,0 +1,34 @@
+<Invoice xmlns="http://hl7.org/fhir">
+    <id value="b69f3a6a-5b0d-4889-b64e-606765c34b0e" />
+    <meta>
+        <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung|1.2" />
+    </meta>
+    <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_ERP_TA7_Abrechnungszeitraum">
+        <valueDateTime value="2021-07-01" />
+    </extension>
+    <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_ERP_RezeptBundleReferenz">
+        <extension url="lineItem">
+            <valueReference>
+                <reference value="urn:uuid:e11baecb-5667-4c2b-a95a-e05844988c66" />
+            </valueReference>
+        </extension>
+    </extension>
+    <identifier>
+        <system value="https://fhir.gkvsv.de/NamingSystem/GKVSV_NS_Sammelrechnungsnummer" />
+        <value value="109777509-05-100621" />
+    </identifier>
+    <status value="issued" />
+    <type>
+        <coding>
+            <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_Rechnungsart" />
+            <code value="6" />
+        </coding>
+    </type>
+    <recipient>
+        <identifier>
+            <system value="http://fhir.de/NamingSystem/arge-ik/iknr" />
+            <value value="101575519" />
+        </identifier>
+    </recipient>
+    <date value="2021-07-01" />
+</Invoice>

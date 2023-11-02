@@ -1,0 +1,8 @@
+<Binary xmlns="http://hl7.org/fhir">
+    <id value="f47e00a6-66e4-4236-a999-c085113ff00c"/>
+    <meta>
+        <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_Binary|1.3"/>
+    </meta>
+    <contentType value="application/pkcs7-mime"/>
+    <data value="VmVyb3JkbnVuZ3NkYXRlbiBCZWlzcGllbCBFcnN0ZWxsdW5nIEJlaXNwaWVsIGVBYnJlY2hudW5nc2RhdGVu"/>
+</Binary>

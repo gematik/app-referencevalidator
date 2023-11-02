@@ -1,0 +1,3 @@
+de.gematik.isik-terminplanung-2.0.3:
+- in StructureDefinition-ISiKKalender.json order von Schedule.extension:KalenderName an vierter Stelle
+  - muss eigentlich an zweite Stelle

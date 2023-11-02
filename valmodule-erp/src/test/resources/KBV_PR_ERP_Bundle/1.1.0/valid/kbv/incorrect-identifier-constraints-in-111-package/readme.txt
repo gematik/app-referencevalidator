@@ -1,0 +1,1 @@
+Im 1.1.1. Package von KBV haben einige Constraints die Möglichkeit der URN-Referenzierung nicht berücksichtigt. Die Beispielinstanzen aus diesem Ordner sind zum Teil fachlich nicht korrekt, werden aber als solche aufgrund der Fehler in den Constraints nicht erkannt.

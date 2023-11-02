@@ -1,0 +1,59 @@
+<Goal xmlns="http://hl7.org/fhir">
+    <id value="88ca7045-0959-46f1-9a08-5d043ebead38" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Goal_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:88ca7045-0959-46f1-9a08-5d043ebead38" />
+    </identifier>
+    <lifecycleStatus value="planned">
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+            <extension url="content">
+                <valueString value="Geplant" />
+            </extension>
+        </extension>
+    </lifecycleStatus>
+    <description>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="1055210001" />
+            <display value="Target parameter (observable entity)" />
+        </coding>
+    </description>
+    <subject>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </subject>
+    <startDate value="2021-06-01" />
+    <target>
+        <measure>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="27113001" />
+                <display value="Body weight (observable entity)" />
+            </coding>
+        </measure>
+        <detailQuantity>
+            <value value="-10.0" />
+            <unit value="kg" />
+            <system value="http://unitsofmeasure.org" />
+            <code value="kg" />
+        </detailQuantity>
+        <dueDate value="2021-08-15" />
+    </target>
+    <outcomeReference>
+        <reference value="urn:uuid:a17df8be-d470-4614-9f89-dcb66f682614" />
+    </outcomeReference>
+</Goal>

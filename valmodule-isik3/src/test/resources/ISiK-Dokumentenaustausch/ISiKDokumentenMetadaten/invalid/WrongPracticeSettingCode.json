@@ -1,0 +1,82 @@
+{
+  "resourceType": "DocumentReference",
+  "id": "dok-beispiel-client-with-binary-jpeg-example",
+  "meta": {
+    "security": [
+      {
+        "code": "HTEST",
+        "system": "http://terminology.hl7.org/CodeSystem/v3-ActReason"
+      }
+    ],
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Dokumentenaustausch/StructureDefinition/ISiKDokumentenMetadaten"
+    ]
+  },
+  "masterIdentifier": {
+    "system": "urn:ietf:rfc:3986",
+    "value": "urn:oid:1.2.840.113556.1.8000.2554.58783.21864.3474.19410.44358.58254.41281.46340"
+  },
+  "type": {
+    "coding": [
+      {
+        "system": "http://dvmd.de/fhir/CodeSystem/kdl",
+        "code": "ED020101",
+        "display": "Fotodokumentation Operation"
+      }
+    ]
+  },
+  "status": "current",
+  "description": "Fotodokumentation Operation vom 31.12.21",
+  "subject": {
+    "reference": "Patient/PatientinMusterfrau"
+  },
+  "securityLabel": [
+    {
+      "coding": [
+        {
+          "code": "N",
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality"
+        }
+      ]
+    }
+  ],
+  "content": [
+    {
+      "attachment": {
+        "contentType": "text/plain",
+        "data": "hello world",
+        "language": "de",
+        "creation": "2020-12-31T23:50:50-05:00"
+      },
+      "format": {
+        "code": "urn:ihe:iti:xds:2017:mimeTypeSufficient",
+        "system": "http://ihe.net/fhir/ihe.formatcode.fhir/CodeSystem/formatcode",
+        "display": "mimeType Sufficient"
+      }
+    }
+  ],
+  "context": {
+    "facilityType": {
+      "coding": [
+        {
+          "code": "KHS",
+          "system": "http://ihe-d.de/CodeSystems/PatientBezogenenGesundheitsversorgung",
+          "display": "Krankenhaus"
+        }
+      ]
+    },
+    "practiceSetting": {
+      "coding": [
+        {
+          "code": "BLA",
+          "system": "http://ihe-d.de/CodeSystems/AerztlicheFachrichtungen"
+        }
+      ]
+    },
+    "encounter": [
+      {
+        "reference": "Encounter/BeispielBesuch"
+      }
+    ]
+  }
+}

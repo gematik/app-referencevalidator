@@ -1,0 +1,93 @@
+<Practitioner xmlns="http://hl7.org/fhir">
+    <id value="05bbc5bb-7a89-4d24-a1e1-1bd59b077962" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-26T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Practitioner|1.0.0" />
+    </meta>
+    <identifier>
+        <use value="official" />
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="LANR" />
+                <display value="Lifelong physician number" />
+            </coding>
+        </type>
+        <system value="https://fhir.kbv.de/NamingSystem/KBV_NS_Base_ANR" />
+        <value value="123412312" />
+    </identifier>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:05bbc5bb-7a89-4d24-a1e1-1bd59b077962" />
+    </identifier>
+    <name>
+        <use value="official" />
+        <text value="Dr. med. Michaela M&#252;ller" />
+        <family value="M&#252;ller">
+            <extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+                <valueString value="M&#252;ller" />
+            </extension>
+        </family>
+        <given value="Michaela" />
+        <prefix value="Dr. med.">
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier">
+                <valueCode value="AC" />
+            </extension>
+        </prefix>
+    </name>
+    <telecom>
+        <system value="email">
+            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                <extension url="content">
+                    <valueString value="Email" />
+                </extension>
+            </extension>
+        </system>
+        <value value="michaela@m&#252;ller.de" />
+    </telecom>
+    <telecom>
+        <system value="phone">
+            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                <extension url="content">
+                    <valueString value="Telefonnummer" />
+                </extension>
+            </extension>
+        </system>
+        <value value="030934913" />
+    </telecom>
+    <address>
+        <type value="both" />
+        <text value="M&#252;llerstra&#223;e 2, 10203 Berlin" />
+        <line value="M&#252;llerstra&#223;e 2">
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+                <valueString value="M&#252;llerstra&#223;e" />
+            </extension>
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+                <valueString value="2" />
+            </extension>
+        </line>
+        <city value="Berlin" />
+        <postalCode value="10203" />
+        <country value="D" />
+    </address>
+    <qualification>
+        <code>
+            <coding>
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_BAR2_WBO" />
+                <version value="1.16" />
+                <code value="010" />
+                <display value="FA Allgemeinmedizin" />
+            </coding>
+        </code>
+    </qualification>
+</Practitioner>

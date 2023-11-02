@@ -1,0 +1,1039 @@
+{
+  "resourceType": "StructureDefinition",
+  "url": "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription",
+  "version": "1.0.1",
+  "name": "KBV_PR_ERP_Prescription",
+  "status": "active",
+  "date": "2021-02-23",
+  "publisher": "Kassenärztliche Bundesvereinigung",
+  "fhirVersion": "4.0.1",
+  "mapping": [
+    {
+      "identity": "workflow",
+      "uri": "http://hl7.org/fhir/workflow",
+      "name": "Workflow Pattern"
+    },
+    {
+      "identity": "script10.6",
+      "uri": "http://ncpdp.org/SCRIPT10_6",
+      "name": "Mapping to NCPDP SCRIPT 10.6"
+    },
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    },
+    {
+      "identity": "w5",
+      "uri": "http://hl7.org/fhir/fivews",
+      "name": "FiveWs Pattern Mapping"
+    },
+    {
+      "identity": "v2",
+      "uri": "http://hl7.org/v2",
+      "name": "HL7 v2 Mapping"
+    }
+  ],
+  "kind": "resource",
+  "abstract": false,
+  "type": "MedicationRequest",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/MedicationRequest",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "MedicationRequest",
+        "path": "MedicationRequest",
+        "constraint": [
+          {
+            "key": "-erp-begrenzungDate",
+            "severity": "error",
+            "human": "Begrenzung der Datumsangabe auf 10 Zeichen JJJJ-MM-TT",
+            "expression": "authoredOn.toString().length()=10",
+            "source": "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription"
+          }
+        ]
+      },
+      {
+        "id": "MedicationRequest.id",
+        "path": "MedicationRequest.id",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.meta",
+        "path": "MedicationRequest.meta",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.meta.versionId",
+        "path": "MedicationRequest.meta.versionId",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.meta.lastUpdated",
+        "path": "MedicationRequest.meta.lastUpdated",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.meta.source",
+        "path": "MedicationRequest.meta.source",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.meta.profile",
+        "path": "MedicationRequest.meta.profile",
+        "min": 1,
+        "max": "1",
+        "fixedCanonical": "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription|1.0.1"
+      },
+      {
+        "id": "MedicationRequest.meta.security",
+        "path": "MedicationRequest.meta.security",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.meta.tag",
+        "path": "MedicationRequest.meta.tag",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.implicitRules",
+        "path": "MedicationRequest.implicitRules",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.language",
+        "path": "MedicationRequest.language",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.text",
+        "path": "MedicationRequest.text",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.contained",
+        "path": "MedicationRequest.contained",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.extension",
+        "path": "MedicationRequest.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "MedicationRequest.extension:Zuzahlungsstatus",
+        "path": "MedicationRequest.extension",
+        "sliceName": "Zuzahlungsstatus",
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_StatusCoPayment"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Zuzahlungsstatus.value[x]",
+        "path": "MedicationRequest.extension.value[x]",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Zuzahlungsstatus.value[x]:valueCoding",
+        "path": "MedicationRequest.extension.value[x]",
+        "sliceName": "valueCoding",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Zuzahlungsstatus.value[x]:valueCoding.system",
+        "path": "MedicationRequest.extension.value[x].system",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Zuzahlungsstatus.value[x]:valueCoding.code",
+        "path": "MedicationRequest.extension.value[x].code",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Notdienstgebuehr",
+        "path": "MedicationRequest.extension",
+        "sliceName": "Notdienstgebuehr",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_EmergencyServicesFee"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Notdienstgebuehr.value[x]",
+        "path": "MedicationRequest.extension.value[x]",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Notdienstgebuehr.value[x]:valueBoolean",
+        "path": "MedicationRequest.extension.value[x]",
+        "sliceName": "valueBoolean",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:BVG",
+        "path": "MedicationRequest.extension",
+        "sliceName": "BVG",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_BVG"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:BVG.value[x]",
+        "path": "MedicationRequest.extension.value[x]",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:BVG.value[x]:valueBoolean",
+        "path": "MedicationRequest.extension.value[x]",
+        "sliceName": "valueBoolean",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen",
+        "path": "MedicationRequest.extension",
+        "sliceName": "unfallinformationen",
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Accident"
+            ]
+          }
+        ],
+        "constraint": [
+          {
+            "key": "-erp-angabeUnfallbetrieb",
+            "severity": "error",
+            "human": "Unfallbetrieb nicht vorhanden, aber Pflicht bei Arbeitsunfall (code='2')",
+            "expression": "extension('unfallkennzeichen').valueCoding.code = '2' implies extension('unfallbetrieb').exists()",
+            "source": "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription"
+          },
+          {
+            "key": "-erp-angabeUnfalltag",
+            "severity": "error",
+            "human": "Unfalltag nicht vorhanden, aber Pflicht bei Unfall (code='1') oder Arbeitsunfall (code='2')",
+            "expression": "(extension('unfallkennzeichen').valueCoding.code = '1' or extension('unfallkennzeichen').valueCoding.code = '2') implies extension('unfalltag').exists()",
+            "source": "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription"
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension",
+        "path": "MedicationRequest.extension.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfallkennzeichen",
+        "path": "MedicationRequest.extension.extension",
+        "sliceName": "unfallkennzeichen",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfallkennzeichen.value[x]",
+        "path": "MedicationRequest.extension.extension.value[x]",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfallkennzeichen.value[x]:valueCoding",
+        "path": "MedicationRequest.extension.extension.value[x]",
+        "sliceName": "valueCoding",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfallkennzeichen.value[x]:valueCoding.system",
+        "path": "MedicationRequest.extension.extension.value[x].system",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfallkennzeichen.value[x]:valueCoding.code",
+        "path": "MedicationRequest.extension.extension.value[x].code",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfallbetrieb",
+        "path": "MedicationRequest.extension.extension",
+        "sliceName": "unfallbetrieb",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfallbetrieb.value[x]",
+        "path": "MedicationRequest.extension.extension.value[x]",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfallbetrieb.value[x]:valueString",
+        "path": "MedicationRequest.extension.extension.value[x]",
+        "sliceName": "valueString",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfalltag",
+        "path": "MedicationRequest.extension.extension",
+        "sliceName": "unfalltag",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfalltag.value[x]",
+        "path": "MedicationRequest.extension.extension.value[x]",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:unfallinformationen.extension:unfalltag.value[x]:valueDate",
+        "path": "MedicationRequest.extension.extension.value[x]",
+        "sliceName": "valueDate",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung",
+        "path": "MedicationRequest.extension",
+        "sliceName": "Mehrfachverordnung",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Multiple_Prescription"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension",
+        "path": "MedicationRequest.extension.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Kennzeichen",
+        "path": "MedicationRequest.extension.extension",
+        "sliceName": "Kennzeichen",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Kennzeichen.value[x]",
+        "path": "MedicationRequest.extension.extension.value[x]",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Kennzeichen.value[x]:valueBoolean",
+        "path": "MedicationRequest.extension.extension.valueBoolean",
+        "sliceName": "valueBoolean",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Nummerierung",
+        "path": "MedicationRequest.extension.extension",
+        "sliceName": "Nummerierung",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Nummerierung.value[x]",
+        "path": "MedicationRequest.extension.extension.value[x]",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Nummerierung.value[x]:valueRatio",
+        "path": "MedicationRequest.extension.extension.valueRatio",
+        "sliceName": "valueRatio",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Nummerierung.value[x]:valueRatio.numerator",
+        "path": "MedicationRequest.extension.extension.valueRatio.numerator",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Nummerierung.value[x]:valueRatio.numerator.value",
+        "path": "MedicationRequest.extension.extension.valueRatio.numerator.value",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Nummerierung.value[x]:valueRatio.denominator",
+        "path": "MedicationRequest.extension.extension.valueRatio.denominator",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Nummerierung.value[x]:valueRatio.denominator.value",
+        "path": "MedicationRequest.extension.extension.valueRatio.denominator.value",
+        "definition": "Das Feld dient der Kennzeichnung der Länge der Serie einer Mehrfachverordnung. Beispiel: \"4\" in \"2 von 4\"",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Zeitraum",
+        "path": "MedicationRequest.extension.extension",
+        "sliceName": "Zeitraum",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Zeitraum.value[x]",
+        "path": "MedicationRequest.extension.extension.value[x]",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Zeitraum.value[x]:valuePeriod",
+        "path": "MedicationRequest.extension.extension.valuePeriod",
+        "sliceName": "valuePeriod",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Zeitraum.value[x]:valuePeriod.start",
+        "path": "MedicationRequest.extension.extension.valuePeriod.start",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.extension:Mehrfachverordnung.extension:Zeitraum.value[x]:valuePeriod.end",
+        "path": "MedicationRequest.extension.extension.valuePeriod.end",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.identifier",
+        "path": "MedicationRequest.identifier",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.status",
+        "path": "MedicationRequest.status",
+        "fixedCode": "active",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.statusReason",
+        "path": "MedicationRequest.statusReason",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.intent",
+        "path": "MedicationRequest.intent",
+        "fixedCode": "order",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.category",
+        "path": "MedicationRequest.category",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.priority",
+        "path": "MedicationRequest.priority",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.doNotPerform",
+        "path": "MedicationRequest.doNotPerform",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.reported[x]",
+        "path": "MedicationRequest.reported[x]",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.medication[x]",
+        "path": "MedicationRequest.medication[x]",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "type",
+              "path": "$this"
+            }
+          ],
+          "rules": "closed"
+        },
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_FreeText|1.0.1",
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Compounding|1.0.1",
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_PZN|1.0.1",
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Ingredient|1.0.1"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.medication[x]:medicationReference",
+        "path": "MedicationRequest.medication[x]",
+        "sliceName": "medicationReference",
+        "min": 1,
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_FreeText|1.0.1",
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Compounding|1.0.1",
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_PZN|1.0.1",
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Ingredient|1.0.1"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.medication[x]:medicationReference.reference",
+        "path": "MedicationRequest.medication[x].reference",
+        "min": 1
+      },
+      {
+        "id": "MedicationRequest.medication[x]:medicationReference.type",
+        "path": "MedicationRequest.medication[x].type",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.medication[x]:medicationReference.identifier",
+        "path": "MedicationRequest.medication[x].identifier",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.medication[x]:medicationReference.display",
+        "path": "MedicationRequest.medication[x].display",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.subject",
+        "path": "MedicationRequest.subject",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Patient|1.0.3"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.subject.reference",
+        "path": "MedicationRequest.subject.reference",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.subject.type",
+        "path": "MedicationRequest.subject.type",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.subject.identifier",
+        "path": "MedicationRequest.subject.identifier",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.subject.display",
+        "path": "MedicationRequest.subject.display",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.encounter",
+        "path": "MedicationRequest.encounter",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.supportingInformation",
+        "path": "MedicationRequest.supportingInformation",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.authoredOn",
+        "path": "MedicationRequest.authoredOn",
+        "short": "Ausstellungsdarum",
+        "definition": "Ausstellungsdarum der Verordnung",
+        "min": 1,
+        "condition": [
+          "begrenzungDate"
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.requester",
+        "path": "MedicationRequest.requester",
+        "min": 1,
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Practitioner|1.0.3"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.requester.reference",
+        "path": "MedicationRequest.requester.reference",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.requester.type",
+        "path": "MedicationRequest.requester.type",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.requester.identifier",
+        "path": "MedicationRequest.requester.identifier",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.requester.display",
+        "path": "MedicationRequest.requester.display",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.performer",
+        "path": "MedicationRequest.performer",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.performerType",
+        "path": "MedicationRequest.performerType",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.recorder",
+        "path": "MedicationRequest.recorder",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.reasonCode",
+        "path": "MedicationRequest.reasonCode",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.reasonReference",
+        "path": "MedicationRequest.reasonReference",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.instantiatesCanonical",
+        "path": "MedicationRequest.instantiatesCanonical",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.instantiatesUri",
+        "path": "MedicationRequest.instantiatesUri",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.basedOn",
+        "path": "MedicationRequest.basedOn",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.groupIdentifier",
+        "path": "MedicationRequest.groupIdentifier",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.courseOfTherapyType",
+        "path": "MedicationRequest.courseOfTherapyType",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.insurance",
+        "path": "MedicationRequest.insurance",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Coverage|1.0.3"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.insurance.reference",
+        "path": "MedicationRequest.insurance.reference",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.insurance.type",
+        "path": "MedicationRequest.insurance.type",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.insurance.identifier",
+        "path": "MedicationRequest.insurance.identifier",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.insurance.display",
+        "path": "MedicationRequest.insurance.display",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.note",
+        "path": "MedicationRequest.note",
+        "max": "1",
+        "constraint": [
+          {
+            "key": "-erp-begrenzungText",
+            "severity": "error",
+            "human": "Die Länge der Abgeabehinweise (text) darf 160 Zeichen nicht überschreiten.",
+            "expression": "text.toString().length() <=160",
+            "source": "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription"
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.note.author[x]",
+        "path": "MedicationRequest.note.author[x]",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.note.time",
+        "path": "MedicationRequest.note.time",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.note.text",
+        "path": "MedicationRequest.note.text",
+        "short": "Abgabehinweis",
+        "definition": "Über die Dosierung hinausgehende Abgabehinweise an die Apotheke",
+        "condition": [
+          "begrenzungText"
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction",
+        "path": "MedicationRequest.dosageInstruction",
+        "max": "1",
+        "constraint": [
+          {
+            "key": "-erp-angabeDosierung",
+            "severity": "error",
+            "human": "Wenn das Dosierungskennzeichen nicht gesetzt ist, darf auch kein Text vorhanden sein.",
+            "expression": "(extension('https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_DosageFlag').empty() or extension('https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_DosageFlag').valueBoolean=false) implies text.empty()",
+            "source": "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription"
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.extension",
+        "path": "MedicationRequest.dosageInstruction.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.extension:dosierungskennzeichen",
+        "path": "MedicationRequest.dosageInstruction.extension",
+        "sliceName": "dosierungskennzeichen",
+        "max": "1",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_DosageFlag"
+            ]
+          }
+        ],
+        "condition": [
+          "eRezept-3"
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.extension:dosierungskennzeichen.value[x]",
+        "path": "MedicationRequest.dosageInstruction.extension.value[x]",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.extension:dosierungskennzeichen.value[x]:valueBoolean",
+        "path": "MedicationRequest.dosageInstruction.extension.value[x]",
+        "sliceName": "valueBoolean",
+        "definition": "Abbildung, ob eine Dosierungsanweisung in der Verordung angegeben ist\r\n\r\ntrue - Dosierung gemäß Angaben in dieser Verordnung (dosageInstruction.text)\r\nfalse - Dosieranweisung/Medikationsplan mitgegeben",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.sequence",
+        "path": "MedicationRequest.dosageInstruction.sequence",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.text",
+        "path": "MedicationRequest.dosageInstruction.text",
+        "short": "Dosieranweisung",
+        "definition": "Dosieranweisung einer Verordnung",
+        "maxLength": 60,
+        "condition": [
+          "angabeDosierung"
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.additionalInstruction",
+        "path": "MedicationRequest.dosageInstruction.additionalInstruction",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.patientInstruction",
+        "path": "MedicationRequest.dosageInstruction.patientInstruction",
+        "short": "Gebrauchsanweisung einer Rezeptur",
+        "definition": "Gebrauchsanweisung einer Rezeptur",
+        "maxLength": 60,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.timing",
+        "path": "MedicationRequest.dosageInstruction.timing",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.asNeeded[x]",
+        "path": "MedicationRequest.dosageInstruction.asNeeded[x]",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.site",
+        "path": "MedicationRequest.dosageInstruction.site",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.route",
+        "path": "MedicationRequest.dosageInstruction.route",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.method",
+        "path": "MedicationRequest.dosageInstruction.method",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.doseAndRate",
+        "path": "MedicationRequest.dosageInstruction.doseAndRate",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.maxDosePerPeriod",
+        "path": "MedicationRequest.dosageInstruction.maxDosePerPeriod",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.maxDosePerAdministration",
+        "path": "MedicationRequest.dosageInstruction.maxDosePerAdministration",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dosageInstruction.maxDosePerLifetime",
+        "path": "MedicationRequest.dosageInstruction.maxDosePerLifetime",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest",
+        "path": "MedicationRequest.dispenseRequest",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.initialFill",
+        "path": "MedicationRequest.dispenseRequest.initialFill",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.dispenseInterval",
+        "path": "MedicationRequest.dispenseRequest.dispenseInterval",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.validityPeriod",
+        "path": "MedicationRequest.dispenseRequest.validityPeriod",
+        "short": "Angabe der Einlösefristen der Verordnung",
+        "definition": "Angabe der Einlösefristen insbesondere bei einer Mehrfachverordnung",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.validityPeriod.start",
+        "path": "MedicationRequest.dispenseRequest.validityPeriod.start",
+        "short": "Beginn Einlösefrist der Verordnung",
+        "definition": "Datum des Beginns Einlösefrist der Verordnung",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.validityPeriod.end",
+        "path": "MedicationRequest.dispenseRequest.validityPeriod.end",
+        "short": "Ende Einlösefrist der Verordnung",
+        "definition": "\"Datum des letzten Einlösetages\nVom Arzt kann eine von der AmVV abweichende Einlösefrist angegeben werden.\"",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.numberOfRepeatsAllowed",
+        "path": "MedicationRequest.dispenseRequest.numberOfRepeatsAllowed",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.quantity",
+        "path": "MedicationRequest.dispenseRequest.quantity",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.quantity.value",
+        "path": "MedicationRequest.dispenseRequest.quantity.value",
+        "short": "Anzahl der verordneten Packungen",
+        "definition": "Anzahl der verordneten Packungen",
+        "min": 1,
+        "maxValueDecimal": 999,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.quantity.unit",
+        "path": "MedicationRequest.dispenseRequest.quantity.unit",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.quantity.system",
+        "path": "MedicationRequest.dispenseRequest.quantity.system",
+        "min": 1,
+        "fixedUri": "http://unitsofmeasure.org",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.quantity.code",
+        "path": "MedicationRequest.dispenseRequest.quantity.code",
+        "min": 1,
+        "fixedCode": "{Package}",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.expectedSupplyDuration",
+        "path": "MedicationRequest.dispenseRequest.expectedSupplyDuration",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.dispenseRequest.performer",
+        "path": "MedicationRequest.dispenseRequest.performer",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.substitution",
+        "path": "MedicationRequest.substitution",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.substitution.allowed[x]",
+        "path": "MedicationRequest.substitution.allowed[x]",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "type",
+              "path": "$this"
+            }
+          ],
+          "ordered": false,
+          "rules": "closed"
+        },
+        "type": [
+          {
+            "code": "boolean"
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.substitution.allowed[x]:allowedBoolean",
+        "path": "MedicationRequest.substitution.allowed[x]",
+        "sliceName": "allowedBoolean",
+        "short": "Aut idem",
+        "definition": "In diesem Feld wird angegeben ob das Arzneimittel austauschbar ist oder nicht\r\n\r\ntrue:  aut idem möglich (austauschbar)\r\nfalse: aut idem ausgeschlossen (nicht austauschbar)",
+        "min": 1,
+        "type": [
+          {
+            "code": "boolean"
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationRequest.substitution.reason",
+        "path": "MedicationRequest.substitution.reason",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.priorPrescription",
+        "path": "MedicationRequest.priorPrescription",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.detectedIssue",
+        "path": "MedicationRequest.detectedIssue",
+        "max": "0"
+      },
+      {
+        "id": "MedicationRequest.eventHistory",
+        "path": "MedicationRequest.eventHistory",
+        "max": "0"
+      }
+    ]
+  }
+}

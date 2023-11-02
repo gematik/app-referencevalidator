@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Bundle xmlns="http://hl7.org/fhir">
+	<!--
+	Die Referenzen innerhalb des Bundles sind nicht korrekt, weil die FullUrl der Composition eine URN während die section-Referenz eine relative Url ist.
+
+FullUrl ist urn:uuid:11092158-933f-450c-88f9-aa941f443687
+Reference ist Binary/PrescriptionDigest-160.000.001.811.582.27
+
+Die Auflösung ist bei dieser Konstellation nicht möglich - siehe https://www.hl7.org/fhir/bundle.html#references
+
+Der HAPI-Validator meldet dies allerdings nur als Warnung:
+
+Entry 2 matches the reference Binary/PrescriptionDigest-160.000.001.811.582.27 by type and id but it's fullUrl https://test.gematik.de/Binary/PrescriptionDigest-160.000.001.811.582.27 does not match the full target URL urn:uuid:PrescriptionDigest-160.000.001.811.582.27 by Bundle resolution rules
+	-->
+	<id value="a07ea41b-0000-0000-0003-000000000000"/>
+	<meta>
+		<profile value="http://hl7.org/fhir/StructureDefinition/Bundle" />
+	</meta>
+	<identifier>
+		<system value="https://gematik.de/fhir/NamingSystem/PrescriptionID"/>
+		<value value="160.000.001.811.582.27"/>
+	</identifier>
+	<type value="document"/>
+	<timestamp value="2022-12-01T10:24:11.699+00:00"/>
+	<link>
+		<relation value="self"/>
+		<url value="https://test.gematik.de/Task/160.000.001.811.582.27/$close/"/>
+	</link>
+	<entry>
+		<fullUrl value="urn:uuid:11092158-933f-450c-88f9-aa941f443687"/>
+		<resource>
+			<Composition>
+				<id value="11092158-933f-450c-88f9-aa941f443687"/>
+				<status value="final"/>
+				<type>
+					<coding>
+						<system value="https://gematik.de/fhir/CodeSystem/Documenttype"/>
+						<code value="3"/>
+						<display value="Receipt"/>
+					</coding>
+				</type>
+				<date value="2022-12-01T10:24:11.699+00:00"/>
+				<author>
+					<reference value="https://test.gematik.de/Device/1"/>
+				</author>
+				<title value="Quittung"/>
+				<event>
+					<period>
+						<start value="2022-12-01T05:51:14.895+00:00"/>
+						<end value="2022-12-01T10:24:11.699+00:00"/>
+					</period>
+				</event>
+				<section>
+					<entry>
+						<reference value="Binary/PrescriptionDigest-160.000.001.811.582.27"/>
+					</entry>
+				</section>
+			</Composition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="https://test.gematik.de/Device/1"/>
+		<resource>
+			<Device>
+				<id value="1"/>
+				<status value="active"/>
+				<serialNumber value="1.7.0"/>
+				<deviceName>
+					<name value="E-Rezept Fachdienst"/>
+					<type value="user-friendly-name"/>
+				</deviceName>
+				<version>
+					<value value="1.7.0"/>
+				</version>
+				<contact>
+					<system value="email"/>
+					<value value="betrieb@gematik.de"/>
+				</contact>
+			</Device>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="https://test.gematik.de/Binary/PrescriptionDigest-160.000.001.811.582.27"/>
+		<resource>
+			<Binary>
+				<id value="PrescriptionDigest-160.000.001.811.582.27"/>
+				<contentType value="application/octet-stream"/>
+				<data value="tgLgdKsMND5Nexdv0gntDUqY8YZ5HLvhywQUU9W/WJ8="/>
+			</Binary>
+		</resource>
+	</entry>
+</Bundle>

@@ -1,0 +1,152 @@
+<Invoice xmlns="http://hl7.org/fhir">
+    <id value="4f38bb87-0e68-4d6c-9eb1-c06d9d3fe87d"/>
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenEinheit|1.2"/>
+    </meta>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Zaehler">
+        <valuePositiveInt value="1"/>
+    </extension>
+    <status value="issued"/>
+    <type>
+        <coding>
+            <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-InvoiceTyp"/>
+            <code value="ZusatzdatenEinheit"/>
+        </coding>
+    </type>
+    <lineItem>
+        <sequence value="1"/>
+        <chargeItemCodeableConcept>
+            <coding>
+                <system value="http://fhir.de/CodeSystem/ifa/pzn"/>
+                <code value="unknown-code"/>
+            </coding>
+        </chargeItemCodeableConcept>
+        <priceComponent>
+            <type value="informational"/>
+            <factor value="5"/>
+            <amount>
+                <value value="0.42"/>
+                <currency value="EUR"/>
+            </amount>
+        </priceComponent>
+    </lineItem>
+    <lineItem>
+        <sequence value="2"/>
+        <chargeItemCodeableConcept>
+            <coding>
+                <system value="http://fhir.de/CodeSystem/ifa/pzn"/>
+                <code value="07474907"/>
+            </coding>
+        </chargeItemCodeableConcept>
+        <priceComponent>
+            <type value="informational"/>
+            <factor value="67"/>
+            <amount>
+                <value value="0.64"/>
+                <currency value="EUR"/>
+            </amount>
+        </priceComponent>
+    </lineItem>
+    <lineItem>
+        <sequence value="3"/>
+        <chargeItemCodeableConcept>
+            <coding>
+                <system value="http://fhir.de/CodeSystem/ifa/pzn"/>
+                <code value="02344778"/>
+            </coding>
+        </chargeItemCodeableConcept>
+        <priceComponent>
+            <type value="informational"/>
+            <factor value="31"/>
+            <amount>
+                <value value="0.05"/>
+                <currency value="EUR"/>
+            </amount>
+        </priceComponent>
+    </lineItem>
+    <lineItem>
+        <sequence value="4"/>
+        <chargeItemCodeableConcept>
+            <coding>
+                <system value="http://fhir.de/CodeSystem/ifa/pzn"/>
+                <code value="04443869"/>
+            </coding>
+        </chargeItemCodeableConcept>
+        <priceComponent>
+            <type value="informational"/>
+            <factor value="1000"/>
+            <amount>
+                <value value="1.46"/>
+                <currency value="EUR"/>
+            </amount>
+        </priceComponent>
+    </lineItem>
+    <lineItem>
+        <sequence value="5"/>
+        <chargeItemCodeableConcept>
+            <coding>
+                <system value="http://fhir.de/CodeSystem/ifa/pzn"/>
+                <code value="00537585"/>
+            </coding>
+        </chargeItemCodeableConcept>
+        <priceComponent>
+            <type value="informational"/>
+            <factor value="1000"/>
+            <amount>
+                <value value="0.91"/>
+                <currency value="EUR"/>
+            </amount>
+        </priceComponent>
+    </lineItem>
+    <lineItem>
+        <sequence value="6"/>
+        <chargeItemCodeableConcept>
+            <coding>
+                <system value="http://fhir.de/CodeSystem/ifa/pzn"/>
+                <code value="00537757"/>
+            </coding>
+        </chargeItemCodeableConcept>
+        <priceComponent>
+            <type value="informational"/>
+            <factor value="1000"/>
+            <amount>
+                <value value="0.13"/>
+                <currency value="EUR"/>
+            </amount>
+        </priceComponent>
+    </lineItem>
+    <lineItem>
+        <sequence value="7"/>
+        <chargeItemCodeableConcept>
+            <coding>
+                <system value="http://TA1.abda.de"/>
+                <code value="06460518"/>
+            </coding>
+        </chargeItemCodeableConcept>
+        <priceComponent>
+            <type value="informational"/>
+            <factor value="1000"/>
+            <amount>
+                <value value="3.50"/>
+                <currency value="EUR"/>
+            </amount>
+        </priceComponent>
+    </lineItem>
+    <lineItem>
+        <sequence value="8"/>
+        <chargeItemCodeableConcept>
+            <coding>
+                <system value="http://TA1.abda.de"/>
+                <code value="06460518"/>
+            </coding>
+        </chargeItemCodeableConcept>
+        <priceComponent>
+            <type value="informational"/>
+            <factor value="1000"/>
+            <amount>
+                <value value="8.35"/>
+                <currency value="EUR"/>
+            </amount>
+        </priceComponent>
+    </lineItem>
+</Invoice>

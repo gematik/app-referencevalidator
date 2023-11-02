@@ -1,0 +1,58 @@
+<Composition xmlns="http://hl7.org/fhir">
+    <id value="b67c14ee-758f-43b4-88a0-142a0e439681" />
+    <meta>
+        <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Sammelrechnung_Composition|1.2" />
+    </meta>
+    <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_TA7_IK_Empfaenger">
+        <valueIdentifier>
+            <system value="http://fhir.de/NamingSystem/arge-ik/iknr" />
+            <value value="101575519" />
+        </valueIdentifier>
+    </extension>
+    <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_TA7_IK_Kostentraeger">
+        <valueIdentifier>
+            <system value="http://fhir.de/NamingSystem/arge-ik/iknr" />
+            <value value="101575519" />
+        </valueIdentifier>
+    </extension>
+    <status value="final" />
+    <type>
+        <coding>
+            <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7" />
+            <code value="SR" />
+            <display value="Sammelrechnung" />
+        </coding>
+    </type>
+    <date value="2022-07-01" />
+    <author>
+        <identifier>
+            <system value="http://fhir.de/NamingSystem/arge-ik/iknr" />
+            <value value="987654321" />
+        </identifier>
+    </author>
+    <title value="elektronische Sammelrechnung" />
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7" />
+                <code value="LSR" />
+                <display value="Liste der Sammelrechnungen" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:185639a4-a106-4d60-ba4b-09091873d34e" />
+        </entry>
+    </section>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7" />
+                <code value="R" />
+                <display value="Rechnungen" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:18584890-484c-421d-9363-7b857a66285c" />
+        </entry>
+    </section>
+</Composition>

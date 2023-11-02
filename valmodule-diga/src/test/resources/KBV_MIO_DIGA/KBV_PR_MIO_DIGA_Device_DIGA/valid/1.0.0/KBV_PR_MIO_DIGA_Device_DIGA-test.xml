@@ -1,0 +1,39 @@
+<Device xmlns="http://hl7.org/fhir">
+    <id value="ec4e110f-8cbf-42c9-aaad-562f5e8d0f87" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Device_DIGA|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:ec4e110f-8cbf-42c9-aaad-562f5e8d0f87" />
+    </identifier>
+    <definition>
+        <reference value="urn:uuid:cbe7afbf-5899-49fc-b0a3-5b71906073d5" />
+    </definition>
+    <deviceName>
+        <name value="DiGA 2" />
+        <type value="model-name">
+            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                <extension url="content">
+                    <valueString value="Modellname" />
+                </extension>
+            </extension>
+        </type>
+    </deviceName>
+    <type>
+        <coding>
+            <system value="http://fhir.de/CodeSystem/ifa/pzn" />
+            <code value="12345678" />
+        </coding>
+    </type>
+</Device>

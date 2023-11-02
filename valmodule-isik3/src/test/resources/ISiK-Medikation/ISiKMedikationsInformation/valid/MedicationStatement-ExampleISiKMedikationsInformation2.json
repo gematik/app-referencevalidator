@@ -1,0 +1,45 @@
+{
+  "resourceType": "MedicationStatement",
+  "id": "ExampleISiKMedikationsInformation2",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationsInformation"
+    ]
+  },
+  "dosage": [
+    {
+      "doseAndRate": [
+        {
+          "doseQuantity": {
+            "system": "http://unitsofmeasure.org",
+            "value": 100,
+            "unit": "mg",
+            "code": "mg"
+          }
+        }
+      ],
+      "timing": {
+        "repeat": {
+          "count": 6,
+          "frequency": 1,
+          "period": 3,
+          "periodUnit": "wk"
+        }
+      }
+    }
+  ],
+  "status": "active",
+  "medicationReference": {
+    "reference": "Medication/ExampleISiKMedikament2"
+  },
+  "subject": {
+    "reference": "Patient/PatientinMusterfrau"
+  },
+  "context": {
+    "reference": "Encounter/Versorgungsstellenkontakt"
+  },
+  "effectivePeriod": {
+    "start": "2021-07-04"
+  },
+  "dateAsserted": "2021-07-03"
+}

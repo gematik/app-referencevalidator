@@ -1,0 +1,50 @@
+{
+  "resourceType": "Procedure",
+  "id": "Appendektomie",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKProzedur"
+    ]
+  },
+  "extension": [
+    {
+      "url": "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum",
+      "valueDateTime": "2020-04-23"
+    }
+  ],
+  "status": "completed",
+  "category": {
+    "coding": [
+      {
+        "code": "387713003",
+        "system": "http://snomed.info/sct",
+        "display": "Surgical procedure (procedure)"
+      }
+    ]
+  },
+  "code": {
+    "coding": [
+      {
+        "code": "80146002",
+        "system": "http://snomed.info/sct",
+        "display": "Excision of appendix (procedure)"
+      },
+      {
+        "version": "2020",
+        "code": "5-470",
+        "system": "http://fhir.de/CodeSystem/bfarm/ops",
+        "display": "Appendektomie"
+      }
+    ],
+    "text": "Entfernung des Blinddarms"
+  },
+  "subject": {
+    "reference": "Patient/PatientinMusterfrau"
+  },
+  "performedDateTime": "2020-04-23",
+  "note": [
+    {
+      "text": "Testnotiz"
+    }
+  ]
+}

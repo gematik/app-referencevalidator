@@ -1,0 +1,33 @@
+<Observation xmlns="http://hl7.org/fhir">
+    <id value="f2e8c16e-baef-4132-aa8f-eefb910503fa" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:f2e8c16e-baef-4132-aa8f-eefb910503fa" />
+    </identifier>
+    <status value="final" />
+    <code>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="282475008" />
+            <display value="Unable to run (finding)" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </subject>
+    <effectiveDateTime value="2021-06-20T08:00:00+01:00" />
+</Observation>

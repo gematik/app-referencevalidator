@@ -1,0 +1,23 @@
+<RelatedPerson xmlns="http://hl7.org/fhir">
+    <id value="05bbc5bb-7a89-4d24-a1e1-1bd59b077962" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-26T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_RelatedPerson|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:05bbc5bb-7a89-4d24-a1e1-1bd59b077962" />
+    </identifier>
+    <patient>
+        <reference value='Patient/PeterSanfsegsoos'/>
+    </patient>
+</RelatedPerson>

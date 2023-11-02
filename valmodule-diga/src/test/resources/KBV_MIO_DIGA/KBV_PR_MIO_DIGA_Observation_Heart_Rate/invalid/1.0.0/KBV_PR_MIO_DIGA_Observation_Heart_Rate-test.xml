@@ -1,0 +1,66 @@
+<Observation xmlns="http://hl7.org/fhir">
+    <id value="59c41b9f-ef59-4372-81df-2a79a66934c7" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Heart_Rate|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:59c41b9f-ef59-4372-81df-2a79a66934c7" />
+    </identifier>
+    <status value="final" />
+    <category>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/observation-category" />
+            <code value="vital-signs" />
+        </coding>
+    </category>
+    <code>
+        <coding>
+            <system value="http://loinc.org" />
+            <version value="2.71" />
+            <code value="8867-4" />
+            <display value="Heart rate">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Herzfrequenz" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="364075005" />
+            <display value="Heart rate (observable entity)">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Herzfrequenz (Herzfrequenz)" />
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </subject>
+    <effectiveDateTime value="2021-06-20T12:00:00+01:00" />
+    <valueQuantity>
+        <value value="120" />
+        <unit value="per minute" />
+        <system value="http://unitsofmeasure.org" />
+        <code value="/min" />
+    </valueQuantity>
+    <device>
+        <reference value="urn:uuid:310abf1c-8f61-4a9e-ab27-2697c0947a2e" />
+    </device>
+</Observation>

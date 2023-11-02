@@ -1,0 +1,8 @@
+<Binary xmlns="http://hl7.org/fhir">
+    <id value="PrescriptionDigest-160.123.456.789.123.58" />
+    <meta>
+        <profile value="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Digest|1.2" />
+    </meta>
+    <contentType value="application/octet-stream" />
+    <data value="1" />
+</Binary>

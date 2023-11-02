@@ -1,0 +1,68 @@
+<MedicationStatement xmlns="http://hl7.org/fhir">
+    <id value="326fec3e-37fe-11ec-8d3d-0242ac130003" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-26T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_MedicationStatement_Medication_Request_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:326fec3e-37fe-11ec-8d3d-0242ac130003" />
+    </identifier>
+    <status value="active">
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+            <extension url="content">
+                <valueString value="Aktiv" />
+            </extension>
+        </extension>
+    </status>
+    <medicationReference>
+        <reference value="urn:uuid:7a8e8102-37b7-11ec-8d3d-0242ac130003" />
+    </medicationReference>
+    <subject>
+        <reference value="urn:uuid:dca59b4e-3179-11ec-8d3d-0242ac130003" />
+    </subject>
+    <effectivePeriod>
+        <start value="2020-12-01" />
+        <end value="2020-12-01" />
+    </effectivePeriod>
+    <informationSource>
+        <reference value="urn:uuid:dca59b4e-3179-11ec-8d3d-0242ac130003" />
+    </informationSource>
+    <reasonCode>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="37796009" />
+            <display value="Migraine (disorder)" />
+        </coding>
+    </reasonCode>
+    <dosage>
+        <timing>
+            <code>
+                <coding>
+                    <system value="http://snomed.info/sct" />
+                    <version value="http://snomed.info/sct/900000000000207008/version/20210131" />
+                    <code value="3157002" />
+                    <display value="Evening (qualifier value)" />
+                </coding>
+            </code>
+        </timing>
+        <doseAndRate>
+            <doseQuantity>
+                <value value="1" />
+                <unit value="Tabletten" />
+                <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_BMP_DOSIEREINHEIT" />
+                <code value="TAB" />
+            </doseQuantity>
+        </doseAndRate>
+    </dosage>
+</MedicationStatement>

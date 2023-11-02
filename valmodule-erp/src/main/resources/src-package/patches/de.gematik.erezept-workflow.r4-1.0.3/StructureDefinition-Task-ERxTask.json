@@ -1,0 +1,469 @@
+{
+    "resourceType": "StructureDefinition",
+    "id": "4b61a23f-f8d8-45d2-9131-a5726494c3a2",
+    "meta": {
+        "lastUpdated": "2020-04-16T14:44:47.082+00:00"
+    },
+    "url": "https://gematik.de/fhir/StructureDefinition/ErxTask",
+    "version": "1.0.3",
+    "name": "Gem_erxTask",
+    "title": "Task for Management of ePrescription Workflow",
+    "status": "draft",
+    "date": "2020-04-16T14:44:44.4851338+00:00",
+    "description": "This resource manages the ePrescription workflow",
+    "fhirVersion": "4.0.1",
+    "mapping": [
+        {
+            "identity": "workflow",
+            "uri": "http://hl7.org/fhir/workflow",
+            "name": "Workflow Pattern"
+        },
+        {
+            "identity": "rim",
+            "uri": "http://hl7.org/v3",
+            "name": "RIM Mapping"
+        },
+        {
+            "identity": "w5",
+            "uri": "http://hl7.org/fhir/fivews",
+            "name": "FiveWs Pattern Mapping"
+        },
+        {
+            "identity": "v2",
+            "uri": "http://hl7.org/v2",
+            "name": "HL7 v2 Mapping"
+        }
+    ],
+    "kind": "resource",
+    "abstract": false,
+    "type": "Task",
+    "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Task",
+    "derivation": "constraint",
+    "differential": {
+        "element": [
+            {
+                "id": "Task.extension",
+                "path": "Task.extension",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "url"
+                        }
+                    ],
+                    "rules": "open"
+                }
+            },
+            {
+                "id": "Task.extension:acceptDate",
+                "path": "Task.extension",
+                "sliceName": "acceptDate",
+                "short": "Accept Date of the prescription",
+                "definition": "Date when insurance company accepts the prescription.",
+                "max": "1",
+                "type": [
+                    {
+                        "code": "Extension",
+                        "profile": [
+                            "https://gematik.de/fhir/StructureDefinition/AcceptDate"
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "Task.extension:expiryDate",
+                "path": "Task.extension",
+                "sliceName": "expiryDate",
+                "short": "Expiry Date of the Prescription",
+                "definition": "Date when the prescription is expired and can not be redeemed in the pharmacy.",
+                "max": "1",
+                "type": [
+                    {
+                        "code": "Extension",
+                        "profile": [
+                            "https://gematik.de/fhir/StructureDefinition/ExpiryDate"
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "Task.extension:flowType",
+                "path": "Task.extension",
+                "sliceName": "flowType",
+                "short": "Type of the prescription",
+                "definition": "Definies the Type of the prescription. The codesystem contains all \"Muster 16\" forms.",
+                "min": 1,
+                "max": "1",
+                "type": [
+                    {
+                        "code": "Extension",
+                        "profile": [
+                            "https://gematik.de/fhir/StructureDefinition/PrescriptionType"
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "Task.identifier",
+                "path": "Task.identifier",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "system"
+                        }
+                    ],
+                    "description": "The task ressource contains three identifier. The first one is the identifier for the ask representing one e-prescription. The other identifier are representing the patient as owner of the prescription. One is the \"Krankenversichertennummer\" wich identify each patient by his health insurance company and the other is \"Institutionskennzeichen\".",
+                    "rules": "open"
+                }
+            },
+            {
+                "id": "Task.identifier:PrescriptionID",
+                "path": "Task.identifier",
+                "sliceName": "PrescriptionID",
+                "short": "Prescription Identifier",
+                "definition": "The prescription identifier is the main identifier for the task ressource and the whole prescription workflow. This identifier is genereted by the \"E-Rezept Fachdienst\" and should not be changed manually.",
+                "min": 1,
+                "max": "1",
+                "type": [
+                    {
+                        "code": "Identifier",
+                        "profile": [
+                            "https://gematik.de/fhir/StructureDefinition/ErxPrescriptionID"
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "Task.identifier:AccessCode",
+                "path": "Task.identifier",
+                "sliceName": "AccessCode",
+                "short": "AccessCode Identifier",
+                "definition": "Generated by the \"E-Rezept Fachdienst\". This identifier is transported in every task request.",
+                "max": "1"
+            },
+            {
+                "id": "Task.identifier:AccessCode.system",
+                "path": "Task.identifier.system",
+                "min": 1,
+                "fixedUri": "https://gematik.de/fhir/NamingSystem/AccessCode"
+            },
+            {
+                "id": "Task.identifier:AccessCode.value",
+                "path": "Task.identifier.value",
+                "min": 1
+            },
+            {
+                "id": "Task.identifier:Secret",
+                "path": "Task.identifier",
+                "sliceName": "Secret",
+                "short": "Secret",
+                "max": "1"
+            },
+            {
+                "id": "Task.identifier:Secret.system",
+                "path": "Task.identifier.system",
+                "min": 1,
+                "fixedUri": "https://gematik.de/fhir/NamingSystem/Secret"
+            },
+            {
+                "id": "Task.identifier:Secret.value",
+                "path": "Task.identifier.value",
+                "min": 1
+            },
+            {
+                "id": "Task.status",
+                "path": "Task.status",
+                "mustSupport": true
+            },
+            {
+                "id": "Task.intent",
+                "path": "Task.intent",
+                "fixedCode": "order",
+                "mustSupport": true
+            },
+            {
+                "id": "Task.for",
+                "path": "Task.for",
+                "short": "Identifier of Patient (KVID)",
+                "definition": "The entity who benefits from the performance of the service specified in the task (e.g., the patient). Will be filled upon $activate-operation",
+                "mustSupport": true
+            },
+            {
+                "id": "Task.for.identifier",
+                "path": "Task.for.identifier",
+                "min": 1,
+                "type": [
+                    {
+                        "code": "Identifier",
+                        "profile": [
+                            "http://fhir.de/StructureDefinition/identifier-kvid-10"
+                        ]
+                    }
+                ],
+                "mustSupport": true
+            },
+            {
+                "id": "Task.authoredOn",
+                "path": "Task.authoredOn",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "Task.lastModified",
+                "path": "Task.lastModified",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "Task.performerType",
+                "path": "Task.performerType",
+                "definition": "The Institution in which the patient should redeem his prescription.",
+                "min": 1,
+                "mustSupport": true,
+                "binding": {
+                    "strength": "required",
+                    "valueSet": "https://gematik.de/fhir/ValueSet/Organizationtype"
+                }
+            },
+            {
+                "id": "Task.performerType.coding",
+                "path": "Task.performerType.coding",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "Task.input",
+                "path": "Task.input",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "type.coding.code"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "short": "Input Bundle",
+                "definition": "Referenz to the whole JSON-Bundle of the patient and the Health Care Provider Bundle",
+                "max": "2",
+                "mustSupport": true
+            },
+            {
+                "id": "Task.input:ePrescription",
+                "path": "Task.input",
+                "sliceName": "ePrescription",
+                "max": "1"
+            },
+            {
+                "id": "Task.input:ePrescription.type",
+                "path": "Task.input.type",
+                "mustSupport": true,
+                "binding": {
+                    "strength": "required",
+                    "valueSet": "https://gematik.de/fhir/ValueSet/Documenttype"
+                }
+            },
+            {
+                "id": "Task.input:ePrescription.type.coding",
+                "path": "Task.input.type.coding",
+                "min": 1,
+                "max": "1",
+                "mustSupport": true
+            },
+            {
+                "id": "Task.input:ePrescription.type.coding.system",
+                "path": "Task.input.type.coding.system",
+                "code": [
+                    {
+                        "system": "https://gematik.de/fhir/CodeSystem/Documenttype",
+                        "display": "Type of the Bundle"
+                    }
+                ],
+                "min": 1,
+                "fixedUri": "https://gematik.de/fhir/CodeSystem/Documenttype"
+            },
+            {
+                "id": "Task.input:ePrescription.type.coding.code",
+                "path": "Task.input.type.coding.code",
+                "min": 1,
+                "fixedCode": "1"
+            },
+            {
+                "id": "Task.input:ePrescription.value[x]",
+                "path": "Task.input.value[x]",
+                "type": [
+                    {
+                        "code": "Reference",
+                        "targetProfile": [
+                            "https://gematik.de/fhir/StructureDefinition/ErxBinary"
+                        ],
+                        "aggregation": [
+                            "referenced",
+                            "bundled"
+                        ]
+                    }
+                ],
+                "mustSupport": true
+            },
+            {
+                "id": "Task.input:ePrescription.value[x].reference",
+                "path": "Task.input.value[x].reference",
+                "min": 1,
+                "mustSupport": false
+            },
+            {
+                "id": "Task.input:ePrescription.value[x].identifier",
+                "path": "Task.input.value[x].identifier",
+                "mustSupport": false
+            },
+            {
+                "id": "Task.input:patientReceipt",
+                "path": "Task.input",
+                "sliceName": "patientReceipt",
+                "max": "1"
+            },
+            {
+                "id": "Task.input:patientReceipt.type",
+                "path": "Task.input.type",
+                "mustSupport": true,
+                "binding": {
+                    "strength": "required",
+                    "valueSet": "https://gematik.de/fhir/CodeSystem/Documenttype"
+                }
+            },
+            {
+                "id": "Task.input:patientReceipt.type.coding",
+                "path": "Task.input.type.coding",
+                "min": 1,
+                "max": "1",
+                "mustSupport": true
+            },
+            {
+                "id": "Task.input:patientReceipt.type.coding.system",
+                "path": "Task.input.type.coding.system",
+                "code": [
+                    {
+                        "system": "https://gematik.de/fhir/CodeSystem/Documenttype",
+                        "display": "Type of the Bundle"
+                    }
+                ],
+                "min": 1,
+                "fixedUri": "https://gematik.de/fhir/CodeSystem/Documenttype"
+            },
+            {
+                "id": "Task.input:patientReceipt.type.coding.code",
+                "path": "Task.input.type.coding.code",
+                "min": 1,
+                "fixedCode": "2"
+            },
+            {
+                "id": "Task.input:patientReceipt.value[x]",
+                "path": "Task.input.value[x]",
+                "type": [
+                    {
+                        "code": "Reference",
+                        "targetProfile": [
+                            "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle"
+                        ],
+                        "aggregation": [
+                            "referenced",
+                            "bundled"
+                        ]
+                    }
+                ],
+                "mustSupport": true
+            },
+            {
+                "id": "Task.input:patientReceipt.value[x].reference",
+                "path": "Task.input.value[x].reference",
+                "min": 1,
+                "mustSupport": false
+            },
+            {
+                "id": "Task.input:patientReceipt.value[x].identifier",
+                "path": "Task.input.value[x].identifier",
+                "mustSupport": false
+            },
+            {
+                "id": "Task.output",
+                "path": "Task.output",
+                "code": [
+                    {
+                        "system": "https://gematik.de/fhir/CodeSystem/Flowtype",
+                        "userSelected": true
+                    }
+                ],
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "type.coding.code"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "short": "Output Bundle",
+                "definition": "Referenz to the Bundle wich represent the receipt.",
+                "max": "1",
+                "mustSupport": true
+            },
+            {
+                "id": "Task.output:receipt",
+                "path": "Task.output",
+                "sliceName": "receipt",
+                "max": "1"
+            },
+            {
+                "id": "Task.output:receipt.type",
+                "path": "Task.output.type",
+                "binding": {
+                    "strength": "required",
+                    "valueSet": "https://gematik.de/fhir/CodeSystem/Documenttype"
+                }
+            },
+            {
+                "id": "Task.output:receipt.type.coding",
+                "path": "Task.output.type.coding",
+                "min": 1,
+                "max": "1",
+                "mustSupport": true
+            },
+            {
+                "id": "Task.output:receipt.type.coding.system",
+                "path": "Task.output.type.coding.system",
+                "min": 1,
+                "fixedUri": "https://gematik.de/fhir/CodeSystem/Documenttype"
+            },
+            {
+                "id": "Task.output:receipt.type.coding.code",
+                "path": "Task.output.type.coding.code",
+                "min": 1,
+                "fixedCode": "3"
+            },
+            {
+                "id": "Task.output:receipt.value[x]",
+                "path": "Task.output.value[x]",
+                "type": [
+                    {
+                        "code": "Reference",
+                        "targetProfile": [
+                            "https://gematik.de/fhir/StructureDefinition/ErxReceipt"
+                        ],
+                        "aggregation": [
+                            "referenced",
+                            "bundled"
+                        ]
+                    }
+                ],
+                "mustSupport": true
+            },
+            {
+                "id": "Task.output:receipt.value[x].reference",
+                "path": "Task.output.value[x].reference",
+                "min": 1,
+                "mustSupport": false
+            }
+        ]
+    }
+}

@@ -1,0 +1,306 @@
+version: "0.1"
+errorOnUnknownProfile: "false"
+anyExtensionsAllowed: "true"
+
+dependencyLists:
+  de.gematik.isik-basismodul-3.0.0:
+    packages:
+      - "de.gematik.isik-basismodul-3.0.0.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz" # Warning!!! Missing dependency declaration in original package
+
+  de.gematik.isik-medikation-3.0.0:
+    packages:
+      - "de.gematik.isik-medikation-3.0.0.tgz"
+      - "de.medizininformatikinitiative.kerndatensatz.medikation-1.0.11.tgz"
+      - "hl7.fhir.uv.ips-1.0.0.tgz"
+      - "de.gematik.isik-basismodul-3.0.0.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz"
+
+  de.gematik.isik-terminplanung-3.0.1:
+    packages:
+      - "de.gematik.isik-terminplanung-3.0.1.tgz"
+      - "de.gematik.isik-basismodul-3.0.0.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz"
+    validationMessageTransformations:
+      - severityLevelFrom: "error"
+        severityLevelTo: "information"
+        locatorString: "Appointment.participant:AkteurPatient"
+        messageId: "Validation_VAL_Profile_Minimum"
+
+  de.gematik.isik-vitalparameter-3.0.0:
+    packages:
+      - "de.gematik.isik-vitalparameter-3.0.0.tgz"
+      - "de.gematik.isik-basismodul-3.0.0.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz"
+
+  de.gematik.isik-dokumentenaustausch-3.0.0:
+    patches:
+      - "IHEXDSpracticeSettingCodeNonDoctoral.xml" # cf. https://github.com/hl7germany/de.ihe-d.terminology/tree/1748317eb805d8092bc91eb9558bd8b67645d0b6/terminologie/ValueSets/3.0
+      - "ValueSet-1.2.276.0.76.11.69--20190405083559.xml" # cf. https://github.com/hl7germany/de.ihe-d.terminology/tree/1748317eb805d8092bc91eb9558bd8b67645d0b6/terminologie/ValueSets/3.0
+    packages:
+      - "de.gematik.isik-dokumentenaustausch-3.0.0.tgz"
+      - "de.gematik.isik-basismodul-3.0.0.tgz"
+      - "ihe.iti.mhd-4.2.0.tgz"
+      - "dvmd.kdl.r4.2022-2022.1.2.tgz"
+      - "de.basisprofil.r4-1.4.0.tgz"
+      - "kbv.basis-1.2.0.tgz"
+    validationMessageTransformations:
+      - severityLevelFrom: "error"
+        severityLevelTo: "information"
+        locatorString: "urn:ihe:iti:xds:2017:mimeTypeSufficient"
+        messageId: "Terminology_TX_Confirm_4a"
+
+
+ignoredCodeSystems:
+  - "http://snomed.info/sct"
+  - "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+  - "http://fhir.de/CodeSystem/bfarm/atc"
+  - "http://fhir.de/CodeSystem/bfarm/ops"
+
+ignoredValueSets:
+  - "https://gematik.de/fhir/isik/v3/Basismodul/ValueSet/ProzedurenCodesSCT" # Erfordert eine Expansion von SNOMED-CT (aktuell nicht implementiert)
+  - "https://gematik.de/fhir/isik/v3/Basismodul/ValueSet/DiagnosesSCT"
+  - "https://gematik.de/fhir/isik/v3/Basismodul/ValueSet/ProzedurenKategorieSCT"
+  - "https://gematik.de/fhir/isik/v3/Terminplanung/ValueSet/ISiKTerminPriority" # Erfordert eine Expansion von SNOMED-CT (aktuell nicht implementiert)
+  - "http://fhir.de/ValueSet/bfarm/ops" # Das Code System ist als FHIR nicht vorhanden
+  - "https://gematik.de/fhir/isik/v3/Medikation/ValueSet/SctRouteOfAdministration"
+
+
+supportedProfiles:
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKAbrechnungsfall":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKAngehoeriger":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKBerichtBundle":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKBerichtSubSysteme":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKBinary":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKCodeSystem":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKDiagnose":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKKontaktGesundheitseinrichtung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKPatient":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKPersonImGesundheitsberuf":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKProzedur":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKValueSet":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKVersicherungsverhaeltnisGesetzlich":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKVersicherungsverhaeltnisSelbstzahler":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-basismodul-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Dokumentenaustausch/StructureDefinition/ISiKDokumentenMetadaten":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-dokumentenaustausch-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Dokumentenaustausch/StructureDefinition/ISiKDokumentenSuchergebnisse":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-dokumentenaustausch-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikament":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationTransaction":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationTransactionResponse":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationsInformation":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationsListe":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationsVerabreichung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationsVerordnung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-medikation-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/Terminplanung/StructureDefinition/ISiKKalender":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung-3.0.1"
+
+  "https://gematik.de/fhir/isik/v3/Terminplanung/StructureDefinition/ISiKMedizinischeBehandlungseinheit":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung-3.0.1"
+
+  "https://gematik.de/fhir/isik/v3/Terminplanung/StructureDefinition/ISiKNachricht":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung-3.0.1"
+
+  "https://gematik.de/fhir/isik/v3/Terminplanung/StructureDefinition/ISiKTermin":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung-3.0.1"
+
+  "https://gematik.de/fhir/isik/v3/Terminplanung/StructureDefinition/ISiKTerminKontaktMitGesundheitseinrichtung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung-3.0.1"
+
+  "https://gematik.de/fhir/isik/v3/Terminplanung/StructureDefinition/ISiKTerminblock":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-terminplanung-3.0.1"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKAtemfrequenz":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKBlutdruck":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKEkg":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKGCS":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKHerzfrequenz":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKKoerpergewicht":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKKoerpergroesse":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKKoerpertemperatur":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKKopfumfang":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"
+
+  "https://gematik.de/fhir/isik/v3/VitalparameterUndKoerpermasze/StructureDefinition/ISiKSauerstoffsaettigung":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.isik-vitalparameter-3.0.0"

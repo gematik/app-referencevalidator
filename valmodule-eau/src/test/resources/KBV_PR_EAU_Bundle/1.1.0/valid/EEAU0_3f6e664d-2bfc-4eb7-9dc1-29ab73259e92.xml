@@ -1,0 +1,800 @@
+<!-- Erstbescheinigung - AOK Rheinland/Hamburg - Hausarzt mit Telematik-ID -->
+<Bundle xmlns="http://hl7.org/fhir">
+	<id value="3f6e664d-2bfc-4eb7-9dc1-29ab73259e92" />
+    <meta>
+		<lastUpdated value="2022-09-29T12:30:02Z"/>	
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Bundle|1.1.0" />
+    </meta>
+	<identifier>
+		<system value="urn:ietf:rfc:3986" />
+		<value value="urn:uuid:6c250c80-ca95-5b8d-bfba-1ebdc7ca4b29" />
+	</identifier>
+	<type value="document" />
+	<timestamp value="2022-09-29T12:30:02Z"/>	
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Composition/edb656ba-671c-40d7-9161-b8f8c2365297" />
+		<resource>
+			<Composition xmlns="http://hl7.org/fhir">
+				<id value="edb656ba-671c-40d7-9161-b8f8c2365297" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Composition|1.1.0" />
+				</meta>
+				<extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_FOR_Legal_basis"> 
+					<valueCoding> 
+						<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_STATUSKENNZEICHEN" />
+						<code value="01" />
+					</valueCoding>
+				</extension>
+				<status value="final" />
+				<type>
+					<coding>
+						<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_EAU_AU_Type" />
+						<code value="ERST" />
+					</coding>
+					<coding>
+						<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_FORMULAR_ART" />
+						<code value="e010" />
+					</coding>
+				</type>
+				<subject>
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</subject>
+				<date value="2022-09-29"/>
+				<author>
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+					<type value="Practitioner" />
+				</author>
+				<author>
+					<type value="Device" />
+					<identifier>
+						<system value="https://fhir.kbv.de/NamingSystem/KBV_NS_FOR_Pruefnummer" />
+						<value value="KBV-Pruefnummer" />
+					</identifier>
+				</author>
+				<title value="Arbeitsunfähigkeit" />
+				<attester>
+					<mode value="legal" />
+					<party>
+						<reference value="Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+					</party>
+				</attester>
+				<custodian>
+					<reference value="Organization/cf042e44-086a-4d51-9c77-172f9a972e3b" />
+				</custodian>
+				<!-- Referenz auf Condition_ICD 1 -->
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="ICD" />
+						</coding>
+					</code>
+					<entry>
+						<!-- Referenz auf Condition_ICD -->
+						<reference value="Condition/a246b026-c47c-4257-abed-9887ed7996eb" />
+					</entry>
+				</section>
+				<!-- Referenz auf Condition_ICD 2 -->
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="ICD" />
+						</coding>
+					</code>
+					<entry>
+						<!-- Referenz auf Condition_ICD -->
+						<reference value="Condition/854ff3b2-f0ca-41f9-9bd1-0204f51a847e" />
+					</entry>
+				</section>
+				<!-- Referenz auf Condition_ICD 3 -->
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="ICD" />
+						</coding>
+					</code>
+					<entry>
+						<!-- Referenz auf Condition_ICD -->
+						<reference value="Condition/065b2388-e4da-40ac-a459-2f392a0a41d9" />
+					</entry>
+				</section>
+				<!-- Referenz auf Condition_ICD 4 -->
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="ICD" />
+						</coding>
+					</code>
+					<entry>
+						<!-- Referenz auf Condition_ICD -->
+						<reference value="Condition/bc96a462-2ecf-4c63-9b22-bc02bb8f1155" />
+					</entry>
+				</section>
+				<!-- Referenz auf Condition_ICD 5 -->
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="ICD" />
+						</coding>
+					</code>
+					<entry>
+						<!-- Referenz auf Condition_ICD -->
+						<reference value="Condition/0d27fa35-55d9-48d0-b42e-d3bb3f85edfb" />
+					</entry>
+				</section>
+				<!-- Referenz auf Condition_ICD 6 -->
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="ICD" />
+						</coding>
+					</code>
+					<entry>
+						<!-- Referenz auf Condition_ICD -->
+						<reference value="Condition/35a2833d-0cbd-49d4-86f8-c97a64154890" />
+					</entry>
+				</section>
+				<!-- Referenz auf Condition_ICD Text -->
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="ICD_Text" />
+						</coding>
+					</code>
+					<entry>
+						<!-- Referenz auf Condition_ICD Text-->
+						<reference value="Condition/2902efb7-5227-4c43-aee9-34d4a25add21" />
+					</entry>
+				</section>
+				<!-- Referenz auf Condition_AU -->
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="AU_Condition" />
+						</coding>
+					</code>
+					<entry>
+						<!-- Referenz auf Condition_AU -->
+						<reference value="Condition/2f8638b4-cf33-4afe-bdbc-8477b3cc1bac" />
+					</entry>
+				</section>
+				<!-- Referenz auf Krankenversicherungsverhältnis -->
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="Coverage" />
+						</coding>
+					</code>
+					<entry>
+							<!--	Referenz auf Krankenversicherungsverhaeltnis  -->
+						<reference value="Coverage/1b1ffb6e-eb05-43d7-87eb-e7818fe9661a" />
+					</entry>
+				</section>
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Section_Type" />
+							<code value="FOR_PractitionerRole" />
+						</coding>
+					</code>
+					<entry>
+						<!-- Referenz auf ASV-Teamnummer  -->
+						<reference value="PractitionerRole/cfa278d2-0b57-4889-a6a9-d3ff59983107" />
+					</entry>
+				</section>
+			</Composition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+		<resource>
+			<Patient xmlns="http://hl7.org/fhir">
+				<id value="9774f67f-a238-4daf-b4e6-679deeef3811" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Patient|1.1.0" />
+				</meta>
+				<identifier>
+					<type>
+						<coding>
+							<system value="http://fhir.de/CodeSystem/identifier-type-de-basis" />
+							<code value="GKV" />
+						</coding>
+					</type>
+					<system value="http://fhir.de/sid/gkv/kvid-10" />
+					<value value="X234567890" />
+				</identifier>
+				<name>
+					<use value="official" />
+					<family value="Königsstein">
+						<extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+							<valueString value="Königsstein" />
+						</extension>
+					</family>
+					<given value="Ludger" />
+				</name>
+				<birthDate value="1935-06-22" />
+				<address>
+					<type value="both" />
+					<line value="Musterstr. 1">
+						<extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+							<valueString value="1" />
+						</extension>
+						<extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+							<valueString value="Musterstr." />
+						</extension>
+					</line>
+					<city value="Berlin" />
+					<postalCode value="10623" />
+				</address>
+			</Patient>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+		<resource>
+			<Practitioner xmlns="http://hl7.org/fhir">
+				<id value="20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Practitioner|1.1.0" />
+				</meta>
+				<identifier>
+					<type>
+						<coding>
+							<system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+							<code value="LANR" />
+						</coding>
+					</type>	
+					<system value="https://fhir.kbv.de/NamingSystem/KBV_NS_Base_ANR" />
+					<value value="838382202" />
+				</identifier>
+				<identifier>
+					<type>
+						<coding>
+							<system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+							<code value="PRN" />
+						</coding>
+					</type>	
+					<system value="https://gematik.de/fhir/sid/telematik-id" />
+					<value value="1-838382202" />
+				</identifier>
+				<name>
+					<use value="official" />
+					<family value="Topp-Glücklich">
+						<extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+							<valueString value="Topp-Glücklich" />
+						</extension>
+					</family>
+					<given value="Hans" />
+					<prefix value="Dr. med.">
+						<extension url="http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier">
+							<valueCode value="AC" />
+						</extension>
+					</prefix>
+				</name>
+				<qualification>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Qualification_Type" />
+							<code value="00" />
+						</coding>
+					</code>
+				</qualification>
+				<qualification>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Berufsbezeichnung" />
+							<code value="Berufsbezeichnung" />
+						</coding>
+						<text value="Hausarzt" />
+					</code>
+				</qualification>
+			</Practitioner>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/PractitionerRole/cfa278d2-0b57-4889-a6a9-d3ff59983107" />
+		<resource>
+			<PractitionerRole xmlns="http://hl7.org/fhir">
+				<id value="cfa278d2-0b57-4889-a6a9-d3ff59983107" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_PractitionerRole|1.1.0" />
+				</meta>
+				<practitioner>
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				</practitioner>
+				<organization>
+					<identifier>
+						<system value="http://fhir.de/NamingSystem/asv/teamnummer" />
+						<value value="001234567" />
+					</identifier>
+				</organization>
+			</PractitionerRole>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+		<resource>
+			<Practitioner xmlns="http://hl7.org/fhir">
+				<id value="cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Practitioner|1.1.0" />
+				</meta>
+				<name>
+					<use value="official" />
+					<family value="Fischer">
+						<extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+							<valueString value="Fischer" />
+						</extension>
+					</family>
+					<given value="Alexander" />
+				</name>
+				<qualification>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Qualification_Type" />
+							<code value="04" />
+						</coding>
+					</code>
+				</qualification>
+				<qualification>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Berufsbezeichnung" />
+							<code value="Berufsbezeichnung" />
+						</coding>
+						<text value="Facharzt für Innere Medizin" />
+					</code>
+				</qualification>
+				<qualification>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/NamingSystem/KBV_NS_FOR_Fachgruppennummer_ASV"/>
+							<code value="555555472"/>
+						</coding>
+					</code>
+				</qualification>
+			</Practitioner>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Organization/cf042e44-086a-4d51-9c77-172f9a972e3b" />
+		<resource>
+			<Organization xmlns="http://hl7.org/fhir">
+				<id value="cf042e44-086a-4d51-9c77-172f9a972e3b" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Organization|1.1.0" />
+				</meta>
+				<identifier>
+					<type>
+						<coding>
+							<system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+							<code value="BSNR" />
+						</coding>
+					</type>	
+					<system value="https://fhir.kbv.de/NamingSystem/KBV_NS_Base_BSNR" />
+					<value value="031234567" />
+				</identifier>
+				<identifier>
+					<type>
+						<coding>
+							<system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+							<code value="PRN" />
+						</coding>
+					</type>	
+					<system value="https://gematik.de/fhir/sid/telematik-id" />
+					<value value="1-031234567" />
+				</identifier>
+				<name value="Hausarztpraxis Dr. Topp-Glücklich" />
+				<telecom>
+					<system value="phone" />
+					<value value="0301234567" />
+				</telecom>
+				<address>
+					<type value="both" />
+					<line value="Musterstr. 2">
+						<extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+							<valueString value="2" />
+						</extension>
+						<extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+							<valueString value="Musterstr." />
+						</extension>
+					</line>
+					<city value="Berlin" />
+					<postalCode value="10623" />
+				</address>
+			</Organization>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Condition/2f8638b4-cf33-4afe-bdbc-8477b3cc1bac" />
+		<resource>
+			<Condition xmlns="http://hl7.org/fhir">
+				<id value="2f8638b4-cf33-4afe-bdbc-8477b3cc1bac" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_AU|1.1.0" />
+				</meta>
+				<extension url="http://hl7.org/fhir/StructureDefinition/condition-assertedDate">
+					<valueDateTime value="2022-09-29" />
+				</extension>
+				<clinicalStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+						<code value="active" />
+					</coding>
+				</clinicalStatus>
+				<verificationStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+						<code value="confirmed" />
+					</coding>
+				</verificationStatus>
+				<code> 
+					<coding>
+						<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_FHIR_DOKUMENTTYPE" />
+						<code value="eAU" />
+					</coding>
+				</code>
+				<subject> 
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</subject>
+				<onsetPeriod>
+					<start value="2022-09-29" />
+					<end value="2022-10-06" />
+				</onsetPeriod>
+				<asserter> 
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				</asserter>
+			</Condition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Coverage/1b1ffb6e-eb05-43d7-87eb-e7818fe9661a" />
+		<resource>
+			<Coverage xmlns="http://hl7.org/fhir">
+				<id value="1b1ffb6e-eb05-43d7-87eb-e7818fe9661a" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Coverage|1.1.0" />
+				</meta>
+				<extension url="http://fhir.de/StructureDefinition/gkv/besondere-personengruppe">
+					<valueCoding>
+						<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_PERSONENGRUPPE" />
+						<code value="00" />
+					</valueCoding>
+				</extension>
+				<extension url="http://fhir.de/StructureDefinition/gkv/dmp-kennzeichen">
+					<valueCoding>
+						<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_DMP" />
+						<code value="00" />
+					</valueCoding>
+				</extension>
+				<extension url="http://fhir.de/StructureDefinition/gkv/wop">
+					<valueCoding>
+						<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ITA_WOP" />
+						<code value="03" />
+					</valueCoding>
+				</extension>
+				<extension url="http://fhir.de/StructureDefinition/gkv/versichertenart">
+					<valueCoding>
+						<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_VERSICHERTENSTATUS" />
+						<code value="1" />
+					</valueCoding>
+				</extension>
+				<status value="active" />
+				<type> 
+					<coding>
+						<system value="http://fhir.de/CodeSystem/versicherungsart-de-basis" />
+						<code value="GKV"/>
+					</coding>
+				</type>
+				<beneficiary> 
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</beneficiary>
+				<payor>
+					<identifier>
+						<system value="http://fhir.de/sid/arge-ik/iknr" />
+						<value value="104212059" />
+					</identifier>
+					<display value="AOK Rheinland/Hamburg" />
+				</payor>
+			</Coverage>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Condition/a246b026-c47c-4257-abed-9887ed7996eb" />
+		<resource>
+			<Condition xmlns="http://hl7.org/fhir">
+				<id value="a246b026-c47c-4257-abed-9887ed7996eb" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_ICD|1.1.0" />
+				</meta>
+				<clinicalStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+						<code value="active" />
+					</coding>
+				</clinicalStatus>
+				<verificationStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+						<code value="confirmed" />
+					</coding>
+				</verificationStatus>
+				<code> 
+					<coding>
+						<extension url="http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit">
+							<valueCoding>
+								<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT" />
+								<code value="G" />
+							</valueCoding> 
+						</extension>
+						<system value="http://fhir.de/CodeSystem/bfarm/icd-10-gm" />
+						<version value="2022" />
+						<code value="E10.20" />
+					</coding>
+				</code>
+				<subject> 
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</subject>
+				<asserter> 
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				</asserter>
+			</Condition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Condition/854ff3b2-f0ca-41f9-9bd1-0204f51a847e" />
+		<resource>
+			<Condition xmlns="http://hl7.org/fhir">
+				<id value="854ff3b2-f0ca-41f9-9bd1-0204f51a847e" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_ICD|1.1.0" />
+				</meta>
+				<clinicalStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+						<code value="active" />
+					</coding>
+				</clinicalStatus>
+				<verificationStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+						<code value="confirmed" />
+					</coding>
+				</verificationStatus>
+				<code> 
+					<coding>
+						<extension url="http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit">
+							<valueCoding>
+								<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT" />
+								<code value="G" />
+							</valueCoding> 
+						</extension>
+						<system value="http://fhir.de/CodeSystem/bfarm/icd-10-gm" />
+						<version value="2022" />
+						<code value="N08.3" />
+					</coding>
+				</code>
+				<subject> 
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</subject>
+				<asserter> 
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				</asserter>
+			</Condition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Condition/065b2388-e4da-40ac-a459-2f392a0a41d9" />
+		<resource>
+			<Condition xmlns="http://hl7.org/fhir">
+				<id value="065b2388-e4da-40ac-a459-2f392a0a41d9" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_ICD|1.1.0" />
+				</meta>
+				<clinicalStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+						<code value="active" />
+					</coding>
+				</clinicalStatus>
+				<verificationStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+						<code value="confirmed" />
+					</coding>
+				</verificationStatus>
+				<code> 
+					<coding>
+						<extension url="http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit">
+							<valueCoding>
+								<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT" />
+								<code value="G" />
+							</valueCoding> 
+						</extension>
+						<extension url="http://fhir.de/StructureDefinition/seitenlokalisation">
+							<valueCoding>
+								<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION" />
+								<code value="L" />
+							</valueCoding> 
+						</extension>
+						<system value="http://fhir.de/CodeSystem/bfarm/icd-10-gm" />
+						<version value="2022" />
+						<code value="S42.3" />
+					</coding>
+				</code>
+				<subject> 
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</subject>
+				<asserter> 
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				</asserter>
+			</Condition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Condition/bc96a462-2ecf-4c63-9b22-bc02bb8f1155" />
+		<resource>
+			<Condition xmlns="http://hl7.org/fhir">
+				<id value="bc96a462-2ecf-4c63-9b22-bc02bb8f1155" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_ICD|1.1.0" />
+				</meta>
+				<clinicalStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+						<code value="active" />
+					</coding>
+				</clinicalStatus>
+				<verificationStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+						<code value="confirmed" />
+					</coding>
+				</verificationStatus>
+				<code> 
+					<coding>
+						<extension url="http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit">
+							<valueCoding>
+								<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT" />
+								<code value="G" />
+							</valueCoding> 
+						</extension>
+						<extension url="http://fhir.de/StructureDefinition/seitenlokalisation">
+							<valueCoding>
+								<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION" />
+								<code value="R" />
+							</valueCoding> 
+						</extension>
+						<system value="http://fhir.de/CodeSystem/bfarm/icd-10-gm" />
+						<version value="2022" />
+						<code value="S82.28" />
+					</coding>
+				</code>
+				<subject> 
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</subject>
+				<asserter> 
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				</asserter>
+			</Condition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Condition/0d27fa35-55d9-48d0-b42e-d3bb3f85edfb" />
+		<resource>
+			<Condition xmlns="http://hl7.org/fhir">
+				<id value="0d27fa35-55d9-48d0-b42e-d3bb3f85edfb" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_ICD|1.1.0" />
+				</meta>
+				<clinicalStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+						<code value="active" />
+					</coding>
+				</clinicalStatus>
+				<verificationStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+						<code value="provisional" />
+					</coding>
+				</verificationStatus>
+				<code> 
+					<coding>
+						<extension url="http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit">
+							<valueCoding>
+								<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT" />
+								<code value="V" />
+							</valueCoding> 
+						</extension>
+						<system value="http://fhir.de/CodeSystem/bfarm/icd-10-gm" />
+						<version value="2022" />
+						<code value="Q01.9" />
+					</coding>
+				</code>
+				<subject> 
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</subject>
+				<asserter> 
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				</asserter>
+			</Condition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Condition/35a2833d-0cbd-49d4-86f8-c97a64154890" />
+		<resource>
+			<Condition xmlns="http://hl7.org/fhir">
+				<id value="35a2833d-0cbd-49d4-86f8-c97a64154890" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_ICD|1.1.0" />
+				</meta>
+				<clinicalStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+						<code value="resolved" />
+					</coding>
+				</clinicalStatus>
+				<verificationStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+						<code value="confirmed" />
+					</coding>
+				</verificationStatus>
+				<code> 
+					<coding>
+						<extension url="http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit">
+							<valueCoding>
+								<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT" />
+								<code value="Z" />
+							</valueCoding> 
+						</extension>
+						<system value="http://fhir.de/CodeSystem/bfarm/icd-10-gm" />
+						<version value="2022" />
+						<code value="S22.32" />
+					</coding>
+				</code>
+				<subject> 
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</subject>
+				<asserter> 
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				</asserter>
+			</Condition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Condition/2902efb7-5227-4c43-aee9-34d4a25add21" />
+		<resource>
+			<Condition xmlns="http://hl7.org/fhir">
+				<id value="2902efb7-5227-4c43-aee9-34d4a25add21" />
+				<meta>
+					<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_Text|1.1.0" />
+				</meta>
+				<verificationStatus>
+					<coding>
+						<system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+						<code value="confirmed" />
+					</coding>
+				</verificationStatus>
+				<code> 
+					<text value="Ein sehr kranker Patient" />
+				</code>
+				<subject> 
+					<reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+				</subject>
+				<asserter> 
+					<reference value="Practitioner/cb7558e2-0fdf-4107-93f6-07f13f39e067" />
+				</asserter>
+			</Condition>
+		</resource>
+	</entry>
+</Bundle>

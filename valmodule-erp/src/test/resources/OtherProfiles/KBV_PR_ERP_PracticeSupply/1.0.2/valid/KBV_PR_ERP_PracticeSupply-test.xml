@@ -1,0 +1,35 @@
+<SupplyRequest xmlns="http://hl7.org/fhir">
+    <id value="3dd54b78-65e2-4ac2-8e65-66b769ad1d95" />
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_PracticeSupply|1.0.2" />
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_PracticeSupply_Payor">
+        <extension url="ik">
+            <valueIdentifier>
+                <system value="http://fhir.de/NamingSystem/arge-ik/iknr" />
+                <value value="123456789" />
+            </valueIdentifier>
+        </extension>
+        <extension url="name">
+            <valueString value="Dummy-KostentrĂ&#164;ger" />
+        </extension>
+        <extension url="kostentraegertyp">
+            <valueCoding>
+                <system value="http://fhir.de/CodeSystem/versicherungsart-de-basis" />
+                <code value="GKV" />
+            </valueCoding>
+        </extension>
+    </extension>
+    <itemReference>
+        <reference value="Medication/a0553ad5-56bc-446c-91de-70f0260b4e7a" />
+    </itemReference>
+    <quantity>
+        <value value="1" />
+        <system value="http://unitsofmeasure.org" />
+        <code value="{Package}" />
+    </quantity>
+    <authoredOn value="2022-07-01" />
+    <requester>
+        <reference value="Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+    </requester>
+</SupplyRequest>

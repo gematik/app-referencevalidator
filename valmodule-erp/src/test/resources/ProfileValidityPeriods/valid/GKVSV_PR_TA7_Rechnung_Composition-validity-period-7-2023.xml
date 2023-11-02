@@ -1,0 +1,64 @@
+<Composition xmlns="http://hl7.org/fhir">
+    <id value="bfe0a4a1-e5ae-4429-860d-e49e8b6c0a09"/>
+    <meta>
+        <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_Composition|1.3"/>
+    </meta>
+    <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_TA7_IK_Empfaenger">
+        <valueIdentifier>
+            <system value="http://fhir.de/sid/arge-ik/iknr"/>
+            <value value="109519005"/>
+        </valueIdentifier>
+    </extension>
+    <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_TA7_IK_Kostentraeger">
+        <valueIdentifier>
+            <system value="http://fhir.de/sid/arge-ik/iknr"/>
+            <value value="109519005"/>
+        </valueIdentifier>
+    </extension>
+    <identifier>
+        <system value="https://fhir.gkvsv.de/NamingSystem/GKVSV_NS_Rechnungsnummer"/>
+        <value value="21050040"/>
+    </identifier>
+    <status value="final"/>
+    <type>
+        <coding>
+            <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_Rechnungsart"/>
+            <code value="6"/>
+        </coding>
+    </type>
+    <date value="2023-07-01">
+        <extension url="https://fhir.gkvsv.de/StructureDefinition/GKVSV_EX_ERP_TA7_Rechnungsdatum">
+            <valueDateTime value="2021-06-02"/>
+        </extension>
+    </date>
+    <author>
+        <identifier>
+            <system value="http://fhir.de/sid/arge-ik/iknr"/>
+            <value value="987654321"/>
+        </identifier>
+    </author>
+    <title value="elektronische Rechnung"/>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7"/>
+                <code value="LR"/>
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:d99bffa3-eaf3-47c4-a8f8-37e05a1316e5"/>
+        </entry>
+    </section>
+    <section>
+        <code>
+            <coding>
+                <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7"/>
+                <code value="RB"/>
+                <display value="Rezept-Bundle"/>
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:efbf8576-de53-4a87-84f3-ae058df5e5d0"/>
+        </entry>
+    </section>
+</Composition>

@@ -1,0 +1,39 @@
+<Condition xmlns="http://hl7.org/fhir">
+    <id value="2f8638b4-cf33-4afe-bdbc-8477b3cc1bac" />
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_AU|1.1.0" />
+    </meta>
+    <extension url="http://hl7.org/fhir/StructureDefinition/condition-assertedDate">
+        <valueDateTime value="2022-09-29" />
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_EAU_7_weeks">
+        <valueBoolean value="true" />
+    </extension>
+    <clinicalStatus>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/condition-clinical" />
+            <code value="unknown-code" />
+        </coding>
+    </clinicalStatus>
+    <verificationStatus>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/condition-ver-status" />
+            <code value="confirmed" />
+        </coding>
+    </verificationStatus>
+    <code>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_FHIR_DOKUMENTTYPE" />
+            <code value="eAU" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
+    </subject>
+    <onsetPeriod>
+        <end value="2022-10-15" />
+    </onsetPeriod>
+    <asserter>
+        <reference value="Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+    </asserter>
+</Condition>

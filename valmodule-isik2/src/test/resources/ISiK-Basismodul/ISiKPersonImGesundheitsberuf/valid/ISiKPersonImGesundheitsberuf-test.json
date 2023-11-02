@@ -1,0 +1,116 @@
+{
+  "resourceType": "Practitioner",
+  "id": "PractitionerWalterArzt",
+  "meta": {
+    "source": "http://krankenhaus.de",
+    "profile": [
+      "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKPersonImGesundheitsberuf"
+    ]
+  },
+  "name": [
+    {
+      "use": "official",
+      "text": "Walter Arzt",
+      "family": "Arzt",
+      "_family": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
+            "valueString": "Arzt"
+          }
+        ]
+      },
+      "given": [
+        "Walter"
+      ]
+    },
+    {
+      "use": "maiden",
+      "text": "Gross",
+      "family": "Gross",
+      "_family": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
+            "valueString": "Gross"
+          }
+        ]
+      }
+    }
+  ],
+  "identifier": [
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "LANR",
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+          }
+        ]
+      },
+      "system": "https://fhir.kbv.de/NamingSystem/KBV_NS_Base_ANR",
+      "value": "123456789"
+    },
+    {
+      "type": {
+        "coding": [
+          {
+            "code": "DN",
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+          }
+        ]
+      },
+      "system": "http://fhir.de/sid/bundesaerztekammer/efn",
+      "value": "123456789123456"
+    }
+  ],
+  "active": true,
+  "address": [
+    {
+      "type": "both",
+      "line": [
+        "Schmiedegasse 16"
+      ],
+      "_line": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber",
+              "valueString": "16"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName",
+              "valueString": "Schmiedegasse"
+            }
+          ]
+        }
+      ],
+      "city": "Potsdam",
+      "postalCode": "14469",
+      "country": "DE"
+    }
+  ],
+  "gender": "male",
+  "qualification": [
+    {
+      "code": {
+        "coding": [
+          {
+            "version": "http://snomed.info/sct/900000000000207008/version/20200131",
+            "code": "112247003",
+            "system": "http://snomed.info/sct",
+            "display": "Medical doctor (occupation)"
+          }
+        ]
+      }
+    }
+  ],
+  "_birthDate": {
+    "extension": [
+      {
+        "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+        "valueCode": "masked"
+      }
+    ]
+  }
+}

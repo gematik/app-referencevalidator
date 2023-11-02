@@ -1,0 +1,51 @@
+<MedicationDispense xmlns="http://hl7.org/fhir">
+    <id value="f55a27da-6f2e-4f99-b8a8-fa05b6ed4658"/>
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabadaten/StructureDefinition/DAV-PR-ERP-Abgabeinformationen|1.0.3"/>
+    </meta>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Abrechnungszeilen">
+        <valueReference>
+            <reference value="urn:uuid:e8b45420-3a72-49ce-9a7d-910cf8209f02"/>
+        </valueReference>
+    </extension>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-ZusatzdatenHerstellung">
+        <valueReference>
+            <reference value="urn:uuid:9c0dce2f-64ae-4e7a-b045-e844ece179aa"/>
+        </valueReference>
+    </extension>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-ZusatzdatenHerstellung">
+        <valueReference>
+            <reference value="urn:uuid:d2e8d102-8d97-4f98-9c7e-7bf9bb28c45f"/>
+        </valueReference>
+    </extension>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-ZusatzdatenHerstellung">
+        <valueReference>
+            <reference value="urn:uuid:0cfa6ede-c883-4aaf-957b-9b27e9d31c4d"/>
+        </valueReference>
+    </extension>
+    <status value="completed"/>
+    <medicationCodeableConcept>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/data-absent-reason"/>
+            <code value="unknown-code"/>
+        </coding>
+    </medicationCodeableConcept>
+    <performer>
+        <actor>
+            <reference value="urn:uuid:db08a05f-c8fc-41c2-bb8c-e102ed183c8e"/>
+        </actor>
+    </performer>
+    <authorizingPrescription>
+        <identifier>
+            <system value="https://gematik.de/fhir/NamingSystem/PrescriptionID"/>
+            <value value="160.100.000.000.026.61"/>
+        </identifier>
+    </authorizingPrescription>
+    <type>
+        <coding>
+            <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-MedicationDispenseTyp"/>
+            <code value="Abgabeinformationen"/>
+        </coding>
+    </type>
+    <whenHandedOver value="2021-05-27"/>
+</MedicationDispense>

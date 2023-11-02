@@ -1,0 +1,2 @@
+KBV_PR_MIO_ULB_AllergyIntolerance.json, KBV_PR_MIO_ULB_Condition_Medical_Problem_Diagnosis.json:
+- HAPI wirft aktuell bei snapshot generierung eine StringIndexOutOfBoundsException (bekannter fehler) -> snapshot wurde für dieses profil händisch hinzugefügt

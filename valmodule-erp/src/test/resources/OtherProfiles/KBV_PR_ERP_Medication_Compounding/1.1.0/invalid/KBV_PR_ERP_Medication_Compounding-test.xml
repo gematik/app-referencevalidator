@@ -1,0 +1,76 @@
+<Medication xmlns="http://hl7.org/fhir">
+    <id value="619ad8c5-bc4b-4841-8a13-4162f51c06e7"/>
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Compounding|1.1.0" />
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Medication_Type">
+        <valueCodeableConcept>
+            <coding>
+                <system value="http://snomed.info/sct"/>
+                <version value="http://snomed.info/sct/900000000000207008/version/20220331" />
+                <code value="373873005:860781008=362943005" />
+                <display value="Pharmaceutical / biologic product (product) : Has product characteristic (attribute) = Manual method (qualifier value)" />
+            </coding>
+        </valueCodeableConcept>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Category">
+        <valueCoding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_Medication_Category"/>
+            <code value="00" />
+        </valueCoding>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Vaccine">
+        <valueBoolean value="false"/>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Packaging">
+        <valueString value="Deo-Roller"/>
+    </extension>
+    <code>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_Medication_Type"/>
+            <code value="unknown-code"/>
+        </coding>
+        <text value="Viskose Aluminiumchlorid-Hexahydrat-Lösung 20 % (NRF 11.132.)"/>
+    </code>
+    <form>
+        <text value="Gel"/>
+    </form>
+    <amount>
+        <numerator>
+            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_PackagingSize">
+                <valueString value="100" />
+            </extension>
+            <unit value="ml"/>
+        </numerator>
+        <denominator>
+            <value value="1"/>
+        </denominator>
+    </amount>
+    <ingredient>
+        <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Ingredient_Form">
+            <valueString value="Pulver"/>
+        </extension>
+        <itemCodeableConcept>
+            <text value="Hydroxyethylcellulose 250"/>
+        </itemCodeableConcept>
+        <strength>
+            <numerator>
+                <value value="2"/>
+                <unit value="g"/>
+            </numerator>
+            <denominator>
+                <value value="1"/>
+            </denominator>
+        </strength>
+    </ingredient>
+    <ingredient>
+        <itemCodeableConcept>
+            <text value="Gereinigtes Wasser"/>
+        </itemCodeableConcept>
+        <strength>
+            <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Ingredient_Amount">
+                <valueString value="Ad 100 g"/>
+            </extension>
+        </strength>
+    </ingredient>
+</Medication>

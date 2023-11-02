@@ -1,0 +1,41 @@
+<Medication xmlns="http://hl7.org/fhir">
+    <id value="a3ca01a4-92c1-422a-87d9-ef046e94527f"/>
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_PZN|1.1.0"/>
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Medication_Type">
+        <valueCodeableConcept>
+            <coding>
+                <system value="http://snomed.info/sct"/>
+                <version value="http://snomed.info/sct/900000000000207008/version/20220331" />
+                <code value="763158003" />
+                <display value="Medicinal product (product)" />
+            </coding>
+        </valueCodeableConcept>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Category">
+        <valueCoding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_Medication_Category"/>
+            <code value="unknown-code"/>
+        </valueCoding>
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_ERP_Medication_Vaccine">
+        <valueBoolean value="false"/>
+    </extension>
+    <extension url="http://fhir.de/StructureDefinition/normgroesse">
+        <valueCode value="N3"/>
+    </extension>
+    <code>
+        <coding>
+            <system value="http://fhir.de/CodeSystem/ifa/pzn"/>
+            <code value="05392039"/>
+        </coding>
+        <text value="Venlafaxin - 1 A Pharma® 75mg 100 Tabl. N3"/>
+    </code>
+    <form>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_DARREICHUNGSFORM"/>
+            <code value="TAB"/>
+        </coding>
+    </form>
+</Medication>

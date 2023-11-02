@@ -1,0 +1,28 @@
+{
+  "resourceType": "MedicationAdministration",
+  "id": "ExampleISiKMedikationsVerabreichung",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationsVerabreichung"
+    ]
+  },
+  "dosage": {
+    "dose": {
+      "system": "http://unitsofmeasure.org",
+      "value": 1,
+      "unit": "Brausetablette",
+      "code": "1"
+    }
+  },
+  "status": "completed",
+  "medicationReference": {
+    "reference": "Medication/ExampleISiKMedikament1"
+  },
+  "subject": {
+    "reference": "Patient/PatientinMusterfrau"
+  },
+  "context": {
+    "reference": "Encounter/Versorgungsstellenkontakt"
+  },
+  "effectiveDateTime": "2021-07-01"
+}

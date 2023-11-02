@@ -1,0 +1,40 @@
+{
+  "resourceType": "ValueSet",
+  "id": "ISiKValueSetExample",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v2/Basismodul/StructureDefinition/ISiKValueSet"
+    ]
+  },
+  "useContext": [
+    {
+      "code": {
+        "code": "focus",
+        "system": "http://terminology.hl7.org/CodeSystem/usage-context-type"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "code": "Encounter",
+            "system": "http://hl7.org/fhir/resource-types"
+          }
+        ]
+      }
+    }
+  ],
+  "url": "http://example.org/fhir/ValueSet/TestValueSet",
+  "version": "2.0.2",
+  "name": "TestValueSet",
+  "status": "active",
+  "expansion": {
+    "timestamp": "2022-03-30",
+    "contains": [
+      {
+        "system": "http://example.org/fhir/CodeSystem/TestKatalog",
+        "version": "1.0.0",
+        "code": "test",
+        "display": "Test"
+      }
+    ]
+  }
+}

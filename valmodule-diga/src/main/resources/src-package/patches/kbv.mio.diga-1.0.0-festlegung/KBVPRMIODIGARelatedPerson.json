@@ -1,0 +1,933 @@
+{
+    "resourceType": "StructureDefinition",
+    "url": "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_RelatedPerson",
+    "version": "1.0.0",
+    "name": "KBV_PR_MIO_DIGA_RelatedPerson",
+    "title": "KBV_PR_MIO_DIGA_RelatedPerson",
+    "status": "active",
+    "publisher": "Kassenärztliche Bundesvereinigung (KBV)",
+    "description": "Dieses Profil bildet eine Kontaktperson ab.",
+    "copyright": "Im folgenden Profil können Codes aus den Codesystemen Snomed, Loinc oder Ucum enthalten sein, die dem folgenden Urheberrecht unterliegen: This material includes SNOMED Clinical Terms® SNOMED CT® which is used by permission of SNOMED International. All rights reserved. SNOMED CT®, was originally created by The College of American Pathologists. SNOMED and SNOMED CT are registered trademarks of SNOMED International. Implementers of these artefacts must have the appropriate SNOMED CT Affiliate license. This material contains content from Loinc http://loinc.org. Loinc is copyright © 1995-2020, Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes Loinc Committee and is available at no cost under the license at http://loinc.org/license. Loinc® is a registered United States trademark of Regenstrief Institute, Inc. This product includes all or a portion of the UCUM table, UCUM codes, and UCUM definitions or is derived from it, subject to a license from Regenstrief Institute, Inc. and The UCUM Organization. Your use of the UCUM table, UCUM codes, UCUM definitions also is subject to this license, a copy of which is available at ​http://unitsofmeasure.org. The current complete UCUM table, UCUM Specification are available for download at ​http://unitsofmeasure.org. The UCUM table and UCUM codes are copyright © 1995-2009, Regenstrief Institute, Inc. and the Unified Codes for Units of Measures UCUM Organization. All rights reserved. THE UCUM TABLE IN ALL FORMATS, UCUM DEFINITIONS, AND SPECIFICATION ARE PROVIDED \"AS IS.\" ANY EXPRESS OR IMPLIED WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.",
+    "fhirVersion": "4.0.1",
+    "mapping": [
+        {
+            "identity": "rim",
+            "uri": "http://hl7.org/v3",
+            "name": "RIM Mapping"
+        },
+        {
+            "identity": "w5",
+            "uri": "http://hl7.org/fhir/fivews",
+            "name": "FiveWs Pattern Mapping"
+        },
+        {
+            "identity": "v2",
+            "uri": "http://hl7.org/v2",
+            "name": "HL7 v2 Mapping"
+        }
+    ],
+    "kind": "resource",
+    "abstract": false,
+    "type": "RelatedPerson",
+    "baseDefinition": "http://hl7.org/fhir/StructureDefinition/RelatedPerson",
+    "derivation": "constraint",
+    "differential": {
+        "element": [
+            {
+                "id": "RelatedPerson",
+                "path": "RelatedPerson",
+                "definition": "Dieses Profil bildet eine Kontaktperson ab."
+            },
+            {
+                "id": "RelatedPerson.meta",
+                "path": "RelatedPerson.meta",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.meta.versionId",
+                "path": "RelatedPerson.meta.versionId",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.meta.lastUpdated",
+                "path": "RelatedPerson.meta.lastUpdated",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.meta.source",
+                "path": "RelatedPerson.meta.source",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.meta.profile",
+                "path": "RelatedPerson.meta.profile",
+                "min": 1,
+                "max": "1",
+                "patternCanonical": "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_RelatedPerson|1.0.0"
+            },
+            {
+                "id": "RelatedPerson.meta.security",
+                "path": "RelatedPerson.meta.security",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.meta.tag",
+                "path": "RelatedPerson.meta.tag",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.implicitRules",
+                "path": "RelatedPerson.implicitRules",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.language",
+                "path": "RelatedPerson.language",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.text",
+                "path": "RelatedPerson.text",
+                "definition": "In diesem Element können die, in der Instanz, enthaltenen Informationen in einer menschenlesbaren Form zusammengefasst werden. Dabei ist zu beachten, dass keine Informationen aufgenommen werden dürfen, die nicht in strukturierter Form an anderer Stelle in der Instanz enthalten sind."
+            },
+            {
+                "id": "RelatedPerson.text.status",
+                "path": "RelatedPerson.text.status",
+                "fixedCode": "extensions"
+            },
+            {
+                "id": "RelatedPerson.contained",
+                "path": "RelatedPerson.contained",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.identifier",
+                "path": "RelatedPerson.identifier",
+                "min": 1,
+                "max": "1",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.identifier.use",
+                "path": "RelatedPerson.identifier.use",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.identifier.type",
+                "path": "RelatedPerson.identifier.type",
+                "min": 1,
+                "patternCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                            "version": "2.9",
+                            "code": "RI",
+                            "display": "Resource identifier"
+                        }
+                    ]
+                }
+            },
+            {
+                "id": "RelatedPerson.identifier.type.coding",
+                "path": "RelatedPerson.identifier.type.coding",
+                "min": 1,
+                "max": "1"
+            },
+            {
+                "id": "RelatedPerson.identifier.type.coding.system",
+                "path": "RelatedPerson.identifier.type.coding.system",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.identifier.type.coding.version",
+                "path": "RelatedPerson.identifier.type.coding.version",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.identifier.type.coding.code",
+                "path": "RelatedPerson.identifier.type.coding.code",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.identifier.type.coding.display",
+                "path": "RelatedPerson.identifier.type.coding.display",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.identifier.type.coding.userSelected",
+                "path": "RelatedPerson.identifier.type.coding.userSelected",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.identifier.type.text",
+                "path": "RelatedPerson.identifier.type.text",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.identifier.system",
+                "path": "RelatedPerson.identifier.system",
+                "min": 1,
+                "fixedUri": "urn:ietf:rfc:3986",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.identifier.value",
+                "path": "RelatedPerson.identifier.value",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.identifier.period",
+                "path": "RelatedPerson.identifier.period",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.identifier.assigner",
+                "path": "RelatedPerson.identifier.assigner",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.active",
+                "path": "RelatedPerson.active",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.patient",
+                "path": "RelatedPerson.patient",
+                "type": [
+                    {
+                        "code": "Reference",
+                        "targetProfile": [
+                            "https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Patient|1.0.0"
+                        ]
+                    }
+                ],
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.patient.reference",
+                "path": "RelatedPerson.patient.reference",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.patient.type",
+                "path": "RelatedPerson.patient.type",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.patient.identifier",
+                "path": "RelatedPerson.patient.identifier",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.patient.display",
+                "path": "RelatedPerson.patient.display",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.relationship",
+                "path": "RelatedPerson.relationship",
+                "max": "1",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.relationship.coding",
+                "path": "RelatedPerson.relationship.coding",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.relationship.coding.system",
+                "path": "RelatedPerson.relationship.coding.system",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.relationship.coding.version",
+                "path": "RelatedPerson.relationship.coding.version",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.relationship.coding.code",
+                "path": "RelatedPerson.relationship.coding.code",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.relationship.coding.display",
+                "path": "RelatedPerson.relationship.coding.display",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.relationship.coding.userSelected",
+                "path": "RelatedPerson.relationship.coding.userSelected",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.relationship.text",
+                "path": "RelatedPerson.relationship.text",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name",
+                "path": "RelatedPerson.name",
+                "max": "1",
+                "type": [
+                    {
+                        "code": "HumanName",
+                        "profile": [
+                            "http://fhir.de/StructureDefinition/humanname-de-basis|0.9.13"
+                        ]
+                    }
+                ],
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.use",
+                "path": "RelatedPerson.name.use",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.name.family",
+                "path": "RelatedPerson.name.family",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.family.extension",
+                "path": "RelatedPerson.name.family.extension",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "url"
+                        }
+                    ],
+                    "rules": "open"
+                },
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.name.family.extension:namenszusatz",
+                "path": "RelatedPerson.name.family.extension",
+                "sliceName": "namenszusatz",
+                "min": 0,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.family.extension:namenszusatz.value[x]",
+                "path": "RelatedPerson.name.family.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.family.extension:namenszusatz.value[x]:valueString",
+                "path": "RelatedPerson.name.family.extension.valueString",
+                "sliceName": "valueString",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.family.extension:nachname",
+                "path": "RelatedPerson.name.family.extension",
+                "sliceName": "nachname",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.family.extension:nachname.value[x]",
+                "path": "RelatedPerson.name.family.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "open"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.family.extension:nachname.value[x]:valueString",
+                "path": "RelatedPerson.name.family.extension.valueString",
+                "sliceName": "valueString",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.family.extension:vorsatzwort",
+                "path": "RelatedPerson.name.family.extension",
+                "sliceName": "vorsatzwort",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.family.extension:vorsatzwort.value[x]",
+                "path": "RelatedPerson.name.family.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.family.extension:vorsatzwort.value[x]:valueString",
+                "path": "RelatedPerson.name.family.extension.valueString",
+                "sliceName": "valueString",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.given",
+                "path": "RelatedPerson.name.given",
+                "min": 1,
+                "max": "1",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.prefix",
+                "path": "RelatedPerson.name.prefix",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name:name.prefix.extension:prefix-qualifier",
+                "path": "RelatedPerson.name.prefix.extension",
+                "sliceName": "prefix-qualifier",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name:name.prefix.extension:prefix-qualifier.value[x]:valueCode",
+                "path": "RelatedPerson.name.prefix.extension.value[x]",
+                "sliceName": "valueCode",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.name.suffix",
+                "path": "RelatedPerson.name.suffix",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.name.period",
+                "path": "RelatedPerson.name.period",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.telecom",
+                "path": "RelatedPerson.telecom",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.telecom.system",
+                "path": "RelatedPerson.telecom.system",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.telecom.system.extension",
+                "path": "RelatedPerson.telecom.system.extension",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "url"
+                        }
+                    ],
+                    "rules": "open"
+                },
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.telecom.system.extension:anzeigenameSystem",
+                "path": "RelatedPerson.telecom.system.extension",
+                "sliceName": "anzeigenameSystem",
+                "min": 1,
+                "max": "1",
+                "type": [
+                    {
+                        "code": "Extension",
+                        "profile": [
+                            "https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German"
+                        ]
+                    }
+                ],
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.telecom.system.extension:anzeigenameSystem.extension",
+                "path": "RelatedPerson.telecom.system.extension.extension",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "url"
+                        }
+                    ],
+                    "rules": "open"
+                },
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.telecom.system.extension:anzeigenameSystem.extension:content",
+                "path": "RelatedPerson.telecom.system.extension.extension",
+                "sliceName": "content",
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.telecom.system.extension:anzeigenameSystem.extension:content.value[x]",
+                "path": "RelatedPerson.telecom.system.extension.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.telecom.system.extension:anzeigenameSystem.extension:content.value[x]:valueString",
+                "path": "RelatedPerson.telecom.system.extension.extension.value[x]",
+                "sliceName": "valueString",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.telecom.value",
+                "path": "RelatedPerson.telecom.value",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.telecom.use",
+                "path": "RelatedPerson.telecom.use",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.telecom.rank",
+                "path": "RelatedPerson.telecom.rank",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.telecom.period",
+                "path": "RelatedPerson.telecom.period",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.gender",
+                "path": "RelatedPerson.gender",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.birthDate",
+                "path": "RelatedPerson.birthDate",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address",
+                "path": "RelatedPerson.address",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "type"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach",
+                "path": "RelatedPerson.address",
+                "sliceName": "Postfach",
+                "max": "1",
+                "type": [
+                    {
+                        "code": "Address",
+                        "profile": [
+                            "http://fhir.de/StructureDefinition/address-de-basis|0.9.13"
+                        ]
+                    }
+                ],
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.extension",
+                "path": "RelatedPerson.address.extension",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "url"
+                        }
+                    ],
+                    "rules": "open"
+                },
+                "min": 0
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.extension:Stadtteil",
+                "path": "RelatedPerson.address.extension",
+                "sliceName": "Stadtteil",
+                "min": 0,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.extension:Stadtteil.value[x]",
+                "path": "RelatedPerson.address.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "open"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.extension:Stadtteil.value[x]:valueString",
+                "path": "RelatedPerson.address.extension.value[x]",
+                "sliceName": "valueString",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.use",
+                "path": "RelatedPerson.address.use",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.type",
+                "path": "RelatedPerson.address.type",
+                "min": 1,
+                "patternCode": "postal"
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.line",
+                "path": "RelatedPerson.address.line",
+                "max": "2",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.line.extension",
+                "path": "RelatedPerson.address.line.extension",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "url"
+                        }
+                    ],
+                    "rules": "open"
+                },
+                "min": 1
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.line.extension:Strasse",
+                "path": "RelatedPerson.address.line.extension",
+                "sliceName": "Strasse",
+                "min": 0,
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.line.extension:Hausnummer",
+                "path": "RelatedPerson.address.line.extension",
+                "sliceName": "Hausnummer",
+                "min": 0,
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.line.extension:Adresszusatz",
+                "path": "RelatedPerson.address.line.extension",
+                "sliceName": "Adresszusatz",
+                "min": 0,
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.line.extension:Postfach",
+                "path": "RelatedPerson.address.line.extension",
+                "sliceName": "Postfach",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.line.extension:Postfach.value[x]",
+                "path": "RelatedPerson.address.line.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.line.extension:Postfach.value[x]:valueString",
+                "path": "RelatedPerson.address.line.extension.value[x]",
+                "sliceName": "valueString",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.city",
+                "path": "RelatedPerson.address.city",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.state",
+                "path": "RelatedPerson.address.state",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.postalCode",
+                "path": "RelatedPerson.address.postalCode",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.country",
+                "path": "RelatedPerson.address.country",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Postfach.period",
+                "path": "RelatedPerson.address.period",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift",
+                "path": "RelatedPerson.address",
+                "sliceName": "Strassenanschrift",
+                "max": "1",
+                "type": [
+                    {
+                        "code": "Address",
+                        "profile": [
+                            "http://fhir.de/StructureDefinition/address-de-basis|0.9.13"
+                        ]
+                    }
+                ],
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.extension",
+                "path": "RelatedPerson.address.extension",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "url"
+                        }
+                    ],
+                    "rules": "open"
+                }
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.extension:Stadtteil",
+                "path": "RelatedPerson.address.extension",
+                "sliceName": "Stadtteil",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.extension:Stadtteil.value[x]",
+                "path": "RelatedPerson.address.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.extension:Stadtteil.value[x]:valueString",
+                "path": "RelatedPerson.address.extension.value[x]",
+                "sliceName": "valueString",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.use",
+                "path": "RelatedPerson.address.use",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.type",
+                "path": "RelatedPerson.address.type",
+                "min": 1,
+                "patternCode": "both"
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line",
+                "path": "RelatedPerson.address.line",
+                "max": "2",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension",
+                "path": "RelatedPerson.address.line.extension",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "value",
+                            "path": "url"
+                        }
+                    ],
+                    "rules": "open"
+                }
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Strasse",
+                "path": "RelatedPerson.address.line.extension",
+                "sliceName": "Strasse",
+                "max": "1",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Strasse.value[x]",
+                "path": "RelatedPerson.address.line.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Strasse.value[x]:valueString",
+                "path": "RelatedPerson.address.line.extension.value[x]",
+                "sliceName": "valueString",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Hausnummer",
+                "path": "RelatedPerson.address.line.extension",
+                "sliceName": "Hausnummer",
+                "max": "1",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Hausnummer.value[x]",
+                "path": "RelatedPerson.address.line.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "closed"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Hausnummer.value[x]:valueString",
+                "path": "RelatedPerson.address.line.extension.value[x]",
+                "sliceName": "valueString",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Adresszusatz",
+                "path": "RelatedPerson.address.line.extension",
+                "sliceName": "Adresszusatz",
+                "min": 0,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Adresszusatz.value[x]",
+                "path": "RelatedPerson.address.line.extension.value[x]",
+                "slicing": {
+                    "discriminator": [
+                        {
+                            "type": "type",
+                            "path": "$this"
+                        }
+                    ],
+                    "rules": "open"
+                },
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Adresszusatz.value[x]:valueString",
+                "path": "RelatedPerson.address.line.extension.value[x]",
+                "sliceName": "valueString",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.line.extension:Postfach",
+                "path": "RelatedPerson.address.line.extension",
+                "sliceName": "Postfach",
+                "min": 0,
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.city",
+                "path": "RelatedPerson.address.city",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.state",
+                "path": "RelatedPerson.address.state",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.postalCode",
+                "path": "RelatedPerson.address.postalCode",
+                "min": 1,
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.country",
+                "path": "RelatedPerson.address.country",
+                "mustSupport": true
+            },
+            {
+                "id": "RelatedPerson.address:Strassenanschrift.period",
+                "path": "RelatedPerson.address.period",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.photo",
+                "path": "RelatedPerson.photo",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.period",
+                "path": "RelatedPerson.period",
+                "max": "0"
+            },
+            {
+                "id": "RelatedPerson.communication",
+                "path": "RelatedPerson.communication",
+                "max": "0"
+            }
+        ]
+    }
+}

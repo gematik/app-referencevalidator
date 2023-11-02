@@ -1,0 +1,187 @@
+{
+  "resourceType": "StructureDefinition",
+  "url": "https://gematik.de/fhir/StructureDefinition/ErxChargeItem",
+  "version": "1.1.0",
+  "name": "ErxChargeItem",
+  "status": "draft",
+  "fhirVersion": "4.0.1",
+  "mapping": [
+    {
+      "identity": "workflow",
+      "uri": "http://hl7.org/fhir/workflow",
+      "name": "Workflow Pattern"
+    },
+    {
+      "identity": "v2",
+      "uri": "http://hl7.org/v2",
+      "name": "HL7 v2 Mapping"
+    },
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    },
+    {
+      "identity": "w5",
+      "uri": "http://hl7.org/fhir/fivews",
+      "name": "FiveWs Pattern Mapping"
+    }
+  ],
+  "kind": "resource",
+  "abstract": false,
+  "type": "ChargeItem",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/ChargeItem",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "ChargeItem.extension",
+        "path": "ChargeItem.extension",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "url"
+            }
+          ],
+          "rules": "open"
+        }
+      },
+      {
+        "id": "ChargeItem.extension:markingFlag",
+        "path": "ChargeItem.extension",
+        "sliceName": "markingFlag",
+        "type": [
+          {
+            "code": "Extension",
+            "profile": [
+              "https://gematik.de/fhir/StructureDefinition/MarkingFlag"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ChargeItem.identifier",
+        "path": "ChargeItem.identifier",
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": [
+              "https://gematik.de/fhir/StructureDefinition/ErxPrescriptionID"
+            ]
+          }
+        ],
+        "mustSupport": true
+      },
+      {
+        "id": "ChargeItem.status",
+        "path": "ChargeItem.status",
+        "mustSupport": true
+      },
+      {
+        "id": "ChargeItem.code",
+        "path": "ChargeItem.code",
+        "mustSupport": true
+      },
+      {
+        "id": "ChargeItem.code.coding.system",
+        "path": "ChargeItem.code.coding.system",
+        "fixedUri": "http://terminology.hl7.org/CodeSystem/data-absent-reason"
+      },
+      {
+        "id": "ChargeItem.code.coding.code",
+        "path": "ChargeItem.code.coding.code",
+        "fixedCode": "not-applicable"
+      },
+      {
+        "id": "ChargeItem.subject",
+        "path": "ChargeItem.subject",
+        "mustSupport": true
+      },
+      {
+        "id": "ChargeItem.subject.identifier",
+        "path": "ChargeItem.subject.identifier",
+        "min": 1,
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": [
+              "http://fhir.de/StructureDefinition/identifier-kvid-10"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ChargeItem.enterer",
+        "path": "ChargeItem.enterer",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "ChargeItem.enterer.identifier",
+        "path": "ChargeItem.enterer.identifier",
+        "min": 1,
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": [
+              "https://gematik.de/fhir/StructureDefinition/BaseTelematikID"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ChargeItem.enteredDate",
+        "path": "ChargeItem.enteredDate",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "ChargeItem.supportingInformation",
+        "path": "ChargeItem.supportingInformation",
+        "slicing": {
+          "discriminator":  [
+            {
+              "type": "value",
+              "path": "type"
+            }
+          ],
+          "rules": "open"
+        },
+        "mustSupport": true
+      },
+      {
+        "id": "ChargeItem.supportingInformation:prescriptionItem",
+        "path": "ChargeItem.supportingInformation",
+        "sliceName": "prescriptionItem",
+        "definition": "In analogie zu Task.inputwird die Patientenkopie der Verordnung als Bundle gespeichert und trägt in Bundle.signature die Verordnungs-Signatur im JWS-detached Format."
+      },
+      {
+        "id": "ChargeItem.supportingInformation:prescriptionItem.type",
+        "path": "ChargeItem.supportingInformation.type",
+        "fixedUri": "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle"
+      },
+      {
+        "id": "ChargeItem.supportingInformation:dispenseItem",
+        "path": "ChargeItem.supportingInformation",
+        "sliceName": "dispenseItem"
+      },
+      {
+        "id": "ChargeItem.supportingInformation:dispenseItem.type",
+        "path": "ChargeItem.supportingInformation.type",
+        "fixedUri": "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-AbgabedatenBundle"
+      },
+      {
+        "id": "ChargeItem.supportingInformation:receipt",
+        "path": "ChargeItem.supportingInformation",
+        "sliceName": "receipt",
+        "definition": "In analogie zu Task.output wird die Quittung als Bundle gespeichert und trägt in Bundle.signature die Quittungs-Signatur im CAdES-enveloping Format [RFC 5652]."
+      },
+      {
+        "id": "ChargeItem.supportingInformation:receipt.type",
+        "path": "ChargeItem.supportingInformation.type",
+        "fixedUri": "https://gematik.de/fhir/StructureDefinition/ErxReceipt"
+      }
+    ]
+  }
+}

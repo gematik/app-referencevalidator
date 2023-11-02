@@ -1,0 +1,9 @@
+Die Ressource entspricht dem FHIR-Profil. Allerdings fordert die Technische Anlage https://update.kbv.de/ita-update/DigitaleMuster/ERP/KBV_ITA_VGEX_Technische_Anlage_ERP.pdf in K36-35, dass 
+
+Sofern in dem Profil KBV_PR_ERP_PRESCRIPTION auf Rezeptierdaten einer Rezepturverordnung
+verwiesen wird (Target Profil unter MedicationRequest.medicationReference entspricht
+KBV_PR_ERP_Medication_Compounding), muss die Software sicherstellen, dass das Element
+MedicationRequest.dosageInstruction.patientInstruction für die Angabe der Gebrauchsanweisung der
+Rezeptur verwendet werden muss.
+
+Diese Regel ist im FHIR-Profil nicht abgebildet. Daher gilt die Instanz als Profil-konform / valide

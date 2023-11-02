@@ -1,0 +1,24 @@
+<Organization xmlns="http://hl7.org/fhir">
+    <id value="5aca7744-8c99-49c4-8912-f69f352d01cf"/>
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Apotheke|1.1.0"/>
+    </meta>
+    <identifier>
+        <system value="http://fhir.de/NamingSystem/arge-ik/iknr"/>
+        <value value="123456789"/>
+    </identifier>
+    <name value="Adler-Apotheke"/>
+    <address>
+        <type value="physical"/>
+        <line value="Taunusstraße 89">
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+                <valueString value="2"/>
+            </extension>
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+                <valueString value="89"/>
+            </extension>
+        </line>
+        <postalCode value="63225"/>
+        <country value="D"/>
+    </address>
+</Organization>

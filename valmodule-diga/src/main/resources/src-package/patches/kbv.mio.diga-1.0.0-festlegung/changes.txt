@@ -1,0 +1,3 @@
+KBVPRMIODIGARelatedPerson.json:
+- referencing address-de-basis from de.basisprofil.r4-0.9.13 with wrong version 0.9.2 -> changed to 0.9.13
+- referencing humanname-de-basisfrom de.basisprofil.r4-0.9.13 with wrong version 0.9.3 -> changed to 0.9.13

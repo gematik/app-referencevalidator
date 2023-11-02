@@ -1,0 +1,27 @@
+<Composition xmlns="http://hl7.org/fhir">
+    <id value="6753a10a-f993-4038-9d9c-515774887074" />
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno_Composition|1.1.0" />
+    </meta>
+    <status value="final" />
+    <type>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_FORMULAR_ART" />
+            <code value="unknown-code" />
+        </coding>
+    </type>
+    <date value="2022-08-15" />
+    <author>
+        <reference value="Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+        <type value="Practitioner" />
+    </author>
+    <title value="Storno eAU" />
+    <custodian>
+        <reference value="Organization/cf042e44-086a-4d51-9c77-172f9a972e3b" />
+    </custodian>
+    <section>
+        <entry>
+            <reference value="List/e49bed53-9fe3-47c3-9271-ee07fc919793" />
+        </entry>
+    </section>
+</Composition>

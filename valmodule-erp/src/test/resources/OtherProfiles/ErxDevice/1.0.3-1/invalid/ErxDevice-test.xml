@@ -1,0 +1,18 @@
+<Device xmlns="http://hl7.org/fhir">
+    <id value="ErxService" />
+    <meta>
+        <profile value="https://gematik.de/fhir/StructureDefinition/ErxDevice|1.0.3-1" />
+        <tag>
+            <display value="Hardcoded device instance representing the ePrescription service." />
+        </tag>
+    </meta>
+    <status value="bla" />
+    <serialNumber value="R4.0.0.287342834" />
+    <deviceName>
+        <name value="E-Rezept Fachdienst" />
+        <type value="user-friendly-name" />
+    </deviceName>
+    <version>
+        <value value="1.0.0" />
+    </version>
+</Device>

@@ -1,0 +1,9 @@
+Das Constraint kvid-1 ist im Profil http://fhir.de/StructureDefinition/identifier-kvid-10 vom de.basisprofil 0.9.13 mit Severity Warning angegeben. Daher wird die Instanz als valide angesehen, obwohl fachlich betrachtet, die Angabe nicht korrekt ist.
+
+{
+        "key": "kvid-1",
+        "severity": "warning",
+        "human": "Der unveränderliche Teil der KVID muss 10-stellig sein und mit einem Großbuchstaben anfangen",
+        "expression": "matches('^[A-Z][0-9]{9}$')",
+        "source": "http://fhir.de/StructureDefinition/identifier-kvid-10"
+      }

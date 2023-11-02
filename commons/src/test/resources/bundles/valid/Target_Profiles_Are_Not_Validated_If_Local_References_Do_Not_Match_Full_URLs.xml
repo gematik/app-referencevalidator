@@ -1,0 +1,219 @@
+<Bundle xmlns="http://hl7.org/fhir">
+	<!--
+	Die Referenzen innerhalb des Bundles sind nicht korrekt, weil die FullUrl nicht zur Reference-Url passt.
+
+FullUrl der Composition ist http://pvs.praxis.local/fhir/d8dee9ad-6d84-41af-8d1d-748c3c563cba
+Reference ist Organization/8d8c91fa-0075-4512-aba3-3b73856c32d2
+
+Die FullUrl müsste also Composition enthalten.
+
+Siehe https://www.hl7.org/fhir/bundle.html#references
+
+Der HAPI-Validator meldet dies nur als Warnung und führt als Folge keine Inhaltsprüfungen der Referenzen durch (auch keine Typprüfungen). In diesem Beispiel müsste der Fehler erkannt werden, dass subject-Referenz eigentlich eine Organisation und kein Patient sein sollte
+	-->
+	<id value="80f212e1-42dc-4691-a257-0ef2f01de7fd"/>
+	<meta>
+		<profile value="http://hl7.org/fhir/StructureDefinition/Bundle" />
+	</meta>
+	<identifier>
+		<system value="https://gematik.de/fhir/NamingSystem/PrescriptionID"/>
+		<value value="160.000.074.296.768.39"/>
+	</identifier>
+	<type value="document"/>
+	<timestamp value="2021-11-12T11:08:17.2415449+01:00"/>
+	<entry>
+		<fullUrl value="http://pvs.praxis.local/fhir/d8dee9ad-6d84-41af-8d1d-748c3c563cba"/>
+		<resource>
+			<Composition>
+				<id value="d8dee9ad-6d84-41af-8d1d-748c3c563cba"/>
+				<status value="final"/>
+				<type>
+					<coding>
+						<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_FORMULAR_ART"/>
+						<code value="e16A"/>
+					</coding>
+				</type>
+				<subject>
+					<!--
+						Patient expected
+						-->
+					<reference value="Organization/8d8c91fa-0075-4512-aba3-3b73856c32d2"/>
+				</subject>
+				<date value="2021-11-12T11:08:08.8046753+01:00"/>
+				<author>
+					<!--
+					Practitioner expected
+					-->
+					<reference value="Practitioner/74996a40-d335-4abd-a393-dde0f4bdd88e"/>
+					<type value="Practitioner"/>
+				</author>
+				<author>
+					<type value="Device"/>
+					<identifier>
+						<system value="https://fhir.kbv.de/NamingSystem/KBV_NS_FOR_Pruefnummer"/>
+						<value value="Y/400/1910/36/462"/>
+					</identifier>
+				</author>
+				<title value="elektronische Arzneimittelverordnung"/>
+				<custodian>
+					<!-- Organization expected -->
+					<reference value="Coverage/4cddf31d-5558-47f1-9bb4-a86329dcafa4"/>
+				</custodian>
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_Section_Type"/>
+							<code value="Prescription"/>
+						</coding>
+					</code>
+					<entry>
+						<reference value="MedicationRequest/e930cdee-9eb5-4b44-88b5-2a18b69f3b9a"/>
+					</entry>
+				</section>
+				<section>
+					<code>
+						<coding>
+							<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_ERP_Section_Type"/>
+							<code value="Coverage"/>
+						</coding>
+					</code>
+					<entry>
+						<!--
+                            Coverage expected
+                            -->
+						<reference value="Organization/8d8c91fa-0075-4512-aba3-3b73856c32d2"/>
+					</entry>
+				</section>
+			</Composition>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis.local/fhir/MedicationRequest/e930cdee-9eb5-4b44-88b5-2a18b69f3b9a" />
+		<resource>
+			<MedicationRequest xmlns="http://hl7.org/fhir">
+				<!--Beispiel MedicationRequest für eine PZN-Verordnung -->
+				<id value="e930cdee-9eb5-4b44-88b5-2a18b69f3b9a" />
+				<status value="active" />
+				<intent value="order" />
+				<medicationReference>
+					<!-- Medication expected -->
+					<reference value="Coverage/4cddf31d-5558-47f1-9bb4-a86329dcafa4" />
+				</medicationReference>
+				<subject>
+					<!-- Patient expected -->
+					<reference value="Organization/8d8c91fa-0075-4512-aba3-3b73856c32d2" />
+				</subject>
+				<authoredOn value="2021-07-01" />
+				<requester>
+					<reference value="Practitioner/74996a40-d335-4abd-a393-dde0f4bdd88e" />
+				</requester>
+				<insurance>
+					<reference value="Coverage/4cddf31d-5558-47f1-9bb4-a86329dcafa4" />
+				</insurance>
+				<dosageInstruction>
+					<text value="1-0-1-0" />
+				</dosageInstruction>
+				<dispenseRequest>
+					<quantity>
+						<value value="1" />
+						<system value="http://unitsofmeasure.org" />
+						<code value="{Package}" />
+					</quantity>
+				</dispenseRequest>
+				<substitution>
+					<allowedBoolean value="true" />
+				</substitution>
+			</MedicationRequest>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis.local/fhir/74996a40-d335-4abd-a393-dde0f4bdd88e"/>
+		<resource>
+			<Practitioner>
+				<id value="74996a40-d335-4abd-a393-dde0f4bdd88e"/>
+				<identifier>
+					<use value="official"/>
+					<type>
+						<coding>
+							<system value="http://fhir.de/CodeSystem/identifier-type-de-basis"/>
+							<code value="ZANR"/>
+						</coding>
+					</type>
+					<system value="http://fhir.de/NamingSystem/kzbv/zahnarztnummer"/>
+					<value value="770235434"/>
+				</identifier>
+				<name>
+					<use value="official"/>
+					<family value="Thiele">
+					</family>
+					<given value="Wilhelm"/>
+					<prefix value="Dr. med.">
+					</prefix>
+				</name>
+				<qualification>
+					<code>
+						<text value="Allgemeinmedizin"/>
+					</code>
+				</qualification>
+			</Practitioner>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis.local/fhir/4cddf31d-5558-47f1-9bb4-a86329dcafa4"/>
+		<resource>
+			<Coverage>
+				<id value="4cddf31d-5558-47f1-9bb4-a86329dcafa4"/>
+				<status value="active"/>
+				<type>
+					<coding>
+						<system value="http://fhir.de/CodeSystem/versicherungsart-de-basis"/>
+						<code value="GKV"/>
+					</coding>
+				</type>
+				<beneficiary>
+					<!-- Practitioner expected -->
+					<reference value="Organization/8d8c91fa-0075-4512-aba3-3b73856c32d2"/>
+				</beneficiary>
+				<payor>
+					<identifier>
+						<system value="http://fhir.de/NamingSystem/arge-ik/iknr"/>
+						<value value="109519005"/>
+					</identifier>
+					<display value="AOK Nordost"/>
+				</payor>
+			</Coverage>
+		</resource>
+	</entry>
+	<entry>
+		<fullUrl value="http://pvs.praxis.local/fhir/8d8c91fa-0075-4512-aba3-3b73856c32d2"/>
+		<resource>
+			<Organization>
+				<id value="8d8c91fa-0075-4512-aba3-3b73856c32d2"/>
+				<identifier>
+					<use value="official"/>
+					<type>
+						<coding>
+							<system value="http://terminology.hl7.org/CodeSystem/v2-0203"/>
+							<code value="BSNR"/>
+						</coding>
+					</type>
+					<system value="https://fhir.kbv.de/NamingSystem/KBV_NS_Base_BSNR"/>
+					<value value="666666666"/>
+				</identifier>
+				<name value="KIM-x2-HBS"/>
+				<telecom>
+					<system value="phone"/>
+					<value value="0123456789-11111"/>
+				</telecom>
+				<address>
+					<type value="both"/>
+					<line value="Im Kappelhof 1">
+					</line>
+					<city value="Eltville"/>
+					<postalCode value="65331"/>
+					<country value="D"/>
+				</address>
+			</Organization>
+		</resource>
+	</entry>
+</Bundle>

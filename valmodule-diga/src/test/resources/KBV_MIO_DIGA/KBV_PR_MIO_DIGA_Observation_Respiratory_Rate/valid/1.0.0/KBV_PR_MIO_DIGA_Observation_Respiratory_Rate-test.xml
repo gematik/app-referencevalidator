@@ -1,0 +1,63 @@
+<Observation xmlns="http://hl7.org/fhir">
+    <id value="a8742ed5-f641-4e4e-8649-6911099c551a"/>
+    <meta>
+        <versionId value="1"/>
+        <lastUpdated value="2022-06-16T07:40:22+01:00"/>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Respiratory_Rate|1.0.0"/>
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203"/>
+                <version value="2.9"/>
+                <code value="RI"/>
+                <display value="Resource identifier"/>
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986"/>
+        <value value="urn:uuid:a8742ed5-f641-4e4e-8649-6911099c551a"/>
+    </identifier>
+    <status value="final"/>
+    <category>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/observation-category"/>
+            <code value="vital-signs"/>
+        </coding>
+    </category>
+    <code>
+        <coding>
+            <system value="http://snomed.info/sct"/>
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131"/>
+            <code value="86290005"/>
+            <display value="Respiratory rate (observable entity)">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Atemfrequenz"/>
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+        <coding>
+            <system value="http://loinc.org"/>
+            <version value="2.71"/>
+            <code value="9279-1"/>
+            <display value="Respiratory rate">
+                <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                    <extension url="content">
+                        <valueString value="Atemfrequenz"/>
+                    </extension>
+                </extension>
+            </display>
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:77a702db-8fec-43d2-b70b-afbe1235cf08"/>
+    </subject>
+    <effectiveDateTime value="2021-06-21T12:00:00+01:00"/>
+    <valueQuantity>
+        <value value="15.0"/>
+        <unit value="per minute"/>
+        <system value="http://unitsofmeasure.org"/>
+        <code value="/min"/>
+    </valueQuantity>
+</Observation>

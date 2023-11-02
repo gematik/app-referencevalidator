@@ -1,0 +1,29 @@
+<ServiceRequest xmlns="http://hl7.org/fhir">
+    <id value="26afe4e0-3fd6-11ed-aecc-773fa814cb31" />
+    <meta>
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_ServiceRequest_steps|1.1.0" />
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_EAU_admission_date">
+        <valueDateTime value="2022-10-03" />
+    </extension>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_EAU_discharge_date">
+        <valueDateTime value="2022-10-08" />
+    </extension>
+    <status value="active" />
+    <intent value="proposal" />
+    <code>
+        <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_EAU_WeitereSchritte_Type" />
+            <code value="unknown-code" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:9774f67f-a238-4daf-b4e6-679deeef3811" />
+    </subject>
+    <requester>
+        <reference value="urn:uuid:20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+    </requester>
+    <reasonReference>
+        <reference value="urn:uuid:2f8638b4-cf33-4afe-bdbc-8477b3cc1bac" />
+    </reasonReference>
+</ServiceRequest>

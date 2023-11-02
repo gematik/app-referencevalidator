@@ -1,0 +1,12 @@
+dependencyLists:
+  dependencyList1:
+    packages:
+      - "minimalvalidationmodule.test-1.0.0.tgz"
+
+
+supportedProfiles:
+  "http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate":
+    profileVersions:
+      1.0.0:
+        dependencyLists:
+          - "dependencyList1"

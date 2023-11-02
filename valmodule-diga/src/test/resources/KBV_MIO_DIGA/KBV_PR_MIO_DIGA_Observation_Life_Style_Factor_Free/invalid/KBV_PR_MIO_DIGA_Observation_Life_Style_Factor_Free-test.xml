@@ -1,0 +1,35 @@
+<Observation xmlns="http://hl7.org/fhir">
+    <id value="dca5939c-3179-11ec-8d3d-0242ac130003" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-26T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Life_Style_Factor_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:dca5939c-3179-11ec-8d3d-0242ac130003" />
+    </identifier>
+    <status value="final" />
+    <code>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="229819007" />
+            <display value="Tobacco use and exposure (observable entity)" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:dca59b4e-3179-11ec-8d3d-0242ac130003" />
+    </subject>
+    <hasMember>
+        <reference value="urn:uuid:e720c2ce-371e-11ec-8d3d-0242ac130003" />
+    </hasMember>
+</Observation>

@@ -1,0 +1,45 @@
+<Observation xmlns="http://hl7.org/fhir">
+    <id value="a519c7a8-ed18-4bdf-9977-54c15e58ffc1" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-10-27T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Environmental_Factor_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="RI" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:a519c7a8-ed18-4bdf-9977-54c15e58ffc1" />
+    </identifier>
+    <status value="final" />
+    <category>
+        <coding>
+            <system value="http://hl7.org/fhir/sid/icf-nl" />
+            <code value="e225" />
+            <display value="Klima" />
+        </coding>
+    </category>
+    <code>
+        <coding>
+            <system value="http://snomed.info/sct" />
+            <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+            <code value="285400005" />
+            <display value="Air pressure (physical force)" />
+        </coding>
+    </code>
+    <subject>
+        <reference value="urn:uuid:dca59b4e-3179-11ec-8d3d-0242ac130003" />
+    </subject>
+    <performer>
+        <reference value="urn:uuid:dca59b4e-3179-11ec-8d3d-0242ac130003" />
+    </performer>
+    <hasMember>
+        <reference value="urn:uuid:03131548-3802-11ec-8d3d-0242ac130003" />
+    </hasMember>
+</Observation>

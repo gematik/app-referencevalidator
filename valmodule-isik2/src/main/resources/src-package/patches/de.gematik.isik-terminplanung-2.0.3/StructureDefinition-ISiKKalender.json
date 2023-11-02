@@ -1,0 +1,188 @@
+{
+    "resourceType": "StructureDefinition",
+    "id": "ISiKKalender",
+    "extension": [
+      {
+        "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-category",
+        "valueString": "Base.Workflow"
+      },
+      {
+        "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-security-category",
+        "valueCode": "business"
+      }
+    ],
+    "url": "https://gematik.de/fhir/isik/v2/Terminplanung/StructureDefinition/ISiKKalender",
+    "version": "2.0.3",
+    "name": "ISiKKalender",
+    "status": "active",
+    "experimental": false,
+    "date": "2023-03-24",
+    "publisher": "gematik GmbH",
+    "fhirVersion": "4.0.1",
+    "mapping": [
+      {
+        "identity": "rim",
+        "uri": "http://hl7.org/v3",
+        "name": "RIM Mapping"
+      },
+      {
+        "identity": "ical",
+        "uri": "http://ietf.org/rfc/2445",
+        "name": "iCalendar"
+      },
+      {
+        "identity": "w5",
+        "uri": "http://hl7.org/fhir/fivews",
+        "name": "FiveWs Pattern Mapping"
+      }
+    ],
+    "kind": "resource",
+    "abstract": false,
+    "type": "Schedule",
+    "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Schedule",
+    "derivation": "constraint",
+    "differential": {
+      "element": [
+        {
+          "id": "Schedule.extension",
+          "path": "Schedule.extension",
+          "mustSupport": true
+        },
+        {
+          "id": "Schedule.extension:KalenderName",
+          "path": "Schedule.extension",
+          "sliceName": "KalenderName",
+          "min": 0,
+          "max": "1",
+          "type": [
+            {
+              "code": "Extension",
+              "profile": [
+                "http://hl7.org/fhir/5.0/StructureDefinition/extension-Schedule.name"
+              ]
+            }
+          ],
+          "mustSupport": true
+        },
+        {
+          "id": "Schedule.extension.extension",
+          "path": "Schedule.extension.extension",
+          "max": "0"
+        },
+        {
+          "id": "Schedule.extension.value[x]",
+          "path": "Schedule.extension.value[x]",
+          "slicing": {
+            "discriminator": [
+              {
+                "type": "type",
+                "path": "$this"
+              }
+            ],
+            "ordered": false,
+            "rules": "open"
+          },
+          "min": 1
+        },
+        {
+          "id": "Schedule.extension.valueString",
+          "path": "Schedule.extension.valueString",
+          "min": 1,
+          "max": "1",
+          "type": [
+            {
+              "code": "string"
+            }
+          ]
+        },
+        {
+          "id": "Schedule.active",
+          "path": "Schedule.active",
+          "min": 1,
+          "mustSupport": true
+        },
+        {
+          "id": "Schedule.serviceType",
+          "path": "Schedule.serviceType",
+          "min": 1,
+          "mustSupport": true
+        },
+        {
+          "id": "Schedule.specialty",
+          "path": "Schedule.specialty",
+          "slicing": {
+            "discriminator": [
+              {
+                "type": "pattern",
+                "path": "$this"
+              }
+            ],
+            "rules": "open"
+          },
+          "min": 1,
+          "mustSupport": true
+        },
+        {
+          "id": "Schedule.specialty:Fachrichtung",
+          "path": "Schedule.specialty",
+          "sliceName": "Fachrichtung",
+          "min": 1,
+          "max": "1",
+          "mustSupport": true,
+          "binding": {
+            "strength": "required",
+            "valueSet": "http://ihe-d.de/ValueSets/IHEXDSauthorSpeciality"
+          }
+        },
+        {
+          "id": "Schedule.actor",
+          "path": "Schedule.actor",
+          "slicing": {
+            "discriminator": [
+              {
+                "type": "type",
+                "path": "$this"
+              }
+            ],
+            "rules": "open"
+          },
+          "mustSupport": true
+        },
+        {
+          "id": "Schedule.actor.identifier",
+          "path": "Schedule.actor.identifier",
+          "mustSupport": true
+        },
+        {
+          "id": "Schedule.actor.display",
+          "path": "Schedule.actor.display",
+          "min": 1,
+          "mustSupport": true
+        },
+        {
+          "id": "Schedule.actor:Akteur",
+          "path": "Schedule.actor",
+          "sliceName": "Akteur",
+          "min": 0,
+          "max": "1",
+          "type": [
+            {
+              "code": "Reference",
+              "targetProfile": [
+                "http://hl7.org/fhir/StructureDefinition/Practitioner",
+                "http://hl7.org/fhir/StructureDefinition/HealthcareService"
+              ]
+            }
+          ],
+          "mustSupport": true
+        },
+        {
+          "id": "Schedule.actor:Akteur.reference",
+          "path": "Schedule.actor.reference",
+          "min": 1,
+          "mustSupport": true
+        }
+      ]
+    }
+  }
+  

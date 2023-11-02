@@ -1,0 +1,36 @@
+{
+  "resourceType": "Schedule",
+  "id": "ISiKKalenderExample",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Terminplanung/StructureDefinition/ISiKKalender"
+    ]
+  },
+  "active": true,
+  "serviceType": [
+    {
+      "coding": [
+        {
+          "code": "124",
+          "system": "http://terminology.hl7.org/CodeSystem/service-type"
+        }
+      ]
+    }
+  ],
+  "specialty": [
+    {
+      "coding": [
+        {
+          "code": "010",
+          "system": "urn:oid:1.2.276.0.76.5.114"
+        }
+      ]
+    }
+  ],
+  "actor": [
+    {
+      "reference": "Practitioner/example",
+      "display": "Dr. Fleming"
+    }
+  ]
+}

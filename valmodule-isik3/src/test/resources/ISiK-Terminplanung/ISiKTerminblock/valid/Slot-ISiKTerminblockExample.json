@@ -1,0 +1,15 @@
+{
+  "resourceType": "Slot",
+  "id": "ISiKTerminblockExample",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Terminplanung/StructureDefinition/ISiKTerminblock"
+    ]
+  },
+  "schedule": {
+    "reference": "Schedule/ISiKKalenderExample"
+  },
+  "status": "busy",
+  "start": "2022-12-10T09:00:00Z",
+  "end": "2022-12-10T11:00:00Z"
+}

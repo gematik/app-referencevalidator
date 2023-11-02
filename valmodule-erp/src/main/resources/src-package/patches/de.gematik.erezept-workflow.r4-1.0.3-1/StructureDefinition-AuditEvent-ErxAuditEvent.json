@@ -1,0 +1,175 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "80871938-1322-47ae-a4c4-ac080a170c73",
+  "meta": {
+    "lastUpdated": "2020-04-16T13:41:55.87+00:00"
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Beschreibung des Inhalts des Zugriffsprotokolleintrags in einfacher Sprache</div>"
+  },
+  "url": "https://gematik.de/fhir/StructureDefinition/ErxAuditEvent",
+  "version": "1.0.3-1",
+  "name": "Gem_erxAuditEvent",
+  "title": "AuditEvent for Logging of ePrescription Access",
+  "status": "draft",
+  "date": "2020-04-16T13:41:53.3147244+00:00",
+  "fhirVersion": "4.0.1",
+  "mapping": [
+    {
+      "identity": "workflow",
+      "uri": "http://hl7.org/fhir/workflow",
+      "name": "Workflow Pattern"
+    },
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    },
+    {
+      "identity": "dicom",
+      "uri": "http://nema.org/dicom",
+      "name": "DICOM Tag Mapping"
+    },
+    {
+      "identity": "w5",
+      "uri": "http://hl7.org/fhir/fivews",
+      "name": "FiveWs Pattern Mapping"
+    },
+    {
+      "identity": "w3c.prov",
+      "uri": "http://www.w3.org/ns/prov",
+      "name": "W3C PROV"
+    },
+    {
+      "identity": "fhirprovenance",
+      "uri": "http://hl7.org/fhir/provenance",
+      "name": "FHIR Provenance Mapping"
+    }
+  ],
+  "kind": "resource",
+  "abstract": false,
+  "type": "AuditEvent",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/AuditEvent",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "AuditEvent.type.system",
+        "path": "AuditEvent.type.system",
+        "code": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/audit-event-type",
+            "display": "rest"
+          }
+        ],
+        "min": 1,
+        "fixedUri": "http://terminology.hl7.org/CodeSystem/audit-event-type"
+      },
+      {
+        "id": "AuditEvent.type.code",
+        "path": "AuditEvent.type.code",
+        "min": 1,
+        "fixedCode": "rest"
+      },
+      {
+        "id": "AuditEvent.subtype",
+        "path": "AuditEvent.subtype",
+        "min": 1,
+        "max": "1"
+      },
+      {
+        "id": "AuditEvent.action",
+        "path": "AuditEvent.action",
+        "min": 1
+      },
+      {
+        "id": "AuditEvent.outcome",
+        "path": "AuditEvent.outcome",
+        "min": 1
+      },
+      {
+        "id": "AuditEvent.agent.type",
+        "path": "AuditEvent.agent.type",
+        "min": 1
+      },
+      {
+        "id": "AuditEvent.agent.who.identifier",
+        "path": "AuditEvent.agent.who.identifier",
+        "min": 1,
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": [
+              "https://gematik.de/fhir/StructureDefinition/BaseTelematikID",
+              "http://fhir.de/StructureDefinition/identifier-kvid-10"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "AuditEvent.agent.name",
+        "path": "AuditEvent.agent.name",
+        "min": 1
+      },
+      {
+        "id": "AuditEvent.source.site",
+        "path": "AuditEvent.source.site",
+        "min": 1,
+        "fixedString": "E-Rezept Fachdienst"
+      },
+      {
+        "id": "AuditEvent.source.observer",
+        "path": "AuditEvent.source.observer",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "http://hl7.org/fhir/StructureDefinition/Device"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "AuditEvent.source.observer.reference",
+        "path": "AuditEvent.source.observer.reference",
+        "min": 1
+      },
+      {
+        "id": "AuditEvent.entity",
+        "path": "AuditEvent.entity",
+        "min": 1,
+        "max": "1"
+      },
+      {
+        "id": "AuditEvent.entity.what",
+        "path": "AuditEvent.entity.what",
+        "min": 1,
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "https://gematik.de/fhir/StructureDefinition/ErxMedicationDispense",
+              "https://gematik.de/fhir/StructureDefinition/ErxTask",
+              "https://gematik.de/fhir/StructureDefinition/ErxAuditEvent"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "AuditEvent.entity.name",
+        "path": "AuditEvent.entity.name",
+        "short": "KVNR of patient that the auditEvent refers to",
+        "definition": "KVNR of patient that the auditEvent refers to, used as filter criteria when patient accesses its data",
+        "min": 1
+      },
+      {
+        "id": "AuditEvent.entity.description",
+        "path": "AuditEvent.entity.description",
+        "short": "PrescriptionID (RezeptID)",
+        "definition": "PrescriptionID (RezeptID) to have a relation to insurance company data when Task already deleted",
+        "min": 1
+      }
+    ]
+  }
+}

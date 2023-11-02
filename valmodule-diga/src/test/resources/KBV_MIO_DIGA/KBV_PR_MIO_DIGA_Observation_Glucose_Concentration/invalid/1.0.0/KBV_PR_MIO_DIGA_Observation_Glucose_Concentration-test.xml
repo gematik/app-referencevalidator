@@ -1,0 +1,63 @@
+<Observation xmlns="http://hl7.org/fhir">
+            <id value="75f306e9-2529-4a5f-aa35-452917b35fac"/>
+            <meta>
+               <versionId value="1"/>
+               <lastUpdated value="2023-03-01T15:43:20.863+00:00"/>
+               <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Observation_Glucose_Concentration|1.0.0"/>
+            </meta>
+            <identifier>
+               <type>
+                  <coding>
+                     <system value="http://terminology.hl7.org/CodeSystem/v2-0203"/>
+                     <version value="2.9"/>
+                     <code value="unknown-code"/>
+                     <display value="Resource identifier"/>
+                  </coding>
+               </type>
+               <system value="urn:ietf:rfc:3986"/>
+               <value value="urn:uuid:75f306e9-2529-4a5f-aa35-452917b35fac"/>
+            </identifier>
+            <status value="final"/>
+            <category>
+               <coding>
+                  <system value="http://terminology.hl7.org/CodeSystem/observation-category"/>
+                  <code value="vital-signs"/>
+               </coding>
+            </category>
+            <code>
+               <coding>
+                  <system value="http://loinc.org"/>
+                  <version value="2.71"/>
+                  <code value="15074-8"/>
+                  <display value="Glucose [Moles/volume] in Blood">
+                     <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                           <valueString value="Blutzuckerkonzentration"/>
+                        </extension>
+                     </extension>
+                  </display>
+               </coding>
+               <coding>
+                  <system value="http://snomed.info/sct"/>
+                  <version value="http://snomed.info/sct/900000000000207008/version/20220131"/>
+                  <code value="434912009"/>
+                  <display value="Blood glucose concentration (observable entity)">
+                     <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Terminology_German">
+                        <extension url="content">
+                           <valueString value="Blutzuckerkonzentration"/>
+                        </extension>
+                     </extension>
+                  </display>
+               </coding>
+            </code>
+            <subject>
+               <reference value="Patient/3071accc-8240-4b87-8118-9128c9c783cb"/>
+            </subject>
+            <effectiveDateTime value="2023-03-01T15:43:14+00:00"/>
+            <valueQuantity>
+               <value value="5.000000000"/>
+               <unit value="mmol/L"/>
+               <system value="http://unitsofmeasure.org"/>
+               <code value="mmol/L"/>
+            </valueQuantity>
+         </Observation>

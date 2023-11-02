@@ -1,0 +1,40 @@
+{
+  "resourceType": "List",
+  "id": "ExampleISiKMedikationsListe",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/isik/v3/Medikation/StructureDefinition/ISiKMedikationsListe"
+    ]
+  },
+  "code": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/list-example-use-codes",
+        "code": "medications"
+      }
+    ]
+  },
+  "status": "current",
+  "mode": "working",
+  "subject": {
+    "reference": "Patient/PatientinMusterfrau"
+  },
+  "encounter": {
+    "reference": "Encounter/Versorgungsstellenkontakt"
+  },
+  "date": "2021-07-04",
+  "entry": [
+    {
+      "date": "2021-07-01",
+      "item": {
+        "reference": "MedicationStatement/ExampleISiKMedikationsInformation1"
+      }
+    },
+    {
+      "date": "2021-07-04",
+      "item": {
+        "reference": "MedicationStatement/ExampleISiKMedikationsInformation2"
+      }
+    }
+  ]
+}

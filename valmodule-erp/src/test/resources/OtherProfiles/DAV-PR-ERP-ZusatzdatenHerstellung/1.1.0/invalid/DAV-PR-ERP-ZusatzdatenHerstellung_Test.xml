@@ -1,0 +1,42 @@
+<MedicationDispense xmlns="http://hl7.org/fhir">
+    <id value="603ad833-f402-4293-aeb9-bb16c606718e"/>
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenHerstellung|1.1.0"/>
+    </meta>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Zaehler">
+        <valuePositiveInt value="1"/>
+    </extension>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-ZusatzdatenEinheit">
+        <valueReference>
+            <reference value="urn:uuid:4f38bb87-0e68-4d6c-9eb1-c06d9d3fe87d"/>
+        </valueReference>
+    </extension>
+    <status value="completed"/>
+    <medicationCodeableConcept>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/data-absent-reason"/>
+            <code value="unknown-code"/>
+        </coding>
+    </medicationCodeableConcept>
+    <performer>
+        <function>
+            <coding>
+                <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-ZusatzdatenHerstellungHerstellerSchluessel"/>
+                <code value="1"/>
+            </coding>
+        </function>
+        <actor>
+            <identifier>
+                <system value="http://fhir.de/NamingSystem/arge-ik/iknr"/>
+                <value value="123456789"/>
+            </identifier>
+        </actor>
+    </performer>
+    <type>
+        <coding>
+            <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-MedicationDispenseTyp"/>
+            <code value="ZusatzdatenHerstellung"/>
+        </coding>
+    </type>
+    <whenPrepared value="2021-05-27T00:00:00Z"/>
+</MedicationDispense>

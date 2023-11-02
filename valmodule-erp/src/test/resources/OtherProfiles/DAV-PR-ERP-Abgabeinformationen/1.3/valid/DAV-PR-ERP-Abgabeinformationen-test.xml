@@ -1,0 +1,36 @@
+<MedicationDispense xmlns="http://hl7.org/fhir">
+    <id value="9cc2ad29-15bb-4dde-b96a-2b5353062a7e"/>
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Abgabeinformationen|1.3"/>
+    </meta>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Abrechnungszeilen">
+        <valueReference>
+            <reference value="urn:uuid:31f4e0c8-89b9-4c4c-a4d5-89d192882c39"/>
+        </valueReference>
+    </extension>
+    <status value="completed"/>
+    <medicationCodeableConcept>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/data-absent-reason"/>
+            <code value="not-applicable"/>
+        </coding>
+    </medicationCodeableConcept>
+    <performer>
+        <actor>
+            <reference value="urn:uuid:303c82d8-f7ee-4f0d-a5a7-c30f36bfc7e5"/>
+        </actor>
+    </performer>
+    <authorizingPrescription>
+        <identifier>
+            <system value="https://gematik.de/fhir/erp/NamingSystem/GEM_ERP_NS_PrescriptionId"/>
+            <value value="160.100.000.000.008.18"/>
+        </identifier>
+    </authorizingPrescription>
+    <type>
+        <coding>
+            <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-MedicationDispenseTyp"/>
+            <code value="Abgabeinformationen"/>
+        </coding>
+    </type>
+    <whenHandedOver value="2023-07-01"/>
+</MedicationDispense>

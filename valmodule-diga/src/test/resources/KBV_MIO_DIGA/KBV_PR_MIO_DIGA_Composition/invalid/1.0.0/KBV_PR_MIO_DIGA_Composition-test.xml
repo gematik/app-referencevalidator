@@ -1,0 +1,169 @@
+<Composition xmlns="http://hl7.org/fhir">
+    <id value="264de85e-ebfc-45df-b214-203fdac71ccd" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2021-11-08T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_Composition|1.0.0" />
+    </meta>
+    <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_MIO_DIGA_Betrachtungszeitraum">
+        <valuePeriod>
+            <start value="2021-10-01T13:28:17.239+02:00" />
+            <end value="2021-11-08T13:28:17.239+02:00" />
+        </valuePeriod>
+    </extension>
+    <status value="final" />
+    <type>
+        <coding>
+            <system value="http://loinc.org" />
+            <version value="2.71" />
+            <code value="unknown-code" />
+            <display value="Personal health monitoring report Document" />
+        </coding>
+    </type>
+    <subject>
+        <reference value="urn:uuid:3ce63d96-effd-43aa-bab2-acfd7e618e07" />
+    </subject>
+    <date value="2021-11-08" />
+    <author>
+        <reference value="urn:uuid:ec4e110f-8cbf-42c9-aaad-562f5e8d0f87" />
+    </author>
+    <title value="DiGA-Export" />
+    <section>
+        <title value="Befunde und Ergebnisse" />
+        <code>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="423100009" />
+                <display value="Results section (record artifact)" />
+            </coding>
+        </code>
+        <section>
+            <title value="Vitalzeichen und K&#246;rperma&#223;e" />
+            <code>
+                <coding>
+                    <system value="http://loinc.org" />
+                    <version value="2.71" />
+                    <code value="8716-3" />
+                    <display value="Vital signs" />
+                </coding>
+            </code>
+            <entry>
+                <reference value="urn:uuid:95ae8353-6805-4a81-a921-30a41ef68fc9" />
+            </entry>
+            <entry>
+                <reference value="urn:uuid:7c119101-1b7e-4a09-ba82-ad88d801ea38" />
+            </entry>
+            <entry>
+                <reference value="urn:uuid:59c41b9f-ef59-4372-81df-2a79a66934c7" />
+            </entry>
+        </section>
+    </section>
+    <section>
+        <title value="Aktivit&#228;ten" />
+        <code>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="257733005" />
+                <display value="Activity (observable entity)" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:3be97a7c-d300-4a6f-bea9-23cd00374edf" />
+        </entry>
+    </section>
+    <section>
+        <title value="Nahrung" />
+        <code>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="895547009" />
+                <display value="Enteral nutrition intake (observable entity)" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:d1e991c6-46ee-4b91-a56d-e40f1c5343cb" />
+        </entry>
+    </section>
+    <section>
+        <title value="Probleme" />
+        <code>
+            <coding>
+                <system value="http://loinc.org" />
+                <version value="2.71" />
+                <code value="11450-4" />
+                <display value="Problem list - Reported" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:a515d43d-8324-44e9-ab26-b9dd8b5ef213" />
+        </entry>
+        <entry>
+            <reference value="urn:uuid:2c2d3dd8-55f9-4dd2-97d4-79d47f02857b" />
+        </entry>
+    </section>
+    <section>
+        <title value="Beurteilungen" />
+        <code>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="424836000" />
+                <display value="Assessment section (record artifact)" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:8084a8ca-d11e-42eb-a97a-7164d0df9224" />
+        </entry>
+    </section>
+    <section>
+        <title value="Ziele" />
+        <code>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="1055210001" />
+                <display value="Target parameter (observable entity)" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:88ca7045-0959-46f1-9a08-5d043ebead38" />
+        </entry>
+        <entry>
+            <reference value="urn:uuid:b269f88d-3013-45f1-a9da-62126cd42d04" />
+        </entry>
+    </section>
+    <section>
+        <title value="Termine" />
+        <code>
+            <coding>
+                <system value="http://loinc.org" />
+                <version value="2.71" />
+                <code value="56446-8" />
+                <display value="Appointment summary Document" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:10be6664-6e3c-4b07-bc5b-7d5e716bc12c" />
+        </entry>
+    </section>
+    <section>
+        <title value="Kontakte" />
+        <code>
+            <coding>
+                <system value="http://snomed.info/sct" />
+                <version value="http://snomed.info/sct/900000000000207008/version/20220131" />
+                <code value="70862002" />
+                <display value="Contact person (person)" />
+            </coding>
+        </code>
+        <entry>
+            <reference value="urn:uuid:05bbc5bb-7a89-4d24-a1e1-1bd59b077962" />
+        </entry>
+        <entry>
+            <reference value="urn:uuid:82be1643-46fd-416a-9f77-53deb362074b" />
+        </entry>
+    </section>
+</Composition>

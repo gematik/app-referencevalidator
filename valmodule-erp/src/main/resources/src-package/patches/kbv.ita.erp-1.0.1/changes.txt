@@ -1,0 +1,4 @@
+kbv.ita.erp-1.0.1.tgz:
+- in package.json ist "KBV.ITA.FOR": "1.0.3" als dependency angegeben
+- in KBV_PR_ERP_Prescription.json ist "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Coverage|1.0.1" angegeben
+  - muss eigentlich: "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Coverage|1.0.3"

@@ -1,0 +1,278 @@
+<QuestionnaireResponse xmlns="http://hl7.org/fhir">
+    <id value="d4df04fe-3895-11ec-8d3d-0242ac130003" />
+    <meta>
+        <versionId value="1" />
+        <lastUpdated value="2015-02-07T13:28:17.239+02:00" />
+        <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_MIO_DIGA_QuestionnaireResponse_Free|1.0.0" />
+    </meta>
+    <identifier>
+        <type>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+                <version value="2.9" />
+                <code value="unknown-code" />
+                <display value="Resource identifier" />
+            </coding>
+        </type>
+        <system value="urn:ietf:rfc:3986" />
+        <value value="urn:uuid:dca579fc-3179-11ec-8d3d-0242ac130003" />
+    </identifier>
+    <questionnaire value="https://test.test" />
+    <status value="completed" />
+    <subject>
+        <reference value="urn:uuid:cd0a4346-3882-11ec-8d3d-0242ac130003" />
+    </subject>
+    <authored value="2021-03-01" />
+    <item>
+        <linkId value="1" />
+        <answer>
+            <valueInteger value="0" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="2" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="3" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="4" />
+        <answer>
+            <valueInteger value="3" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="5" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="6" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="7" />
+        <answer>
+            <valueInteger value="0" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="8" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="9" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="10" />
+        <answer>
+            <valueInteger value="3" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="11" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="12" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="13" />
+        <answer>
+            <valueInteger value="0" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="14" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="15" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="16" />
+        <answer>
+            <valueInteger value="3" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="17" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="18" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="19" />
+        <answer>
+            <valueInteger value="0" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="20" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="21" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="22" />
+        <answer>
+            <valueInteger value="3" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="23" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="24" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="25" />
+        <answer>
+            <valueInteger value="0" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="26" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="27" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="28" />
+        <answer>
+            <valueInteger value="3" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="29" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="30" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="31" />
+        <answer>
+            <valueInteger value="0" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="32" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="33" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="34" />
+        <answer>
+            <valueInteger value="3" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="35" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="36" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="37" />
+        <answer>
+            <valueInteger value="0" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="38" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="39" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="40" />
+        <answer>
+            <valueInteger value="3" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="41" />
+        <answer>
+            <valueInteger value="2" />
+        </answer>
+    </item>
+    <item>
+        <linkId value="42" />
+        <answer>
+            <valueInteger value="1" />
+        </answer>
+    </item>
+</QuestionnaireResponse>
