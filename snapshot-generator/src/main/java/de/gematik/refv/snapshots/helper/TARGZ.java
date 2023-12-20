@@ -1,5 +1,6 @@
 package de.gematik.refv.snapshots.helper;
 
+import de.gematik.refv.commons.security.ZipSlipProtect;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -61,7 +62,7 @@ public class TARGZ {
                 }
 
                 String currentEntryName = entry.getName();
-                File currentFile = newFile(outputDirectory, currentEntryName);
+                File currentFile = ZipSlipProtect.newFile(outputDirectory, currentEntryName);
                 File parent = currentFile.getParentFile();
                 if (!parent.exists()) {
                     parent.mkdirs();
@@ -71,19 +72,6 @@ public class TARGZ {
                 }
             }
         }
-    }
-
-    public static File newFile(File destDir, String currentEntryName) throws IOException {
-        File destFile = new File(destDir, currentEntryName);
-
-        String destDirPath = destDir.getCanonicalPath();
-        String destFilePath = destFile.getCanonicalPath();
-
-        if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            throw new IOException("Entry is outside of the target dir: " + currentEntryName);
-        }
-
-        return destFile;
     }
 
     private static void validateDirectory(Path source) throws IOException {

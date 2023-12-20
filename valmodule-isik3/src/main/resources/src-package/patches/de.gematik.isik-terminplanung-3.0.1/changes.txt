@@ -1,2 +1,0 @@
-- in StructureDefinition-ISiKKalender.json order von Schedule.extension:KalenderName an vierter Stelle
-  - muss eigentlich an zweite Stelle

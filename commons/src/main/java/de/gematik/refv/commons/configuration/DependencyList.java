@@ -29,12 +29,8 @@ public class DependencyList {
     private String validFrom;
     private String validTill;
     private List<String> packages;
-    private List<String> patches;
     private List<ValidationMessageTransformation> validationMessageTransformations;
     public List<ValidationMessageTransformation> getValidationMessageTransformations() {
         return Objects.requireNonNullElseGet(validationMessageTransformations, LinkedList::new);
-    }
-    public List<String> getPatches() {
-        return Objects.requireNonNullElseGet(patches, LinkedList::new);
     }
 }

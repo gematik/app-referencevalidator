@@ -3,14 +3,12 @@ package de.gematik.refv.snapshots;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.IValidationSupport;
 import ca.uhn.fhir.context.support.ValidationSupportContext;
-import ca.uhn.fhir.parser.IParser;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
+import ca.uhn.fhir.parser.DataFormatException;
+import de.gematik.refv.commons.security.ZipSlipProtect;
 import de.gematik.refv.snapshots.helper.DependencyGenerator;
 import de.gematik.refv.snapshots.helper.FixedSnapshotGeneratingValidationSupport;
 import de.gematik.refv.snapshots.helper.NpmPackageLoader;
 import de.gematik.refv.snapshots.helper.TARGZ;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -19,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.hl7.fhir.common.hapi.validation.support.PrePopulatedValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.StructureDefinition;
 
 import java.io.BufferedReader;
@@ -33,49 +32,45 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class SnapshotGenerator {
 
     private static final FhirContext fhirContext = FhirContext.forR4();
-    private static final JsonFactory jsonfactory = new JsonFactory();
     private final DependencyGenerator dependencyGenerator = new DependencyGenerator();
-    private final Map<String, StructureDefinition> currentPatches = new HashMap<>();
+    private final Map<String, IBaseResource> currentPatches = new HashMap<>();
     private FixedSnapshotGeneratingValidationSupport snapshotGeneratingValidationSupport;
     private ValidationSupportChain chain;
     private String currentPackageName = "";
     private final List<String> excludedPackages;
+    private static final String PACKAGE_FOLDER_PREFIX = "package/";
 
     public SnapshotGenerator(List<String> excludedPackages) {
         this.excludedPackages = excludedPackages;
     }
 
-    @SneakyThrows
-    private static String getDecompressDir() {
-        return Paths.get(Objects.requireNonNull(SnapshotGenerator.class.getResource("/")).toURI()).getParent().toString() + "/decompressed-packages/";
-    }
-
-    public void generateSnapshots(String packageFolderPath, String outputFolder) throws IOException {
+    public void generateSnapshots(String packageFolderPath, String outputFolder, String decompressDir) throws IOException {
+        if(decompressDir.isEmpty()) {
+            decompressDir = System.getProperty("java.io.tmpdir") + File.separator;
+        }
         File packageFolder = new File(packageFolderPath);
         File[] tgzFiles = packageFolder.listFiles((dir, name) -> name.endsWith(".tgz"));
         if(tgzFiles != null) {
             for (File fhirPackageFile : tgzFiles) {
                 log.info("Starting snapshot generation for {}", fhirPackageFile.getName());
                 List<String> dependencies = dependencyGenerator.generateListOfDependenciesFor(fhirPackageFile.getName(), packageFolderPath);
-                generateSnapshotsAndCompressAsTgz(packageFolderPath, outputFolder, fhirPackageFile.getName(), dependencies);
+                generateSnapshotsAndCompressAsTgz(packageFolderPath, outputFolder, fhirPackageFile.getName(), dependencies, decompressDir);
             }
         } else {
             log.error("No fhir packages found at: {}", packageFolderPath);
         }
     }
 
-    private void generateSnapshotsAndCompressAsTgz(String sourceDir, String outputDir, String filename, List<String> dependencies) throws IOException {
+    private void generateSnapshotsAndCompressAsTgz(String sourceDir, String outputDir, String filename, List<String> dependencies, String decompressDir) throws IOException {
         setupSupportChain(dependencies, sourceDir);
-        decompressPackage(sourceDir, filename);
-        readStructureDefinitionsFromTgz(sourceDir, filename);
-        compressPackage(outputDir);
+        decompressPackage(sourceDir, filename, decompressDir);
+        readStructureDefinitionsFromTgz(sourceDir, filename, decompressDir);
+        compressPackage(outputDir, decompressDir);
         log.info("Finished snapshot generation for {}", filename);
     }
 
@@ -85,7 +80,7 @@ public class SnapshotGenerator {
 
         PrePopulatedValidationSupport patchesSupport = new PrePopulatedValidationSupport(fhirContext);
 
-        for (Map.Entry<String, StructureDefinition> entry : currentPatches.entrySet()) {
+        for (Map.Entry<String, IBaseResource> entry : currentPatches.entrySet()) {
             log.info("Applying patch for {}", entry.getValue());
             patchesSupport.addResource(entry.getValue());
         }
@@ -113,37 +108,37 @@ public class SnapshotGenerator {
             if (directoryListing != null) {
                 for (File child : directoryListing) {
                     if (child.getName().endsWith(".json")) {
-                        FileInputStream inputStream = new FileInputStream(child);
-                        var reader = new InputStreamReader(inputStream);
-                        var patch = fhirContext.newJsonParser().parseResource(StructureDefinition.class, reader);
-                        currentPatches.put(patch.getUrl(), patch);
-                        reader.close();
+                        try(FileInputStream inputStream = new FileInputStream(child)) {
+                            var reader = new InputStreamReader(inputStream);
+                            var patch = fhirContext.newJsonParser().parseResource(reader);
+                            currentPatches.put(child.getName(), patch);
+                        }
                     }
                 }
             }
         }
     }
 
-    private void decompressPackage(String sourceDir, String fileName) throws IOException {
+    private void decompressPackage(String sourceDir, String fileName, String decompressDirPath) throws IOException {
         currentPackageName = fileName.replaceAll(".tgz", "");
-        File decompressDir = new File(getDecompressDir() + currentPackageName);
+        File decompressDir = new File(decompressDirPath + currentPackageName);
         FileUtils.deleteDirectory(decompressDir);
         TARGZ.decompress(sourceDir + fileName, decompressDir);
     }
 
-    private void compressPackage(String outputDir) throws IOException {
+    private void compressPackage(String outputDir, String decompressDir) throws IOException {
         if(excludedPackages.contains(currentPackageName + ".tgz")) {
             log.info("The current package '{}' was set to be excluded from the final snapshot packages used for validation.", currentPackageName + ".tgz");
             return;
         }
 
-        Path source = Paths.get(getDecompressDir() + currentPackageName);
+        Path source = Paths.get(decompressDir + currentPackageName);
         Files.createDirectories(Paths.get(outputDir));
         TARGZ.compress(source, outputDir);
     }
 
-    private void readStructureDefinitionsFromTgz(String sourceDir, String filename) throws IOException {
-        if(!excludedPackages.contains(filename)) {
+    private void readStructureDefinitionsFromTgz(String sourceDir, String filename, String decompressDir) throws IOException {
+        if (!excludedPackages.contains(filename)) {
             try (
                     FileInputStream fileInputStream = new FileInputStream(sourceDir + filename);
                     GzipCompressorInputStream gzipInputStream = new GzipCompressorInputStream(fileInputStream);
@@ -152,66 +147,69 @@ public class SnapshotGenerator {
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader)
             ) {
 
-                TarArchiveEntry currentEntry = tarInputStream.getNextTarEntry();
+                TarArchiveEntry currentEntry = tarInputStream.getNextEntry();
                 while (currentEntry != null) {
 
                     String currentEntryName = currentEntry.getName();
+                    log.debug("Processing " + currentEntryName);
 
-                    String jsonString = buildJsonString(bufferedReader);
-                    if (hasDifferential(jsonString)) {
-                        File destDir = new File(getDecompressDir() + currentPackageName);
-                        File newFile = TARGZ.newFile(destDir, currentEntryName);
-                        generateSnapshot(jsonString, newFile);
+                    // Only work with files on the top level of the "package" folder and only handle .json files
+                    try {
+                        createSnapshotIfStructureDefinitionAndWrite(decompressDir, currentEntryName, bufferedReader);
+
+                        currentEntry = tarInputStream.getNextEntry();
+                    } catch (Exception e) {
+                        log.error("Could not create a snapshot for " + currentEntryName + " (" + filename + ")", e);
+                        throw e;
                     }
-
-                    currentEntry = tarInputStream.getNextTarEntry();
                 }
             }
         }
     }
 
-    private void generateSnapshot(String jsonString, File newFile) throws IOException {
-        StructureDefinition differential = parseResourceFromString(jsonString);
+    private void createSnapshotIfStructureDefinitionAndWrite(String decompressDir, String currentEntryName, BufferedReader bufferedReader) throws IOException {
+        if (currentEntryName.startsWith(PACKAGE_FOLDER_PREFIX) && !currentEntryName.substring(PACKAGE_FOLDER_PREFIX.length()).contains("/") && currentEntryName.endsWith(".json")) {
+            File destDir = new File(decompressDir + currentPackageName);
+            File newFile = ZipSlipProtect.newFile(destDir, currentEntryName);
 
+            if(fileShouldBeIgnored(currentEntryName)) {
+                String resourceFileName = currentEntryName.replace(PACKAGE_FOLDER_PREFIX, "");
+
+                var originalResource = fhirContext.newJsonParser().parseResource(bufferedReader);
+                var patchedResource = currentPatches.getOrDefault(resourceFileName, null);
+
+                // Original ValueSet, CodeSystem etc. without Patch --> ignore
+                if (patchedResource == null && !(originalResource instanceof StructureDefinition))
+                    return;
+
+                // Patched ValueSets, CodeSystems etc. --> copy without snapshot generation
+                if (patchedResource != null && !(originalResource instanceof StructureDefinition)) {
+                    writeResource(patchedResource, newFile);
+                    return;
+                }
+
+                // SDs with or without Patch --> generate snapshot
+                var patchOrOriginalStructureDefinition = patchedResource != null ? patchedResource : originalResource;
+                logGeneratingSnapshotFor(newFile.getName());
+                var snapshot = generateSnapshot(patchOrOriginalStructureDefinition);
+                writeResource(snapshot, newFile);
+            }
+        }
+    }
+
+    private static boolean fileShouldBeIgnored(String currentEntryName) {
+        return !currentEntryName.equals("package/package.json") && !currentEntryName.equals("package/.index.json");
+    }
+
+    private static void writeResource(IBaseResource resource, File newFile) throws IOException {
         try (FileWriterWithEncoding fileWriterWithEncoding = new FileWriterWithEncoding(newFile, StandardCharsets.UTF_8)) {
-
-            StructureDefinition snapshot = (StructureDefinition) snapshotGeneratingValidationSupport.generateSnapshot(
-                    new ValidationSupportContext(chain), differential, null, null, null);
-            logGeneratingSnapshotFor(newFile.getName());
-            fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToWriter(snapshot, fileWriterWithEncoding);
+            fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToWriter(resource, fileWriterWithEncoding);
         }
     }
 
-    private StructureDefinition parseResourceFromString(String jsonString) {
-        IParser newJsonParser = fhirContext.newJsonParser();
-        StructureDefinition resource = (StructureDefinition) newJsonParser.parseResource(jsonString);
-        return checkForPatch(resource);
-    }
-
-    private StructureDefinition checkForPatch(StructureDefinition resource) {
-        String key = resource.getUrl();
-        return currentPatches.getOrDefault(key, resource);
-    }
-
-    private String buildJsonString(BufferedReader bufferedReader) {
-        return bufferedReader.lines().collect(Collectors.joining());
-    }
-
-    private boolean hasDifferential(String jsonString) {
-        try (JsonParser jsonParser = jsonfactory.createParser(jsonString)) {
-            jsonParser.nextToken();
-            while (jsonParser.hasCurrentToken()) {
-                String fieldName = jsonParser.getCurrentName();
-                jsonParser.nextToken();
-
-                if ("differential".equals(fieldName)) {
-                    return true;
-                }
-            }
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not parse resource", e);
-        }
-        return false;
+    private IBaseResource generateSnapshot(IBaseResource resource)  {
+        return snapshotGeneratingValidationSupport.generateSnapshot(
+                new ValidationSupportContext(chain), resource, null, null, null);
     }
 
     private void logGeneratingSnapshotFor(String currentFileName) {

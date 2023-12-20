@@ -20,6 +20,8 @@ import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.SupportedValidationModule;
 import de.gematik.refv.ValidationModuleFactory;
+import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
+import de.gematik.refv.Plugin;
 import de.gematik.refv.commons.validation.ProfileValidityPeriodCheckStrategy;
 import de.gematik.refv.commons.validation.ValidationMessagesFilter;
 import de.gematik.refv.commons.validation.ValidationModule;
@@ -28,19 +30,24 @@ import de.gematik.refv.commons.validation.ValidationResult;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Category;
 import org.apache.log4j.LogManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CommandLine.Command(
         name="java -jar referencevalidator-cli.jar",
@@ -48,9 +55,10 @@ import java.util.Optional;
 )
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class ReferenceValidator implements Runnable {
 
-    @CommandLine.Parameters(paramLabel = "VALIDATION_MODULE", description = "Choice of a validation module (erp, eau, isik1, isik2, isip1, diga)")
+    @CommandLine.Parameters(paramLabel = "VALIDATION_MODULE", description = "ID of a validation module or plugin")
     private String module;
 
     @CommandLine.Parameters(paramLabel = "FILE", description = "Input file", defaultValue = "")
@@ -70,9 +78,11 @@ public class ReferenceValidator implements Runnable {
 
     @CommandLine.Option(names = {"-ae", "--accepted-encodings"}, split = ",", description = "Encodings to accept (XML,JSON). Overwrites the module internal setting.", required = false)
     private List<String> acceptedEncodings;
-    static Logger logger = LoggerFactory.getLogger(ReferenceValidator.class);
 
     private ValidationModuleFactory factory = new ValidationModuleFactory();
+
+    private PluginLoader pluginLoader = new PluginLoader();
+    private static final String PLUGINS_DIR = "plugins";
 
     @SneakyThrows
     public static void main(String[] args) {
@@ -90,7 +100,7 @@ public class ReferenceValidator implements Runnable {
     }
 
     private static void logWithLineBreak(String output) {
-        logger.info("\r\n{}", output);
+        log.info("\r\n{}", output);
     }
 
     public void run() {
@@ -98,36 +108,88 @@ public class ReferenceValidator implements Runnable {
             if(isVerbose) {
                 configureAllLoggersToDebug();
             }
-            Optional<SupportedValidationModule> supportedValidationModule = SupportedValidationModule.fromString(module);
-            if(supportedValidationModule.isEmpty()) {
-                logger.error("Module [{}] unsupported. Supported modules: {}", module, SupportedValidationModule.values());
+
+            ValidationModule validator = getValidationModule();
+            if (validator == null) {
+                log.debug("No suitable validation module found");
                 return;
             }
-
-            ValidationModule validator = factory.createValidationModule(supportedValidationModule.get());
 
             if(showModuleConfiguration) {
                 String moduleConfiguration = new ModuleConfigurationPrinter().moduleConfigurationToString(validator.getConfiguration());
                 logWithLineBreak(moduleConfiguration);
                 return;
             }
-            ValidationOptions validationOptions = ValidationOptions.getDefaults();
-            if(profile != null)
-                validationOptions.getProfiles().add(profile);
-            if(acceptedEncodings != null && !acceptedEncodings.isEmpty())
-                validationOptions.setAcceptedEncodings(acceptedEncodings);
-            if(isNoInstanceValidityCheck)
-                validationOptions.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
-            if(isVerbose)
-                validationOptions.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
+
+            ValidationOptions validationOptions = getValidationOptions();
 
             ValidationResult result = validator.validateFile(file.toPath(), validationOptions);
 
             String outputMessage = buildOutputMessage(result);
             logWithLineBreak(outputMessage);
         } catch (Exception e){
-            logger.error("Exception", e);
+            log.error("Exception", e);
         }
+    }
+
+    private ValidationOptions getValidationOptions() {
+        ValidationOptions validationOptions = ValidationOptions.getDefaults();
+        if(profile != null)
+            validationOptions.getProfiles().add(profile);
+        if(acceptedEncodings != null && !acceptedEncodings.isEmpty())
+            validationOptions.setAcceptedEncodings(acceptedEncodings);
+        if(isNoInstanceValidityCheck)
+            validationOptions.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
+        if(isVerbose)
+            validationOptions.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
+        return validationOptions;
+    }
+
+    // The selection mechanism below leaves plugins away, whose ids are the same as any id of the integrated validation modules, without any notice.
+    // This is unfortunate and can be improved in the future. At the same time we avoid the overhead of plugin loading routines in case when user
+    // requests an integrated validation module (the main use case)
+    private ValidationModule getValidationModule() throws ValidationModuleInitializationException, IOException {
+        ValidationModule validator;
+
+        Optional<SupportedValidationModule> integratedValidationModule = SupportedValidationModule.fromString(module);
+        if(integratedValidationModule.isPresent()) {
+            validator = factory.createValidationModule(integratedValidationModule.get());
+        }
+        else {
+            var pluginFolder = getPluginsDir();
+            log.debug("Looking for plugins in " + pluginFolder + "...");
+            if(new File(pluginFolder).exists()) {
+                var plugins = pluginLoader.loadPlugins(pluginFolder);
+                log.info("Successfully loaded plugins: {}", plugins.keySet());
+                Plugin plugin = plugins.get(module);
+                if (plugin == null) {
+                    var supportedValidationModules = Stream.concat(plugins.keySet().stream(), Arrays.stream(SupportedValidationModule.values())).map(Object::toString).collect(Collectors.toList());
+                    log.error("Module [{}] unsupported. Supported modules: {}", module, supportedValidationModules);
+                    return null;
+                }
+                validator = factory.createValidationModuleFromPlugin(plugin);
+            }
+            else {
+                log.error("Module [{}] unsupported. Supported modules: {}", module, SupportedValidationModule.values());
+                return null;
+            }
+        }
+        return validator;
+    }
+
+    @SneakyThrows
+    private static String getPluginsDir() {
+        String result;
+        URL location = ReferenceValidator.class.getProtectionDomain().getCodeSource().getLocation();
+        var isJarFile = ReferenceValidator.class.getResource(ReferenceValidator.class.getSimpleName() + ".class").toString().startsWith("jar:");
+        if(isJarFile) {
+            result = new File(location.toURI()).getParentFile().getAbsolutePath() + File.separator;
+        }
+        else {
+            result = location.getPath();
+        }
+        result += PLUGINS_DIR;
+        return result;
     }
 
     private static void showInfo() {
@@ -139,7 +201,7 @@ public class ReferenceValidator implements Runnable {
                 + " (" + System.getProperty("sun.arch.data.model") + "bit). "
                 + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB available");
         sb.append("\r\nLocale: " + Locale.getDefault() + "\r\n");
-        logger.info("{}",sb);
+        log.info("{}",sb);
     }
 
 

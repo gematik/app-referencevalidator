@@ -17,27 +17,35 @@
 package de.gematik.refv;
 
 import ca.uhn.fhir.context.FhirContext;
-import de.gematik.refv.commons.configuration.FhirPackageConfigurationLoader;
 import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
+import de.gematik.refv.commons.validation.BaseValidationModule;
 import de.gematik.refv.commons.validation.GenericValidator;
+import de.gematik.refv.plugins.validation.PluginValidationResourceProvider;
 import de.gematik.refv.commons.validation.ValidationModule;
-import de.gematik.refv.valmodule.base.ConfigurationBasedValidationModule;
+import de.gematik.refv.commons.validation.IntegratedValidationModule;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+
 
 @NoArgsConstructor
 @Slf4j
 public class ValidationModuleFactory {
 
-    public ValidationModule createValidationModule(@NonNull SupportedValidationModule module) throws IllegalArgumentException, ValidationModuleInitializationException {
-        GenericValidator engine = new GenericValidator(
-                FhirContext.forR4()
+    public ValidationModule createValidationModuleFromPlugin(@NonNull Plugin plugin) throws ValidationModuleInitializationException {
+        GenericValidator engine = new GenericValidator(FhirContext.forR4());
+        ValidationModule result = new BaseValidationModule(
+                new PluginValidationResourceProvider(plugin::getResource),
+                engine
         );
+        result.initialize();
+        return result;
+    }
 
-        ValidationModule result = new ConfigurationBasedValidationModule(
+    public ValidationModule createValidationModule(@NonNull SupportedValidationModule module) throws ValidationModuleInitializationException {
+        GenericValidator engine = new GenericValidator(FhirContext.forR4());
+        ValidationModule result = new IntegratedValidationModule(
                 module.toString(),
-                new FhirPackageConfigurationLoader(),
                 engine
         );
         result.initialize();

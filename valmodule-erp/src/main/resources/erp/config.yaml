@@ -1,0 +1,1226 @@
+id: "erp"
+version: "2.0"
+errorOnUnknownProfile: "true"
+anyExtensionsAllowed: "false"
+ignoredCodeSystems:
+  - "http://fhir.de/CodeSystem/ifa/pzn"
+  - "http://fhir.de/CodeSystem/ask"
+acceptedEncodings:
+  - "xml"
+ucumValidationSeverityLevel: "WARNING"
+
+# https://update.kbv.de/ita-update/DigitaleMuster/ERP/**/KBV_FHIR_eRP_V1.1.0_zur_Validierung.zip DIR: _Codesystem_ST
+#  1.07 - 01.01.2021 - gematik.kbv.sfhir.cs.vs-0.9.7.tgz
+#  1.08 - 01.04.2021 - gematik.kbv.sfhir.cs.vs-0.9.8.tgz
+#  1.09 - 01.04.2022 - gematik.kbv.sfhir.cs.vs-0.9.9.tgz
+#  1.10 - 01.07.2022 - gematik.kbv.sfhir.cs.vs-1.0.0.tgz
+#  1.11 - 01.04.2023 - gematik.kbv.sfhir.cs.vs-1.1.0.tgz
+#  1.12 - 01.07.2023 - gematik.kbv.sfhir.cs.vs-1.2.0.tgz
+
+
+dependencyLists:
+  # https://simplifier.net/eRezept/~packages
+  kbv.ita.erp.1.0.1:
+    packages:
+      - "kbv.ita.erp-1.0.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2021-07-01"
+    validTill: "2022-01-31" # 31.12.2021 + Übergangszeit 1 Monat
+
+  kbv.ita.erp.1.0.2:
+    packages:
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-01-01"
+    validTill: "2022-03-31"
+  kbv.ita.erp.1.0.2-4-2022:
+    packages:
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.9.tgz" # Update!
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-04-01"
+    validTill: "2022-06-30"
+  kbv.ita.erp.1.0.2-7-2022:
+    packages:
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.0.0.tgz" # Update!
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-07-01"
+    validTill: "2023-03-31"
+  kbv.ita.erp.1.0.2-4-2023:
+    packages:
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.1.0.tgz" # Update!
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2023-04-01"
+    validTill: "2023-06-30"
+  kbv.ita.erp.1.0.2-7-2023:
+    packages:
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz" # Update!
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2023-07-01"
+    validTill: "2023-12-31" # 30.06.2023 + Übergangszeit 6 Monate
+
+  kbv.ita.erp.1.1.1:
+    packages:
+      - "kbv.ita.erp-1.1.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+      - "kbv.ita.for-1.1.0.tgz"
+      - "kbv.basis-1.3.0.tgz"
+    validFrom: "2023-07-01"
+    validTill: "2023-12-31"
+
+  kbv.ita.erp.1.1.2:
+    packages:
+      - "kbv.ita.erp-1.1.2.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+      - "kbv.ita.for-1.1.0.tgz"
+      - "kbv.basis-1.3.0.tgz"
+    validFrom: "2024-01-01"
+
+  # https://simplifier.net/erezept-workflow/~packages
+  de.gematik.erezept-workflow.r4.1.0.3-1:
+    packages:
+      - "de.gematik.erezept-workflow.r4-1.0.3-1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+      - "kbv.ita.erp-1.0.1.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2021-07-01"
+    validTill: "2021-12-31"
+
+  de.gematik.erezept-workflow.r4.1.1.1:
+    packages:
+      - "de.gematik.erezept-workflow.r4-1.1.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-01-01"
+    validTill: "2022-03-31"
+  de.gematik.erezept-workflow.r4.1.1.1-4-2022:
+    packages:
+      - "de.gematik.erezept-workflow.r4-1.1.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.9.tgz" # Update!
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-04-01"
+    validTill: "2022-06-30"
+  de.gematik.erezept-workflow.r4.1.1.1-7-2022:
+    packages:
+      - "de.gematik.erezept-workflow.r4-1.1.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.0.0.tgz" # Update!
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-07-01"
+    validTill: "2023-03-31"
+  de.gematik.erezept-workflow.r4.1.1.1-4-2023:
+    packages:
+      - "de.gematik.erezept-workflow.r4-1.1.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.1.0.tgz" # Update!
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2023-04-01"
+    validTill: "2023-06-30"
+
+  de.gematik.erezept-workflow.r4.1.2.2:
+    packages:
+      - "de.gematik.erezept-workflow.r4-1.2.2.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "kbv.ita.erp-1.1.1.tgz"
+      - "kbv.ita.for-1.1.0.tgz"
+      - "kbv.basis-1.3.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2023-07-01"
+    validTill: "2023-12-31"
+
+  de.gematik.erezept-workflow.r4.1.2.2-1-2024:
+    packages:
+      - "de.gematik.erezept-workflow.r4-1.2.2.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "kbv.ita.erp-1.1.2.tgz" # Update
+      - "kbv.ita.for-1.1.0.tgz"
+      - "kbv.basis-1.3.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+      # KBV 1.0.2 and KBV 1.0.3 are not allowed anymore
+    validFrom: "2024-01-01"
+
+  # https://simplifier.net/eRezeptAbgabedaten/~packages
+  de.abda.erezeptabgabedaten.1.0.3:
+    packages:
+      - "de.abda.erezeptabgabedaten-1.0.3.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validationMessageTransformations:
+      - severityLevelFrom: "error"
+        severityLevelTo: "information"
+        locatorString: http:\/\/fhir\.abda\.de\/Identifier\/DAV-Herstellerschluessel['"][^'"]+['"]http:\/\/fhir\.de\/NamingSystem\/arge-ik\/iknr
+        messageId: "_DT_Fixed_Wrong"
+      - severityLevelFrom: "error"
+        severityLevelTo: "information"
+        locatorString: "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenEinheit"
+        messageId: "Reference_REF_CantMatchChoice"
+      - severityLevelFrom: "error"
+        severityLevelTo: "information"
+        locatorString: "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenHerstellung"
+        messageId: "Reference_REF_CantMatchChoice"
+      - severityLevelFrom: "error"
+        severityLevelTo: "information"
+        locatorString: "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-Base-ZusatzdatenHerstellung"
+        messageId: "Reference_REF_CantMatchChoice"
+      - severityLevelFrom: "error"
+        severityLevelTo: "information"
+        locatorString: "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenEinheit"
+        messageId: "Validation_VAL_Profile_NotSlice"
+    validFrom: "2021-07-01"
+    validTill: "2022-01-31" # "2021-12-31"
+
+  de.abda.erezeptabgabedaten.1.1.2: #KorrekturRelease
+    packages:
+      - "de.abda.erezeptabgabedaten-1.1.2.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+    validFrom: "2022-01-01"
+    validTill: "2022-03-31"
+
+  de.abda.erezeptabgabedaten.1.1.2-4-2022:
+    packages:
+      - "de.abda.erezeptabgabedaten-1.1.2.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.9.tgz" # Update!
+    validFrom: "2022-04-01"
+    validTill: "2022-06-30" # kein Übergangszeitraum
+
+  de.abda.erezeptabgabedaten.1.2.0:
+    packages:
+      - "de.abda.erezeptabgabedaten-1.2.0.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.2.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.0.0.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-07-01"
+    validTill: "2023-03-31"
+
+  de.abda.erezeptabgabedaten.1.2.0-4-2023:
+    packages:
+      - "de.abda.erezeptabgabedaten-1.2.0.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.2.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.1.0.tgz" # Update!
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2023-04-01"
+    validTill: "2023-06-30" # kein Übergangszeitraum
+
+  de.abda.erezeptabgabedaten.1.3.1:
+    packages:
+      - "de.abda.erezeptabgabedaten-1.3.1.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.3.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+    validFrom: "2023-07-01"
+    validTill: "2023-12-31"
+
+  de.abda.erezeptabgabedaten.1.3.2:
+    packages:
+      - "de.abda.erezeptabgabedaten-1.3.2.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.3.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+    validFrom: "2024-01-01"
+
+  de.abda.erezeptabgabedatenpkv.1.2.0:
+    packages:
+      - "de.abda.erezeptabgabedatenpkv-1.2.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.3.1.tgz"
+    validFrom: "2023-07-01"
+
+  # https://simplifier.net/erezept-patientenrechnung
+  de.gematik.erezept-patientenrechnung.r4.1.0.1:
+    packages:
+      - "de.gematik.erezept-patientenrechnung.r4-1.0.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "kbv.ita.erp-1.1.1.tgz"
+      - "kbv.ita.for-1.1.0.tgz"
+      - "kbv.basis-1.3.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+    validFrom: "2023-07-01"
+    validTill: "2023-12-31"
+
+  de.gematik.erezept-patientenrechnung.r4.1.0.1-1-2024:
+    packages:
+      - "de.gematik.erezept-patientenrechnung.r4-1.0.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "kbv.ita.erp-1.1.2.tgz" # Update
+      - "kbv.ita.for-1.1.0.tgz"
+      - "kbv.basis-1.3.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+    validFrom: "2024-01-01"
+
+
+  # https://simplifier.net/eRezeptAbrechnungsdaten/~packages
+  de.gkvsv.erezeptabrechnungsdaten.1.0.4:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.0.4.tgz"
+      - "de.abda.erezeptabgabedaten-1.0.3.tgz"
+      - "de.gematik.erezept-workflow.r4-1.0.3-1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+      - "kbv.ita.erp-1.0.1.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2021-07-01"
+    validTill: "2021-09-30"
+
+  de.gkvsv.erezeptabrechnungsdaten.1.0.5:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.0.5.tgz"
+      - "de.abda.erezeptabgabedaten-1.0.3.tgz"
+      - "de.gematik.erezept-workflow.r4-1.0.3-1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+      - "kbv.ita.erp-1.0.1.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2021-07-01"
+    validTill: "2021-09-30"
+
+  de.gkvsv.erezeptabrechnungsdaten.1.0.6:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.0.6.tgz"
+      - "de.abda.erezeptabgabedaten-1.0.3.tgz"
+      - "de.gematik.erezept-workflow.r4-1.0.3-1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+      - "kbv.ita.erp-1.0.1.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2021-07-01"
+    validTill: "2021-12-31"
+
+  de.gkvsv.erezeptabrechnungsdaten.1.1.0:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.1.0.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.1.3.tgz"
+      - "de.gematik.erezept-workflow.r4-1.1.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.8.tgz"
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-01-01"
+    validTill: "2022-03-31"
+
+  de.gkvsv.erezeptabrechnungsdaten.1.1.0-4-2022:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.1.0.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.1.3.tgz"
+      - "de.gematik.erezept-workflow.r4-1.1.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-0.9.9.tgz" # Update!
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-04-01"
+    validTill: "2022-06-30"
+
+  de.gkvsv.erezeptabrechnungsdaten.1.2.0:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.2.0.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.2.1.tgz"
+      - "de.gematik.erezept-workflow.r4-1.1.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.0.0.tgz"
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2022-07-01"
+    validTill: "2023-03-31"
+
+  de.gkvsv.erezeptabrechnungsdaten.1.2.0-4-2023:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.2.0.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.2.1.tgz"
+      - "de.gematik.erezept-workflow.r4-1.1.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.1.0.tgz" # Update!
+      - "kbv.ita.erp-1.0.2.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2023-04-01"
+    validTill: "2023-06-30"
+
+  de.gkvsv.erezeptabrechnungsdaten.1.3.0:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.3.0.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.3.1.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+    validFrom: "2023-07-01"
+
+supportedProfiles:
+  "http://fhir.abda.de/eRezeptAbgabadaten/StructureDefinition/DAV-PR-ERP-Abgabeinformationen":
+    profileVersions:
+      1.0.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.0.3"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-AbgabedatenBundle":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.2.0"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('DAV-PKV-PR-ERP-Abgabeinformationen')).whenHandedOver"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-AbgabedatenComposition":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.2.0"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abgabeinformationen":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.2.0"
+        creationDateLocator: "whenHandedOver"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abrechnungszeilen":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.2.0"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Apotheke":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.2.0"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenEinheit":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.2.0"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenHerstellung":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.2.0"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle":
+    profileVersions:
+      1.0.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.0.3"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('DAV-PR-ERP-Abgabeinformationen')).whenHandedOver"
+      1.1.0:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.1.2"
+          - "de.abda.erezeptabgabedaten.1.1.2-4-2022"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('DAV-PR-ERP-Abgabeinformationen')).whenHandedOver"
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.2.0"
+          - "de.abda.erezeptabgabedaten.1.2.0-4-2023"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('DAV-PR-ERP-Abgabeinformationen')).whenHandedOver"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.3.1"
+          - "de.abda.erezeptabgabedaten.1.3.2"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('DAV-PR-ERP-Abgabeinformationen')).whenHandedOver"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenComposition":
+    profileVersions:
+      1.0.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.0.3"
+      1.1.0:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.1.2"
+          - "de.abda.erezeptabgabedaten.1.1.2-4-2022"
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.2.0"
+          - "de.abda.erezeptabgabedaten.1.2.0-4-2023"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.3.1"
+          - "de.abda.erezeptabgabedaten.1.3.2"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Abgabeinformationen":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.1.2"
+          - "de.abda.erezeptabgabedaten.1.1.2-4-2022"
+        creationDateLocator: "whenHandedOver"
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.2.0"
+          - "de.abda.erezeptabgabedaten.1.2.0-4-2023"
+        creationDateLocator: "whenHandedOver"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.3.1"
+          - "de.abda.erezeptabgabedaten.1.3.2"
+        creationDateLocator: "whenHandedOver"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Abrechnungszeilen":
+    profileVersions:
+      1.0.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.0.3"
+      1.1.0:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.1.2"
+          - "de.abda.erezeptabgabedaten.1.1.2-4-2022"
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.2.0"
+          - "de.abda.erezeptabgabedaten.1.2.0-4-2023"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.3.1"
+          - "de.abda.erezeptabgabedaten.1.3.2"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Apotheke":
+    profileVersions:
+      1.0.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.0.3"
+      1.1.0:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.1.2"
+          - "de.abda.erezeptabgabedaten.1.1.2-4-2022"
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.2.0"
+          - "de.abda.erezeptabgabedaten.1.2.0-4-2023"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.3.1"
+          - "de.abda.erezeptabgabedaten.1.3.2"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenEinheit":
+    profileVersions:
+      1.0.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.0.3"
+      1.1.0:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.1.2"
+          - "de.abda.erezeptabgabedaten.1.1.2-4-2022"
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.2.0"
+          - "de.abda.erezeptabgabedaten.1.2.0-4-2023"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.3.1"
+          - "de.abda.erezeptabgabedaten.1.3.2"
+
+  "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenHerstellung":
+    profileVersions:
+      1.0.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.0.3"
+      1.1.0:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.1.2"
+          - "de.abda.erezeptabgabedaten.1.1.2-4-2022"
+      1.2:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.2.0"
+          - "de.abda.erezeptabgabedaten.1.2.0-4-2023"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedaten.1.3.1"
+          - "de.abda.erezeptabgabedaten.1.3.2"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_Binary":
+    profileVersions:
+      1.3:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.3.0"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_ERP_eAbrechnungsdaten":
+    profileVersions:
+      1.0.4:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.4"
+      1.0.5:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.5"
+      1.0.6:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.6"
+      1.1.0:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.1.0"
+      1.2:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0-4-2023"
+      1.3:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.3.0"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung":
+    profileVersions:
+      1.0.4:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.4"
+      1.0.5:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.5"
+      1.0.6:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.6"
+      1.1.0:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.1.0"
+      1.2:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0-4-2023"
+      1.3:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.3.0"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_Bundle":
+    profileVersions:
+      1.3:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.3.0"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Rechnung_Composition')).date"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_Composition":
+    profileVersions:
+      1.3:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.3.0"
+        creationDateLocator: "date"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_List":
+    profileVersions:
+      1.3:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.3.0"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_RezeptBundle":
+    profileVersions:
+      1.0.4:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.4"
+
+      1.0.5:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.5"
+
+      1.0.6:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.6"
+
+      1.1.0:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.1.0"
+
+      1.2:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0-4-2023"
+
+      1.3:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.3.0"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Sammelrechnung_Bundle":
+    profileVersions:
+      1.0.4:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.4"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Sammelrechnung_Composition')).date"
+
+      1.0.5:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.5"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Sammelrechnung_Composition')).date"
+
+      1.0.6:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.6"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Sammelrechnung_Composition')).date"
+
+      1.1.0:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.1.0"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Sammelrechnung_Composition')).date"
+
+      1.2:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0-4-2023"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Sammelrechnung_Composition')).date"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Sammelrechnung_Composition":
+    profileVersions:
+      1.0.4:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.4"
+        creationDateLocator: "date"
+
+      1.0.5:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.5"
+        creationDateLocator: "date"
+
+      1.0.6:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.6"
+        creationDateLocator: "date"
+
+      1.1.0:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.1.0"
+        creationDateLocator: "date"
+
+      1.2:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0-4-2023"
+        creationDateLocator: "date"
+
+  "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Sammelrechnung_List":
+    profileVersions:
+      1.0.4:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.4"
+      1.0.5:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.5"
+      1.0.6:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.0.6"
+      1.1.0:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.1.0"
+      1.2:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.2.0-4-2023"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle":
+    profileVersions:
+      1.0.1:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.1"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_ERP_Prescription') or meta.profile.contains('KBV_PR_ERP_PracticeSupply')).authoredOn"
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.2"
+          - "kbv.ita.erp.1.0.2-4-2022"
+          - "kbv.ita.erp.1.0.2-7-2022"
+          - "kbv.ita.erp.1.0.2-4-2023"
+          - "kbv.ita.erp.1.0.2-7-2023"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_ERP_Prescription') or meta.profile.contains('KBV_PR_ERP_PracticeSupply')).authoredOn"
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.erp.1.1.1"
+          - "kbv.ita.erp.1.1.2"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_ERP_Prescription') or meta.profile.contains('KBV_PR_ERP_PracticeSupply')).authoredOn"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Composition":
+    profileVersions:
+      1.0.1:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.1"
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.2"
+          - "kbv.ita.erp.1.0.2-4-2022"
+          - "kbv.ita.erp.1.0.2-7-2022"
+          - "kbv.ita.erp.1.0.2-4-2023"
+          - "kbv.ita.erp.1.0.2-7-2023"
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.erp.1.1.1"
+          - "kbv.ita.erp.1.1.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Compounding":
+    profileVersions:
+      1.0.1:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.1"
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.2"
+          - "kbv.ita.erp.1.0.2-4-2022"
+          - "kbv.ita.erp.1.0.2-7-2022"
+          - "kbv.ita.erp.1.0.2-4-2023"
+          - "kbv.ita.erp.1.0.2-7-2023"
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.erp.1.1.1"
+          - "kbv.ita.erp.1.1.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_FreeText":
+    profileVersions:
+      1.0.1:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.1"
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.2"
+          - "kbv.ita.erp.1.0.2-4-2022"
+          - "kbv.ita.erp.1.0.2-7-2022"
+          - "kbv.ita.erp.1.0.2-4-2023"
+          - "kbv.ita.erp.1.0.2-7-2023"
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.erp.1.1.1"
+          - "kbv.ita.erp.1.1.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Ingredient":
+    profileVersions:
+      1.0.1:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.1"
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.2"
+          - "kbv.ita.erp.1.0.2-4-2022"
+          - "kbv.ita.erp.1.0.2-7-2022"
+          - "kbv.ita.erp.1.0.2-4-2023"
+          - "kbv.ita.erp.1.0.2-7-2023"
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.erp.1.1.1"
+          - "kbv.ita.erp.1.1.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_PZN":
+    profileVersions:
+      1.0.1:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.1"
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.2"
+          - "kbv.ita.erp.1.0.2-4-2022"
+          - "kbv.ita.erp.1.0.2-7-2022"
+          - "kbv.ita.erp.1.0.2-4-2023"
+          - "kbv.ita.erp.1.0.2-7-2023"
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.erp.1.1.1"
+          - "kbv.ita.erp.1.1.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_PracticeSupply":
+    profileVersions:
+      1.0.1:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.1"
+        creationDateLocator: "authoredOn"
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.2"
+          - "kbv.ita.erp.1.0.2-4-2022"
+          - "kbv.ita.erp.1.0.2-7-2022"
+          - "kbv.ita.erp.1.0.2-4-2023"
+          - "kbv.ita.erp.1.0.2-7-2023"
+        creationDateLocator: "authoredOn"
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.erp.1.1.1"
+          - "kbv.ita.erp.1.1.2"
+        creationDateLocator: "authoredOn"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription":
+    profileVersions:
+      1.0.1:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.1"
+        creationDateLocator: "authoredOn"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.erp.1.0.2"
+          - "kbv.ita.erp.1.0.2-4-2022"
+          - "kbv.ita.erp.1.0.2-7-2022"
+          - "kbv.ita.erp.1.0.2-4-2023"
+          - "kbv.ita.erp.1.0.2-7-2023"
+        creationDateLocator: "authoredOn"
+
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.erp.1.1.1"
+          - "kbv.ita.erp.1.1.2"
+        creationDateLocator: "authoredOn"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxAcceptOperationOutParameters":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxAuditEvent":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxBinary":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxChargeItem":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxCommunicationDispReq":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxCommunicationInfoReq":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxCommunicationReply":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxCommunicationRepresentative":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxComposition":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxConsent":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxDevice":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxMedicationDispense":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+        creationDateLocator: "whenHandedOver"
+      1.0.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+        creationDateLocator: "whenHandedOver"
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+        creationDateLocator: "whenHandedOver"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+        creationDateLocator: "whenHandedOver"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxOrganization":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxReceipt":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('ErxComposition')).date"
+      1.0.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('ErxComposition')).date"
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('ErxComposition')).date"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('ErxComposition')).date"
+
+  "https://gematik.de/fhir/StructureDefinition/ErxTask":
+    profileVersions:
+      1.0.3-1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.0.3-1"
+      1.1.1:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.1.1"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-7-2022"
+          - "de.gematik.erezept-workflow.r4.1.1.1-4-2023"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PAR_OUT_OP_Accept":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_AuditEvent":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_BfArMApproval":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Binary":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Bundle":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GEM_ERP_PR_Composition')).date"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_CloseOperationInputBundle":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GEM_ERP_PR_MedicationDispense')).first().whenHandedOver"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_DispReq":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_InfoReq":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_Reply":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_Representative":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Composition":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+        creationDateLocator: "date"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Device":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Digest":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_MedicationDispense":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+        creationDateLocator: "whenHandedOver"
+
+  "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Task":
+    profileVersions:
+      1.2:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.2.2"
+          - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+
+  "https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_ChargeItem":
+    profileVersions:
+      1.0:
+        dependencyLists:
+          - "de.gematik.erezept-patientenrechnung.r4.1.0.1"
+          - "de.gematik.erezept-patientenrechnung.r4.1.0.1-1-2024"
+        creationDateLocator: "enteredDate"
+
+  "https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_Communication_ChargChangeReply":
+    profileVersions:
+      1.0:
+        dependencyLists:
+          - "de.gematik.erezept-patientenrechnung.r4.1.0.1"
+
+  "https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_Communication_ChargChangeReq":
+    profileVersions:
+      1.0:
+        dependencyLists:
+          - "de.gematik.erezept-patientenrechnung.r4.1.0.1"
+
+  "https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_Consent":
+    profileVersions:
+      1.0:
+        dependencyLists:
+          - "de.gematik.erezept-patientenrechnung.r4.1.0.1"
+          - "de.gematik.erezept-patientenrechnung.r4.1.0.1-1-2024"
+        creationDateLocator: "dateTime"

@@ -21,12 +21,15 @@ public class SnapshotMain {
         packageFolderPath = packageFolderPath.replace("snapshot-generator/", "");
         outputFolderPath = outputFolderPath.replace("snapshot-generator/", "");
 
+        String decompressDir = "";
+        if(args.length > 2)
+            decompressDir = args[2];
+
         List<String> excludedPackages = new ArrayList<>();
-        if(args.length > 2) {
-            excludedPackages = Arrays.asList(args[2].split(" "));
-        }
+        if(args.length > 3)
+            excludedPackages = Arrays.asList(args[3].split(" "));
 
         SnapshotGenerator snapshotGenerator = new SnapshotGenerator(excludedPackages);
-        snapshotGenerator.generateSnapshots(packageFolderPath, outputFolderPath);
+        snapshotGenerator.generateSnapshots(packageFolderPath, outputFolderPath, decompressDir);
     }
 }

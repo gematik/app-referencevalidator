@@ -1,0 +1,142 @@
+id: "eau"
+version: "0.9"
+errorOnUnknownProfile: "true"
+anyExtensionsAllowed: "false"
+ignoredCodeSystems:
+  - "http://fhir.de/CodeSystem/dimdi/icd-10-gm"
+  - "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+
+#  1.08 - 01.04.2021 - gematik.kbv.sfhir.cs.vs-0.9.8.tgz
+#  1.09 - 01.04.2022 - gematik.kbv.sfhir.cs.vs-0.9.9.tgz
+#  1.10 - 01.07.2022 - gematik.kbv.sfhir.cs.vs-1.0.0.tgz
+#  1.11 - 01.04.2023 - gematik.kbv.sfhir.cs.vs-1.1.0.tgz
+#  1.12 - 01.07.2023 - gematik.kbv.sfhir.cs.vs-1.2.0.tgz
+
+dependencyLists:
+  # https://simplifier.net/eRezept/~packages
+  kbv.ita.eau.1.0.2:
+    packages:
+      - "kbv.ita.eau-1.0.2.tgz"
+      - "gematik.kbv.eau.sfhir.cs.vs-1.0.0.tgz"
+      - "kbv.ita.for-1.0.3.tgz"
+      - "kbv.basis-1.1.3.tgz"
+      - "de.basisprofil.r4-0.9.13.tgz"
+    validFrom: "2021-07-01"
+    validTill: "2023-06-30"
+
+  kbv.ita.eau.1.1.0:
+    packages:
+      - "kbv.ita.eau-1.1.1.tgz"
+      - "gematik.kbv.eau.sfhir.cs.vs-1.1.0.tgz"
+      - "kbv.ita.for-1.1.0.tgz"
+      - "kbv.basis-1.3.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+    validFrom: "2023-07-01"
+
+supportedProfiles:
+  "http://hl7.org/fhir/StructureDefinition/Bundle":
+    profileVersions:
+      0.0.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Bundle":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Composition":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_AU":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_ICD":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_Text":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_ServiceRequest_steps":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno_Bundle":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno_Composition":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_health_insurance_Practitioner":
+    profileVersions:
+      1.1.0:
+        dependencyLists:
+          - "kbv.ita.eau.1.1.0"
+
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+

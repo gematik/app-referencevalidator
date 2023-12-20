@@ -1,6 +1,6 @@
 package de.gematik.refv.valmodule.base.helper;
 
-import de.gematik.refv.valmodule.base.ConfigurationBasedValidationModule;
+import de.gematik.refv.commons.validation.IntegratedValidationModule;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BaseProfileIntegrationTest {
 
-    protected ConfigurationBasedValidationModule validationModule;
+    protected IntegratedValidationModule validationModule;
 
     protected void createValidationModule(String module) {
         this.validationModule = TestConfigurationBasedValidationModuleFactory.createInstance(module);

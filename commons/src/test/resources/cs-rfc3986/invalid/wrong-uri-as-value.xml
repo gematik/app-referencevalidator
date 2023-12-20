@@ -1,0 +1,16 @@
+<Patient xmlns="http://hl7.org/fhir">
+    <id value="66033"/>
+    <meta>
+        <profile value="http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate|1.0.0"></profile>
+    </meta>
+    <identifier>
+        <system value="urn:ietf:rfc:3986"/>
+        <!-- URI is expected below -->
+        <value value="647515ed-0d5e-4c99-b23d-073fbc593f76"/>
+    </identifier>
+    <name>
+        <family value="Lux-Brennard"/>
+        <given value="Marie"/>
+    </name>
+    <birthDate value="2023-01-01"/>
+</Patient>

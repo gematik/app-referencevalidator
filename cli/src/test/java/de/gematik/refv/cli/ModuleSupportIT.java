@@ -34,10 +34,6 @@ class ModuleSupportIT {
     @ValueSource( strings = {
             "erp src/test/resources/erp-test.xml",
             "eau src/test/resources/eau-test.xml",
-            "isik1 src/test/resources/isik1-test.json",
-            "isik2 src/test/resources/isik2-test.json",
-            "isip1 src/test/resources/isip1-test.json",
-            "diga src/test/resources/diga-test.xml",
             "core src/test/resources/core-test.xml --profile http://fhir.org/StructureDefinition/Parameters"
     })
     @Execution(ExecutionMode.CONCURRENT)

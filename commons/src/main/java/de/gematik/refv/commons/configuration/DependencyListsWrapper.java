@@ -63,7 +63,7 @@ public class DependencyListsWrapper {
         if(firstSortedOptional.isPresent())
             return firstSortedOptional.get();
 
-        throw new IllegalStateException("Could not determinde latest dependency list");
+        throw new IllegalStateException("Could not determine latest dependency list");
     }
 
     public boolean areNoValidityPeriodsDefined() {

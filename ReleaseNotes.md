@@ -2,6 +2,14 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.0.0
+
+### added
+- Support for external validation modules (aka plugins)
+
+### changed
+- ISIK1, ISIK2, ISIK3, ISIP, DIGA have been extracted as external plugins (cf. https://github.com/gematik/app-referencevalidator-plugins)
+
 ## Release 1.1.0
 
 ### added

@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 @Data
 public class ValidationModuleConfiguration {
 
+    private String id;
     private Map<String, DependencyList> dependencyLists = new HashMap<>();
     private Map<String, SupportedProfileVersions> supportedProfiles = new HashMap<>();
 
@@ -42,7 +43,7 @@ public class ValidationModuleConfiguration {
     private boolean errorOnUnknownProfile;
     private boolean anyExtensionsAllowed;
     private String version;
-    private String ucumValidationSeverityLevel = "error";
+    private IValidationSupport.IssueSeverity ucumValidationSeverityLevel = IValidationSupport.IssueSeverity.ERROR;
 
 
     public ProfileConfiguration getSupportedProfileConfigurationOrThrow(Profile profile) {
@@ -80,15 +81,5 @@ public class ValidationModuleConfiguration {
             throw new IllegalStateException(String.format("Some of the dependency lists of %s are undefined", profile));
 
         return new DependencyListsWrapper(lists.stream().map(key -> dependencyLists.get(key)).collect(Collectors.toList()));
-    }
-
-    public IValidationSupport.IssueSeverity getUcumValidationSeverityLevel() {
-        switch (ucumValidationSeverityLevel) {
-            case "error": return IValidationSupport.IssueSeverity.ERROR;
-            case "warning": return IValidationSupport.IssueSeverity.WARNING;
-            case "information": return IValidationSupport.IssueSeverity.INFORMATION;
-            default:
-                throw new IllegalArgumentException("Could not parse severity level " + ucumValidationSeverityLevel);
-        }
     }
 }

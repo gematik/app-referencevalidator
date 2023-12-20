@@ -28,9 +28,9 @@ class ProfileValidityPeriodProviderTests {
     ProfileValidityPeriodProvider validityPeriodProvider = new ProfileValidityPeriodProvider();
     @Test
     void testDependencyListsWithNonEmptyValidFromAndValidTillAreProcessedCorrectly() {
-        DependencyList dl1 = new DependencyList("2020-01-01", "2020-02-28", new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
-        DependencyList dl2 = new DependencyList("2020-03-01", "2020-04-30", new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
-        DependencyList dl3 = new DependencyList("2020-04-30", "2020-05-31", new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
+        DependencyList dl1 = new DependencyList("2020-01-01", "2020-02-28", new LinkedList<>(), new LinkedList<>());
+        DependencyList dl2 = new DependencyList("2020-03-01", "2020-04-30", new LinkedList<>(), new LinkedList<>());
+        DependencyList dl3 = new DependencyList("2020-04-30", "2020-05-31", new LinkedList<>(), new LinkedList<>());
 
         var result = validityPeriodProvider.calculateFrom(new DependencyListsWrapper(dl1, dl2, dl3));
 
@@ -41,7 +41,7 @@ class ProfileValidityPeriodProviderTests {
 
     @Test
     void testOneDependencyListWithNonEmptyValidFromAndValidTillAreProcessedCorrectly() {
-        DependencyList dl1 = new DependencyList("2020-01-01", "2020-02-28", new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
+        DependencyList dl1 = new DependencyList("2020-01-01", "2020-02-28", new LinkedList<>(), new LinkedList<>());
 
         var result = validityPeriodProvider.calculateFrom(new DependencyListsWrapper(dl1));
 
@@ -52,9 +52,9 @@ class ProfileValidityPeriodProviderTests {
 
     @Test
     void testDependencyListsWithEmptyValidTillAreProcessedCorrectly() {
-        DependencyList dl1 = new DependencyList("2020-01-01", "2020-02-28", new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
-        DependencyList dl2 = new DependencyList("2020-03-01", "2020-04-30", new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
-        DependencyList dl3 = new DependencyList("2020-04-30", null, new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
+        DependencyList dl1 = new DependencyList("2020-01-01", "2020-02-28", new LinkedList<>(), new LinkedList<>());
+        DependencyList dl2 = new DependencyList("2020-03-01", "2020-04-30", new LinkedList<>(), new LinkedList<>());
+        DependencyList dl3 = new DependencyList("2020-04-30", null, new LinkedList<>(), new LinkedList<>());
 
         var result = validityPeriodProvider.calculateFrom(new DependencyListsWrapper(dl1, dl2, dl3));
 
@@ -65,9 +65,9 @@ class ProfileValidityPeriodProviderTests {
 
     @Test
     void testDependencyListsWithoutValidityDatesAreProcessedCorrectly() {
-        DependencyList dl1 = new DependencyList(null, null, new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
-        DependencyList dl2 = new DependencyList(null, null, new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
-        DependencyList dl3 = new DependencyList(null, null, new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
+        DependencyList dl1 = new DependencyList(null, null, new LinkedList<>(), new LinkedList<>());
+        DependencyList dl2 = new DependencyList(null, null, new LinkedList<>(), new LinkedList<>());
+        DependencyList dl3 = new DependencyList(null, null, new LinkedList<>(), new LinkedList<>());
 
         var result = validityPeriodProvider.calculateFrom(new DependencyListsWrapper(dl1, dl2, dl3));
 
@@ -76,8 +76,8 @@ class ProfileValidityPeriodProviderTests {
 
     @Test
     void testDependencyListsWithMissingValueFromThrowException() {
-        DependencyList dl1 = new DependencyList(null, "2020-01-31", new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
-        DependencyList dl2 = new DependencyList("2020-02-01", "2020-02-28", new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
+        DependencyList dl1 = new DependencyList(null, "2020-01-31", new LinkedList<>(), new LinkedList<>());
+        DependencyList dl2 = new DependencyList("2020-02-01", "2020-02-28", new LinkedList<>(), new LinkedList<>());
 
         var dependencyLists = new DependencyListsWrapper(dl1, dl2);
         Assertions.assertThrows(IllegalStateException.class, () -> validityPeriodProvider.calculateFrom(dependencyLists));

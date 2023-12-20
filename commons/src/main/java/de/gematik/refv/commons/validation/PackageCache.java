@@ -18,33 +18,32 @@ package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.IValidationSupport;
+import de.gematik.refv.commons.validation.support.CustomNpmPackageValidationSupport;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.hl7.fhir.common.hapi.validation.support.NpmPackageValidationSupport;
 
+import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class PackageCache {
-    private FhirContext fhirContext;
+class PackageCache {
+    private final FhirContext fhirContext;
 
-    private Map<String, IValidationSupport> packages = new ConcurrentHashMap<>();
+    private final Map<String, IValidationSupport> packages = new ConcurrentHashMap<>();
 
     public PackageCache(FhirContext fhirContext) {
         this.fhirContext = fhirContext;
     }
 
-
-    public IValidationSupport addOrGet(String packagePath) {
-        return packages.computeIfAbsent(packagePath, path -> createPrePopulatedSupportFromPackage(packagePath));
+    public IValidationSupport addOrGet(String packagePath, InputStream inputStream) {
+        return packages.computeIfAbsent(packagePath, path -> createPrePopulatedSupportFromPackage(inputStream));
     }
 
     @SneakyThrows
-    private IValidationSupport createPrePopulatedSupportFromPackage(String packagePath) {
-        log.info("Loading package " + packagePath + "...");
-        NpmPackageValidationSupport validationSupport = new NpmPackageValidationSupport(fhirContext);
-        validationSupport.loadPackageFromClasspath("package/" + packagePath);
+    private IValidationSupport createPrePopulatedSupportFromPackage(InputStream inputStream) {
+        CustomNpmPackageValidationSupport validationSupport = new CustomNpmPackageValidationSupport(fhirContext);
+        validationSupport.loadPackageFromInputStream(inputStream);
         return validationSupport;
     }
 }

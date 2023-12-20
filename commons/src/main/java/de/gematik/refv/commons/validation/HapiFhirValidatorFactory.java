@@ -17,8 +17,6 @@
 package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.api.EncodingEnum;
-import ca.uhn.fhir.util.ClasspathUtil;
 import ca.uhn.fhir.validation.FhirValidator;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.validation.support.IgnoreCodeSystemValidationSupport;
@@ -28,25 +26,19 @@ import de.gematik.refv.commons.validation.support.UcumValidationSupport;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.hl7.fhir.common.hapi.validation.support.CachingValidationSupport;
-import org.hl7.fhir.common.hapi.validation.support.PrePopulatedValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.SnapshotGeneratingValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 
-public class HapiFhirValidatorFactory {
+class HapiFhirValidatorFactory {
 
-    private FhirContext fhirContext;
+    private final FhirContext fhirContext;
 
-    private PackageCache packageCache;
-    static Logger logger = LoggerFactory.getLogger(HapiFhirValidatorFactory.class);
+    private final PackageCache packageCache;
+
 
     public HapiFhirValidatorFactory(FhirContext fhirContext) {
         this.fhirContext = fhirContext;
@@ -56,47 +48,41 @@ public class HapiFhirValidatorFactory {
     @SneakyThrows
     public FhirValidator createInstance(
             @NonNull Collection<String> packageFilenames,
-            Collection<String> patches,
-            @NonNull ValidationModuleConfiguration configuration) {
-        Collection<String> codeSystemsToIgnore = configuration.getIgnoredCodeSystems();
-        Collection<String> valueSetsToIgnore = configuration.getIgnoredValueSets();
-        boolean errorOnUnknownProfile = configuration.isErrorOnUnknownProfile();
-        boolean anyExtensionsAllowed = configuration.isAnyExtensionsAllowed();
+            @NonNull ValidationModuleResourceProvider validationModuleResourceProvider) {
 
-        var patchesPrePopulatedValidationSupport = new PrePopulatedValidationSupport(fhirContext);
-        for (String patch :
-                patches) {
-            logger.info("Applying patch {}...",patch);
-            try(InputStream is = ClasspathUtil.loadResourceAsStream("package/patches/" + patch)) {
-                var patchString = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                var newResource = EncodingEnum.detectEncoding(patchString).newParser(fhirContext).parseResource(patchString);
-                patchesPrePopulatedValidationSupport.addResource(newResource);
-            }
-        }
+        var configuration = validationModuleResourceProvider.getConfiguration();
+        var validationSupportChain = createValidationSupportChain(configuration);
+        addNpmPackagesToValidationSupportChain(packageFilenames, validationSupportChain, validationModuleResourceProvider);
+        return createHapiFhirValidator(configuration, validationSupportChain);
+    }
 
-        var validationSupport = fhirContext.getValidationSupport();
-        var validationSupportChain = new ValidationSupportChain(
-                new UcumValidationSupport(fhirContext, configuration.getUcumValidationSeverityLevel()),
-                new SnapshotGeneratingValidationSupport(fhirContext),
-                new CachingValidationSupport(new IgnoreCodeSystemValidationSupport(fhirContext, codeSystemsToIgnore)),
-                new CachingValidationSupport(new IgnoreValueSetValidationSupport(fhirContext, valueSetsToIgnore)),
-                new CachingValidationSupport(validationSupport),
-                new PipedCanonicalCoreResourcesValidationSupport(fhirContext),
-                patchesPrePopulatedValidationSupport
-        );
-
-        for (String packagePath : packageFilenames) {
-            var prePopulatedValidationSupport = packageCache.addOrGet(packagePath);
-            validationSupportChain.addValidationSupport(prePopulatedValidationSupport);
-        }
-
+    private FhirValidator createHapiFhirValidator(ValidationModuleConfiguration configuration, ValidationSupportChain validationSupportChain) {
         FhirInstanceValidator hapiValidatorModule = new FhirInstanceValidator(
                 validationSupportChain);
-        hapiValidatorModule.setErrorForUnknownProfiles(errorOnUnknownProfile);
+        hapiValidatorModule.setErrorForUnknownProfiles(configuration.isErrorOnUnknownProfile());
         hapiValidatorModule.setNoExtensibleWarnings(true);
-        hapiValidatorModule.setAnyExtensionsAllowed(anyExtensionsAllowed);
+        hapiValidatorModule.setAnyExtensionsAllowed(configuration.isAnyExtensionsAllowed());
         FhirValidator fhirValidator = fhirContext.newValidator();
         fhirValidator.registerValidatorModule(hapiValidatorModule);
         return fhirValidator;
+    }
+
+    private void addNpmPackagesToValidationSupportChain(Collection<String> packageFilenames, ValidationSupportChain validationSupportChain, ValidationModuleResourceProvider validationModuleResourceProvider) {
+        for (String packagePath : packageFilenames) {
+            var prePopulatedValidationSupport = packageCache.addOrGet(packagePath, validationModuleResourceProvider.getPackage(packagePath));
+            validationSupportChain.addValidationSupport(prePopulatedValidationSupport);
+        }
+    }
+
+    private ValidationSupportChain createValidationSupportChain(ValidationModuleConfiguration configuration) {
+        var validationSupport = fhirContext.getValidationSupport();
+        return new ValidationSupportChain(
+                new UcumValidationSupport(fhirContext, configuration.getUcumValidationSeverityLevel()),
+                new SnapshotGeneratingValidationSupport(fhirContext),
+                new CachingValidationSupport(new IgnoreCodeSystemValidationSupport(fhirContext, configuration.getIgnoredCodeSystems())),
+                new CachingValidationSupport(new IgnoreValueSetValidationSupport(fhirContext, configuration.getIgnoredValueSets())),
+                new CachingValidationSupport(validationSupport),
+                new PipedCanonicalCoreResourcesValidationSupport(fhirContext)
+        );
     }
 }

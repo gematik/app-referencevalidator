@@ -6,7 +6,7 @@
     <parent>
         <groupId>de.gematik.refv</groupId>
         <artifactId>referencevalidator</artifactId>
-        <version>1.1.0</version>
+        <version>2.0.0</version>
     </parent>
 
     <artifactId>snapshot-generator</artifactId>
@@ -34,21 +34,9 @@
                                 </goals>
                                 <configuration>
                                     <arguments>
-                                        <argument>${project.basedir}/valmodule-erp/src/main/resources/src-package/</argument>
-                                        <argument>${project.basedir}/valmodule-erp/src/main/resources/package/</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>diga</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>
-                                        <argument>${project.basedir}/valmodule-diga/src/main/resources/src-package/</argument>
-                                        <argument>${project.basedir}/valmodule-diga/src/main/resources/package/</argument>
+                                        <argument>${project.basedir}/valmodule-erp/src/main/resources/erp/src-package/</argument>
+                                        <argument>${project.basedir}/valmodule-erp/src/main/resources/erp/package/</argument>
+                                        <argument>${project.basedir}/target/decompressed-packages/</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -60,61 +48,9 @@
                                 </goals>
                                 <configuration>
                                     <arguments>
-                                        <argument>${project.basedir}/valmodule-eau/src/main/resources/src-package/</argument>
-                                        <argument>${project.basedir}/valmodule-eau/src/main/resources/package/</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>isik1</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>
-                                        <argument>${project.basedir}/valmodule-isik1/src/main/resources/src-package/</argument>
-                                        <argument>${project.basedir}/valmodule-isik1/src/main/resources/package/</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>isip1</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>
-                                        <argument>${project.basedir}/valmodule-isip1/src/main/resources/src-package/</argument>
-                                        <argument>${project.basedir}/valmodule-isip1/src/main/resources/package/</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>isik2</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>
-                                        <argument>${project.basedir}/valmodule-isik2/src/main/resources/src-package/</argument>
-                                        <argument>${project.basedir}/valmodule-isik2/src/main/resources/package/</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>isik3</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>
-                                        <argument>${project.basedir}/valmodule-isik3/src/main/resources/src-package/</argument>
-                                        <argument>${project.basedir}/valmodule-isik3/src/main/resources/package/</argument>
-                                        <argument>hl7.terminology.r4-4.0.0.tgz hl7.terminology.r4-5.0.0.tgz de.basisprofil.r4-0.9.13.tgz</argument>
+                                        <argument>${project.basedir}/valmodule-eau/src/main/resources/eau/src-package/</argument>
+                                        <argument>${project.basedir}/valmodule-eau/src/main/resources/eau/package/</argument>
+                                        <argument>${project.basedir}/target/decompressed-packages/</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

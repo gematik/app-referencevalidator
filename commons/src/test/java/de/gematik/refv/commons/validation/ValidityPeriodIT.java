@@ -17,7 +17,7 @@
 package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.validation.ResultSeverityEnum;
-import de.gematik.refv.commons.helper.SimpleValidationModule;
+import de.gematik.refv.commons.helper.ValidationModuleFactory;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,12 +30,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 @Execution(ExecutionMode.CONCURRENT)
 class ValidityPeriodIT {
 
-    private static SimpleValidationModule validationModule;
+    private static ValidationModule validationModule;
 
     @BeforeAll
     @SneakyThrows
     static void beforeAll() {
-        validationModule = SimpleValidationModule.createInstance("simple-packages.yaml");
+        validationModule = ValidationModuleFactory.createInstance("simple");
         validationModule.initialize();
     }
 

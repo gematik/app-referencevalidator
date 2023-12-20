@@ -2,6 +2,7 @@ package de.gematik.refv.snapshots.helper;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.IValidationSupport;
+import de.gematik.refv.commons.validation.support.CustomNpmPackageValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class NpmPackageLoader {
         var result = new ValidationSupportChain();
 
         for(String p : packageFilesToLoad) {
-            NpmLocalPackageValidationSupport npmPackageSupport = new NpmLocalPackageValidationSupport(ctx);
+            CustomNpmPackageValidationSupport npmPackageSupport = new CustomNpmPackageValidationSupport(ctx);
             npmPackageSupport.loadPackageFromPath(dirPath + p);
             result.addValidationSupport(npmPackageSupport);
         }

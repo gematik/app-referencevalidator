@@ -20,7 +20,7 @@ import ca.uhn.fhir.validation.ResultSeverityEnum;
 
 import java.util.stream.Collectors;
 
-public class ValidationResultOutputFilter {
+class ValidationResultOutputFilter {
     public ValidationResult apply(ValidationResult result, ValidationMessagesFilter validationMessagesFilter) {
         if(validationMessagesFilter == ValidationMessagesFilter.KEEP_ALL)
             return result;

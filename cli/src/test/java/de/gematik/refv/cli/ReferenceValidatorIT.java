@@ -16,7 +16,6 @@
 
 package de.gematik.refv.cli;
 
-
 import de.gematik.refv.cli.support.TestAppender;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Level;
@@ -26,8 +25,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 @Slf4j
 class ReferenceValidatorIT {
@@ -48,7 +45,7 @@ class ReferenceValidatorIT {
 
     @Test
     void testVerboseMode() {
-        String input = "isik1 src/test/resources/isik1-test.json -v";
+        String input = "erp src/test/resources/erp-test.xml -v";
         String [] args = input.split(" ");
 
         ReferenceValidator.main(args);
@@ -59,12 +56,13 @@ class ReferenceValidatorIT {
 
     @Test
     void testValidationAgainstProfile() {
-        String input = "isik1 src/test/resources/isik1-test.json -p https://gematik.de/fhir/ISiK/StructureDefinition/ISiKDiagnose -v";
+        String profileToValidate = "http://fhir.org/StructureDefinition/Bundle";
+        String input = "core src/test/resources/core-test.xml -p " + profileToValidate + " -v";
         String [] args = input.split(" ");
 
         ReferenceValidator.main(args);
 
-        boolean profileTakenIntoAccount = appender.getLogs().stream().anyMatch(e -> e.getMessage().toString().contains("https://gematik.de/fhir/ISiK/StructureDefinition/ISiKDiagnose"));
+        boolean profileTakenIntoAccount = appender.getLogs().stream().anyMatch(e -> e.getMessage().toString().contains(profileToValidate));
         Assertions.assertTrue(profileTakenIntoAccount,"Passed profile has not been taken into account while validation");
 
         boolean warningIssued = appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("WARNING")) && appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("REFV_WARN_PASSED_PROFILE_DIFFERS_FROM_META_PROFILE"));
@@ -73,7 +71,7 @@ class ReferenceValidatorIT {
 
     @Test
     void testOnlyErrorsInOutput() {
-        String input = "isik1 src/test/resources/isik1-test-errors.json";
+        String input = "erp src/test/resources/erp-test-error.xml";
         String [] args = input.split(" ");
 
         ReferenceValidator.main(args);
@@ -83,8 +81,8 @@ class ReferenceValidatorIT {
     }
 
     @Test
-    void testAcceptedEncodingsCanLimitInputToXmlOnly() {
-        String input = "isik1 src/test/resources/isik1-test.json --accepted-encodings xml";
+    void testAcceptedEncodingsLeeadsToInvalidInstancesIfViolated() {
+        String input = "core src/test/resources/core-test.json --accepted-encodings xml";
         String [] args = input.split(" ");
 
         ReferenceValidator.main(args);
@@ -95,7 +93,7 @@ class ReferenceValidatorIT {
 
     @Test
     void testAcceptedEncodingsListIsParsedCorrectly() {
-        String input = "isik1 src/test/resources/isik1-test.json --accepted-encodings xml,json";
+        String input = "core src/test/resources/core-test.json --accepted-encodings xml,json";
         String [] args = input.split(" ");
 
         ReferenceValidator.main(args);
@@ -135,5 +133,16 @@ class ReferenceValidatorIT {
 
         boolean isValid = appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("Usage"));
         Assertions.assertTrue(isValid, "No information found on empty parameters");
+    }
+
+    @Test
+    void testUnsupportedModule() {
+        String input = "unsupported-module src/test/resources/DAV-PR-ERP-Abgabeinformationen-validity-period-not-started.xml";
+        String [] args = input.split(" ");
+
+        ReferenceValidator.main(args);
+
+        boolean isValid = appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("unsupported. Supported modules:"));
+        Assertions.assertTrue(isValid, "No information found on supported modules");
     }
 }

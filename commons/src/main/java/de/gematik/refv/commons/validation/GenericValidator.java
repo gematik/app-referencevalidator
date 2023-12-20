@@ -24,7 +24,6 @@ import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.commons.Profile;
-import de.gematik.refv.commons.ReferencedProfileLocator;
 import de.gematik.refv.commons.configuration.DependencyList;
 import de.gematik.refv.commons.configuration.DependencyListsWrapper;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
@@ -48,41 +47,38 @@ public class GenericValidator {
     private static final String ERR_REFV_WRONG_ENCODING = "REFV_WRONG_ENCODING";
     private final FhirContext fhirContext;
 
-    private final ReferencedProfileLocator referencedProfileLocator;
+    private final ReferencedProfileLocator referencedProfileLocator = new ReferencedProfileLocator();
 
     private final HapiFhirValidatorFactory hapiFhirValidatorFactory;
 
-    private final SeverityLevelTransformer severityLevelTransformator;
-    private final ConcurrentHashMap<DependencyList, FhirValidator> hapiFhirValidatorCache;
+    private final SeverityLevelTransformer severityLevelTransformator = new SeverityLevelTransformer();
+    private final ConcurrentHashMap<DependencyList, FhirValidator> hapiFhirValidatorCache = new ConcurrentHashMap<>();
 
-    private final ValidationResultOutputFilter outputFilter;
+    private final ValidationResultOutputFilter outputFilter = new ValidationResultOutputFilter();
 
     public GenericValidator(FhirContext context) {
         this.fhirContext = context;
-        this.referencedProfileLocator = new ReferencedProfileLocator();
         this.hapiFhirValidatorFactory = new HapiFhirValidatorFactory(fhirContext);
-        this.severityLevelTransformator = new SeverityLevelTransformer();
-        this.hapiFhirValidatorCache = new ConcurrentHashMap<>();
-        outputFilter = new ValidationResultOutputFilter();
     }
 
     public ValidationResult validate(
             @NonNull
             String resourceBody,
             @NonNull
-            ValidationModuleConfiguration configuration) throws IllegalArgumentException {
-        return validate(resourceBody, configuration, ValidationOptions.getDefaults());
+            ValidationModuleResourceProvider resourceProvider) throws IllegalArgumentException {
+        return validate(resourceBody, resourceProvider, ValidationOptions.getDefaults());
     }
 
     public ValidationResult validate(
             @NonNull
             String resourceBody,
             @NonNull
-            ValidationModuleConfiguration configuration,
+            ValidationModuleResourceProvider resourceProvider,
             @NonNull ValidationOptions validationOptions) throws IllegalArgumentException {
 
         resourceBody = XmlCommentRemover.removeXmlCommentsFrom(resourceBody);
         ValidationResult result;
+        var configuration = resourceProvider.getConfiguration();
 
         if(!validateEncoding(resourceBody, configuration, validationOptions))
             result = ValidationResult.createInstance(ResultSeverityEnum.ERROR, ERR_REFV_WRONG_ENCODING, String.format("Wrong instance encoding. Allowed encodings: %s", String.join(",", getAcceptedEncodings(configuration, validationOptions))));
@@ -110,10 +106,10 @@ public class GenericValidator {
 
             // Assumption: each profile has at least one dependency list configured
             if (StringUtils.isEmpty(creationDateLocator)) {
-                result = validateWithoutConfiguredLocator(resourceBody, configuration, profileForValidation, dependencyLists, userDefinedProfile);
+                result = validateWithoutConfiguredLocator(resourceBody, resourceProvider, profileForValidation, dependencyLists, userDefinedProfile);
             }
             else {
-                result = validateUsingConfiguredLocator(resourceBody, configuration, validationOptions, creationDateLocator, dependencyLists, userDefinedProfile, profileForValidation);
+                result = validateUsingConfiguredLocator(resourceBody, resourceProvider, validationOptions, creationDateLocator, dependencyLists, userDefinedProfile, profileForValidation);
             }
         }
 
@@ -121,7 +117,7 @@ public class GenericValidator {
     }
 
 
-    private ValidationResult validateUsingConfiguredLocator(String resourceBody, ValidationModuleConfiguration configuration, ValidationOptions validationOptions, String creationDateLocator, DependencyListsWrapper dependencyLists, String userDefinedProfile, Profile profileForValidation) {
+    private ValidationResult validateUsingConfiguredLocator(String resourceBody, ValidationModuleResourceProvider resourceProvider, ValidationOptions validationOptions, String creationDateLocator, DependencyListsWrapper dependencyLists, String userDefinedProfile, Profile profileForValidation) {
         try {
             var resourceCreationDateOptional = new ResourceCreationDateLocator(fhirContext).findCreationDateIn(resourceBody, creationDateLocator);
 
@@ -136,7 +132,7 @@ public class GenericValidator {
             var dependencyListOptional = dependencyLists.getDependencyListValidAt(resourceCreationDateOptional.get());
             if (dependencyListOptional.isPresent())
                 // Use Case 2.2.1 Dependency list for the resource creation date is present
-                return validateUsingDependencyList(resourceBody, configuration, dependencyListOptional.get(), userDefinedProfile);
+                return validateUsingDependencyList(resourceBody, resourceProvider, dependencyListOptional.get(), userDefinedProfile);
 
             // Use Case 2.2.2 No Dependency list is found for the creation date
             if (isValidateProfileValidityPeriod(validationOptions)) {
@@ -146,7 +142,7 @@ public class GenericValidator {
             }
 
             // Use Case 2.2.2.2 ValidityPeriodChek is turned off -> use latest dependencies
-            var result = validateUsingDependencyList(resourceBody, configuration, dependencyLists.getLatestDependencyList(), userDefinedProfile);
+            var result = validateUsingDependencyList(resourceBody, resourceProvider, dependencyLists.getLatestDependencyList(), userDefinedProfile);
             addWarningAboutDeactivatedValidityPeriodCheckTo(result);
             return result;
 
@@ -156,11 +152,11 @@ public class GenericValidator {
         }
     }
 
-    private ValidationResult validateWithoutConfiguredLocator(String resourceBody, ValidationModuleConfiguration configuration, Profile profileForValidation, DependencyListsWrapper dependencyLists, String userDefinedProfile) {
+    private ValidationResult validateWithoutConfiguredLocator(String resourceBody, ValidationModuleResourceProvider resourceProvider, Profile profileForValidation, DependencyListsWrapper dependencyLists, String userDefinedProfile) {
         ValidationResult result;
         log.warn("Could not retrieve creation date for profile {}: no locator expression defined. Using latest dependencies...", profileForValidation);
         var dependencyList = dependencyLists.getLatestDependencyList();
-        result = validateUsingDependencyList(resourceBody, configuration, dependencyList, userDefinedProfile);
+        result = validateUsingDependencyList(resourceBody, resourceProvider, dependencyList, userDefinedProfile);
         return result;
     }
 
@@ -195,15 +191,14 @@ public class GenericValidator {
         result.getValidationMessages().add(m);
     }
 
-    private ValidationResult validateUsingDependencyList(String resourceBody, ValidationModuleConfiguration configuration, DependencyList dependencyList, String userDefinedProfile) {
+    private ValidationResult validateUsingDependencyList(String resourceBody, ValidationModuleResourceProvider resourceProvider, DependencyList dependencyList, String userDefinedProfile) {
         log.debug("Applying dependency list: {}", dependencyList);
-        Profile profileInResource = getProfileInResource(resourceBody, configuration);
+        Profile profileInResource = getProfileInResource(resourceBody, resourceProvider.getConfiguration());
 
         var fhirValidator = hapiFhirValidatorCache.computeIfAbsent(dependencyList, k ->
                 hapiFhirValidatorFactory.createInstance(
                         dependencyList.getPackages(),
-                        dependencyList.getPatches(),
-                        configuration
+                        resourceProvider
                 ));
 
         var options = new ca.uhn.fhir.validation.ValidationOptions();

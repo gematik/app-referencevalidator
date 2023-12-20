@@ -25,7 +25,7 @@ class DiagnosticsMessageBuilderTests {
 
     @Test
     void testCreateValidityPeriodDiagnosticsString() {
-        DependencyList dependencyList = new DependencyList("1999-01-01", "2000-01-01", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        DependencyList dependencyList = new DependencyList("1999-01-01", "2000-01-01", new ArrayList<>(), new ArrayList<>());
         DependencyListsWrapper dependencyListsWrapper = new DependencyListsWrapper(dependencyList);
         String diagnostics = diagnosticsMessageBuilder.
                 createValidityPeriodDiagnosticsString(dependencyListsWrapper, profileInResource, localDate);
@@ -42,7 +42,7 @@ class DiagnosticsMessageBuilderTests {
 
     @Test
     void testCreateValidityPeriodDiagnosticsStringValidFromIsEmptyThrowsIllegalStateException() {
-        DependencyList dependencyList = new DependencyList(null, "2000-01-01", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        DependencyList dependencyList = new DependencyList(null, "2000-01-01", new ArrayList<>(), new ArrayList<>());
         DependencyListsWrapper dependencyListsWrapper = new DependencyListsWrapper(dependencyList);
         Assertions.assertThrows(IllegalStateException.class, () -> diagnosticsMessageBuilder
                 .createValidityPeriodDiagnosticsString(dependencyListsWrapper, profileInResource, localDate));
@@ -50,7 +50,7 @@ class DiagnosticsMessageBuilderTests {
 
     @Test
     void testCreateValidityPeriodDiagnosticsStringValidTillIsEmpty() {
-        DependencyList dependencyList = new DependencyList("1999-01-01", null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        DependencyList dependencyList = new DependencyList("1999-01-01", null, new ArrayList<>(), new ArrayList<>());
         DependencyListsWrapper dependencyListsWrapper = new DependencyListsWrapper(dependencyList);
         String diagnostics = diagnosticsMessageBuilder.
                 createValidityPeriodDiagnosticsString(dependencyListsWrapper, profileInResource, localDate);

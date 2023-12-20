@@ -1,8 +1,0 @@
-version: "1.0"
-errorOnUnknownProfile: "false"
-anyExtensionsAllowed: "true"
-
-dependencyLists:
-  dummy.1.0.0:
-    packages:
-      - "refv-dummy-1.0.0.tgz"

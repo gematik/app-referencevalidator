@@ -66,11 +66,7 @@ Siehe [Release Notes](ReleaseNotes.md)
 | E-Rezept                                                        | 2.0         |
 | Elektronische Arbeitsunfähigkeitsbescheinigung                  | 0.9         |
 | FHIR Core                                                       | 1.0         |
-| Informationstechnische Systeme in Krankenhäusern (ISIK) Stufe 1 | 1.0         |
-| Informationstechnische Systeme in Krankenhäusern (ISIK) Stufe 2 | 1.0         |
-| Informationstechnische Systeme in Krankenhäusern (ISIK) Stufe 3 | 0.1         |
-| Informationstechnische Systeme in der Pflege (ISIP) Stufe 1     | 1.0         |
-| DiGA Toolkit                                                    | 0.9         |
+
 
 
 ### E-Rezept-Modul
@@ -112,52 +108,51 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das eAU-Modul wie folgt:
   - Extension-seitenlokalisation.json
     - BugFix: Version 0.9.12 auf 0.9.13 korrigiert
 
-### ISIP1-Modul
-
-#### Anpassungen der Packages:
-- Alle Packages enthalten Snapshots
-
-### ISIK3-Modul
-
-Abweichend vom allgemeinen Prüfumfang verhält sich das ISIK3-Modul wie folgt:
-- Codes aus den CodeSystemen `http://snomed.info/sct`, `http://fhir.de/CodeSystem/bfarm/icd-10-gm`, `http://fhir.de/CodeSystem/bfarm/atc` und `http://fhir.de/CodeSystem/bfarm/ops` werden nicht validiert
-- Folgende ValueSets werden nicht validiert: `https://gematik.de/fhir/isik/v3/Basismodul/ValueSet/ProzedurenCodesSCT`, `https://gematik.de/fhir/isik/v3/Basismodul/ValueSet/DiagnosesSCT`, `https://gematik.de/fhir/isik/v3/Basismodul/ValueSet/ProzedurenKategorieSCT`, `https://gematik.de/fhir/isik/v3/Terminplanung/ValueSet/ISiKTerminPriority`, `https://gematik.de/fhir/isik/v3/Medikation/ValueSet/SctRouteOfAdministration` und `http://fhir.de/ValueSet/bfarm/ops`
-
-
-#### Anpassungen der Packages:
-- Alle Packages enthalten Snapshots
-
-### ISIK2-Modul
-
-Abweichend vom allgemeinen Prüfumfang verhält sich das ISIK2-Modul wie folgt:
-- Codes aus den CodeSystemen `http://snomed.info/sct`, `http://fhir.de/CodeSystem/bfarm/icd-10-gm`, `http://fhir.de/CodeSystem/bfarm/atc` und `http://fhir.de/CodeSystem/bfarm/ops` werden nicht validiert
-- Folgende ValueSets werden nicht validiert: `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenCodesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/DiagnosesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenKategorieSCT`, `https://gematik.de/fhir/isik/v2/Terminplanung/ValueSet/ISiKTerminPriority`, `https://gematik.de/fhir/isik/v2/Medikation/ValueSet/SctRouteOfAdministration` und `http://fhir.de/ValueSet/bfarm/ops`
-
-#### Anpassungen der Packages:
-- Alle Packages enthalten Snapshots
-
-### ISIK1-Modul
-
-Abweichend vom allgemeinen Prüfumfang verhält sich das ISIK1-Modul wie folgt:
-- Codes aus den CodeSystemen `http://snomed.info/sct`, `http://fhir.de/CodeSystem/bfarm/icd-10-gm` und `http://fhir.de/CodeSystem/bfarm/ops` werden nicht validiert
-- Folgende ValueSets werden nicht validiert: `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenCodesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/DiagnosesSCT`, `https://gematik.de/fhir/isik/v2/Basismodul/ValueSet/ProzedurenKategorieSCT` und `http://fhir.de/ValueSet/bfarm/ops`
-
-#### Anpassungen der Packages:
-- Alle Packages enthalten Snapshots
-
-### DIGA-Modul
-
-Abweichend vom allgemeinen Prüfumfang verhält sich das DIGA-Modul wie folgt:
-- Codes aus den CodeSystemen `http://fhir.de/CodeSystem/ifa/pzn` und `http://fhir.de/CodeSystem/dimdi/atc` werden nicht validiert
-- Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
-- Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis
-
-#### Anpassungen der Packages:
-- Alle Packages enthalten Snapshots
-
 ### CORE-Modul
 
 Der Referenzvalidator bietet die Möglichkeit, FHIR Core-Ressourcen zu validieren. Beim Aufruf des core-Validierungsmoduls ist die Angabe einer Profil-Canonical-URL zur Validierung erforderlich (siehe [Optionen der Konsolenanwendung](#konsolenanwendung-1)).
+
+### Externe Validierungsmodule (Plugins)
+
+Der Referenzvalidator kann mit weiteren Validierungsmodulen erweitert werden. Die von der gematik bereitgestellten Validierungsmodule 
+können aus dem entsprechenden [GitHub-Repository](https://github.com/gematik/app-referencevalidator-plugins/releases) heruntergeladen werden.
+
+#### Nutzung mit der Konsolenanwendung
+
+Die Plugins sollen im Ordner `plugins` auf derselben Ordnerebene wie die `jar`-Referenzvalidator-Datei abgelegt werden.
+Beim Aufruf des Referenzvalidators soll die `id` des abgelegten Plugins angegeben werden.
+
+Beispiel der Ordnerstruktur:
+```
+referencevalidator/
+├── plugins/
+│   └── isik3-terminplanung.zip
+├── referencevalidator-cli-X.Y.Z.jar
+└── test-ISIKTermin.json
+```
+
+Beispielaufruf:
+
+```
+    cd referencevalidator
+    java -jar referencevalidator-cli-X.Y.Z.jar isik3-terminplanung test-ISIKTermin.json
+```
+
+#### Nutzung mit der Java-Bibliothek
+
+``` Java
+Plugin plugin = Plugin.createFromZipFile(new ZipFile("src/test/resources/plugins/minimal-plugin.zip"));
+var pluginModule = new ValidationModuleFactory().createValidationModuleFromPlugin(plugin);
+String fhirRessource = "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
+        + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
+        + "    <meta>\n"
+        + "        <profile value=\"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.1\"/>\n"
+        + "        \n"
+        + "    </meta>\n"
+        + "</Bundle>";
+var result = pluginModule.validateString(fhirRessource);
+System.out.println(result.isValid());
+```
 
 ## Erste Schritte
 
@@ -198,11 +193,6 @@ Der Referenzvalidator erfordert als Eingabe einen Modulnamen und einen gültigen
 Unterstützte Modulnamen:
 - `erp` (E-Rezept)
 - `eau` (Elektronische Arbeitsunfähigkeitsbescheinigung)
-- `isip1` (Informationstechnische Systeme in der Pflege Stufe 1)
-- `isik3` (Informationstechnische Systeme in Krankenhäusern Stufe 3)
-- `isik2` (Informationstechnische Systeme in Krankenhäusern Stufe 2)
-- `isik1` (Informationstechnische Systeme in Krankenhäusern Stufe 1)
-- `diga` (DiGA Toolkit)
 - `core` (FHIR Core)
 
 Optionen:

@@ -16,44 +16,68 @@
 
 package de.gematik.refv.commons.validation;
 
-import de.gematik.refv.commons.helper.SimpleValidationModule;
+import de.gematik.refv.commons.helper.ValidationModuleFactory;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 class BundlesIT {
 
-    private static SimpleValidationModule validationModule;
+    private static ValidationModule validationModule;
 
     @BeforeAll
     @SneakyThrows
     static void beforeAll() {
-        validationModule = SimpleValidationModule.createInstance("simple-packages.yaml");
+        validationModule = ValidationModuleFactory.createInstance("simple");
         validationModule.initialize();
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "src/test/resources/bundles/invalid/unreferenced-entries.xml"
-    })
     @SneakyThrows
-    void invalidInstances(String path) {
+    @Test
+    void completelyOrphanedEntriesAreInvalid() {
+        assertInvalidAndThatMessageIdIsReturned("src/test/resources/bundles/invalid/unreferenced-entries.xml", "Bundle_BUNDLE_Entry_Orphan_DOCUMENT");
+    }
+
+    private static void assertInvalidAndThatMessageIdIsReturned(String path, String messageId) throws IOException {
         var result = validationModule.validateFile(path);
         Assertions.assertFalse(result.isValid(), result.toString());
+        Assertions.assertTrue(result.getValidationMessages().stream().anyMatch(m -> m.getMessageId().equals(messageId)), "Expected error not found");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "src/test/resources/bundles/valid/unreferenced-entry-but-with-outgoing-references-to-other-entries.xml",
-            "src/test/resources/bundles/valid/Target_Profiles_Are_Not_Validated_If_Local_References_Do_Not_Match_Full_URLs.xml",
-            "src/test/resources/bundles/valid/Mix_Of_URNs_And_URLs_In_Full_URLs.xml"
-    })
-    @SneakyThrows
-    void validInstances(String path) {
-        var result = validationModule.validateFile(path);
+    private static void assertValidAndThatMessageIdIsReturned(String path, String messageId) throws IOException {
+        var options = ValidationOptions.getDefaults();
+        options.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
+        var result = validationModule.validateFile(path, options);
         Assertions.assertTrue(result.isValid(), result.toString());
+        Assertions.assertTrue(result.getValidationMessages().stream().anyMatch(m -> m.getMessageId().equals(messageId)), "Expected warning not found");
     }
 
+    @SneakyThrows
+    @Test
+    void referencesWhichAreNotURIsAreInvalid() {
+        String path = "src/test/resources/bundles/invalid/references-not-uris.xml";
+        assertInvalidAndThatMessageIdIsReturned(path, "Reference_REF_Format2");
+    }
+
+    @Test
+    @SneakyThrows
+    void validForPartiallyOrphanedEntries() {
+        assertValidAndThatMessageIdIsReturned("src/test/resources/bundles/valid/unreferenced-entry-but-with-outgoing-references-to-other-entries.xml", "BUNDLE_BUNDLE_ENTRY_REVERSE_R4");
+    }
+
+    @Test
+    @SneakyThrows
+    void validForMismatchingRelativeAndAbsoluteUrlsEvenIfTargetProfileDoesntMatch() {
+        assertValidAndThatMessageIdIsReturned("src/test/resources/bundles/valid/Target_Profiles_Are_Not_Validated_If_Local_References_Do_Not_Match_Full_URLs.xml", "BUNDLE_BUNDLE_POSSIBLE_MATCH_WRONG_FU");
+    }
+
+    @Test
+    @SneakyThrows
+    void validForMixedURNsAndURLs() {
+        assertValidAndThatMessageIdIsReturned(
+                "src/test/resources/bundles/valid/Mix_Of_URNs_And_URLs_In_Full_URLs.xml", "BUNDLE_BUNDLE_POSSIBLE_MATCH_WRONG_FU");
+    }
 }

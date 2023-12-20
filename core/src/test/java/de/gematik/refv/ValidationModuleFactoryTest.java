@@ -16,9 +16,15 @@
 
 package de.gematik.refv;
 
+import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.zip.ZipFile;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ValidationModuleFactoryTest {
 
@@ -28,5 +34,21 @@ class ValidationModuleFactoryTest {
         var erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);
         Assertions.assertEquals(SupportedValidationModule.ERP.toString(), erpModule.getId());
         Assertions.assertNotNull(erpModule.getConfiguration());
+    }
+
+    @Test
+    @SneakyThrows
+    void testCorrectExceptionIsThrownIfPluginIsCorrupted() {
+        assertThrows(ValidationModuleInitializationException.class, () -> new ValidationModuleFactory().createValidationModuleFromPlugin(Plugin.createFromZipFile(new ZipFile("src/test/resources/plugins/not-a-plugin.zip"))));
+    }
+
+    @Test
+    @SneakyThrows
+    void testCreateValidationModuleFromPlugin() {
+        File pluginZip = new File("src/test/resources/plugins/minimal-plugin.zip");
+        Plugin plugin = Plugin.createFromZipFile(new ZipFile(pluginZip));
+        var pluginModule = new ValidationModuleFactory().createValidationModuleFromPlugin(plugin);
+        Assertions.assertEquals("minimal", pluginModule.getId());
+        Assertions.assertNotNull(pluginModule.getConfiguration());
     }
 }

@@ -29,6 +29,11 @@ class SnapshotGeneratorTests {
     public static final String EXCLUDED_PACKAGE = "excluded.package-1.0.0.tgz";
     private static SnapshotGenerator snapshotGenerator;
 
+    @SneakyThrows
+    private static String getDecompressDir() {
+        return Paths.get(Objects.requireNonNull(SnapshotGenerator.class.getResource("/")).toURI()).getParent().toString() + "/decompressed-packages/";
+    }
+
     @BeforeAll
     static void setUp() {
         snapshotGenerator = new SnapshotGenerator(new LinkedList<>());
@@ -44,7 +49,7 @@ class SnapshotGeneratorTests {
     @SneakyThrows
     void testGenerateSnapshotsEqual() {
         File correctSnapshotPackage = new File(CORRECT_PACKAGE);
-        snapshotGenerator.generateSnapshots(SRC_PACKAGES_DIR, OUTPUT_SNAPSHOT_PACKAGES_DIR);
+        snapshotGenerator.generateSnapshots(SRC_PACKAGES_DIR, OUTPUT_SNAPSHOT_PACKAGES_DIR, getDecompressDir());
         File generatedSnapshotPackage = new File(OUTPUT_SNAPSHOT_PACKAGES_DIR + "minimal.example-1.0.0.tgz");
         assertTrue(comparePackages(correctSnapshotPackage, generatedSnapshotPackage));
     }
@@ -55,7 +60,7 @@ class SnapshotGeneratorTests {
         List<String> excludedPackages = new ArrayList<>();
         excludedPackages.add(EXCLUDED_PACKAGE);
         var snapshotGenerator = new SnapshotGenerator(excludedPackages);
-        snapshotGenerator.generateSnapshots(SRC_PACKAGES_DIR, OUTPUT_SNAPSHOT_PACKAGES_DIR);
+        snapshotGenerator.generateSnapshots(SRC_PACKAGES_DIR, OUTPUT_SNAPSHOT_PACKAGES_DIR, getDecompressDir());
         assertFalse(new File(OUTPUT_SNAPSHOT_PACKAGES_DIR + "excluded.package-1.0.0.tgz").exists());
     }
 
@@ -67,7 +72,7 @@ class SnapshotGeneratorTests {
         if(!file.exists()) {
             file.mkdir();
         }
-        snapshotGenerator.generateSnapshots(SRC_PACKAGES_DIR, OUTPUT_SNAPSHOT_PACKAGES_DIR);
+        snapshotGenerator.generateSnapshots(SRC_PACKAGES_DIR, OUTPUT_SNAPSHOT_PACKAGES_DIR, getDecompressDir());
         assertFalse(file.exists());
     }
 

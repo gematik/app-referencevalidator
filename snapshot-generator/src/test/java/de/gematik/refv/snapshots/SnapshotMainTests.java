@@ -20,14 +20,14 @@ class SnapshotMainTests {
     @Test
     @SneakyThrows
     void testSnapshotMain() {
-        String SRC_PACKAGES_DIR = "src/test/resources/src-package/";
-        String OUTPUT_SNAPSHOT_PACKAGES_DIR = "target/generated-snapshots/";
-        String EXCLUDED_PACKAGE = "excluded.package-1.0.0.tgz";
-        FileUtils.deleteDirectory(new File(OUTPUT_SNAPSHOT_PACKAGES_DIR));
+        String srcPackagesDir = "src/test/resources/src-package/";
+        String outputSnapshotPackagesDir = "target/generated-snapshots/";
+        String excludedPackages = "excluded.package-1.0.0.tgz";
+        FileUtils.deleteDirectory(new File(outputSnapshotPackagesDir));
 
-        SnapshotMain.main(new String[] {SRC_PACKAGES_DIR, OUTPUT_SNAPSHOT_PACKAGES_DIR, EXCLUDED_PACKAGE});
+        SnapshotMain.main(new String[] {srcPackagesDir, outputSnapshotPackagesDir, "", excludedPackages});
 
-        File generatedSnapshotPackage = new File(OUTPUT_SNAPSHOT_PACKAGES_DIR + "minimal.example-1.0.0.tgz");
+        File generatedSnapshotPackage = new File(outputSnapshotPackagesDir + "minimal.example-1.0.0.tgz");
         assertTrue(generatedSnapshotPackage.exists());
     }
 }

@@ -17,14 +17,14 @@
 package de.gematik.refv.valmodule.erp;
 
 import de.gematik.refv.commons.exceptions.UnsupportedProfileException;
-import de.gematik.refv.valmodule.base.ConfigurationBasedValidationModule;
+import de.gematik.refv.commons.validation.IntegratedValidationModule;
 import de.gematik.refv.valmodule.base.helper.TestConfigurationBasedValidationModuleFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ErpModuleExceptionsIT {
-    private final ConfigurationBasedValidationModule validationModule = TestConfigurationBasedValidationModuleFactory.createInstance("erp");
+    private final IntegratedValidationModule validationModule = TestConfigurationBasedValidationModuleFactory.createInstance("erp");
 
     @ParameterizedTest
     @ValueSource(strings = {

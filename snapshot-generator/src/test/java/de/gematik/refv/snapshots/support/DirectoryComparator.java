@@ -13,12 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+//solution for checking if directories are equal taken from: http://www.java2s.com/example/java/java.nio.file/compare-the-contents-of-two-directories-to-determine-if-they-are-equal.html
 public class DirectoryComparator {
 
-
-    //solution for checking if directories are equal taken from: http://www.java2s.com/example/java/java.nio.file/compare-the-contents-of-two-directories-to-determine-if-they-are-equal.html
-    public static boolean directoryContentEquals(Path dir1, Path dir2)
-            throws IOException {
+    public static boolean directoryContentEquals(Path dir1, Path dir2) throws IOException {
         boolean dir1Exists = Files.exists(dir1) && Files.isDirectory(dir1);
         boolean dir2Exists = Files.exists(dir2) && Files.isDirectory(dir2);
 
@@ -48,8 +46,7 @@ public class DirectoryComparator {
                 if (!dir2Paths.containsKey(relativePath)) {
                     return false;
                 } else {
-                    if (!contentEquals(absolutePath,
-                            dir2Paths.get(relativePath))) {
+                    if (!contentEquals(absolutePath, dir2Paths.get(relativePath))) {
                         return false;
                     }
                 }
@@ -64,8 +61,7 @@ public class DirectoryComparator {
      * Recursively finds all files with given extensions in the given directory
      * and all of its sub-directories.
      */
-    private static List<Path> listPaths(Path file, String... extensions)
-            throws IOException {
+    private static List<Path> listPaths(Path file, String... extensions) throws IOException {
         if (file == null) {
             return null;
         }
@@ -80,22 +76,18 @@ public class DirectoryComparator {
      * Recursively finds all paths with given extensions in the given directory
      * and all of its sub-directories.
      */
-    protected static void listPaths(Path path, List<Path> result,
-                                    String... extensions) throws IOException {
+    protected static void listPaths(Path path, List<Path> result, String... extensions) throws IOException {
         if (path == null) {
             return;
         }
 
         if (Files.isReadable(path)) {
-            // If the path is a directory try to read it.
             if (Files.isDirectory(path)) {
-                // The input is a directory. Read its files.
-                DirectoryStream<Path> directoryStream = Files
-                        .newDirectoryStream(path);
-                for (Path p : directoryStream) {
-                    listPaths(p, result, extensions);
+                try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
+                    for (Path p : directoryStream) {
+                        listPaths(p, result, extensions);
+                    }
                 }
-                directoryStream.close();
             } else {
                 String filename = path.getFileName().toString();
                 if (extensions.length == 0) {
@@ -116,10 +108,9 @@ public class DirectoryComparator {
      * Compares the contents of the two given paths. If both paths don't exist,
      * the contents aren't equal and this method returns false.
      */
-    private static boolean contentEquals(Path p1, Path p2)
-            throws IOException {
+    private static boolean contentEquals(Path p1, Path p2) throws IOException {
         if (!Files.exists(p1) || !Files.exists(p2)) {
-            log.debug("One of files do not exist: {}, {}",p1, p2);
+            log.debug("One of files do not exist: {}, {}", p1, p2);
             return false;
         }
 
@@ -128,50 +119,27 @@ public class DirectoryComparator {
         }
 
         if (p1.equals(p2)) {
-            // same filename => true
             return true;
         }
 
         if (Files.size(p1) != Files.size(p2)) {
-            // different size =>false
-            log.debug("Files have different size: {}, {}",Files.size(p1), Files.size(p2));
+            log.debug("Files have different size: {}, {}", Files.size(p1), Files.size(p2));
             return false;
         }
 
-        InputStream in1 = null;
-        InputStream in2 = null;
-        try {
-            in1 = Files.newInputStream(p1);
-            in2 = Files.newInputStream(p2);
+        try (InputStream in1 = Files.newInputStream(p1);
+             InputStream in2 = Files.newInputStream(p2)) {
 
             int expectedByte = in1.read();
             while (expectedByte != -1) {
                 int readByte = in2.read();
                 if (expectedByte != readByte) {
-                    log.debug("Unexpected byte in in2: {}, {}",expectedByte, readByte);
+                    log.debug("Unexpected byte in in2: {}, {}", expectedByte, readByte);
                     return false;
                 }
                 expectedByte = in1.read();
             }
             return in2.read() == -1;
-        } finally {
-            if (in1 != null) {
-                try {
-                    in1.close();
-                } catch (IOException e) {
-                    log.warn("Could not close in1",e);
-                    return false;
-                }
-            }
-            if (in2 != null) {
-                try {
-                    in2.close();
-                } catch (IOException e) {
-                    log.warn("Could not close in2",e);
-                    return false;
-                }
-            }
         }
     }
 }
-

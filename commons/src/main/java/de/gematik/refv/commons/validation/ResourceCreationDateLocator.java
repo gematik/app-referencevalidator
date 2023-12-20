@@ -27,7 +27,7 @@ import java.time.ZoneId;
 import java.util.Optional;
 
 @AllArgsConstructor
-public class ResourceCreationDateLocator {
+class ResourceCreationDateLocator {
 
     private FhirContext fhirContext;
 

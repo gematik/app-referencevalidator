@@ -16,7 +16,7 @@
 
 package de.gematik.refv.commons.validation;
 
-import de.gematik.refv.commons.helper.SimpleValidationModule;
+import de.gematik.refv.commons.helper.ValidationModuleFactory;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,12 +25,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class EmptyValuesIT {
 
-    private static SimpleValidationModule validationModule;
+    private static ValidationModule validationModule;
 
     @BeforeAll
     @SneakyThrows
     static void beforeAll() {
-        validationModule = SimpleValidationModule.createInstance("simple-packages.yaml");
+        validationModule = ValidationModuleFactory.createInstance("simple");
         validationModule.initialize();
     }
 

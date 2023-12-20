@@ -22,12 +22,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DependencyListsWrapperTest {
@@ -36,8 +34,8 @@ class DependencyListsWrapperTest {
     static String dl1End = "2020-01-31";
     static String dl2Start = "2020-02-01";
     static String dl2End = "2020-02-28";
-    static DependencyList dl1 = new DependencyList(dl1Start, dl1End, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>(), new LinkedList<>());
-    static DependencyList dl2 = new DependencyList(dl2Start, dl2End, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>(), new LinkedList<>());
+    static DependencyList dl1 = new DependencyList(dl1Start, dl1End, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
+    static DependencyList dl2 = new DependencyList(dl2Start, dl2End, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
 
     static DependencyListsWrapper wrapper;
 
@@ -62,7 +60,7 @@ class DependencyListsWrapperTest {
 
     @Test
     void testDependencyListValidAtReturnsCorrectResultsForOpenEndedLists() {
-        DependencyList dl3 = new DependencyList(dl2End, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>(), new LinkedList<>());
+        DependencyList dl3 = new DependencyList(dl2End, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
         DependencyListsWrapper wrapper2 = new DependencyListsWrapper(dl1, dl2, dl3);
         Assertions.assertEquals(Optional.of(dl3), wrapper2.getDependencyListValidAt(LocalDate.parse(dl2End).plusDays(1)));
     }
@@ -70,7 +68,7 @@ class DependencyListsWrapperTest {
     @Test
     void testGetLatestDependencyListThrowsExceptionOnEmptyDependencyLists() {
         DependencyListsWrapper wrapper2 = new DependencyListsWrapper(new LinkedList<>());
-        Assertions.assertThrows(IllegalStateException.class, () -> wrapper2.getLatestDependencyList());
+        Assertions.assertThrows(IllegalStateException.class, wrapper2::getLatestDependencyList);
     }
 
     @Test
@@ -82,8 +80,8 @@ class DependencyListsWrapperTest {
     void areNoValidityPeriodsDefined() {
         Assertions.assertFalse(wrapper.areNoValidityPeriodsDefined());
 
-        DependencyList dl1Empty = new DependencyList(null, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>(), new LinkedList<>());
-        DependencyList dl2Empty = new DependencyList(null, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>(), new LinkedList<>());
+        DependencyList dl1Empty = new DependencyList(null, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
+        DependencyList dl2Empty = new DependencyList(null, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
 
         DependencyListsWrapper wrapper2 = new DependencyListsWrapper(dl1Empty, dl2Empty);
         Assertions.assertTrue(wrapper2.areNoValidityPeriodsDefined());
@@ -93,7 +91,7 @@ class DependencyListsWrapperTest {
     void isAnyDependencyListWithOpenEndExists() {
         Assertions.assertFalse(wrapper.isAnyDependencyListWithOpenEndExists());
 
-        DependencyList dl3 = new DependencyList(dl2End, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>(), new LinkedList<>());
+        DependencyList dl3 = new DependencyList(dl2End, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
         DependencyListsWrapper wrapper2 = new DependencyListsWrapper(dl1, dl2, dl3);
         Assertions.assertTrue(wrapper2.isAnyDependencyListWithOpenEndExists());
     }
@@ -102,7 +100,7 @@ class DependencyListsWrapperTest {
     void isAnyDependencyListWithOpenStartExists() {
         Assertions.assertFalse(wrapper.isAnyDependencyListWithOpenStartExists());
 
-        DependencyList dl3 = new DependencyList(null, dl1Start, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>(), new LinkedList<>());
+        DependencyList dl3 = new DependencyList(null, dl1Start, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
         DependencyListsWrapper wrapper2 = new DependencyListsWrapper(dl3, dl1, dl2);
         Assertions.assertTrue(wrapper2.isAnyDependencyListWithOpenStartExists());
     }

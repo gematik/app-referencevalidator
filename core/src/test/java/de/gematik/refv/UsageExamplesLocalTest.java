@@ -22,9 +22,11 @@ import de.gematik.refv.commons.validation.ValidationModule;
 import de.gematik.refv.commons.validation.ValidationOptions;
 import de.gematik.refv.commons.validation.ValidationResult;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.zip.ZipFile;
 
 /**
  * Usage examples used in README.md
@@ -68,5 +70,21 @@ class UsageExamplesLocalTest {
         ValidationResult result = erpModule.validateFile("src/test/resources/SimpleMedicationRequest.xml", options);
         System.out.println(result.isValid());
         System.out.println(result.getValidationMessages());
+    }
+
+    @SneakyThrows
+    @Test
+    void validateUsingPlugin() {
+        Plugin plugin = Plugin.createFromZipFile(new ZipFile("src/test/resources/plugins/minimal-plugin.zip"));
+        var pluginModule = new ValidationModuleFactory().createValidationModuleFromPlugin(plugin);
+        String fhirRessource = "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
+                + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
+                + "    <meta>\n"
+                + "        <profile value=\"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.1\"/>\n"
+                + "        \n"
+                + "    </meta>\n"
+                + "</Bundle>";
+        var result = pluginModule.validateString(fhirRessource);
+        System.out.println(result.isValid());
     }
 }

@@ -22,7 +22,7 @@ import de.gematik.refv.commons.configuration.ProfileValidityPeriodProvider;
 
 import java.time.LocalDate;
 
-public class DiagnosticsMessageBuilder {
+class DiagnosticsMessageBuilder {
 
     public String createValidityPeriodDiagnosticsString(DependencyListsWrapper dependencyLists, Profile profileInResource, LocalDate resourceCreationDate) {
         ProfileValidityPeriodProvider validityPeriodProvider = new ProfileValidityPeriodProvider();
@@ -38,12 +38,13 @@ public class DiagnosticsMessageBuilder {
 
         pattern.append("; only valid from %s");
 
-        if(validityPeriod.getValidTill().isEmpty())
+        var validTillOptional = validityPeriod.getValidTill();
+        if(validTillOptional.isEmpty())
             return String.format(pattern.toString(), profileInResource, resourceCreationDate, validFrom);
 
         pattern.append(" till %s");
 
-        LocalDate validTill = validityPeriod.getValidTill().get();
+        LocalDate validTill = validTillOptional.get();
 
         return String.format(pattern.toString(),
                 profileInResource, resourceCreationDate,
