@@ -55,7 +55,7 @@ public class DependencyGenerator {
     private void getDependenciesFromPackageJson(String packageFolderPath, List<String> dependencyList, String filename) throws IOException {
         List<PackageReference> additionalRefs = getDependenciesFor(packageFolderPath + File.separator + filename);
         for (PackageReference pr : additionalRefs) {
-            String packageFileName = String.format("%s-%s.tgz", pr.getPackageName(), pr.getPackageVersion());
+            String packageFileName = String.format("%s-%s.tgz", pr.getPackageName(), pr.getPackageVersion()).toLowerCase();
             if (!dependencyList.contains(packageFileName)) {
                 dependencyList.add(packageFileName);
             }

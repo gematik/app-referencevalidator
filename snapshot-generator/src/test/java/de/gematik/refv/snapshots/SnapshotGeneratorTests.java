@@ -66,6 +66,16 @@ class SnapshotGeneratorTests {
 
     @Test
     @SneakyThrows
+    void testNoExceptionOnDependenciesWithUpperCase() {
+        List<String> excludedPackages = new ArrayList<>();
+        var snapshotGenerator = new SnapshotGenerator(excludedPackages);
+        snapshotGenerator.generateSnapshots("src/test/resources/src-package-upper-case/", OUTPUT_SNAPSHOT_PACKAGES_DIR, getDecompressDir());
+        File generatedSnapshotPackage = new File(OUTPUT_SNAPSHOT_PACKAGES_DIR + "dependencies-in-upper-case-1.0.0.tgz");
+        assertTrue(generatedSnapshotPackage.exists(), "No snapshots generated for package with upper-case dependencies");
+    }
+
+    @Test
+    @SneakyThrows
     void testCleanUpDirectoryWorksBeforeSnapshotGeneration() {
         String path = Paths.get(Objects.requireNonNull(SnapshotGenerator.class.getResource("/")).toURI()).getParent().toString() + "/decompressed-packages/minimal.example-1.0.0/";
         File file = new File(path + "test");

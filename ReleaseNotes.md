@@ -2,6 +2,11 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.0.1
+
+### fixed
+- fixed a bug in the snapshot generator (snapshot generation failed for dependencies with uppercase name parts)
+
 ## Release 2.0.0
 
 ### added
