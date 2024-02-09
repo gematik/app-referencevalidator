@@ -1,4 +1,4 @@
-![gematik GmbH](docs/img/Gematik_Logo_Flag.png)
+<img align="right" width="250" height="47" src="docs/img/Gematik_Logo_Flag.png"/> <br/>
 
 # Gematik Referenzvalidator
 
@@ -42,6 +42,9 @@ Siehe [Use Cases, Anforderungen, Architektur, Entwicklungsprozess](docs/concept/
 > **Warning**
 > Die Verbindlichkeit des E-Rezept-Moduls vom Referenzvalidator in Abrechnungsprozessen wird in der [Technische Anlage 7, Anhang 2, zur Arzneimittelabrechnungsvereinbarung gemäß § 300 Absatz 3 SGB V](https://www.gkv-datenaustausch.de/leistungserbringer/apotheken/apotheken.jsp) festgelegt. Siehe auch [E-Rezept: Technische Verarbeitbarkeit, Schiedsrichter-Rolle und Problemlösungsverfahren](docs/concept/concept.md#e-rezept-technische-verarbeitbarkeit-schiedsrichter-rolle-und-probleml%C3%B6sungsverfahren).
 > Die Verbindlichkeit anderer Validierungsmodule wurde bisher nicht festgelegt. Es besteht lediglich eine Nutzungsempfehlung seitens der gematik.
+
+> **Warning**
+> Der Betrieb des Referenzvalidators in bestehenden Anwendungen oder Anwendungslandschaften obliegt der Verantwortung der Nutzer. Die gematik trifft angemessene Maßnahmen, um die Sicherheit und Performance des Referenzvalidators zu gewährleisten. Sie übernimmt aber keine Verantwortung für etwaige Schäden, die durch die Integration des Referenzvalidators in Produktionssysteme entstehen (siehe auch Haftungsausschuss der [Apache 2.0-Lizenz](https://www.apache.org/licenses/LICENSE-2.0). Insbesondere müssen die Sicherheitsaspekte des Gesamtsystems unter Einbeziehung der technischen und organisatorischen Rahmenbedingungen der jeweiligen Betriebsumgebung durch die Nutzer selbst bewertet werden. Des Weiteren hängen die Performance-Eigenschaften des Validators stark von der jeweiligen Betriebsumgebung ab.
 
 ### Release Notes
 
@@ -158,7 +161,7 @@ System.out.println(result.isValid());
 
 ### Voraussetzungen
 
-Der Referenzvalidator wird als Java-Bibliothek und als Konsolenanwendung verteilt. Für die Verwendung ist JDK 11 erforderlich (z.B. [AdoptOpenJDK](https://adoptopenjdk.net/)).  
+Der Referenzvalidator wird als Java-Bibliothek und als Konsolenanwendung verteilt. Für die Verwendung ist JDK 11 erforderlich (z.B. [AdoptOpenJDK](https://adoptopenjdk.net/)).
 
 ### Installation
 

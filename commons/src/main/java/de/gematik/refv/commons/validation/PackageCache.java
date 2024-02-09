@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 gematik GmbH
+ * Copyright (c) 2024 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import de.gematik.refv.commons.validation.support.CustomNpmPackageValidationSupp
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,18 +31,17 @@ class PackageCache {
 
     private final Map<String, IValidationSupport> packages = new ConcurrentHashMap<>();
 
+
     public PackageCache(FhirContext fhirContext) {
         this.fhirContext = fhirContext;
     }
 
-    public IValidationSupport addOrGet(String packagePath, InputStream inputStream) {
-        return packages.computeIfAbsent(packagePath, path -> createPrePopulatedSupportFromPackage(inputStream));
+    public IValidationSupport addOrGet(String packagePath, ValidationModuleResourceProvider validationModuleResourceProvider) {
+        return packages.computeIfAbsent(packagePath, path -> createPrePopulatedSupportFromPackage(packagePath, validationModuleResourceProvider));
     }
 
     @SneakyThrows
-    private IValidationSupport createPrePopulatedSupportFromPackage(InputStream inputStream) {
-        CustomNpmPackageValidationSupport validationSupport = new CustomNpmPackageValidationSupport(fhirContext);
-        validationSupport.loadPackageFromInputStream(inputStream);
-        return validationSupport;
+    private IValidationSupport createPrePopulatedSupportFromPackage(String packagePath, ValidationModuleResourceProvider validationModuleResourceProvider) {
+        return CustomNpmPackageValidationSupport.create(fhirContext, packagePath, validationModuleResourceProvider::getPackage);
     }
 }

@@ -1,6 +1,12 @@
-![gematik GmbH](docs/img/Gematik_Logo_Flag.png)
+<img align="right" width="250" height="47" src="docs/img/Gematik_Logo_Flag.png"/> <br/>
 
 # Release Notes Gematik Referenzvalidator
+
+## Release 2.0.2
+
+### fixed
+- optimized usage of internal caches to mediate the memory leak issue https://github.com/hapifhir/org.hl7.fhir.core/issues/1412
+- optimized package loading mechanism to reduce memory consumption
 
 ## Release 2.0.1
 

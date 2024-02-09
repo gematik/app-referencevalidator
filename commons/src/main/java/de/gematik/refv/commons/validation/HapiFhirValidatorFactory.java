@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 gematik GmbH
+ * Copyright (c) 2024 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ class HapiFhirValidatorFactory {
 
     private void addNpmPackagesToValidationSupportChain(Collection<String> packageFilenames, ValidationSupportChain validationSupportChain, ValidationModuleResourceProvider validationModuleResourceProvider) {
         for (String packagePath : packageFilenames) {
-            var prePopulatedValidationSupport = packageCache.addOrGet(packagePath, validationModuleResourceProvider.getPackage(packagePath));
+            var prePopulatedValidationSupport = packageCache.addOrGet(packagePath, validationModuleResourceProvider);
             validationSupportChain.addValidationSupport(prePopulatedValidationSupport);
         }
     }

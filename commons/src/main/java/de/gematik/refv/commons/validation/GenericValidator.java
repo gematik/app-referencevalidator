@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 gematik GmbH
+ * Copyright (c) 2024 gematik GmbH
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,10 @@ public class GenericValidator {
     public GenericValidator(FhirContext context) {
         this.fhirContext = context;
         this.hapiFhirValidatorFactory = new HapiFhirValidatorFactory(fhirContext);
+
+        // Do not evict internal cache of FhirInstanceValidator as the object itself is kept in memory and its cache is permanently required
+        // Mediates the memory leak issue https://github.com/hapifhir/org.hl7.fhir.core/issues/1412 (occurs in HAPI 6.6.2)
+        System.setProperty("TEST_SYSTEM_PROP_VALIDATION_RESOURCE_CACHES_MS", String.valueOf(Long.MAX_VALUE));
     }
 
     public ValidationResult validate(
