@@ -9,14 +9,8 @@
     <basedOn>
         <reference value="Task/160.000.033.491.280.78/$accept?ac=777bea0e13cc9c42ceec14aec3ddee2263325dc2c6c699db115f58fe423607ea" />
     </basedOn>
-    <status value="bla" />
+    <status value="on-hold" />
     <sent value="2020-04-29T13:44:30.128+02:00" />
-    <recipient>
-        <identifier>
-            <system value="https://gematik.de/fhir/sid/telematik-id" />
-            <value value="3-SMC-B-Testkarte-883110000123465" />
-        </identifier>
-    </recipient>
     <sender>
         <identifier>
             <system value="http://fhir.de/sid/gkv/kvid-10" />

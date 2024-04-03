@@ -3,12 +3,8 @@
     <meta>
         <profile value="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Device|1.2" />
     </meta>
-    <status value="bla" />
+    <status value="entered-in-error" />
     <serialNumber value="1.4.0" />
-    <deviceName>
-        <name value="E-Rezept-Fachdienst" />
-        <type value="user-friendly-name" />
-    </deviceName>
     <version>
         <value value="1.4.0" />
     </version>

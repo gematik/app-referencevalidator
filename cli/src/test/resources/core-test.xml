@@ -2,7 +2,7 @@
 
 <Parameters xmlns="http://hl7.org/fhir">
   <meta>
-    <profile value="http://fhir.org/StructureDefinition/Parameters"></profile>
+    <profile value="http://some-unknown-profile"/>
   </meta>
   <parameter> 
     <name value="exact"/> 

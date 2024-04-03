@@ -64,11 +64,12 @@ Siehe [Release Notes](ReleaseNotes.md)
 
 ### Unterstützte Validierungsmodule
 
-| **Modul**                                                       | **Version** |
-|-----------------------------------------------------------------|-------------|
-| E-Rezept                                                        | 2.0         |
-| Elektronische Arbeitsunfähigkeitsbescheinigung                  | 0.9         |
-| FHIR Core                                                       | 1.0         |
+| **Modul**                                      | **Version** |
+|------------------------------------------------|-------------|
+| E-Rezept                                       | 2.0         |
+| Elektronische Arbeitsunfähigkeitsbescheinigung | 0.9         |
+| FHIR Core                                      | 1.0         |
+| E-Rezept Abrechnungsdaten (experimentell)      | 0.1         |
 
 
 
@@ -114,6 +115,10 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das eAU-Modul wie folgt:
 ### CORE-Modul
 
 Der Referenzvalidator bietet die Möglichkeit, FHIR Core-Ressourcen zu validieren. Beim Aufruf des core-Validierungsmoduls ist die Angabe einer Profil-Canonical-URL zur Validierung erforderlich (siehe [Optionen der Konsolenanwendung](#konsolenanwendung-1)).
+
+### E-Rezept Abrechnungsdaten-Modul _(EXPERIMENTELL)_
+
+Dieses Modul bietet eine experimentelle Umsetzung zur performanten Validierung von großen [TA7-FHIR-Abrechnungsdateien](https://simplifier.net/erezeptabrechnungsdaten). Unterstützt werden nur Resourcen mit dem Profil `https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_Bundle|1.3.0`.
 
 ### Externe Validierungsmodule (Plugins)
 
@@ -197,6 +202,7 @@ Unterstützte Modulnamen:
 - `erp` (E-Rezept)
 - `eau` (Elektronische Arbeitsunfähigkeitsbescheinigung)
 - `core` (FHIR Core)
+- `erpta7` (E-Rezept Abrechnungsdaten)
 
 Optionen:
 - `--verbose` - Verbode-Modus mit Debug-Protokoll-Ausgaben und INFORMATION- bzw. WARNING-Validierungsnachrichten 

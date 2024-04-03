@@ -172,7 +172,7 @@ dependencyLists:
       - "kbv.basis-1.3.0.tgz"
       - "de.basisprofil.r4-1.3.2.tgz"
       # KBV 1.0.2 and KBV 1.0.3 are not allowed anymore
-    validFrom: "2024-01-01"
+    validFrom: "2024-01-01"    
 
   # https://simplifier.net/eRezeptAbgabedaten/~packages
   de.abda.erezeptabgabedaten.1.0.3:

@@ -1,3 +1,18 @@
+/*
+Copyright (c) 2022-2024 gematik GmbH
+
+Licensed under the Apache License, Version 2.0 (the License);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an 'AS IS' BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package de.gematik.refv.commons.validation.support;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -6,6 +21,7 @@ import ca.uhn.fhir.context.support.ValidationSupportContext;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.Scheduler;
+import de.gematik.refv.commons.Profile;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Sets;
 import org.apache.commons.lang3.Validate;
@@ -13,6 +29,7 @@ import org.hl7.fhir.common.hapi.validation.support.BaseValidationSupport;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.hl7.fhir.r4.model.StructureDefinition;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 
 import javax.annotation.Nonnull;
@@ -21,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -39,11 +57,11 @@ public class CustomNpmPackageValidationSupport extends BaseValidationSupport {
 
     LoadingCache<String, NpmPackage> cachedNpmPackage;
 
-    private Map<String, String> resourcesInThePackage = new HashMap<>();
+    private final Map<String, String> resourcesInThePackage = new HashMap<>();
 
-    private String packagePath;
+    private final String packagePath;
 
-    private Map<String, IBaseResource> valueSetsAndCodeSystems = new HashMap<>();
+    private final Map<String, IBaseResource> valueSetsAndCodeSystems = new HashMap<>();
 
     public static CustomNpmPackageValidationSupport create(@Nonnull FhirContext theFhirContext, @Nonnull String packagePath, @Nonnull Function<String, InputStream> packageInputStreamProvider) throws IOException {
         CustomNpmPackageValidationSupport result = new CustomNpmPackageValidationSupport(theFhirContext, packagePath, packageInputStreamProvider);
@@ -68,7 +86,16 @@ public class CustomNpmPackageValidationSupport extends BaseValidationSupport {
 
     @Override
     public IBaseResource fetchStructureDefinition(String theUrl) {
-        return fetchResource(theUrl);
+        var sd = fetchResource(theUrl);
+        if(sd == null)
+            return null;
+
+        if(!(sd instanceof StructureDefinition)) {
+            log.warn("Caution!!! The requested StructureDefinition {} has been found in the package {}, but as a resourceType {}. This is an indication of wrong usage of the URL in the instance. If unknown extensions are allowed for the current validation module, no validation errors will be issued!", theUrl, packagePath, sd.getClass().getSimpleName());
+            return null;
+        }
+
+        return sd;
     }
 
     @Override
@@ -109,6 +136,25 @@ public class CustomNpmPackageValidationSupport extends BaseValidationSupport {
     @Override
     public boolean isValueSetSupported(ValidationSupportContext theValidationSupportContext, String theValueSetUrl) {
         return resourcesInThePackage.containsKey(theValueSetUrl);
+    }
+
+    public Collection<Profile> getAllProfiles() {
+        log.debug("Reading all profiles from the package {}...", packagePath);
+        var result = new HashSet<Profile>();
+        for (String resourceName : resourcesInThePackage.keySet()) {
+            /*
+              The following parsing is not performant. In the future, we should consider to parse the resources with JSONReader.
+             */
+            IBaseResource resource = fetchResource(resourceName);
+            if (resource instanceof StructureDefinition) {
+                var sd = (StructureDefinition) resource;
+                if(sd.getKind() == StructureDefinition.StructureDefinitionKind.RESOURCE) {
+                    Profile profile = new Profile(String.format("%s|%s", sd.getUrl(), sd.getVersion()), sd.getUrl(), sd.getVersion());
+                    result.add(profile);
+                }
+            }
+        }
+        return result;
     }
 
     private IBaseResource fetchResource(String url) {

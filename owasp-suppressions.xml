@@ -8,4 +8,20 @@
         <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
         <cve>CVE-2023-35116</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: commons-compress-1.25.0.jar
+   not a security issue as all used archives are embedded or come from trusted sources
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.commons/commons\-compress@.*$</packageUrl>
+        <cve>CVE-2024-25710</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: commons-compress-1.25.0.jar
+   not a security issue as all used archives are embedded or come from trusted sources
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.commons/commons\-compress@.*$</packageUrl>
+        <cve>CVE-2024-26308</cve>
+    </suppress>
 </suppressions>

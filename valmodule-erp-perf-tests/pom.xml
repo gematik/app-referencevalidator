@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.gematik.refv</groupId>
+        <artifactId>referencevalidator</artifactId>
+        <version>2.1.0</version>
+    </parent>
+
+    <groupId>de.gematik.fhir</groupId>
+    <artifactId>valmodule-erp-perf-tests</artifactId>
+    <packaging>jar</packaging>
+
+    <name>valmodule-erp-perf-tests</name>
+
+    <properties>
+        <!-- The value depends on the machine where the tests are executed. It is overwritten in the Jenkins file -->
+        <max-heap-size>460m</max-heap-size>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.gematik.refv</groupId>
+            <artifactId>referencevalidator-lib</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version.slf4j-api}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>${version.slf4j-log4j}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${version.log4j2}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${version.log4j2}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <!-- This limitation of heap site is important to ensure there is no memory leak in the validation procedure.
+                    The concrete value has been determined empirically during tests on the local DEV machine -->
+                    <argLine>-Xmx${max-heap-size}</argLine>
+                    <systemProperties>
+                        <max-heap-size>${max-heap-size}</max-heap-size>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

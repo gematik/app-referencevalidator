@@ -6,7 +6,7 @@
     <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Zaehler">
         <valuePositiveInt value="1"/>
     </extension>
-    <status value="unknown"/>
+    <status value="issued"/>
     <type>
         <coding>
             <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-InvoiceTyp"/>
@@ -126,29 +126,5 @@
                 <code value="06460518"/>
             </coding>
         </chargeItemCodeableConcept>
-        <priceComponent>
-            <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-ZusatzdatenPreiskennzeichen">
-                <valueCodeableConcept>
-                    <coding>
-                        <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-ZusatzdatenEinheitPreiskennzeichen"/>
-                        <code value="74"/>
-                    </coding>
-                </valueCodeableConcept>
-            </extension>
-            <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-ZusatzdatenFaktorkennzeichen">
-                <valueCodeableConcept>
-                    <coding>
-                        <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-ZusatzdatenEinheitFaktorkennzeichen"/>
-                        <code value="11"/>
-                    </coding>
-                </valueCodeableConcept>
-            </extension>
-            <type value="informational"/>
-            <factor value="1000"/>
-            <amount>
-                <value value="81.00"/>
-                <currency value="EUR"/>
-            </amount>
-        </priceComponent>
     </lineItem>
 </Invoice>
