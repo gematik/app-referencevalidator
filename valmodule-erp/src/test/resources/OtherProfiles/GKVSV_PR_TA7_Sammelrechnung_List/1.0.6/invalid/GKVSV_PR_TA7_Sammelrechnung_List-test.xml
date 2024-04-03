@@ -3,11 +3,6 @@
     <meta>
         <profile value="https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Sammelrechnung_List|1.0.6" />
     </meta>
-    <status value="bla" />
+    <status value="entered-in-error" />
     <mode value="working" />
-    <entry>
-        <item>
-            <reference value="Bundle/207e63cc-cc80-4c88-9bca-21a59c6d10dc" />
-        </item>
-    </entry>
 </List>

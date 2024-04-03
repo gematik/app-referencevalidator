@@ -8,12 +8,13 @@
     <module>valmodule-eau</module>
     <module>core</module>
     <module>valmodule-core</module>
+    <module>valmodule-erpta7</module>
   </modules>
 
   <groupId>de.gematik.refv</groupId>
   <artifactId>referencevalidator</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.2</version>
+  <version>2.1.0</version>
   <name>gematik Referenzvalidator</name>
   <description>Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren.</description>
   <url>https://github.com/gematik/app-referencevalidator</url>
@@ -70,38 +71,48 @@
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <version.surefire>3.1.2</version.surefire>
-    <version.compiler>3.10.1</version.compiler>
+    <version.surefire>3.2.5</version.surefire>
+    <version.compiler>3.13.0</version.compiler>
     <version.hapi-fhir-validation>6.6.2</version.hapi-fhir-validation>
-    <version.lombok>1.18.30</version.lombok>
-    <version.log4j2>2.22.1</version.log4j2>
+    <version.lombok>1.18.32</version.lombok>
+    <version.log4j2>2.23.1</version.log4j2>
     <version.slf4j-api>2.0.12</version.slf4j-api>
-    <version.slf4j-log4j>2.0.11</version.slf4j-log4j>
-    <version.junit-jupiter-api>5.10.1</version.junit-jupiter-api>
-    <version.jackson-data-format>2.15.2</version.jackson-data-format>
-    <version.woodstox>6.5.0</version.woodstox>
+    <version.slf4j-log4j>2.0.12</version.slf4j-log4j>
+    <version.junit-jupiter-api>5.10.2</version.junit-jupiter-api>
+    <version.jackson>2.17.0</version.jackson>
+    <version.woodstox>6.6.2</version.woodstox>
     <version.site>3.12.1</version.site>
-    <version.maven-release>2.5.3</version.maven-release>
+    <version.maven-release>3.0.1</version.maven-release>
     <version.jar>3.3.0</version.jar>
-    <version.build.helper>3.3.0</version.build.helper>
-    <version.maven-source-plugin>3.2.1</version.maven-source-plugin>
-    <version.maven-javadoc-plugin>3.4.1</version.maven-javadoc-plugin>
-    <version.maven-assembly-plugin>3.4.2</version.maven-assembly-plugin>
-    <version.buildnumber>3.0.0</version.buildnumber>
-    <version.picocli>4.7.0</version.picocli>
-    <version.mockito>5.5.0</version.mockito>
-    <version.jacoco>0.8.8</version.jacoco>
-    <version.maven-failsafe-plugin>3.0.0-M7</version.maven-failsafe-plugin>
-    <version.maven-enforcer-plugin>3.3.0</version.maven-enforcer-plugin>
+    <version.build.helper>3.5.0</version.build.helper>
+    <version.maven-source-plugin>3.3.0</version.maven-source-plugin>
+    <version.maven-javadoc-plugin>3.6.3</version.maven-javadoc-plugin>
+    <version.maven-assembly-plugin>3.7.1</version.maven-assembly-plugin>
+    <version.buildnumber>3.2.0</version.buildnumber>
+    <version.picocli>4.7.5</version.picocli>
+    <version.mockito>5.11.0</version.mockito>
+    <version.jacoco>0.8.11</version.jacoco>
+    <version.maven-failsafe-plugin>3.2.5</version.maven-failsafe-plugin>
+    <version.maven-enforcer-plugin>3.4.1</version.maven-enforcer-plugin>
 
     <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco-it/jacoco.xml,**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.junit.reportPaths>
       target/surefire-reports,target/failsafe-reports/
     </sonar.junit.reportPaths>
     <version.nexus-staging-maven-plugin>1.6.13</version.nexus-staging-maven-plugin>
-    <version.maven-gpg-plugin>3.0.1</version.maven-gpg-plugin>
-    <assertj-core.version>3.24.2</assertj-core.version>
-    <version.snapshot-generator>0.2.1</version.snapshot-generator>
+    <version.maven-gpg-plugin>3.2.2</version.maven-gpg-plugin>
+    <assertj-core.version>3.25.3</assertj-core.version>
+    <version.snapshot-generator>0.4.0</version.snapshot-generator>
+    <spotless-maven-plugin.version>2.43.0</spotless-maven-plugin.version>
+    <version.maven-resources>3.3.1</version.maven-resources>
+    <commons-compress.version>1.26.1</commons-compress.version>
+    <guava.version>33.1.0-jre</guava.version>
+    <thymeleaf.version>3.1.2.RELEASE</thymeleaf.version>
+    <checker-qual.version>3.42.0</checker-qual.version>
+    <commons-codec.version>1.16.1</commons-codec.version>
+    <error_prone_annotations.version>2.26.1</error_prone_annotations.version>
+    <commons-io.version>2.16.0</commons-io.version>
+    <commons-lang3.version>3.14.0</commons-lang3.version>
   </properties>
 
 
@@ -227,6 +238,18 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless-maven-plugin.version}</version>
+        <configuration>
+          <java>
+            <licenseHeader>
+              <file>LICENSE</file>
+            </licenseHeader>
+          </java>
+        </configuration>
+      </plugin>
     </plugins>
 
     <pluginManagement>
@@ -319,6 +342,11 @@
           <artifactId>maven-assembly-plugin</artifactId>
           <version>${version.maven-assembly-plugin}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${version.maven-resources}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -380,17 +408,17 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.25.0</version>
+        <version>${commons-compress.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>33.0.0-jre</version>
+        <version>${guava.version}</version>
       </dependency>
       <dependency>
         <groupId>org.thymeleaf</groupId>
         <artifactId>thymeleaf</artifactId>
-        <version>3.1.2.RELEASE</version>
+        <version>${thymeleaf.version}</version>
       </dependency>
 
       <!--
@@ -399,32 +427,42 @@
       <dependency>
         <groupId>org.checkerframework</groupId>
         <artifactId>checker-qual</artifactId>
-        <version>3.42.0</version>
+        <version>${checker-qual.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>1.16.0</version>
+        <version>${commons-codec.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.errorprone</groupId>
         <artifactId>error_prone_annotations</artifactId>
-        <version>2.23.0</version>
+        <version>${error_prone_annotations.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>2.15.2</version>
+        <version>${version.jackson}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>2.15.2</version>
+        <version>${version.jackson}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.15.2</version>
+        <version>${version.jackson}</version>
       </dependency>
       <dependency>
         <groupId>ca.uhn.hapi.fhir</groupId>
@@ -474,6 +512,10 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
           </exclusion>
+          <exclusion>
+            <artifactId>Saxon-HE</artifactId>
+            <groupId>net.sf.saxon</groupId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -504,7 +546,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-yaml</artifactId>
-        <version>${version.jackson-data-format}</version>
+        <version>${version.jackson}</version>
       </dependency>
       <dependency>
         <groupId>info.picocli</groupId>
@@ -586,6 +628,17 @@
       <modules>
         <module>snapshot-generator</module>
         <module>cli</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>performance-tests</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>valmodule-erp-perf-tests</module>
+        <module>valmodule-erpta7-perf-tests</module>
       </modules>
     </profile>
 

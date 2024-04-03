@@ -2,6 +2,17 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.1.0
+
+### added
+- ERPTA7 module: experimental eRezept Abrechnungsdaten validation module with optimized performance
+
+### changed
+- if a validation plugin configuration allowed multiple profiles to be referenced in a single FHIR resource (which is the case in ISIK plugins for instance) and no of the referenced profiles in the resource was known to the plugin, the plugin performed validation against core structure definitions only. The behavior has been changed to produce an error message instead. The reason is that the above situation usually indicates a wrong usage of the plugin, e.g. a missing `--profile` parameter. For validation of resources against core structure definitions only, the `core` validation module should be used explicitly. 
+
+### fixed
+- the validator crashed for rare cases of FHIR resources with incorrectly declared extensions ([GitHub Issue 12](https://github.com/gematik/app-referencevalidator/issues/12)). The issue has been fixed.
+
 ## Release 2.0.2
 
 ### fixed

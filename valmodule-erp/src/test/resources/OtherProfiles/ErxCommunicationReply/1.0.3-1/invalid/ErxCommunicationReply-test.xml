@@ -9,14 +9,8 @@
     <basedOn>
         <reference value="Task/4711" />
     </basedOn>
-    <status value="bla" />
+    <status value="on-hold" />
     <sent value="2020-03-12T18:01:10+00:00" />
-    <recipient>
-        <identifier>
-            <system value="http://fhir.de/NamingSystem/gkv/kvid-10" />
-            <value value="X234567890" />
-        </identifier>
-    </recipient>
     <sender>
         <identifier>
             <system value="https://gematik.de/fhir/NamingSystem/TelematikID" />

@@ -21,7 +21,7 @@
     <partOf>
         <display value="Serum Potassium Observation"/>
     </partOf>
-    <status value="bla"/>
+    <status value="on-hold"/>
     <category>
         <coding>
             <system value="http://acme.org/messagetypes"/>
@@ -40,10 +40,6 @@
     <subject>
         <reference value="Patient/example"/>
     </subject>
-
-    <encounter>
-        <reference value="Encounter/example"/>
-    </encounter>
     <sent value="2014-12-12T18:01:10-08:00"/>
     <received value="2014-12-12T18:01:11-08:00"/>
     <recipient>

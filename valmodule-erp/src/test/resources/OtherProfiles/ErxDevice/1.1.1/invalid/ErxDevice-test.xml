@@ -6,12 +6,8 @@
             <display value="Static backend prescription service device information" />
         </tag>
     </meta>
-    <status value="bla" />
+    <status value="entered-in-error" />
     <serialNumber value="1.0.0" />
-    <deviceName>
-        <name value="E-Rezept Fachdienst" />
-        <type value="user-friendly-name" />
-    </deviceName>
     <version>
         <value value="1.0.0" />
     </version>
