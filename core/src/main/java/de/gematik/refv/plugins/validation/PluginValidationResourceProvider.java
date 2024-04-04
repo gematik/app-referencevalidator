@@ -117,6 +117,7 @@ public class PluginValidationResourceProvider extends BaseValidationResourceProv
                 ProfileConfiguration profileConfiguration = new ProfileConfiguration(List.of(fhirPackageName), null);
                 Map<String, ProfileConfiguration> profileVersions = new HashMap<>();
                 profileVersions.put(definition.getVersion(), profileConfiguration);
+                profileVersions.put("0.0.0", profileConfiguration);
                 SupportedProfileVersions supportedProfileVersions = new SupportedProfileVersions(profileVersions);
                 supportedProfiles.put(definition.getBaseCanonical(), supportedProfileVersions);
             }
