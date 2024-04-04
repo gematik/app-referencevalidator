@@ -2,6 +2,11 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.1.1
+
+### fixed
+- while using plugins the validator didn't recognize profiles without the pipe and version for the profile URL. The issue has been fixed. Now both piped and non-piped profile URLs are recognized correctly.
+
 ## Release 2.1.0
 
 ### added

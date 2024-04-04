@@ -15,22 +15,36 @@ limitations under the License.
 */
 package de.gematik.refv;
 
+import de.gematik.refv.commons.validation.ValidationModule;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.zip.ZipFile;
 
 class PluginIT {
-    @Test
+
+    private static ValidationModule pluginModule;
+
     @SneakyThrows
-    void testValidationUsingPlugin() {
+    @BeforeAll
+    static void beforeAll() {
         Plugin plugin = Plugin.createFromZipFile(new ZipFile("src/test/resources/plugins/minimal-plugin.zip"));
-        var pluginModule = new ValidationModuleFactory().createValidationModuleFromPlugin(plugin);
+        pluginModule = new ValidationModuleFactory().createValidationModuleFromPlugin(plugin);
         Assertions.assertEquals("minimal", pluginModule.getId());
         Assertions.assertNotNull(pluginModule.getConfiguration());
-
-        var result = pluginModule.validateFile("src/test/resources/plugins/simplevalidationmodule.test.patient.valid.json");
+    }
+    @ParameterizedTest()
+    @ValueSource(strings = {
+            "src/test/resources/plugins/simplevalidationmodule.test-multiple-profiles.patient.valid.json",
+            "src/test/resources/plugins/simplevalidationmodule.test.patient.valid.json",
+            "src/test/resources/plugins/simplevalidationmodule.test-profile-without-version.patient.valid.json"
+    })
+    @SneakyThrows
+    void testValidationUsingPlugin(String resourcePath) {
+        var result = pluginModule.validateFile(resourcePath);
         Assertions.assertTrue(result.isValid());
     }
 }
