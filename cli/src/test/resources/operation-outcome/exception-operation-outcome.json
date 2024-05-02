@@ -1,0 +1,1 @@
+{"resourceType":"OperationOutcome","meta":{"profile":["https://gematik.de/fhir/refv/StructureDefinition/REFVValidationResult|1.0.0"]},"issue":[{"severity":"fatal","code":"processing","diagnostics":"Could not parse resource","location":["java.lang.IllegalArgumentException"]}]}

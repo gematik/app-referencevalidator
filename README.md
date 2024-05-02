@@ -66,10 +66,10 @@ Siehe [Release Notes](ReleaseNotes.md)
 
 | **Modul**                                      | **Version** |
 |------------------------------------------------|-------------|
-| E-Rezept                                       | 2.0         |
+| E-Rezept                                       | 2.1         |
 | Elektronische Arbeitsunfähigkeitsbescheinigung | 0.9         |
 | FHIR Core                                      | 1.0         |
-| E-Rezept Abrechnungsdaten (experimentell)      | 0.1         |
+| E-Rezept Abrechnungsdaten (experimentell)      | 0.2         |
 
 
 
@@ -120,6 +120,19 @@ Der Referenzvalidator bietet die Möglichkeit, FHIR Core-Ressourcen zu validiere
 
 Dieses Modul bietet eine experimentelle Umsetzung zur performanten Validierung von großen [TA7-FHIR-Abrechnungsdateien](https://simplifier.net/erezeptabrechnungsdaten). Unterstützt werden nur Resourcen mit dem Profil `https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_Bundle|1.3.0`.
 
+Das Modul mit der id `erpta7` kann auf die gleiche Art und Weise verwendet werden wie das E-Rezept-Modul, z.B.
+
+```
+java -jar .\referencevalidator-cli-X.Y.Z.jar erpta7 c:\temp\big-ta7-file.xml
+```
+oder aus dem Quellcode heraus unter der Verwendung der entsprechenden Kennung `SupportedValidationModule.ERPTA7`:
+
+```Java
+ValidationModule erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERPTA7);
+```
+
+Für die Validierung der TA7-FHIR-Instanzen teilt das Modul die Eingabe in mehrere `GKVSV_PR_TA7_RezeptBundle`-Ressourcen auf und validiert diese unabhängig voneinander - parallel und unter Verwendung des E.Rezept-Validierungsmoduls. Zusätzlich erfolgt Validierung des umschließenden Bundles, anderer Ressourcen sowie Querverweisprüfungen innerhalb der Eingabe-FHIR-Instanz, um die Gesamtkorrektheit der Validierung zu gewährleisten. Das Modul strebt identische Validierungsergebnisse wie das E-Rezept-Modul an. Die Leistung des Moduls hängt von der Anzahl der verfügbaren CPU-Kerne ab, was der Anzahl der vom Modul gestarteten parallelen Threads entspricht. Wie auch das E-Rezept-Modul validiert das ERPTA7-Modul KEINE  base64-kodierten Daten (eRezepte, Abgabedaten, Belege) innerhalb der TA7-Datei.
+
 ### Externe Validierungsmodule (Plugins)
 
 Der Referenzvalidator kann mit weiteren Validierungsmodulen erweitert werden. Die von der gematik bereitgestellten Validierungsmodule 
@@ -143,7 +156,7 @@ Beispielaufruf:
 
 ```
     cd referencevalidator
-    java -jar referencevalidator-cli-X.Y.Z.jar isik3-terminplanung test-ISIKTermin.json
+    java -jar .\referencevalidator-cli-X.Y.Z.jar isik3-terminplanung test-ISIKTermin.json
 ```
 
 #### Nutzung mit der Java-Bibliothek
@@ -194,9 +207,10 @@ Die Versionsangabe `${version.referencevalidator}` soll mit der gewünschten ein
 
 ### Konsolenanwendung
 
-Der Referenzvalidator erfordert als Eingabe einen Modulnamen und einen gültigen Pfad zur Datei, die eine FHIR-Ressource enthält:
+Der Referenzvalidator erfordert als Eingabe einen Modulnamen und einen oder mehrere gültige Pfade zu Dateien oder Verzeichnissen, die FHIR-Ressourcen enthalten (bei mehreren Pfaden müssen diese mit Kommas separiert werden):
 
     java -jar referencevalidator-cli-X.Y.Z.jar erp c:\temp\example.xml
+    java -jar referencevalidator-cli-X.Y.Z.jar erp c:\temp\example.xml,c:\temp\example2.xml,c:\temp\folder-with-fhir-resources
 
 Unterstützte Modulnamen:
 - `erp` (E-Rezept)
@@ -210,6 +224,7 @@ Optionen:
 - `--profile` - Angabe einer Profil-Canonical-URL zur Validierung. Falls angegeben, wird die Angabe der Instanz unter meta.profile ignoriert
 - `--module-info` - Ausgabe der unterstützten Profile, Profilversionen und FHIR-Packages zu einem Validierungsmodul
 - `--accepted-encodings` - Komma-separierte Liste mit den zu akzeptierenden Serialisierungsformaten der FHIR-Ressourcen. Unterstützte Werte: `xml`,`json`. Überschreibt die Modul-eigene Konfiguration.
+- `--output` - Angabe eines Dateipfades um das Validierungsergebnis in Form einer FHIR OperationOutcome-Ressource bzw. eines Bundles mit OperationOutcome-Ressourcen in eine Datei zu schreiben. Beispiel: `--output c:\temp\output.xml`. Als Ausgabeformate werden sowohl `xml` als auch `json` unterstützt. Die Struktur der Ausgabedateien ist in der [weiterführenden Dokumentation](docs/profiles/fsh/fsh-generated/resources) zu finden.    
 
 ### Java-Bibliothek
 

@@ -1,0 +1,71 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "REFVValidationResult",
+  "url": "https://gematik.de/fhir/refv/StructureDefinition/REFVValidationResult",
+  "version": "1.0.0",
+  "name": "REFVValidationResult",
+  "status": "active",
+  "experimental": true,
+  "date": "2024-04-10",
+  "publisher": "gematik GmbH",
+  "description": "Dieses Profil beschreibt die Struktur des Validierungsergebnisses vom Referenzvalidator",
+  "fhirVersion": "4.0.1",
+  "mapping": [
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    },
+    {
+      "identity": "v2",
+      "uri": "http://hl7.org/v2",
+      "name": "HL7 v2 Mapping"
+    }
+  ],
+  "kind": "resource",
+  "abstract": false,
+  "type": "OperationOutcome",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/OperationOutcome",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "OperationOutcome.meta",
+        "path": "OperationOutcome.meta",
+        "mustSupport": true
+      },
+      {
+        "id": "OperationOutcome.meta.profile",
+        "path": "OperationOutcome.meta.profile",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "OperationOutcome.issue",
+        "path": "OperationOutcome.issue",
+        "mustSupport": true
+      },
+      {
+        "id": "OperationOutcome.issue.severity",
+        "path": "OperationOutcome.issue.severity",
+        "mustSupport": true
+      },
+      {
+        "id": "OperationOutcome.issue.code",
+        "path": "OperationOutcome.issue.code",
+        "mustSupport": true
+      },
+      {
+        "id": "OperationOutcome.issue.diagnostics",
+        "path": "OperationOutcome.issue.diagnostics",
+        "min": 1,
+        "mustSupport": true
+      },
+      {
+        "id": "OperationOutcome.issue.location",
+        "path": "OperationOutcome.issue.location",
+        "mustSupport": true
+      }
+    ]
+  }
+}

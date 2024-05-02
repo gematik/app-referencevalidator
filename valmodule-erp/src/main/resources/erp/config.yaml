@@ -1,5 +1,5 @@
 id: "erp"
-version: "2.0"
+version: "2.1"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
@@ -172,7 +172,18 @@ dependencyLists:
       - "kbv.basis-1.3.0.tgz"
       - "de.basisprofil.r4-1.3.2.tgz"
       # KBV 1.0.2 and KBV 1.0.3 are not allowed anymore
-    validFrom: "2024-01-01"    
+    validFrom: "2024-01-01"
+    validTill: "2024-10-31"
+
+  de.gematik.erezept-workflow.r4.1.3.0:
+    packages:
+      - "de.gematik.erezept-workflow.r4-1.3.0.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.2.0.tgz"
+      - "kbv.ita.erp-1.1.2.tgz"
+      - "kbv.ita.for-1.1.0.tgz"
+      - "kbv.basis-1.3.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+    validFrom: "2024-11-01"
 
   # https://simplifier.net/eRezeptAbgabedaten/~packages
   de.abda.erezeptabgabedaten.1.0.3:
@@ -1094,6 +1105,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_AuditEvent":
     profileVersions:
@@ -1101,6 +1115,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_BfArMApproval":
     profileVersions:
@@ -1108,6 +1125,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Binary":
     profileVersions:
@@ -1115,6 +1135,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Bundle":
     profileVersions:
@@ -1122,6 +1145,10 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GEM_ERP_PR_Composition')).date"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GEM_ERP_PR_Composition')).date"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_CloseOperationInputBundle":
@@ -1131,6 +1158,10 @@ supportedProfiles:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GEM_ERP_PR_MedicationDispense')).first().whenHandedOver"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GEM_ERP_PR_MedicationDispense')).first().whenHandedOver"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_DispReq":
     profileVersions:
@@ -1138,6 +1169,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_InfoReq":
     profileVersions:
@@ -1145,6 +1179,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_Reply":
     profileVersions:
@@ -1152,6 +1189,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Communication_Representative":
     profileVersions:
@@ -1159,6 +1199,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Composition":
     profileVersions:
@@ -1167,6 +1210,10 @@ supportedProfiles:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
         creationDateLocator: "date"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
+        creationDateLocator: "date"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Device":
     profileVersions:
@@ -1174,6 +1221,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Digest":
     profileVersions:
@@ -1181,6 +1231,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_MedicationDispense":
     profileVersions:
@@ -1189,6 +1242,10 @@ supportedProfiles:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
         creationDateLocator: "whenHandedOver"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
+        creationDateLocator: "whenHandedOver"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Task":
     profileVersions:
@@ -1196,6 +1253,9 @@ supportedProfiles:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.2.2"
           - "de.gematik.erezept-workflow.r4.1.2.2-1-2024"
+      1.3:
+        dependencyLists:
+          - "de.gematik.erezept-workflow.r4.1.3.0"
 
   "https://gematik.de/fhir/erpchrg/StructureDefinition/GEM_ERPCHRG_PR_ChargeItem":
     profileVersions:

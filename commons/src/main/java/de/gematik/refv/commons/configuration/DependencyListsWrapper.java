@@ -34,7 +34,7 @@ public class DependencyListsWrapper {
         var matchingDependencyLists = dependencyLists.stream().filter(dl -> dl.isValidFor(resourceCreationDate)).collect(Collectors.toList());
         if(matchingDependencyLists.size() > 1)
             throw new IllegalStateException(String.format("Multiple dependency lists are valid for the date %s",resourceCreationDate));
-        if(matchingDependencyLists.size() == 0)
+        if(matchingDependencyLists.isEmpty())
             return Optional.empty();
 
         return Optional.of(matchingDependencyLists.get(0));
@@ -45,16 +45,16 @@ public class DependencyListsWrapper {
         if(openEndDependencyList.isPresent())
             return openEndDependencyList.get();
 
-        var firstSortedOptional = dependencyLists.stream().sorted((o1, o2) -> {
+        var firstSortedOptional = dependencyLists.stream().min((o1, o2) -> {
             LocalDate validTill1 = LocalDate.parse(o1.getValidTill());
             LocalDate validTill2 = LocalDate.parse(o2.getValidTill());
-            if(validTill2.isAfter(validTill1))
+            if (validTill2.isAfter(validTill1))
                 return 1;
             else if (validTill2.isBefore(validTill1))
                 return -1;
             else
                 return 0;
-        }).findFirst();
+        });
 
         if(firstSortedOptional.isPresent())
             return firstSortedOptional.get();
@@ -75,26 +75,22 @@ public class DependencyListsWrapper {
     }
 
     public Optional<LocalDate> getLatestValidTill() {
-        var dependencyListOptional = dependencyLists.stream().filter(dl -> dl.getValidTill() != null).sorted((o1, o2) -> {
+        var dependencyListOptional = dependencyLists.stream().filter(dl -> dl.getValidTill() != null).min((o1, o2) -> {
             LocalDate d1 = LocalDate.parse(o1.getValidTill());
             LocalDate d2 = LocalDate.parse(o2.getValidTill());
             return d2.isAfter(d1) || d2.isEqual(d1) ? 1 : -1;
-        }).findFirst();
-        if(dependencyListOptional.isEmpty())
-            return Optional.empty();
+        });
+        return dependencyListOptional.map(dependencyList -> LocalDate.parse(dependencyList.getValidTill()));
 
-        return Optional.of(LocalDate.parse(dependencyListOptional.get().getValidTill()));
     }
 
     public Optional<LocalDate> getEarliestValidFrom() {
-        var dependencyListsSortedOptional = dependencyLists.stream().filter(dl -> dl.getValidFrom() != null).sorted((o1, o2) -> {
+        var dependencyListsSortedOptional = dependencyLists.stream().filter(dl -> dl.getValidFrom() != null).min((o1, o2) -> {
             LocalDate d1 = LocalDate.parse(o1.getValidFrom());
             LocalDate d2 = LocalDate.parse(o2.getValidFrom());
             return d2.isAfter(d1) || d2.isEqual(d1) ? -1 : 1;
-        }).findFirst();
-        if(dependencyListsSortedOptional.isEmpty())
-            return Optional.empty();
+        });
+        return dependencyListsSortedOptional.map(dependencyList -> LocalDate.parse(dependencyList.getValidFrom()));
 
-        return Optional.of(LocalDate.parse(dependencyListsSortedOptional.get().getValidFrom()));
     }
 }

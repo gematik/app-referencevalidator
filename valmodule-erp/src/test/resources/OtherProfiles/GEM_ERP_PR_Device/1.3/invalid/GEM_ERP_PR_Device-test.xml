@@ -1,0 +1,15 @@
+<Device xmlns="http://hl7.org/fhir">
+    <id value="1" />
+    <meta>
+        <profile value="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Device|1.3" />
+    </meta>
+    <status value="entered-in-error" />
+    <serialNumber value="1.4.0" />
+    <version>
+        <value value="1.4.0" />
+    </version>
+    <contact>
+        <system value="email" />
+        <value value="betrieb@gematik.de" />
+    </contact>
+</Device>

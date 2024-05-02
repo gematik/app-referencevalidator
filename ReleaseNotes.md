@@ -2,6 +2,16 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.2.0
+
+### added
+- multiple files and directories can be passed as CLI arguments separated with commas (cf. [README.md](README.md))
+- validation results can be converted to OperationOutcome and written to a specified output file (cf. [README.md](README.md))
+- ERP module: [gematik Workflow Package 1.3.0](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.3.0) integrated (valid from 1.11.2024)
+
+### changed
+- ERPTA7 module: small performance optimizations (fullUrl uniqueness check) and extended logging
+
 ## Release 2.1.1
 
 ### fixed

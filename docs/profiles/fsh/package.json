@@ -1,0 +1,7 @@
+{
+  "name": "de.gematik.fhir.refv",
+  "version": "1.0.0",
+  "fhirVersions": [
+    "4.0.1"
+  ]
+}

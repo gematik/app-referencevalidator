@@ -127,7 +127,7 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
             <div class="content-wrapper"><p>2.1.1. Der Referenzvalidator muss FHIR-Ressourcen, deren Ausstellungsdatum
                2 Jahre zurückliegen kann, als Eingabe akzeptieren können (siehe <a href="#creation-date-elements">Profil-Elemente zur Bestimmung des Instanz-Erstellungszeitpunktes</a>).
             </p>
-                <p>2.1.2. Der Referenzvalidator muss Zugriff auf für die Validierung erforderlichen FHIR-Pakete und Ressourcen sowie Gültigkeitszeiträume der Profile, Profilversionen, FHIR-Pakete und Ressourcen der letzten 2 Jahre haben
+                <p>2.1.2. Der Referenzvalidator muss Zugriff auf für die Validierung erforderlichen FHIR-Pakete und Ressourcen sowie Gültigkeitszeiträume der Profile, Profilversionen, FHIR-Pakete und Ressourcen der letzten 3,5 Jahre haben (siehe auch E-Rezept-Fachdienst-Anforderungen, A_19252-02).
                 </p>
                 </div>
         </td>

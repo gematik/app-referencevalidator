@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
@@ -72,13 +71,21 @@ class DependencyListsWrapperTest {
         DependencyList dl3 = new DependencyList(dl2End, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
         DependencyList dl4 = new DependencyList(dl2End, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
         DependencyListsWrapper wrapper2 = new DependencyListsWrapper(dl1, dl2, dl3, dl4);
-        assertThatThrownBy(() -> wrapper2.getDependencyListValidAt(LocalDate.parse(dl2End).plusDays(1))).isInstanceOf(IllegalStateException.class);
+
+        LocalDate targetDate = LocalDate.parse(dl2End).plusDays(1);
+        assertThatThrownBy(() -> assertValidAtDate(wrapper2, targetDate))
+                .isInstanceOf(IllegalStateException.class);
     }
+
+    private void assertValidAtDate(DependencyListsWrapper wrapper, LocalDate targetDate) {
+        wrapper.getDependencyListValidAt(targetDate);
+    }
+
 
     @Test
     void testGetLatestDependencyListThrowsExceptionOnEmptyDependencyLists() {
         DependencyListsWrapper wrapper2 = new DependencyListsWrapper(new LinkedList<>());
-        assertThatThrownBy(() -> wrapper2.getLatestDependencyList()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(wrapper2::getLatestDependencyList).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
