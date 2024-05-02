@@ -27,15 +27,19 @@ public class SingleValidationMessageFactory {
         var m1 = new SingleValidationMessage();
         m1.setSeverity(ResultSeverityEnum.ERROR);
         m1.setMessage("Error message");
+        m1.setMessageId("MESSAGE_ID_1");
         var m2 = new SingleValidationMessage();
         m2.setSeverity(ResultSeverityEnum.ERROR);
         m2.setMessage("Error message");
+        m2.setMessageId("MESSAGE_ID_2");
         var m3 = new SingleValidationMessage();
         m3.setSeverity(ResultSeverityEnum.WARNING);
         m3.setMessage("Warning message");
+        m3.setMessageId("MESSAGE_ID_3");
         var m4 = new SingleValidationMessage();
         m4.setSeverity(ResultSeverityEnum.INFORMATION);
         m4.setMessage("Warning message");
+        m4.setMessageId("MESSAGE_ID_4");
 
         return List.of(m1,m2,m3,m4);
     }

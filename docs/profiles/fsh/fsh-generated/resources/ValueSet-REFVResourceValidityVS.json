@@ -1,0 +1,18 @@
+{
+  "resourceType": "ValueSet",
+  "status": "active",
+  "name": "REFVResourceValidityVS",
+  "id": "REFVResourceValidityVS",
+  "version": "1.0.0",
+  "url": "https://gematik.de/fhir/refv/ValueSet/REFVResourceValidityVS",
+  "experimental": true,
+  "publisher": "gematik GmbH",
+  "date": "2024-04-10",
+  "compose": {
+    "include": [
+      {
+        "system": "https://gematik.de/fhir/refv/CodeSystem/REFVResourceValidityCS"
+      }
+    ]
+  }
+}

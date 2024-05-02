@@ -1,0 +1,20 @@
+{
+  "resourceType": "CodeSystem",
+  "status": "active",
+  "content": "complete",
+  "name": "REFVResourceValidityCS",
+  "id": "REFVResourceValidityCS",
+  "title": "Reference validator resource validity codes",
+  "url": "https://gematik.de/fhir/refv/CodeSystem/REFVResourceValidityCS",
+  "concept": [
+    {
+      "code": "valid",
+      "display": "valid"
+    },
+    {
+      "code": "invalid",
+      "display": "invalid"
+    }
+  ],
+  "count": 2
+}

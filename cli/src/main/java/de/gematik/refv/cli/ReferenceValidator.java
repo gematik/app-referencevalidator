@@ -15,35 +15,54 @@ limitations under the License.
 */
 package de.gematik.refv.cli;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
+import de.gematik.refv.Plugin;
 import de.gematik.refv.SupportedValidationModule;
 import de.gematik.refv.ValidationModuleFactory;
 import de.gematik.refv.commons.exceptions.ValidationModuleInitializationException;
-import de.gematik.refv.Plugin;
 import de.gematik.refv.commons.validation.ProfileValidityPeriodCheckStrategy;
 import de.gematik.refv.commons.validation.ValidationMessagesFilter;
 import de.gematik.refv.commons.validation.ValidationModule;
 import de.gematik.refv.commons.validation.ValidationOptions;
 import de.gematik.refv.commons.validation.ValidationResult;
+import de.gematik.refv.commons.validation.ValidationResultToOperationOutcomeConverter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Category;
 import org.apache.log4j.LogManager;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.StringType;
 import picocli.CommandLine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,11 +75,11 @@ import java.util.stream.Stream;
 @Slf4j
 public class ReferenceValidator implements Runnable {
 
-    @CommandLine.Parameters(paramLabel = "VALIDATION_MODULE", description = "ID of a validation module or plugin")
+    @CommandLine.Parameters(paramLabel = "VALIDATION_MODULE", description = "ID of a validation module or plugin", index = "0")
     private String module;
 
-    @CommandLine.Parameters(paramLabel = "FILE", description = "Input file", defaultValue = "")
-    private File file;
+    @CommandLine.Parameters(paramLabel = "FILE", description = "Input files", split = ",", index = "1")
+    private List<File> files = new ArrayList<>();
 
     @CommandLine.Option(names = {"-v", "--verbose"}, description = "Print debug log messages and INFORMATION/WARNING validation messages", required = false)
     private boolean isVerbose;
@@ -76,6 +95,9 @@ public class ReferenceValidator implements Runnable {
 
     @CommandLine.Option(names = {"-ae", "--accepted-encodings"}, split = ",", description = "Encodings to accept (XML,JSON). Overwrites the module internal setting.", required = false)
     private List<String> acceptedEncodings;
+
+    @CommandLine.Option(names = {"-o", "--output"}, description = "Write the validation result to a specified output file path.", required = false)
+    private String outputFilePath;
 
     private ValidationModuleFactory factory = new ValidationModuleFactory();
 
@@ -119,14 +141,17 @@ public class ReferenceValidator implements Runnable {
                 return;
             }
 
-            ValidationOptions validationOptions = getValidationOptions();
+            if(files.isEmpty()) {
+                log.error("No file(s) for validation. You need specify at least one file or directory that contains resources for validation");
+                return;
+            }
 
-            ValidationResult result = validator.validateFile(file.toPath(), validationOptions);
-
-            String outputMessage = buildOutputMessage(result);
-            logWithLineBreak(outputMessage);
+            validateAndPrintResult(validator, getValidationOptions());
         } catch (Exception e){
             log.error("Exception", e);
+            if(outputFilePath != null)
+                writeExceptionAsOperationOutcome(outputFilePath, e);
+
         }
     }
 
@@ -197,7 +222,8 @@ public class ReferenceValidator implements Runnable {
                 + " from " + System.getProperty("java.home")
                 + " on " + System.getProperty("os.arch")
                 + " (" + System.getProperty("sun.arch.data.model") + "bit). "
-                + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB available");
+                + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB, "
+                + Runtime.getRuntime().availableProcessors() + " CPU cores available");
         sb.append("\r\nLocale: " + Locale.getDefault() + "\r\n");
         log.info("{}",sb);
     }
@@ -300,5 +326,161 @@ public class ReferenceValidator implements Runnable {
     public static String padRight(String s, int n) {
         String format = "%-" + n + "s";
         return String.format(format, s);
+    }
+
+    private void validateAndPrintResult(ValidationModule validator, ValidationOptions validationOptions) throws IOException, ExecutionException {
+        List<File> filesForValidation = getFilesForValidation(files);
+
+        if(filesForValidation.size() == 1) {
+            ValidationResult result = validator.validateFile(filesForValidation.get(0).toPath(), validationOptions);
+            String outputMessage = buildOutputMessage(result);
+            logWithLineBreak(outputMessage);
+            if(outputFilePath != null)
+                writeToFileAsOperationOutcome(result, outputFilePath);
+        }
+        else {
+            validateConcurrentlyAndPrintResults(filesForValidation, validator, validationOptions);
+        }
+    }
+
+    private List<File> getFilesForValidation(List<File> files) {
+        List<File> filesForValidation = new ArrayList<>();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                List<File> nestedFiles = getAllFilesInDirectory(file);
+                filesForValidation.addAll(nestedFiles);
+            } else {
+                filesForValidation.add(file);
+            }
+        }
+        return filesForValidation;
+    }
+
+    private List<File> getAllFilesInDirectory(File directory) {
+        List<File> filesInDirectory = new ArrayList<>();
+        File[] directoryFiles = directory.listFiles();
+        if (directoryFiles != null && directoryFiles.length > 0) {
+            for (File file : directoryFiles) {
+                if (file.isDirectory()) {
+                    filesInDirectory.addAll(getAllFilesInDirectory(file));
+                } else {
+                    filesInDirectory.add(file);
+                }
+            }
+        } else {
+            log.warn("Directory is empty! '{}' does not contain any resources for validation", directory.getAbsolutePath());
+        }
+        return filesInDirectory;
+    }
+
+    private void validateConcurrentlyAndPrintResults(List<File> files, ValidationModule validator, ValidationOptions validationOptions) throws ExecutionException {
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        FhirContext fhirContext = FhirContext.forR4();
+        try {
+            var results = new HashMap<String, OperationOutcome>();
+            Map<String, Future<ValidationResult>> futures = new HashMap<>();
+
+            // Submit each file validation task to the ExecutorService
+            for (File file : files) {
+                Callable<ValidationResult> task = () -> {
+                    try {
+                        return validator.validateFile(file.toPath(), validationOptions);
+                    } catch (Exception e) {
+                        log.error("Exception while validating {}", file.getAbsolutePath() , e);
+                        results.put(file.getAbsolutePath(), getExceptionAsOperationOutcome(e));
+                        return new ValidationResult(new ArrayList<>());
+                    }
+                };
+                Future<ValidationResult> future = executor.submit(task);
+                futures.put(file.getAbsolutePath(), future);
+            }
+
+            // Wait for all tasks to be finished
+            for (Map.Entry<String, Future<ValidationResult>> entry : futures.entrySet()) {
+                String filePath = entry.getKey();
+                Future<ValidationResult> future = entry.getValue();
+
+                try {
+                    ValidationResult validationResult = future.get();
+                    OperationOutcome result = new ValidationResultToOperationOutcomeConverter(fhirContext).toOperationOutcome(validationResult);
+                    // If an element with the filePath as key already exists it is because beforehand there occurred an UnsupportedProfileException
+                    results.putIfAbsent(filePath, result);
+                    String outputMessage = buildOutputMessage(validationResult);
+                    outputMessage = "Validation result for '" + filePath + "': " + System.lineSeparator() + outputMessage;
+                    logWithLineBreak(outputMessage);
+                } catch (InterruptedException e) {
+                    log.error("Validation interrupted", e);
+                    Thread.currentThread().interrupt();
+                }
+            }
+            if(outputFilePath != null)
+                writeToFileAsOperationOutcomeBundle(outputFilePath, fhirContext, results);
+
+        } finally {
+            executor.shutdown();
+        }
+    }
+
+    private void writeToFileAsOperationOutcomeBundle(String outputFilePath, FhirContext fhirContext, Map<String, OperationOutcome> results) {
+        if(results.isEmpty())
+            return;
+
+        try {
+            Bundle operationOutcomeBundle = new Bundle();
+            operationOutcomeBundle.setType(Bundle.BundleType.COLLECTION);
+
+            for(var result: results.entrySet()) {
+                result.getValue().addExtension("https://gematik.de/fhir/refv/StructureDefinition/REFVSourceFile", new StringType(result.getKey()));
+                Bundle.BundleEntryComponent operationOutcomeEntry = new Bundle.BundleEntryComponent();
+                operationOutcomeEntry.setFullUrl(String.format("urn:uuid:%s", UUID.randomUUID()));
+                operationOutcomeEntry.setResource(result.getValue());
+                operationOutcomeBundle.addEntry(operationOutcomeEntry);
+            }
+            writeFhirResourceToFile(outputFilePath, fhirContext, operationOutcomeBundle);
+        }
+        catch (IOException ex) {
+            log.error(String.format("Could not write OperationOutcome Bundle to %s", outputFilePath), ex);
+        }
+    }
+
+    private static void writeToFileAsOperationOutcome(ValidationResult validationResult, String outputFilePath) {
+        try {
+            FhirContext fhirContext = FhirContext.forR4();
+            OperationOutcome result = new ValidationResultToOperationOutcomeConverter(fhirContext).toOperationOutcome(validationResult);
+            writeFhirResourceToFile(outputFilePath, fhirContext, result);
+        }
+        catch (IOException ex) {
+            log.error(String.format("Could not write OperationOutcome to %s", outputFilePath), ex);
+        }
+    }
+
+    private static void writeExceptionAsOperationOutcome(String outputFilePath, Exception exception) {
+        try {
+            FhirContext context = FhirContext.forR4();
+            var result = getExceptionAsOperationOutcome(exception);
+            writeFhirResourceToFile(outputFilePath, context, result);
+        }
+        catch (IOException ex) {
+            log.error(String.format("Could not write OperationOutcome to %s", outputFilePath), ex);
+        }
+    }
+
+    private static OperationOutcome getExceptionAsOperationOutcome(Exception exception) {
+        var result = new OperationOutcome();
+        result.getMeta().addProfile(ValidationResultToOperationOutcomeConverter.PROFILE_URL);
+        OperationOutcome.OperationOutcomeIssueComponent issue = result.addIssue();
+        issue.setDiagnostics(exception.getMessage());
+        issue.setLocation(List.of(new StringType(exception.getClass().getCanonicalName())));
+        issue.setSeverity(OperationOutcome.IssueSeverity.FATAL);
+        issue.setCode(OperationOutcome.IssueType.PROCESSING);
+
+        return result;
+    }
+
+    private static void writeFhirResourceToFile(String outputFilePath, FhirContext context, IBaseResource result) throws IOException {
+        try(FileWriter writer = new FileWriter(outputFilePath, StandardCharsets.UTF_8)) {
+            IParser parser = outputFilePath.endsWith(".xml") ? context.newXmlParser() : context.newJsonParser();
+            parser.encodeResourceToWriter(result, writer);
+        }
     }
 }

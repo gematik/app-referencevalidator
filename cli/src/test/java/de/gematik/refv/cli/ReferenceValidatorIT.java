@@ -15,21 +15,37 @@ limitations under the License.
 */
 package de.gematik.refv.cli;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import de.gematik.refv.cli.support.TestAppender;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.hl7.fhir.r4.model.Bundle;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 class ReferenceValidatorIT {
 
 
     TestAppender appender;
+    IParser xmlParser = FhirContext.forR4().newXmlParser();
 
     @BeforeEach
     void beforeEach() {
@@ -143,5 +159,98 @@ class ReferenceValidatorIT {
 
         boolean isValid = appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("unsupported. Supported modules:"));
         Assertions.assertTrue(isValid, "No information found on supported modules");
+    }
+
+    @Test
+    void testNoFilesForValidation() {
+        String input = "erp -o target/output.json";
+        String [] args = input.split(" ");
+
+        ReferenceValidator.main(args);
+
+        boolean isValid = appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().equals("No file(s) for validation. You need specify at least one file or directory that contains resources for validation"));
+        assertThat(isValid).isTrue();
+    }
+
+    @Test
+    @SneakyThrows
+    void testValidateEmptyDirectory() {
+        File emptyDir = Files.createTempDirectory("emptyDir").toFile();
+        String emptyDirectoryPath = emptyDir.getAbsolutePath();
+        String input = "erp " + emptyDirectoryPath;
+        String [] args = input.split(" ");
+
+        ReferenceValidator.main(args);
+
+        boolean isValid = appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("Directory is empty!") && l.getMessage().toString().contains("does not contain any resources for validation"));
+        assertThat(isValid).isTrue();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "erp src/test/resources/operation-outcome/valid.xml -o target/valid-output.json, src/test/resources/operation-outcome/valid-operation-outcome.json",
+            "erp src/test/resources/operation-outcome/invalid.xml -o target/invalid-output.json, src/test/resources/operation-outcome/invalid-operation-outcome.json",
+            "erp src/test/resources/operation-outcome/exception.xml -o target/exception-output.json, src/test/resources/operation-outcome/exception-operation-outcome.json",
+            "erp src/test/resources/operation-outcome/valid.xml -o target/valid-output.xml, src/test/resources/operation-outcome/valid-operation-outcome.xml",
+    })
+    @SneakyThrows
+    void testWriteToFileAsOperationOutcome(String input, String expectedOutputPath) {
+        String [] args = input.split(" ");
+
+        ReferenceValidator.main(args);
+
+        String expectedOutput = FileUtils.readFileToString(new File(expectedOutputPath), StandardCharsets.UTF_8);
+        String actualOutput = FileUtils.readFileToString(new File(args[3]), StandardCharsets.UTF_8);
+
+        assertThat(actualOutput).isEqualTo(expectedOutput);
+    }
+
+    @ParameterizedTest
+    @MethodSource("multipleFileValidationTestData")
+    void testValidationOfMultipleFiles(String input, String expectedFilePath) throws Exception {
+        String[] args = input.split(" ");
+        ReferenceValidator.main(args);
+
+        String expectedOutput = FileUtils.readFileToString(new File(expectedFilePath), StandardCharsets.UTF_8)
+                .replaceAll("urn:uuid:[^\"]+", "UUID");
+        String actualOutput = FileUtils.readFileToString(new File(args[3]), StandardCharsets.UTF_8)
+                .replaceAll("urn:uuid:[^\"]+", "UUID")
+                .replaceAll("[^\"]+\\.xml", "FILE_PATH");
+
+        Bundle expectedBundle = (Bundle) xmlParser.parseResource(expectedOutput);
+        Bundle actualBundle = (Bundle) xmlParser.parseResource(actualOutput);
+
+        assertThat(actualBundle.equalsShallow(expectedBundle)).isTrue();
+    }
+
+    private static Stream<Arguments> multipleFileValidationTestData() {
+        return Stream.of(
+                Arguments.of("erp src/test/resources/erp-test.xml,src/test/resources/erp-test1.xml -o target/operation-outcome-bundle.xml", "src/test/resources/operation-outcome/operation-outcome-bundle.xml"),
+                Arguments.of("erp src/test/resources/operation-outcome/directory1 -o target/operation-outcome-directory.xml", "src/test/resources/operation-outcome/operation-outcome-directory.xml"),
+                Arguments.of("erp src/test/resources/operation-outcome/directory1,src/test/resources/operation-outcome/1.xml -o target/operation-outcome-directory-and-file.xml", "src/test/resources/operation-outcome/operation-outcome-directory-and-file.xml"),
+                Arguments.of("erp src/test/resources/operation-outcome/directory1,src/test/resources/operation-outcome/1.xml,src/test/resources/operation-outcome/directory2,src/test/resources/operation-outcome/2.xml -o target/operation-outcome-multiple-directories-and-files.xml", "src/test/resources/operation-outcome/operation-outcome-multiple-directories-and-files.xml"),
+                Arguments.of("erp src/test/resources/operation-outcome/nested-directory -o target/operation-outcome-nested-directory.xml", "src/test/resources/operation-outcome/operation-outcome-nested-directory.xml")
+        );
+    }
+
+    @Test
+    @SneakyThrows
+    void testValidationOfDirectoryFileAndFileWithException() {
+        String input = "erp src/test/resources/operation-outcome/directory1,src/test/resources/operation-outcome/1.xml,src/test/resources/eau-test.xml -o target/operation-outcome-folder-file-and-unsupported-file.xml";
+        String [] args = input.split(" ");
+
+        ReferenceValidator.main(args);
+
+        String expectedOutput = FileUtils.readFileToString(new File("src/test/resources/operation-outcome/operation-outcome-directory-file-and-exception.xml"), StandardCharsets.UTF_8)
+                .replaceAll("urn:uuid:[^\"]+", "UUID");
+        String actualOutput = FileUtils.readFileToString(new File(args[3]), StandardCharsets.UTF_8)
+                .replaceAll("urn:uuid:[^\"]+", "UUID")
+                .replaceAll("[^\"]+\\d?\\.xml", "FILE_PATH")
+                .replaceAll("[^\"]+eau-test\\d?\\.xml", "FILE_PATH");
+
+        Bundle expectedBundle = (Bundle) xmlParser.parseResource(expectedOutput);
+        Bundle actualBundle = (Bundle) xmlParser.parseResource(actualOutput);
+
+        assertThat(actualBundle.equalsShallow(expectedBundle)).isTrue();
     }
 }

@@ -1,0 +1,40 @@
+{
+  "resourceType": "OperationOutcome",
+  "meta": {
+    "profile": [
+      "https://gematik.de/fhir/refv/StructureDefinition/REFVValidationResult|1.0.0"
+    ]
+  },
+  "extension": [
+    {
+      "url": "https://gematik.de/fhir/refv/StructureDefinition/REFVResourceValidityEX",
+      "valueCoding": {
+        "system": "https://gematik.de/fhir/refv/CodeSystem/REFVResourceValidityCS",
+        "code": "invalid",
+        "display": "invalid"
+      }
+    }
+  ],
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Error message"
+    },
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Error message"
+    },
+    {
+      "severity": "warning",
+      "code": "processing",
+      "diagnostics": "Warning message"
+    },
+    {
+      "severity": "information",
+      "code": "processing",
+      "diagnostics": "Warning message"
+    }
+  ]
+}

@@ -17,28 +17,27 @@ package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ValidationResult {
-
     @Getter
-    private Collection<SingleValidationMessage> validationMessages;
-
+    private final Collection<SingleValidationMessage> validationMessages;
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder("Valid: ");
         result.append(isValid());
-        result.append(". Messages: \r\n");
-        for (var item :
-                getValidationMessages()) {
-            result.append(item);
-            result.append("\r\n");
+        if(!getValidationMessages().isEmpty()) {
+            result.append(". Messages: \r\n");
+            for (var item :
+                    getValidationMessages()) {
+                result.append(item);
+                result.append("\r\n");
+            }
         }
         return result.toString();
     }

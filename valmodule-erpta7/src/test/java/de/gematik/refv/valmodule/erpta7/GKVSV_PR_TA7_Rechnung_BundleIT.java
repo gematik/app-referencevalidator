@@ -18,6 +18,7 @@ package de.gematik.refv.valmodule.erpta7;
 import de.gematik.refv.commons.validation.IntegratedValidationResourceProvider;
 import de.gematik.refv.valmodule.base.helper.ValidFolderDetector;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
@@ -31,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 @Execution(ExecutionMode.SAME_THREAD)
+@Slf4j
 class GKVSV_PR_TA7_Rechnung_BundleIT {
 
     private static final String DIR = "GKVSV_PR_TA7_Rechnung_Bundle";

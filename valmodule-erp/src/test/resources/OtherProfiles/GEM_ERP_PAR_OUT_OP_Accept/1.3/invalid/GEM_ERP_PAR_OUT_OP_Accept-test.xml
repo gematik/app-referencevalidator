@@ -1,0 +1,71 @@
+<Parameters xmlns="http://hl7.org/fhir">
+    <id value="example"/>
+    <meta>
+        <profile value="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PAR_OUT_OP_Accept|1.3" />
+    </meta>
+    <parameter>
+        <name value="erxTask"/>
+        <resource>
+            <Task>
+                <meta>
+                    <profile value="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Task|1.3"/>
+                </meta>
+                <extension url="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_EX_PrescriptionType">
+                    <valueCoding>
+                        <system value="https://gematik.de/fhir/erp/CodeSystem/GEM_ERP_CS_FlowType" />
+                        <code value="unknown-code" />
+                        <display value="Muster 16 (Apothekenpflichtige Arzneimittel)" />
+                    </valueCoding>
+                </extension>
+                <identifier>
+                    <use value="official"/>
+                    <system value="https://gematik.de/fhir/erp/NamingSystem/GEM_ERP_NS_PrescriptionId"/>
+                    <value value="test"/>
+                </identifier>
+                <status value="accepted"/>
+                <intent value="order"/>
+            </Task>
+        </resource>
+    </parameter>
+    <parameter>
+        <name value="erxBinary"/>
+        <resource>
+            <Composition xmlns="http://hl7.org/fhir">
+                <id value="c624cf47-e235-4624-af71-0a09dc9254dc" />
+                <meta>
+                    <profile value="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Composition|1.3" />
+                </meta>
+                <extension url="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_EX_Beneficiary">
+                    <valueIdentifier>
+                        <system value="https://gematik.de/fhir/sid/telematik-id" />
+                        <value value="3-SMC-B-Testkarte-883110000129070" />
+                    </valueIdentifier>
+                </extension>
+                <status value="final" />
+                <type>
+                    <coding>
+                        <system value="https://gematik.de/fhir/erp/CodeSystem/GEM_ERP_CS_DocumentType" />
+                        <code value="3" />
+                        <display value="Receipt" />
+                    </coding>
+                </type>
+                <date value="2022-03-18T15:29:00+00:00" />
+                <author>
+                    <reference value="https://erp.zentral.erp.splitdns.ti-dienste.de/Device/1" />
+                </author>
+                <title value="Quittung" />
+                <event>
+                    <period>
+                        <start value="2022-03-18T15:28:00+00:00" />
+                        <end value="2022-03-18T15:29:00+00:00" />
+                    </period>
+                </event>
+                <section>
+                    <entry>
+                        <reference value="Binary/PrescriptionDigest-160.123.456.789.123.58" />
+                    </entry>
+                </section>
+            </Composition>
+        </resource>
+    </parameter>
+</Parameters>

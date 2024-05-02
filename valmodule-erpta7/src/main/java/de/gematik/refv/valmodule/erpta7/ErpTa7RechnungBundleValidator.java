@@ -16,19 +16,17 @@ limitations under the License.
 package de.gematik.refv.valmodule.erpta7;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.commons.validation.GenericValidator;
 import de.gematik.refv.commons.validation.IntegratedValidationModule;
 import de.gematik.refv.commons.validation.ValidationModule;
 import de.gematik.refv.commons.validation.ValidationOptions;
 import de.gematik.refv.commons.validation.ValidationResult;
-import de.gematik.refv.valmodule.erpta7.helper.DuplicateChecker;
 import de.gematik.refv.valmodule.erpta7.helper.BundleReducer;
+import de.gematik.refv.valmodule.erpta7.helper.DuplicateChecker;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -39,11 +37,9 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class ErpTa7RechnungBundleValidator {
-
+    private final DuplicateChecker duplicateChecker = new DuplicateChecker();
     private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
     private final ValidationModule validator;
-
-    private final DuplicateChecker duplicateChecker = new DuplicateChecker();
 
     @SneakyThrows
     public ErpTa7RechnungBundleValidator() {
@@ -54,17 +50,13 @@ public class ErpTa7RechnungBundleValidator {
     public ValidationResult validateBundleConcurrently(String resourceBody, ValidationOptions options) {
         BundleReducer bundleReducer = new BundleReducer(resourceBody);
         String reducedResourceBody = bundleReducer.getReducedResourceBody();
+        log.debug("Extracting GKVSV_PR_TA7_RezeptBundle entries...");
         List<String> allRezeptBundlesAsString = bundleReducer.getAllRezeptBundlesAsString();
+        log.debug("Validating reduced TA7-Bundle...");
         ValidationResult result = validator.validateString(reducedResourceBody, options);
         performConcurrentValidation(allRezeptBundlesAsString, result, options);
-        result.getValidationMessages().addAll(checkFullUrlUniqueness(resourceBody));
-        return result;
-    }
-
-    private List<SingleValidationMessage> checkFullUrlUniqueness(String resourceBody) {
-        var result = new LinkedList<SingleValidationMessage>();
-        result.addAll(duplicateChecker.findDuplicateFullUrls(resourceBody));
-        result.addAll(duplicateChecker.findDuplicateCompositionReferences(resourceBody));
+        log.debug("Checking for duplicate fullURLs...");
+        result.getValidationMessages().addAll(duplicateChecker.findDuplicateFullUrls(resourceBody));
         return result;
     }
 
@@ -74,6 +66,7 @@ public class ErpTa7RechnungBundleValidator {
 
         // Submit each string validation task to the ExecutorService
         for (String entryString : allEntriesAsStrings) {
+            log.debug("Validating GKVSV_PR_TA7_RezeptBundle #{}...", futures.size()+1);
             Callable<ValidationResult> task = () -> validator.validateString(entryString, options);
             Future<ValidationResult> future = executor.submit(task);
             futures.add(future);

@@ -1,22 +1,23 @@
 /*
-Copyright (c) 2022-2024 gematik GmbH
+ Copyright (c) 2022-2024 gematik GmbH
 
-Licensed under the Apache License, Version 2.0 (the License);
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the License);
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an 'AS IS' BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an 'AS IS' BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 package de.gematik.refv.valmodule.erpta7.helper;
 
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,6 +49,7 @@ class DuplicateCheckerTests {
     }
 
     @Test
+    @SneakyThrows
     void testNotFindDuplicateFullUrls() {
         String testResourceBody = "<Bundle>\n" +
                 "    <entry>\n" +
@@ -58,64 +60,6 @@ class DuplicateCheckerTests {
                 "    </entry>\n" +
                 "</Bundle>";
         var messages = duplicateChecker.findDuplicateFullUrls(testResourceBody);
-        assertThat(messages).isEmpty();
-    }
-
-    @Test
-    void testFindDuplicateCompositionReferences() {
-        SingleValidationMessage validationMessage = new SingleValidationMessage();
-        validationMessage.setMessage("Multiple matches in bundle for reference: " + "urn:uuid:dfdee8be-e6d3-42bb-ba30-a2a0addf8ee9");
-        validationMessage.setSeverity(ResultSeverityEnum.ERROR);
-        validationMessage.setMessageId("Bundle_BUNDLE_MultipleMatches");
-
-        String testResourceBody = "<Bundle>\n" +
-                "    <entry>\n" +
-                "        <resource>\n" +
-                "            <Composition>\n" +
-                "                <section>\n" +
-                "                    <entry>\n" +
-                "                        <reference value=\"urn:uuid:dfdee8be-e6d3-42bb-ba30-a2a0addf8ee9\"/>\n" +
-                "                    </entry>\n" +
-                "                </section>\n" +
-                "            </Composition>\n" +
-                "        </resource>\n" +
-                "    </entry>\n" +
-                "    <entry>\n" +
-                "        <fullUrl value=\"urn:uuid:dfdee8be-e6d3-42bb-ba30-a2a0addf8ee9\"/>\n" +
-                "    </entry>\n" +
-                "    <entry>\n" +
-                "        <fullUrl value=\"urn:uuid:dfdee8be-e6d3-42bb-ba30-a2a0addf8ee9\"/>\n" +
-                "    </entry>\n" +
-                "</Bundle>";
-        var messages = duplicateChecker.findDuplicateCompositionReferences(testResourceBody);
-
-        assertThat(messages)
-                .hasSize(1)
-                .contains(validationMessage);
-    }
-
-    @Test
-    void testNotFindDuplicateCompositionReferences() {
-        String testResourceBody = "<Bundle>\n" +
-                "    <entry>\n" +
-                "        <resource>\n" +
-                "            <Composition>\n" +
-                "                <section>\n" +
-                "                    <entry>\n" +
-                "                        <reference value=\"urn:uuid:dfdee8be-e6d3-42bb-ba30-a2a0addf8ee9\"/>\n" +
-                "                    </entry>\n" +
-                "                </section>\n" +
-                "            </Composition>\n" +
-                "        </resource>\n" +
-                "    </entry>\n" +
-                "    <entry>\n" +
-                "        <fullUrl value=\"urn:uuid:dfdee8be-e6d3-42bb-ba30-a2a0addf8ee9\"/>\n" +
-                "    </entry>\n" +
-                "    <entry>\n" +
-                "        <fullUrl value=\"urn:uuid:2f4b554e-af65-4c4e-adad-71381df65f21\"/>\n" +
-                "    </entry>\n" +
-                "</Bundle>";
-        var messages = duplicateChecker.findDuplicateCompositionReferences(testResourceBody);
         assertThat(messages).isEmpty();
     }
 }

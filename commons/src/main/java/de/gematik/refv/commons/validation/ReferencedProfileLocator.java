@@ -139,7 +139,7 @@ public class ReferencedProfileLocator {
         try (JsonParser jsonParser = jsonfactory.createParser(resource)) {
             jsonParser.nextToken();
             while (jsonParser.hasCurrentToken()) {
-                String fieldName = jsonParser.getCurrentName();
+                String fieldName = jsonParser.currentName();
                 jsonParser.nextToken();
                 if ("meta".equals(fieldName)) {
 
@@ -153,7 +153,7 @@ public class ReferencedProfileLocator {
 
     private List<String> locateProfileInMetaJson(JsonParser jsonParser) throws IOException {
         while(jsonParser.hasCurrentToken()) {
-            String fieldName = jsonParser.getCurrentName();
+            String fieldName = jsonParser.currentName();
             jsonParser.nextToken();
             if(PROFILE_STRING.equals(fieldName)) {
                 jsonParser.nextToken();

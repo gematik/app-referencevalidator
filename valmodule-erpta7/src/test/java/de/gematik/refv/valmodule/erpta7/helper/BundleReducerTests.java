@@ -42,25 +42,43 @@ class BundleReducerTests {
                 "<Bundle>\n" +
                         "    <timestamp value=\"2024-01-01T00:00:00Z\"/>\n" +
                         "    <entry>\n" +
+                        "        <fullUrl value=\"A\"/>\n" +
                         "        <resource>\n" +
                         "            <Composition>\n" +
                         "            </Composition>\n" +
                         "        </resource>\n" +
                         "    </entry>\n" +
                         "    <entry>\n" +
+                        "        <fullUrl value=\"B\"/>\n" +
                         "        <resource>\n" +
                         "            <List>\n" +
                         "            </List>\n" +
                         "        </resource>\n" +
                         "    </entry>\n" +
                         "    <entry>\n" +
+                        "        <fullUrl value=\"C\"/>\n" +
                         "        <resource>\n" +
-                        "            <Bundle>\n" +
-                        "                Rezept-Bundle 1\n" +
-                        "            </Bundle>\n" +
+                        "                 <Bundle>\n" +
+                                    "        Rezept-Bundle 1" +
+                                    "        <entry>\n" +
+                                    "          <fullUrl value=\"C1\"/>\n" +
+                                    "          <resource>\n" +
+                                    "            <Binary>\n" +
+                                    "            </Binary>\n" +
+                                    "          </resource>\n" +
+                                    "        </entry>\n" +
+                                    "        <entry>\n" +
+                                    "          <fullUrl value=\"C2\"/>\n" +
+                                    "          <resource>\n" +
+                                    "            <Binary>\n" +
+                                    "            </Binary>\n" +
+                                    "          </resource>\n" +
+                                    "        </entry>\n" +
+                        "      </Bundle>" +
                         "        </resource>\n" +
                         "    </entry>\n" +
                         "    <entry>\n" +
+                        "        <fullUrl value=\"D\"/>\n" +
                         "        <resource>\n" +
                         "            <Bundle>\n" +
                         "                Rezept-Bundle 2\n" +
@@ -68,6 +86,7 @@ class BundleReducerTests {
                         "        </resource>\n" +
                         "    </entry>\n" +
                         "    <entry>\n" +
+                        "        <fullUrl value=\"E\"/>\n" +
                         "        <resource>\n" +
                         "            <Bundle>\n" +
                         "                Rezept-Bundle 3\n" +
@@ -101,21 +120,36 @@ class BundleReducerTests {
         reducedResourceBody = normalizeLineSeparators(reducedResourceBody);
         assertThat(reducedResourceBody).isEqualTo(
                 "<Bundle xmlns=\"http://hl7.org/fhir\"><timestamp value=\"2024-01-01T00:00:00Z\"/><entry>\n" +
+                        "        <fullUrl value=\"A\"/>\n" +
                         "        <resource>\n" +
                         "            <Composition>\n" +
                         "            </Composition>\n" +
                         "        </resource>\n" +
                         "    </entry><entry>\n" +
+                        "        <fullUrl value=\"B\"/>\n" +
                         "        <resource>\n" +
                         "            <List>\n" +
                         "            </List>\n" +
                         "        </resource>\n" +
                         "    </entry><entry>\n" +
+                        "        <fullUrl value=\"C\"/>\n" +
                         "        <resource>\n" +
-                        "            <Bundle>\n" +
-                        "                Rezept-Bundle 1\n" +
-                        "            </Bundle>\n" +
-                        "        </resource>\n" +
+                        "                 <Bundle>\n" +
+                        "        Rezept-Bundle 1        <entry>\n" +
+                        "          <fullUrl value=\"C1\"/>\n" +
+                        "          <resource>\n" +
+                        "            <Binary>\n" +
+                        "            </Binary>\n" +
+                        "          </resource>\n" +
+                        "        </entry>\n" +
+                        "        <entry>\n" +
+                        "          <fullUrl value=\"C2\"/>\n" +
+                        "          <resource>\n" +
+                        "            <Binary>\n" +
+                        "            </Binary>\n" +
+                        "          </resource>\n" +
+                        "        </entry>\n" +
+                        "      </Bundle>        </resource>\n" +
                         "    </entry></Bundle>");
     }
 }
