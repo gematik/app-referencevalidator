@@ -2,6 +2,22 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.3.0
+
+### added:
+- ERP module: new packages: 
+  - [de.gkvsv.erezeptabrechnungsdaten#1.3.3](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.3.4)
+  - [de.gkvsv.erezeptabrechnungsdaten#1.4.1](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.4.1)
+  - [de.abda.erezeptabgabedaten#1.4.0](https://simplifier.net/packages/de.abda.erezeptabgabedaten/1.4.0)
+  - [de.gematik.erezept-patientenrechnung.r4#1.0.3](https://simplifier.net/packages/de.gematik.erezept-patientenrechnung.r4/1.0.3)
+  - [KBV Schlüsseltabelle S_KBV_DARREICHUNGSFORM v1.13](https://applications.kbv.de/S_KBV_DARREICHUNGSFORM_V1.13.xhtml)
+  - [KBV Schlüsseltabelle S_KBV_PERSONENGRUPPE v1.03](https://applications.kbv.de/S_KBV_PERSONENGRUPPE_V1.03.xhtml)
+
+### changed:
+- ERP module: [gematik Workflow Package 1.3.0](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.3.0) has been replaced by [gematik Workflow Package 1.3.1](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.3.1) (valid from 1.11.2024)
+- ERP module: for completeness purposes dependency lists for the `de.gematik.erezept-patientenrechnung.r4` specification have been extended with dependencies on `de.gematik.erezept-workflow.r4`-package referenced in the corresponding package.json manifest files. Although the current HAPI version (6.6.2) doesn't require these dependencies, this might change in the future. The main packages have been also updated with the latest versions from [simplifier.net](https://simplifier.net/packages/de.gematik.erezept-patientenrechnung.r4/), which have no changes but updated dependency references.
+- ERP module: removed dependencies of `de.gkvsv.erezeptabrechnungsdaten`, `de.gkvsv.erezeptabgabedaten` on the KBV Schlüsseltabellen (were not used in the profiles)
+  
 ## Release 2.2.0
 
 ### added
