@@ -47,7 +47,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +62,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -89,6 +89,9 @@ public class ReferenceValidator implements Runnable {
 
     @CommandLine.Option(names = {"-p", "--profile"}, description = "Canonical url of a profile to validate against", required = false)
     private String profile;
+
+    @CommandLine.Option(names = {"-pf", "--profile-filter"}, description = "Regular expression to proceed only with those resources, where meta.profile matches the expression", required = false)
+    private Pattern profileFilter;
 
     @CommandLine.Option(names = {"-mi", "--module-info"}, description = "Print profiles supported by a module", required = false)
     private boolean showModuleConfiguration;
@@ -148,10 +151,10 @@ public class ReferenceValidator implements Runnable {
 
             validateAndPrintResult(validator, getValidationOptions());
         } catch (Exception e){
-            log.error("Exception", e);
+            log.debug("Exception", e);
+            log.error("An error occurred during validation: " + e.getMessage());
             if(outputFilePath != null)
                 writeExceptionAsOperationOutcome(outputFilePath, e);
-
         }
     }
 
@@ -165,6 +168,8 @@ public class ReferenceValidator implements Runnable {
             validationOptions.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.IGNORE);
         if(isVerbose)
             validationOptions.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
+        if(profileFilter != null)
+            validationOptions.setProfileFilterRegex(profileFilter.pattern());
         return validationOptions;
     }
 

@@ -54,7 +54,7 @@ Außerdem können hier auch noch (optional), als viertes Argument, Quell-FHIR-Pa
 ```
 2. Anschließend müssen alle Quell-FHIR-Packages (ohne Snapshots), die für die Snapshot-Generierung benötigt werden, im Ordner `/neues-valmodule/src/main/resources/src-package/` abgelegt werden.
 3. Falls erforderlich, können Korrekturen zu Profilen im Ordner `/neues-valmodule/src/main/resources/src-package/patches/` hinterlegt werden.
-4. Um nun die Snapshots für das neue Validierungsmodul zu erzeugen, muss folgender Aufruf getätigt werden: `mvn clean compile -DskipTests -Pcreate-fhir-snapshots`.
+4. Um nun die Snapshots für das neue Validierungsmodul zu erzeugen, muss folgender Aufruf getätigt werden: `mvn exec:java@NEUES_VALMODULE -Pcreate-fhir-snapshots`.
 5. Die generierten FHIR-Packages mit Snapshots werden im Ordner `/neues-valmodule/src/main/resources/package/` abgelegt und können für die Validierung verwendet werden.
 6. Bis auf Weiteres sollen sowohl die Quell-FHIR-Packages als auch FHIR-Packages mit Snapshots mit ins Git eingecheckt werden. 
 

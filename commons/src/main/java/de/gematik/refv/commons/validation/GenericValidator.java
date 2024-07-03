@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -43,8 +44,9 @@ public class GenericValidator {
     public static final String ERR_REFV_NO_CREATION_DATE_IN_RESOURCE = "REFV_NO_CREATION_DATE_IN_RESOURCE";
     public static final String ERR_REFV_PARSE_ERROR = "REFV_PARSE_ERROR";
     public static final String WARN_REFV_VALIDITY_PERIOD_CHECK_DISABLED = "REFV_VALIDITY_PERIOD_CHECK_DISABLED";
-    private static final String WARN_REFV_PASSED_PROFILE_DIFFERS_FROM_META_PROFILE = "REFV_WARN_PASSED_PROFILE_DIFFERS_FROM_META_PROFILE";
+    public static final String WARN_REFV_PASSED_PROFILE_DIFFERS_FROM_META_PROFILE = "REFV_WARN_PASSED_PROFILE_DIFFERS_FROM_META_PROFILE";
     public static final String ERR_REFV_WRONG_ENCODING = "REFV_WRONG_ENCODING";
+    public static final String ERR_REFV_PROFILE_FILTER_MISMATCH = "REFV_PROFILE_FILTER_MISMATCH";
     private final FhirContext fhirContext;
 
     private final ReferencedProfileLocator referencedProfileLocator = new ReferencedProfileLocator();
@@ -87,26 +89,35 @@ public class GenericValidator {
         if(!validateEncoding(resourceBody, configuration, validationOptions))
             result = ValidationResult.createInstance(ResultSeverityEnum.ERROR, ERR_REFV_WRONG_ENCODING, String.format("Wrong instance encoding. Allowed encodings: %s", String.join(",", getAcceptedEncodings(configuration, validationOptions))));
         else {
-            Profile profileForValidation;
 
             List<String> allReferencedProfilesInResource = referencedProfileLocator.getAllReferencedProfilesInResource(resourceBody);
+            if(validationOptions.getProfileFilterRegex() != null && noneReferencedProfileMatches(allReferencedProfilesInResource, validationOptions.getProfileFilterRegex())) {
+                result = ValidationResult.createInstance(ResultSeverityEnum.ERROR, ERR_REFV_PROFILE_FILTER_MISMATCH, String.format("None of the referenced profiles in the resource matches the profile filter: %s. Referenced profiles: %s", validationOptions.getProfileFilterRegex(), allReferencedProfilesInResource));
+            }
+            else {
+                Profile profileForValidation;
+                if (!validationOptions.getProfiles().isEmpty()) {
+                    var userDefinedProfile = validationOptions.getProfiles().get(0); // Only one user defined profile is supported at the moment
+                    log.warn("Profile for validation has been passed by user: " + userDefinedProfile);
+                    profileForValidation = configuration.findFirstSupportedProfileWithExistingConfiguration(List.of(userDefinedProfile));
+                } else if (!allReferencedProfilesInResource.isEmpty())
+                    profileForValidation = configuration.findFirstSupportedProfileWithExistingConfiguration(allReferencedProfilesInResource);
+                else
+                    throw new IllegalArgumentException("FHIR resources without a referenced profile are currently unsupported. Please provide a profile parameter or a profile in the resource meta.profile element.");
 
-            if (!validationOptions.getProfiles().isEmpty()) {
-                var userDefinedProfile = validationOptions.getProfiles().get(0); // Only one user defined profile is supported at the moment
-                log.warn("Profile for validation has been passed by user: " + userDefinedProfile);
-                profileForValidation = configuration.findFirstSupportedProfileWithExistingConfiguration(List.of(userDefinedProfile));
-            } else if (!allReferencedProfilesInResource.isEmpty())
-                profileForValidation = configuration.findFirstSupportedProfileWithExistingConfiguration(allReferencedProfilesInResource);
-            else
-                throw new IllegalArgumentException("FHIR resources without a referenced profile are currently unsupported. Please provide a profile parameter or a profile in the resource meta.profile element.");
+                if (profileForValidation == null)
+                    throw new UnsupportedProfileException(allReferencedProfilesInResource);
 
-            if(profileForValidation == null)
-                throw new UnsupportedProfileException(allReferencedProfilesInResource);
-
-            result = validateResource(resourceBody, resourceProvider, validationOptions, profileForValidation, configuration, allReferencedProfilesInResource);
+                result = validateResource(resourceBody, resourceProvider, validationOptions, profileForValidation, configuration, allReferencedProfilesInResource);
+            }
         }
 
         return outputFilter.apply(result, validationOptions.getValidationMessagesFilter());
+    }
+
+    private static boolean noneReferencedProfileMatches(List<String> allReferencedProfilesInResource, Pattern profileFilterRegex) {
+        log.debug("Checking if any of the referenced profiles in the resource matches the profile filter: {}...", profileFilterRegex);
+        return allReferencedProfilesInResource.stream().noneMatch(p -> profileFilterRegex.matcher(p).find());
     }
 
     private ValidationResult validateResource(String resourceBody, ValidationModuleResourceProvider resourceProvider, ValidationOptions validationOptions, Profile profileForValidation, ValidationModuleConfiguration configuration, List<String> allReferencedProfilesInResource) {

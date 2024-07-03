@@ -30,7 +30,6 @@ class IntegratedValidationModuleIT {
     public static final String VALID_FILE = "simplevalidationmodule.test.patient.valid.xml";
     public static final String VALID_FILE_JSON = "simplevalidationmodule.test.patient.valid.json";
     public static final String INVALID_FILE = "simplevalidationmodule.test.patient.invalid.xml";
-    public static final String INVALID_FILE_FOR_PATCH = "simplevalidationmodule.test.patch.patient.invalid.xml";
     private static final ValidationModule module = ValidationModuleFactory.createInstance("simple");
 
     @Test
@@ -109,6 +108,28 @@ class IntegratedValidationModuleIT {
         options.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
         var result = module.validateString(IOUtils.toString(input, StandardCharsets.UTF_8), options);
         Assertions.assertFalse(result.getValidationMessages().stream().anyMatch(m -> m.getMessageId().equals("Terminology_TX_NoValid_3_CC")), "Misleading validation messages detected while there should be none");
+    }
+
+    @Test
+    @SneakyThrows
+    void testProfileFilterWhichDoesntMatchAnyMetaProfileReference() {
+        var input = ClasspathUtil.loadResourceAsStream("classpath:" + VALID_FILE);
+
+        ValidationOptions options = ValidationOptions.getDefaults();
+        options.setProfileFilterRegex("non-matching-pattern");
+        var result = module.validateString(IOUtils.toString(input, StandardCharsets.UTF_8), options);
+        Assertions.assertFalse(result.isValid(),"Resource is valid while the profile filter doesn't match any meta.profile reference");
+    }
+
+    @Test
+    @SneakyThrows
+    void testProfileFilterWhichMatcheAtLeastOneMetaProfileReference() {
+        var input = ClasspathUtil.loadResourceAsStream("classpath:" + VALID_FILE);
+
+        ValidationOptions options = ValidationOptions.getDefaults();
+        options.setProfileFilterRegex("patient|birthdate\\|1\\.0\\.\\d");
+        var result = module.validateString(IOUtils.toString(input, StandardCharsets.UTF_8), options);
+        Assertions.assertTrue(result.isValid(),"Resource is invalid while the profile filter matches one meta.profile reference");
     }
 
 }

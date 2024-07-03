@@ -16,9 +16,11 @@ limitations under the License.
 package de.gematik.refv.commons.validation;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Data
 public class ValidationOptions {
@@ -28,6 +30,9 @@ public class ValidationOptions {
     private ProfileValidityPeriodCheckStrategy profileValidityPeriodCheckStrategy;
     private ValidationMessagesFilter validationMessagesFilter;
 
+    @Getter
+    private Pattern profileFilterRegex;
+
     private ValidationOptions() {
     }
 
@@ -36,5 +41,9 @@ public class ValidationOptions {
         options.setProfileValidityPeriodCheckStrategy(ProfileValidityPeriodCheckStrategy.VALIDATE);
         options.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ERRORS_ONLY);
         return options;
+    }
+
+    public void setProfileFilterRegex(String profileFilterRegex) {
+        this.profileFilterRegex = Pattern.compile(profileFilterRegex);
     }
 }

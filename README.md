@@ -66,7 +66,7 @@ Siehe [Release Notes](ReleaseNotes.md)
 
 | **Modul**                                      | **Version** |
 |------------------------------------------------|-------------|
-| E-Rezept                                       | 2.2         |
+| E-Rezept                                       | 2.3         |
 | Elektronische Arbeitsunfähigkeitsbescheinigung | 0.9         |
 | FHIR Core                                      | 1.0         |
 | E-Rezept Abrechnungsdaten (experimentell)      | 0.2         |
@@ -222,6 +222,10 @@ Optionen:
 - `--verbose` - Verbode-Modus mit Debug-Protokoll-Ausgaben und INFORMATION- bzw. WARNING-Validierungsnachrichten 
 - `--no-profile-validity-period-check` - Deaktivierung der Zeitraumgültigkeitsprüfung der Profilversionen
 - `--profile` - Angabe einer Profil-Canonical-URL zur Validierung. Falls angegeben, wird die Angabe der Instanz unter meta.profile ignoriert
+- `--profile-filter` - Angabe eines regulären Ausdrucks zur Prüfung der unter meta.profile referenzierten Profile. Falls kein referenzierstes Profil dem regulären Ausdruck entspricht, wird die Instanz als invalide betrachtet. Beispiele zur Nutzung:
+  - Prüfen, dass es sich bei einer Instanz grundsätzlich um eine E-Rezept-Quittung und nicht etwa um eine Verordnung handelt: `--profile-filter "ErxReceipt|GEM_ERP_PR_Bundle"`
+  - Prüfen, dass es sich bei einer Instanz um eine E-Rezept-Verordnung (in der Profilversion 1.1) handelt: `--profile-filter "KBV_PR_ERP_Bundle\|1\.1"`
+  - Prüfen, dass es sich bei einer Instanz um Abgabedaten (GKV oder PKV) handelt: `--profile-filter "DAV-(PKV-)?PR-ERP-AbgabedatenBundle"`
 - `--module-info` - Ausgabe der unterstützten Profile, Profilversionen und FHIR-Packages zu einem Validierungsmodul
 - `--accepted-encodings` - Komma-separierte Liste mit den zu akzeptierenden Serialisierungsformaten der FHIR-Ressourcen. Unterstützte Werte: `xml`,`json`. Überschreibt die Modul-eigene Konfiguration.
 - `--output` - Angabe eines Dateipfades um das Validierungsergebnis in Form einer FHIR OperationOutcome-Ressource bzw. eines Bundles mit OperationOutcome-Ressourcen in eine Datei zu schreiben. Beispiel: `--output c:\temp\output.xml`. Als Ausgabeformate werden sowohl `xml` als auch `json` unterstützt. Die Struktur der Ausgabedateien ist in der [weiterführenden Dokumentation](docs/profiles/fsh/fsh-generated/resources) zu finden.    
@@ -255,7 +259,7 @@ Validierung einer FHIR-Ressource als String:
     System.out.println(result.getValidationMessages());
 ``` 
 
-Die Validierungseinstellungen auch angepasst werden: 
+Die Validierungseinstellungen können auch angepasst werden: 
 
 ``` Java
         ValidationModule erpModule = new ValidationModuleFactory().createValidationModule(SupportedValidationModule.ERP);
@@ -264,6 +268,7 @@ Die Validierungseinstellungen auch angepasst werden:
         options.setProfiles(List.of("https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle|1.0.1"));
         options.setAcceptedEncodings(List.of("xml", "json"));
         options.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
+        options.setProfileFilterRegex("KBV_PR_ERP_Bundle");
         ValidationResult result = erpModule.validateFile("c:/temp/KBV_PR_ERP_Bundle.xml", options);
         System.out.println(result.isValid());
         System.out.println(result.getValidationMessages());
