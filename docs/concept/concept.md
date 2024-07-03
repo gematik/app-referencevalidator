@@ -48,10 +48,13 @@ Ein Apothekenrechenzentrum muss wissen, ob ein E-Rezept den technischen Verarbei
 > **Warning**
 > Der Betrieb des Referenzvalidators in bestehenden Anwendungen oder Anwendungslandschaften obliegt der Verantwortung der Nutzer. Die gematik trifft angemessene Maßnahmen, um die Sicherheit und Performance des Referenzvalidators zu gewährleisten. Sie übernimmt aber keine Verantwortung für etwaige Schäden, die durch die Integration des Referenzvalidators in Produktionssysteme entstehen (siehe auch Haftungsausschuss der [Apache 2.0-Lizenz](https://www.apache.org/licenses/LICENSE-2.0). Insbesondere müssen die Sicherheitsaspekte des Gesamtsystems unter Einbeziehung der technischen und organisatorischen Rahmenbedingungen der jeweiligen Betriebsumgebung durch die Nutzer selbst bewertet werden. Des Weiteren hängen die Performance-Eigenschaften des Validators stark von der jeweiligen Betriebsumgebung ab.
 
+Weitere Nutzungsszenarien 
+====================================
+
 Weiterentwicklung der Profile
 -----------------------------
 
-Eine Organisation, die mit Profilierung von E-Rezept-Ressourcen beauftragt ist, entwickelt die Profildefinitionen kontinuierlich weiter. Zur Prüfung der Validität der neuen Profile und der neuen Beispieldatensätze, wird der Referenzvalidator hinzugezogen. Dieser wird entweder manuell auf neuen Profilen und Beispieldatensätzen aufgerufen oder in die CI-Pipelines integriert.
+Eine standardisierende Organisation entwickelt ihre FHIR-basierte Spezifikation, einschließlich Profildefinitionen, kontinuierlich weiter. Zur Prüfung der Validität der neuen Profile und der neuen Beispieldatensätze, werden für diese unabhängige temporäre Validierungsmodule ([Plugins](https://github.com/gematik/app-referencevalidator-plugins)) gebaut. Diese können zur Validierung der neuen Beispieldatensätze gegen die neuen Profile verwendet werden. Abwärtskompatibilität mit den alten Profilen kann durch die Validierung mithilfe der bereits veröffentlichten Module bzw. Plugins überprüft werden.
 
 E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
 ========================================================================
@@ -142,6 +145,7 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
                 </p>
                 <p>3.1.2. Der Referenzvalidator muss als Java 11-Bibliothek und als Konsolenanwendung bereitgestellt
                     werden, damit die Integration in andere Anwendungen möglich wird.</p> 
+                <p>3.1.3. Der Referenzvalidator kann als Startparameter einen regulären Ausdruck übergeben bekommen, um die in den Instanzen referenzierten Profile dagegen prüfen zu können. Damit soll im Kontext der Verarbeitung von TA7-Dateien die Möglichkeit geschaffen werden, die extrahierten base64-Daten auf ihren "Typ" zu prüfen (Verordnung, Quittung, Abgabedaten etc.)</p>
             </div>
         </td>
     </tr>
@@ -370,6 +374,38 @@ E-Rezept: Anforderungen an den Entwicklungsprozess
     </tbody>
 </table>
 
+Weitere Nutzung- und Stakeholderanforderungen an den Referenzvalidator
+========================================================================
+
+<table class="wrapped confluenceTable" style="letter-spacing: 0.0px;">
+    <colgroup>
+        <col style="width: 29.0px;">
+        <col style="width: 430.0px;">
+        <col style="width: 337.0px;">
+        <col style="width: 344.0px;">
+    </colgroup>
+    <tbody>
+    <tr>
+        <th class="confluenceTh" colspan="1"><br></th>
+        <th class="confluenceTh">Erfordernisse</th>
+        <th class="confluenceTh">Nutzung- und Stakeholderanforderungen</th>
+        <th class="confluenceTh" colspan="1">Systemanforderungen</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Ein Spezifikation-Ersteller muss ein Werkzeug verfügbar haben, mit dem die Validität der Beispielinstanzen im Rahmen der Weiterentwicklung der FHIR-basierten Spezifikation kontinuierlich überprüft werden können.</td> 
+        <td>
+            1.1. Der Spezifikation-Ersteller muss FHIR-package der zu erstellenden Spezifikation, Validierungskonfiguration sowie Beispielinstanzen eingeben können.<br/>
+            1.2. Der Spezifikation-Ersteller muss erkennen können, ob die eingegebenen Beispielinstanzen zu dem übergebenen FHIR-package entsprechend der Validierungskonfiguration konform sind.
+        </td>
+        <td>
+            1.1.1 Ein vom Referenzvalidator unabhängiges Werkzeug muss ein FHIR-package, Validierungskonfiguration sowie Beispielinstanzen akzeptieren und auf deren Basis ein neues Validierungsmodul (Plugin) erstellen können.<br/>
+            1.2.1 Der Referenzvalidator muss die unabhängig erstellten Plugins zur Validierung von Instanzen hinzuziehen können. Für die CLI-Variante des Referenzvalidators muss dafür ein spezieller Ablageort für die Plugins definiert werden, von wo aus der Referenzvalidator die letzteren automatisch lädt. Für die Java-Bibliothek-Variante muss die Angabe des Plugins über die API möglich sein
+        </td>
+    </tr>
+    </tbody>
+</table>
+
 Referenzvalidator: Infrastrukturelle Anforderungen
 ===================================================
 
@@ -408,7 +444,7 @@ Referenzvalidator: Infrastrukturelle Anforderungen
                             <li class="auto-cursor-target">Eine zu validierende FHIR-Ressource aus dem Kontext einer
                                 TI-Anwendung
                             </li>
-                            <li class="auto-cursor-target">Ein zu verwendendes Prüfmodul (E-Rezept, eAU etc.)</li>
+                            <li class="auto-cursor-target">Ein zu verwendendes internes Prüfmodul (E-Rezept, eAU etc.) oder ein Plugin</li>
                             <li>Modul-spezifische Eingabeparameter (z.B. Referenzzeitpunkt für die Prüfung der Profilversionsgültigkeit)</li>
                             <li>Modul-unabhängige Konfigurationseinstellungen (z.B. für detaillierte Protokollausgaben)
                             </li>
@@ -443,9 +479,15 @@ Architekturskizze
 
 Der Referenzvalidator verwaltet TI-anwendungsspezifische Prüfmodule, die bei Aktivierung zur Validierung der übergebenen Ressource hinzugezogen werden. Die Prüfmodule enthalten Pakete, Gültigkeitszeiträume der verwendeten Profile/Profilversionen sowie FHIR-Paket-spezifische Interpretationsregeln der Ausgaben der zugrundeliegenden Validierungsbibliothek. Als Validierungsbibliothek kommt der [HAPI FHIR Validator](https://github.com/hapifhir/hapi-fhir) zum Einsatz (die Major-Version 6 zum Zeitpunkt 9.6.2023).
 
-![image info](../img/architecture.png)
+![Referenzvalidator Architektur](../img/architecture.png)
 
-Um die Valid/Invalid-Entscheidung zu treffen, wertet der Referenzvalidator die HAPI-Ausgaben aus und wendet eventuell definierte Interpretationsregeln aus. Sollten im Ergebnis noch ERROR- oder FATAL-Ausgaben enthalten sein, führt es zur Invalid-Wertung, ansonsten wird die Instanz als Valid gewertet.  
+Um die Valid/Invalid-Entscheidung zu treffen, wertet der Referenzvalidator die HAPI-Ausgaben aus und wendet eventuell definierte Interpretationsregeln aus. Sollten im Ergebnis noch ERROR- oder FATAL-Ausgaben enthalten sein, führt es zur Invalid-Wertung, ansonsten wird die Instanz als Valid gewertet.
+
+Der Prozess zur Erstellung von Plugins ist im folgenden Diagramm dargestellt ([Quelle](https://www.ina.gematik.de/fileadmin/Dokumente/Referenzvalidator-1.0final.pdf)):
+
+![Erstellung und Nutzung von Plugins](../img/plugin-creation-and-usage-overview.drawio.svg)
+
+Das Werkzeug zum Erstellen von Plugins sowie die bereits veröffentlichten Plugins finden sich unter [https://github.com/gematik/app-referencevalidator-plugins](https://github.com/gematik/app-referencevalidator-plugins).
 
 Performancebetrachtungen
 ------------------

@@ -28,6 +28,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -40,6 +42,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Execution(ExecutionMode.SAME_THREAD)
 @Slf4j
 class ReferenceValidatorIT {
 
@@ -252,5 +255,16 @@ class ReferenceValidatorIT {
         Bundle actualBundle = (Bundle) xmlParser.parseResource(actualOutput);
 
         assertThat(actualBundle.equalsShallow(expectedBundle)).isTrue();
+    }
+
+    @Test
+    @SneakyThrows
+    void testProfileFilterWhichDoesntMatchAnyMetaProfileReference() {
+        String input = "erp src/test/resources/erp-test.xml --profile-filter NON-MATCHING-PATTERN";
+        String [] args = input.split(" ");
+
+        ReferenceValidator.main(args);
+
+        assertThat(appender.getLogs().stream()).as("No errors found while profile filter doesn't match").anyMatch(e -> e.getMessage().toString().contains("REFV_PROFILE_FILTER_MISMATCH"));
     }
 }

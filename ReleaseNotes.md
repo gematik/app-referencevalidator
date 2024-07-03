@@ -2,6 +2,20 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.4.0
+
+### added
+
+- validation option `profile-filter` to validate meta.profile references against a specified regular expression (cf. [README.md](README.md))
+- ERP module  (version update to 2.3):
+  -  integrated [KBV Schlüsseltabelle S_KBV_DMP v1.06](https://applications.kbv.de/S_KBV_DMP.xhtml) (valid from 1.10.2024)
+  
+### changed:
+
+- ERP module (version update to 2.3):
+  - validity of 1.3 profiles from de.abda.erezeptabgabedaten package extended till 15.4.2025
+  - integrated [de.gkvsv.erezeptabgabedaten#1.4.1](https://simplifier.net/packages/de.abda.erezeptabgabedaten/1.4.1) and [de.abda.erezeptabgabedatenbasis#1.4.1](https://simplifier.net/packages/de.abda.erezeptabgabedatenbasis/1.4.1), which replace the corresponding 1.4.0 packages 
+
 ## Release 2.3.0
 
 ### added:
