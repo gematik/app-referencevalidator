@@ -1,0 +1,65 @@
+<MedicationDispense xmlns="http://hl7.org/fhir">
+    <id value="335784b4-3f89-47cc-b32f-bc386a212e11" />
+    <meta>
+        <profile value="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abgabeinformationen|1.2" />
+    </meta>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Abrechnungszeilen">
+        <valueReference>
+            <reference value="urn:uuid:cfd49ec7-fd9c-4ab3-865f-f0aaf010ca19" />
+        </valueReference>
+    </extension>
+    <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-EX-ERP-AbrechnungsTyp">
+        <valueCodeableConcept>
+            <coding>
+                <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-PKV-CS-ERP-AbrechnungsTyp" />
+                <code value="1" />
+            </coding>
+        </valueCodeableConcept>
+    </extension>
+    <status value="completed" />
+    <medicationCodeableConcept>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/data-absent-reason" />
+            <code value="not-applicable" />
+        </coding>
+    </medicationCodeableConcept>
+    <performer>
+        <actor>
+            <reference value="urn:uuid:5dc67a4f-c936-4c26-a7c0-967673a70740" />
+        </actor>
+    </performer>
+    <authorizingPrescription>
+        <identifier>
+            <system value="https://gematik.de/fhir/erp/NamingSystem/GEM_ERP_NS_PrescriptionId" />
+            <value value="200.100.000.000.081.90" />
+        </identifier>
+    </authorizingPrescription>
+    <type>
+        <coding>
+            <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-MedicationDispenseTyp" />
+            <code value="Abgabeinformationen" />
+        </coding>
+    </type>
+    <whenHandedOver value="2023-07-01" />
+    <substitution>
+        <extension url="http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-EX-ERP-Rezeptaenderung">
+            <extension url="ArtRezeptaenderung">
+                <valueCodeableConcept>
+                    <coding>
+                        <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-PKV-CS-ERP-ArtRezeptaenderung" />
+                        <code value="13" />
+                    </coding>
+                </valueCodeableConcept>
+            </extension>
+            <extension url="RueckspracheArzt">
+                <valueCodeableConcept>
+                    <coding>
+                        <system value="http://fhir.abda.de/eRezeptAbgabedaten/CodeSystem/DAV-CS-ERP-RueckspracheArzt" />
+                        <code value="2" />
+                    </coding>
+                </valueCodeableConcept>
+            </extension>
+        </extension>
+        <wasSubstituted value="true" />
+    </substitution>
+</MedicationDispense>

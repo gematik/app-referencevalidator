@@ -1,5 +1,5 @@
 id: "erp"
-version: "2.3"
+version: "2.4"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
@@ -18,6 +18,7 @@ ucumValidationSeverityLevel: "WARNING"
 #  1.12 - 01.07.2023 - gematik.kbv.sfhir.cs.vs-1.2.0.tgz
 #  01.07.2024 - gematik.kbv.sfhir.cs.vs-1.3.0.tgz
 #  01.10.2024 - gematik.kbv.sfhir.cs.vs-1.4.0.tgz
+#  01.10.2024 - gematik.kbv.sfhir.cs.vs-1.5.0.tgz
 
 
 dependencyLists:
@@ -111,7 +112,7 @@ dependencyLists:
   kbv.ita.erp.1.1.2-10-2024:
     packages:
       - "kbv.ita.erp-1.1.2.tgz"
-      - "gematik.kbv.sfhir.cs.vs-1.4.0.tgz" # Update DMP 1.05 --> 1.06
+      - "gematik.kbv.sfhir.cs.vs-1.5.0.tgz" # Update DMP 1.05 --> 1.06, Darreichungsformen 1.13 --> 1.14
       - "de.basisprofil.r4-1.3.2.tgz"
       - "kbv.ita.for-1.1.0.tgz"
       - "kbv.basis-1.3.0.tgz"
@@ -211,7 +212,7 @@ dependencyLists:
   de.gematik.erezept-workflow.r4.1.3.1:
     packages:
       - "de.gematik.erezept-workflow.r4-1.3.1.tgz"
-      - "gematik.kbv.sfhir.cs.vs-1.4.0.tgz" # Update DMP 1.05 --> 1.06. Wird allerdings im Workflow nicht verwendet (aus diesem Grund wurde keine neue Abhängigkeitsliste mit Startdatum 1.10 eingeführt)
+      - "gematik.kbv.sfhir.cs.vs-1.5.0.tgz" # Update DMP 1.05 --> 1.06, Darreichungsformen 1.13 --> 1.14. Wird allerdings im Workflow nicht verwendet (aus diesem Grund wurde keine neue Abhängigkeitsliste mit Startdatum 1.10 eingeführt)
       - "kbv.ita.erp-1.1.2.tgz"
       - "kbv.ita.for-1.1.0.tgz"
       - "kbv.basis-1.3.0.tgz"
@@ -293,6 +294,14 @@ dependencyLists:
       - "de.basisprofil.r4-1.3.2.tgz"
       - "de.abda.erezeptabgabedatenbasis-1.3.1.tgz"
     validFrom: "2023-07-01"
+    validTill: "2025-04-15"
+
+  de.abda.erezeptabgabedatenpkv.1.3.0:
+    packages:
+      - "de.abda.erezeptabgabedatenpkv-1.3.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.4.1.tgz"
+    validFrom: "2024-11-01"
 
   # https://simplifier.net/erezept-patientenrechnung
   de.gematik.erezept-patientenrechnung.r4.1.0.1:
@@ -459,12 +468,19 @@ supportedProfiles:
         dependencyLists:
           - "de.abda.erezeptabgabedatenpkv.1.2.0"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('DAV-PKV-PR-ERP-Abgabeinformationen')).whenHandedOver"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.3.0"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('DAV-PKV-PR-ERP-Abgabeinformationen')).whenHandedOver"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-AbgabedatenComposition":
     profileVersions:
       1.2:
         dependencyLists:
           - "de.abda.erezeptabgabedatenpkv.1.2.0"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.3.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abgabeinformationen":
     profileVersions:
@@ -472,30 +488,46 @@ supportedProfiles:
         dependencyLists:
           - "de.abda.erezeptabgabedatenpkv.1.2.0"
         creationDateLocator: "whenHandedOver"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.3.0"
+        creationDateLocator: "whenHandedOver"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Abrechnungszeilen":
     profileVersions:
       1.2:
         dependencyLists:
           - "de.abda.erezeptabgabedatenpkv.1.2.0"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.3.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-Apotheke":
     profileVersions:
       1.2:
         dependencyLists:
           - "de.abda.erezeptabgabedatenpkv.1.2.0"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.3.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenEinheit":
     profileVersions:
       1.2:
         dependencyLists:
           - "de.abda.erezeptabgabedatenpkv.1.2.0"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.3.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PKV-PR-ERP-ZusatzdatenHerstellung":
     profileVersions:
       1.2:
         dependencyLists:
           - "de.abda.erezeptabgabedatenpkv.1.2.0"
+      1.3:
+        dependencyLists:
+          - "de.abda.erezeptabgabedatenpkv.1.3.0"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle":
     profileVersions:

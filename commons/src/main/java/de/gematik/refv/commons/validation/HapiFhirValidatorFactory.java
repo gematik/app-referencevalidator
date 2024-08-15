@@ -63,6 +63,7 @@ class HapiFhirValidatorFactory {
         hapiValidatorModule.setAnyExtensionsAllowed(configuration.isAnyExtensionsAllowed());
         FhirValidator fhirValidator = fhirContext.newValidator();
         fhirValidator.registerValidatorModule(hapiValidatorModule);
+        fhirValidator.registerValidatorModule(new BundleValidationModule());
         return fhirValidator;
     }
 
