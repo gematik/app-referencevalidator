@@ -66,7 +66,7 @@ Siehe [Release Notes](ReleaseNotes.md)
 
 | **Modul**                                      | **Version** |
 |------------------------------------------------|-------------|
-| E-Rezept                                       | 2.3         |
+| E-Rezept                                       | 2.4         |
 | Elektronische Arbeitsunfähigkeitsbescheinigung | 0.9         |
 | FHIR Core                                      | 1.0         |
 | E-Rezept Abrechnungsdaten (experimentell)      | 0.2         |

@@ -2,6 +2,15 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.5.0
+
+### added
+
+- ERP module  (version update to 2.4):
+  - integrated [de.abda.eRezeptAbgabedatenPKV#1.3.0](https://simplifier.net/packages/de.abda.erezeptabgabedatenpkv/1.3.0) package (valid from 1.11.2024)
+  - integrated [KBV Schlüsseltabelle S_KBV_DARREICHUNGSFORM v1.14](https://applications.kbv.de/S_KBV_DARREICHUNGSFORM_V1.14.xhtml) (valid from 1.10.2024)
+- Added warnings for the case, when Bundle.entry.fullUrl doesn't match the Bundle.entry.id (cf. [Bundle definitions](https://hl7.org/fhir/R4/bundle-definitions.html#Bundle.entry.fullUrl)). Notice: warnings are generally issued only if the validator has been started with the `--verbose` option.
+ 
 ## Release 2.4.0
 
 ### added
