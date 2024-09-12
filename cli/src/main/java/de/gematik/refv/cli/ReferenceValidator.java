@@ -132,6 +132,8 @@ public class ReferenceValidator implements Runnable {
                 configureAllLoggersToDebug();
             }
 
+            redirectAllTcpTrafficToNonExistingProxyAsPreventiveSSRFMeasure();
+
             ValidationModule validator = getValidationModule();
             if (validator == null) {
                 log.debug("No suitable validation module found");
@@ -156,6 +158,11 @@ public class ReferenceValidator implements Runnable {
             if(outputFilePath != null)
                 writeExceptionAsOperationOutcome(outputFilePath, e);
         }
+    }
+
+    private static void redirectAllTcpTrafficToNonExistingProxyAsPreventiveSSRFMeasure() {
+        System.setProperty("socksProxyHost", "localhost");
+        System.setProperty("socksProxyPort", "1080");
     }
 
     private ValidationOptions getValidationOptions() {

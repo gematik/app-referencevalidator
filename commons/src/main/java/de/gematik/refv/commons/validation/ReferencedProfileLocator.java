@@ -24,8 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.DTD;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.IOException;
@@ -36,9 +38,14 @@ import java.util.List;
 @Slf4j
 public class ReferencedProfileLocator {
 
-    private static final WstxInputFactory inputFactory = new WstxInputFactory();
+    private static final WstxInputFactory inputFactory;
     private static final JsonFactory jsonfactory = new JsonFactory();
     private static final String PROFILE_STRING = "profile";
+
+    static {
+        inputFactory = new WstxInputFactory();
+        inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+    }
 
     public List<String> getAllReferencedProfilesInResource(String resourceBody) {
         List<String> allProfilesInResource;
@@ -65,8 +72,12 @@ public class ReferencedProfileLocator {
             while (xmlEventReader.hasNext()) {
                 XMLEvent event = xmlEventReader.nextEvent();
 
+                if (event instanceof DTD)
+                    throw new SecurityException("DTD is not allowed");
+
                 if (event.isStartElement()) {
                     StartElement nextTag = event.asStartElement();
+
                     if (nextTag.getName().getLocalPart().equalsIgnoreCase("meta")) {
 
                         return locateProfileInMetaTagXml(xmlEventReader);
