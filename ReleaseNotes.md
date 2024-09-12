@@ -2,6 +2,11 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.5.1
+
+### fixed
+- declining XML resources with DTD instructions due to vulnerability to XML eXternal Entity injection and thus Server Side Request Forgery (SSRF) attacks
+
 ## Release 2.5.0
 
 ### added
