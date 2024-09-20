@@ -33,6 +33,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -135,14 +136,14 @@ public class GenericValidator {
 
         // Assumption: each profile has at least one dependency list configured
         if (StringUtils.isEmpty(creationDateLocator)) {
-            return validateWithoutConfiguredLocator(resourceBody, resourceProvider, profileForValidation, dependencyLists, allReferencedProfilesInResource);
+            return validateWithoutConfiguredLocator(resourceBody, resourceProvider, profileForValidation, dependencyLists, allReferencedProfilesInResource, configuration.getIgnoredValueSets());
         }
         else {
-            return validateUsingConfiguredLocator(resourceBody, resourceProvider, validationOptions, creationDateLocator, dependencyLists, profileForValidation, allReferencedProfilesInResource);
+            return validateUsingConfiguredLocator(resourceBody, resourceProvider, validationOptions, creationDateLocator, dependencyLists, profileForValidation, allReferencedProfilesInResource, configuration.getIgnoredValueSets());
         }
     }
 
-    private ValidationResult validateUsingConfiguredLocator(String resourceBody, ValidationModuleResourceProvider resourceProvider, ValidationOptions validationOptions, String creationDateLocator, DependencyListsWrapper dependencyLists, Profile profileForValidation, List<String> allReferencedProfilesInResource) {
+    private ValidationResult validateUsingConfiguredLocator(String resourceBody, ValidationModuleResourceProvider resourceProvider, ValidationOptions validationOptions, String creationDateLocator, DependencyListsWrapper dependencyLists, Profile profileForValidation, List<String> allReferencedProfilesInResource, Collection<String> ignoredValueSets) {
         try {
             var resourceCreationDateOptional = new ResourceCreationDateLocator(fhirContext).findCreationDateIn(resourceBody, creationDateLocator);
 
@@ -157,7 +158,7 @@ public class GenericValidator {
             var dependencyListOptional = dependencyLists.getDependencyListValidAt(resourceCreationDateOptional.get());
             if (dependencyListOptional.isPresent())
                 // Use Case 2.2.1 Dependency list for the resource creation date is present
-                return validateUsingDependencyList(resourceBody, resourceProvider, dependencyListOptional.get(), profileForValidation, allReferencedProfilesInResource);
+                return validateUsingDependencyList(resourceBody, resourceProvider, dependencyListOptional.get(), profileForValidation, allReferencedProfilesInResource, ignoredValueSets);
 
             // Use Case 2.2.2 No Dependency list is found for the creation date
             if (isValidateProfileValidityPeriod(validationOptions)) {
@@ -167,7 +168,7 @@ public class GenericValidator {
             }
 
             // Use Case 2.2.2.2 ValidityPeriodChek is turned off -> use latest dependencies
-            var result = validateUsingDependencyList(resourceBody, resourceProvider, dependencyLists.getLatestDependencyList(), profileForValidation, allReferencedProfilesInResource);
+            var result = validateUsingDependencyList(resourceBody, resourceProvider, dependencyLists.getLatestDependencyList(), profileForValidation, allReferencedProfilesInResource, ignoredValueSets);
             addWarningAboutDeactivatedValidityPeriodCheckTo(result);
             return result;
 
@@ -177,11 +178,11 @@ public class GenericValidator {
         }
     }
 
-    private ValidationResult validateWithoutConfiguredLocator(String resourceBody, ValidationModuleResourceProvider resourceProvider, Profile profileForValidation, DependencyListsWrapper dependencyLists, List<String> allReferencedProfilesInResource) {
+    private ValidationResult validateWithoutConfiguredLocator(String resourceBody, ValidationModuleResourceProvider resourceProvider, Profile profileForValidation, DependencyListsWrapper dependencyLists, List<String> allReferencedProfilesInResource, Collection<String> ignoredValueSets) {
         ValidationResult result;
         log.debug("No creation date locator expression is configured for the profile {}. Using the latest package dependencies available...", profileForValidation);
         var dependencyList = dependencyLists.getLatestDependencyList();
-        result = validateUsingDependencyList(resourceBody, resourceProvider, dependencyList, profileForValidation, allReferencedProfilesInResource);
+        result = validateUsingDependencyList(resourceBody, resourceProvider, dependencyList, profileForValidation, allReferencedProfilesInResource, ignoredValueSets);
         return result;
     }
 
@@ -216,7 +217,7 @@ public class GenericValidator {
         result.getValidationMessages().add(m);
     }
 
-    private ValidationResult validateUsingDependencyList(String resourceBody, ValidationModuleResourceProvider resourceProvider, DependencyList dependencyList, Profile profileForValidation, List<String> allReferencedProfilesInResource) {
+    private ValidationResult validateUsingDependencyList(String resourceBody, ValidationModuleResourceProvider resourceProvider, DependencyList dependencyList, Profile profileForValidation, List<String> allReferencedProfilesInResource, Collection<String> ignoredValueSets) {
         log.debug("Applying dependency list: {}", dependencyList);
         var fhirValidator = hapiFhirValidatorCache.computeIfAbsent(dependencyList, k ->
                 hapiFhirValidatorFactory.createInstance(
@@ -232,7 +233,7 @@ public class GenericValidator {
         
         log.debug("Pre-Transformation ValidationResult: Valid: {}, Messages: {}", intermediateResult.isSuccessful(), intermediateResult.getMessages());
 
-        var filteredMessages = severityLevelTransformator.applyTransformations(intermediateResult.getMessages(), dependencyList.getValidationMessageTransformations());
+        var filteredMessages = severityLevelTransformator.applyTransformations(intermediateResult.getMessages(), dependencyList.getValidationMessageTransformations(), ignoredValueSets);
 
         if(!isValidationProfileReferencedInTheResource) {
             SingleValidationMessage m = new SingleValidationMessage();

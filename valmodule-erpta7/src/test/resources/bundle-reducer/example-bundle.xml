@@ -1,0 +1,102 @@
+<Bundle>
+    <timestamp value="2024-01-01T00:00:00Z"/>
+    <entry>
+        <fullUrl value="A"/>
+        <resource>
+            <Composition>
+                <section>
+                    <code>
+                        <coding>
+                            <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7"/>
+                            <code value="LR"/>
+                        </coding>
+                    </code>
+                    <entry>
+                        <reference value="B"/>
+                    </entry>
+                </section>
+                <section>
+                    <code>
+                        <coding>
+                            <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7"/>
+                            <code value="RB"/>
+                            <display value="Rezept-Bundle"/>
+                        </coding>
+                    </code>
+                    <entry>
+                        <reference value="C"/>
+                    </entry>
+                </section>
+                <section>
+                    <code>
+                        <coding>
+                            <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7"/>
+                            <code value="RB"/>
+                            <display value="Rezept-Bundle"/>
+                        </coding>
+                    </code>
+                    <entry>
+                        <reference value="D"/>
+                    </entry>
+                </section>
+                <section>
+                    <code>
+                        <coding>
+                            <system value="https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7"/>
+                            <code value="RB"/>
+                            <display value="Rezept-Bundle"/>
+                        </coding>
+                    </code>
+                    <entry>
+                        <reference value="E"/>
+                    </entry>
+                </section>
+            </Composition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="B"/>
+        <resource>
+            <List>
+            </List>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="C"/>
+        <resource>
+            <Bundle>
+                Rezept-Bundle 1
+                <entry>
+                    <fullUrl value="C1"/>
+                    <resource>
+                        <Binary>
+                        </Binary>
+                    </resource>
+                </entry>
+                <entry>
+                    <fullUrl value="C2"/>
+                    <resource>
+                        <Binary>
+                        </Binary>
+                    </resource>
+                </entry>
+            </Bundle>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="D"/>
+        <resource>
+            <Bundle>
+                Rezept-Bundle 2
+            </Bundle>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="E"/>
+        <resource>
+            <Bundle>
+                Rezept-Bundle 3
+            </Bundle>
+        </resource>
+    </entry>
+</Bundle>

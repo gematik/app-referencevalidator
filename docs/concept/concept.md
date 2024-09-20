@@ -182,6 +182,10 @@ Anzuwendende Validierungskonfiguration
 <ul>
 <li>http://fhir.de/CodeSystem/ifa/pzn</li>
 <li>http://fhir.de/CodeSystem/ask</li>
+<li>http://fhir.de/CodeSystem/bfarm/atc (wird in _GEM_ERP_PR_Medication_ verwendet)</li>
+<li>http://snomed.info/sct (wird in _GEM_ERP_PR_Medication_ verwendet)</li>
+<li>https://terminologieserver.bfarm.de/fhir/CodeSystem/arzneimittel-referenzdaten-pharmazeutisches-produkt (wird in _GEM_ERP_PR_Medication_ verwendet)</li>
+<li>http://hl7.org/fhir/uv/ips/ValueSet/medicine-doseform (wird in _GEM_ERP_PR_Medication_ verwendet)</li>
 </ul></td>
 <td></td>
 </tr>
@@ -265,6 +269,15 @@ Anzuwendende Ergebnis-Interpretationsregeln
 </ul>
 </td>
 <td>Die Interpretationsregel kam infolge eines Profilierungsfehlers zustande</td>
+</tr>
+<tr>
+<td>de.gematik.epa.medication-1.0.3.tgz</td>
+<td>Folgende HAPI-Ausgaben werden als WARN statt als ERROR-Nachrichten gewertet:
+<ul>
+<li>MessageId: BUNDLE_BUNDLE_ENTRY_MULTIPLE_PROFILES. Diagnostics enthält: 2 profiles found for contained resource. More than one is not supported at this time. (Type Medication: https://gematik.de/fhir/epa-medication/StructureDefinition/epa-medication-pharmaceutical-product, https://gematik.de/fhir/epa-medication/StructureDefinition/epa-medication-pzn-ingredient)</li>
+</ul>
+</td>
+<td>Im Profil existiert ein Constraint auf die Profile der contained-Ressourcen, wobei 2 Profile erlaubt werden (epa-medication-pzn-ingredient oder epa-medication-pharmaceutical-product). Die aktuell eingesetzte HAPI-Version unterstützt allerdings nur Überprüfung gegen 1 Profil. Mit den zukünftigen Versionen von HAPI wird diese Interpretationsregel entfallen</td>
 </tr>
 </table>
 

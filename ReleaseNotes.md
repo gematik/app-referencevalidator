@@ -2,6 +2,35 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.6.0
+
+### ERP module (version update to 2.5):
+
+#### added
+  - integrated [de.gematik.erezept-patientenrechnung.r4 1.0.4](https://simplifier.net/packages/de.gematik.erezept-patientenrechnung.r4/1.0.4/~introduction) package (valid from 15.1.2025)
+  - integrated [de.gematik.erezept-workflow.r4 1.4.3](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.4.3) package (valid from 15.1.2025). See current limitations in [E-Rezept-Modul section of README.md](README.md#e-rezept-modul)
+
+#### changed
+  - validity period of [de.abda.erezeptabgabedatenpkv.1.2.0](https://simplifier.net/packages/de.abda.erezeptabgabedatenpkv/1.2.0) package extended till 30.6.2025  (cf. [Technische Anlage](https://www.abda.de/fileadmin/user_upload/assets/ehealth/PKV_Datenauschtausch/TA_DAV_PKV_004_20240801.pdf))
+ 
+### EAU module (version update to 0.91):
+
+#### added
+  - integrated [KBV Schlüsseltabelle S_KBV_DMP v1.06](https://applications.kbv.de/S_KBV_DMP_V1.06.xhtml) (valid from 1.10.2024)
+  - integrated [KBV Schlüsseltabelle S_KBV_PERSONENGRUPPE v1.03](https://applications.kbv.de/S_KBV_PERSONENGRUPPE_V1.03.xhtml) (valid from 1.4.2024)
+
+#### changed
+- EAU module performs selection of FHIR-packages based on the instance creation date (cf. [README.md](README.md#eau-modul))
+- EAU module performs profile validity checks based on the instance creation date 
+
+#### fixed
+- End of validity period for the _KBV_PR_EAU_Bundle|1.0.2_ profile (31.12.2023)  (cf. [Technische_Anlage_eAU](https://update.kbv.de/ita-update/DigitaleMuster/eAU/KBV_ITA_VGEX_Technische_Anlage_eAU.pdf))  
+
+### Experimental ERPTA7 module (version update to 0.3):
+
+#### added
+- support for _GKVSV_PR_TA7_Rechnung_Bundle|1.4_ profile added (valid from 1.11.2024)
+
 ## Release 2.5.1
 
 ### fixed

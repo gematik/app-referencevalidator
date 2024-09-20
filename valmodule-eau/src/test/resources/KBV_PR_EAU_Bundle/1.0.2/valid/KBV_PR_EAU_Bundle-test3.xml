@@ -1,7 +1,7 @@
 <Bundle xmlns="http://hl7.org/fhir">
     <id value="6413570d-d8ce-4afa-9f6e-0950111a4cb8" />
     <meta>
-        <lastUpdated value="2020-02-03T12:30:02Z" />
+        <lastUpdated value="2022-02-03T12:30:02Z" />
         <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Bundle|1.0.2" />
     </meta>
     <identifier>
@@ -9,7 +9,7 @@
         <value value="urn:uuid:6413570d-d8ce-4afa-9f6e-0950111a4cb8" />
     </identifier>
     <type value="document" />
-    <timestamp value="2020-02-03T12:30:02Z" />
+    <timestamp value="2022-02-03T12:30:02Z" />
     <entry>
         <fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Composition/edb656ba-671c-40d7-9161-b8f8c2365297" />
         <resource>
@@ -38,7 +38,7 @@
                 <subject>
                     <reference value="Patient/9774f67f-a238-4daf-b4e6-679deeef3811" />
                 </subject>
-                <date value="2020-02-03" />
+                <date value="2022-02-03" />
                 <author>
                     <reference value="Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
                     <type value="Practitioner" />
@@ -307,7 +307,7 @@
                     <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_AU|1.0.2" />
                 </meta>
                 <extension url="http://hl7.org/fhir/StructureDefinition/condition-assertedDate">
-                    <valueDateTime value="2020-02-03" />
+                    <valueDateTime value="2022-02-03" />
                 </extension>
                 <extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_EAU_7_weeks">
                     <valueBoolean value="true" />

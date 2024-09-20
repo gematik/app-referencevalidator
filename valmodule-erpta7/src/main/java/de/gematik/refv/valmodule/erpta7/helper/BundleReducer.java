@@ -15,7 +15,12 @@ limitations under the License.
 */
 package de.gematik.refv.valmodule.erpta7.helper;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.XmlParser;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Composition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,22 +44,32 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 public class BundleReducer {
 
     private final DocumentBuilder documentBuilder;
-    private final XPathFactory xPathFactory;
-    private final TransformerFactory transformerFactory;
+    private final XPathFactory xPathFactory = XPathFactory.newInstance();
+    private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
     private final Document document;
+    private final XmlParser xmlParser = (XmlParser) FhirContext.forR4().newXmlParser();
 
     @SneakyThrows
     public BundleReducer(String resourceBody) {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        xPathFactory = XPathFactory.newInstance();
-        transformerFactory = TransformerFactory.newInstance();
-        document = documentBuilder.parse(new InputSource(new StringReader(resourceBody)));
+        this.documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        this.document = documentBuilder.parse(new InputSource(new StringReader(resourceBody)));
+
     }
+
+    @SneakyThrows
+    public BundleReducer(Document document) {
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        this.documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        this.document = document;
+    }
+
 
     public List<String> getAllRezeptBundlesAsString() throws XPathExpressionException, TransformerException {
         List<String> allEntriesAsStrings = new ArrayList<>();
@@ -79,10 +94,48 @@ public class BundleReducer {
         Element rootElement = newDoc.createElementNS("http://hl7.org/fhir", "Bundle");
         newDoc.appendChild(rootElement);
 
-        copyFixedChildren(newDoc, rootElement, fixedChildren);
-        copyFirstRezeptBundle(newDoc, rootElement, entries);
+        XPath xPath = xPathFactory.newXPath();
+        XPathExpression compositionExpression = xPath.compile("resource/Composition");
+        NodeList compositionNodes = (NodeList) compositionExpression.evaluate(entries.item(0), XPathConstants.NODESET);
+        if(compositionNodes.getLength() == 0) {
+            // First entry is not Composition --> keep it in the reduced body (which will produce validation errors later if Bundle is of type document)
+            Node importedNode = newDoc.importNode(entries.item(0), true);
+            rootElement.appendChild(importedNode);
+            copyFixedChildren(newDoc, rootElement, fixedChildren);
+        }
+        else {
+            copyFixedChildren(newDoc, rootElement, fixedChildren);
+            copyFirstRezeptBundle(newDoc, rootElement, entries);
+        }
 
-        return serializeToString(newDoc);
+        var reducedBodyAsString = serializeToString(newDoc);
+
+        return removeDangledReferencesFromComposition(reducedBodyAsString);
+    }
+
+    private String removeDangledReferencesFromComposition(String reducedBodyAsString) {
+        var bundle = xmlParser.parseResource(Bundle.class, reducedBodyAsString);
+        var compositionOptional = bundle.getEntry().stream().filter(e -> e.getResource().hasType("Composition")).findFirst();
+        if(compositionOptional.isEmpty()) {
+            log.warn("Could not find composition in reduced bundle");
+            return reducedBodyAsString;
+        }
+
+        var allFullUrls = bundle.getEntry().stream().map(Bundle.BundleEntryComponent::getFullUrl).collect(Collectors.toList());
+        Composition c = (Composition)(compositionOptional.get().getResource());
+        var sectionsWithRechnungBundles = c.getSection().stream().filter(BundleReducer::isSectionWithReferenceToRechnungBundle).collect(Collectors.toList());
+        sectionsWithRechnungBundles.stream().filter(s -> isSectionReferenceMissingInReducedBundle(s, allFullUrls)).forEach(s -> c.getSection().remove(s));
+
+        return xmlParser.encodeResourceToString(bundle);
+    }
+
+    private static boolean isSectionReferenceMissingInReducedBundle(Composition.SectionComponent s, List<String> allFullUrls) {
+        return !allFullUrls.contains(s.getEntry().get(0).getReference());
+    }
+
+    private static boolean isSectionWithReferenceToRechnungBundle(Composition.SectionComponent s) {
+        return !s.getEntry().isEmpty() &&
+                s.getCode().hasCoding("https://fhir.gkvsv.de/CodeSystem/GKVSV_CS_ERP_TA7", "RB");
     }
 
     private NodeList getFixedChildren(Document doc) throws XPathExpressionException {

@@ -19,10 +19,11 @@ import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.commons.configuration.ValidationMessageTransformation;
 import de.gematik.refv.commons.validation.support.IgnoreCodeSystemValidationSupport;
-import org.apache.commons.lang3.StringUtils;
 import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.utilities.i18n.I18nConstants;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,14 +31,22 @@ import java.util.regex.Pattern;
 
 class SeverityLevelTransformer {
 
+    public List<SingleValidationMessage> applyTransformations(
+            Collection<SingleValidationMessage> input,
+            @NonNull
+            Collection<ValidationMessageTransformation> transformations
+    ) {
+        return applyTransformations(input, transformations, List.of());
+    }
 
     public List<SingleValidationMessage> applyTransformations(
-            List<SingleValidationMessage> input,
+            Collection<SingleValidationMessage> input,
             @NonNull
-            List<ValidationMessageTransformation> transformations
+            Collection<ValidationMessageTransformation> transformations,
+            Collection<String> ignoredValueSets
     ) {
         LinkedList<SingleValidationMessage> transformedMessages = new LinkedList<>(input);
-        escalateUnresolvedValueSetsToError(transformedMessages);
+        escalateUnresolvedValueSetsToError(transformedMessages, ignoredValueSets);
         setIgnoredCodeSystemsToInformation(transformedMessages);
 
         for (SingleValidationMessage message:
@@ -73,11 +82,24 @@ class SeverityLevelTransformer {
         }
     }
 
-    private void escalateUnresolvedValueSetsToError(LinkedList<SingleValidationMessage> messages) {
+    public static String extractValueSetUrl(String message) {
+        String urlPattern = "ValueSet ([^\\s]+) not found by validator";
+        Pattern pattern = Pattern.compile(urlPattern);
+        Matcher matcher = pattern.matcher(message);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
+    private void escalateUnresolvedValueSetsToError(LinkedList<SingleValidationMessage> messages, Collection<String> ignoredValueSets) {
         for (SingleValidationMessage message:
                 messages) {
             if(I18nConstants.TERMINOLOGY_TX_VALUESET_NOTFOUND.equals(message.getMessageId())) {
-                message.setSeverity(ResultSeverityEnum.ERROR);
+                String valueSetUrl = extractValueSetUrl(message.getMessage());
+                if(!ignoredValueSets.contains(valueSetUrl))
+                    message.setSeverity(ResultSeverityEnum.ERROR);
             }
         }
     }
