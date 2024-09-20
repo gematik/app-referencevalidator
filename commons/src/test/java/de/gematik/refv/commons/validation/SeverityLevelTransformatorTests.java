@@ -134,16 +134,34 @@ class SeverityLevelTransformatorTests {
     }
 
     @Test
-    void testNotFoundValueSetsRuleWorks() {
+    void testUndefinedValueSetsEscalatedToErrors() {
         var m1 = new SingleValidationMessage();
         m1.setSeverity(ResultSeverityEnum.WARNING);
         m1.setMessage("ValueSet https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_KBV_STATUSKENNZEICHEN not found by validator");
         m1.setMessageId(I18nConstants.TERMINOLOGY_TX_VALUESET_NOTFOUND);
+
         var inputMessages = List.of(m1);
 
         var transformedMessages = engine.applyTransformations(inputMessages, new LinkedList<>());
         Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
         Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)));
+    }
+
+    @Test
+    void testUndefinedButIgnoredValueSetsAreNotEscalated() {
+        String ignoredValueSetUrl = "https://ignoredValueSet";
+        SeverityLevelTransformer engine = new SeverityLevelTransformer();
+
+        var m1 = new SingleValidationMessage();
+        m1.setSeverity(ResultSeverityEnum.WARNING);
+        m1.setMessage("ValueSet " + ignoredValueSetUrl + " not found by validator");
+        m1.setMessageId(I18nConstants.TERMINOLOGY_TX_VALUESET_NOTFOUND);
+
+        var inputMessages = List.of(m1);
+
+        var transformedMessages = engine.applyTransformations(inputMessages, new LinkedList<>(), List.of(ignoredValueSetUrl));
+        Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
+        Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.WARNING)), "Undefined but ignored value sets still produce error message");
     }
 
     @Test

@@ -1,0 +1,158 @@
+<Bundle xmlns="http://hl7.org/fhir">
+  <id value="6413570d-d8ce-4afa-9f6e-0950111a4cb8" />
+  <meta>
+    <lastUpdated value="2022-09-29T12:30:02Z" />
+    <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno_Bundle|1.1.0" />
+  </meta>
+  <identifier>
+    <system value="urn:ietf:rfc:3986" />
+    <value value="urn:uuid:0e9c402b-a1fc-4e21-a248-6dd7fb99d99c" />
+  </identifier>
+  <type value="document" />
+  <timestamp value="2022-09-29T12:30:02Z" />
+  <entry>
+    <fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Composition/6753a10a-f993-4038-9d9c-515774887074" />
+    <resource>
+      <Composition>
+        <id value="6753a10a-f993-4038-9d9c-515774887074" />
+        <meta>
+          <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno_Composition|1.1.0" />
+        </meta>
+        <status value="final" />
+        <type>
+          <coding>
+            <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_FORMULAR_ART" />
+            <code value="e013" />
+          </coding>
+        </type>
+        <date value="2024-10-15" />
+        <author>
+          <reference value="Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+          <type value="Practitioner" />
+        </author>
+        <title value="Storno eAU" />
+        <custodian>
+          <reference value="Organization/cf042e44-086a-4d51-9c77-172f9a972e3b" />
+        </custodian>
+        <section>
+          <entry>
+            <reference value="List/e49bed53-9fe3-47c3-9271-ee07fc919793" />
+          </entry>
+        </section>
+      </Composition>
+    </resource>
+  </entry>
+  <entry>
+    <fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Practitioner/20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+    <resource>
+      <Practitioner>
+        <id value="20597e0e-cb2a-45b3-95f0-dc3dbdb617c3" />
+        <meta>
+          <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Practitioner|1.1.0" />
+        </meta>
+        <identifier>
+          <type>
+            <coding>
+              <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+              <code value="LANR" />
+            </coding>
+          </type>
+          <system value="https://fhir.kbv.de/NamingSystem/KBV_NS_Base_ANR" />
+          <value value="838382202" />
+        </identifier>
+        <name>
+          <use value="official" />
+          <family value="Topp-Glücklich">
+            <extension url="http://hl7.org/fhir/StructureDefinition/humanname-own-name">
+              <valueString value="Topp-Glücklich" />
+            </extension>
+          </family>
+          <given value="Hans" />
+          <prefix value="Dr. med.">
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier">
+              <valueCode value="AC" />
+            </extension>
+          </prefix>
+        </name>
+        <qualification>
+          <code>
+            <coding>
+              <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Qualification_Type" />
+              <code value="00" />
+            </coding>
+          </code>
+        </qualification>
+        <qualification>
+          <code>
+            <coding>
+              <system value="https://fhir.kbv.de/CodeSystem/KBV_CS_FOR_Berufsbezeichnung" />
+              <code value="Berufsbezeichnung" />
+            </coding>
+            <text value="Hausarzt" />
+          </code>
+        </qualification>
+      </Practitioner>
+    </resource>
+  </entry>
+  <entry>
+    <fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/Organization/cf042e44-086a-4d51-9c77-172f9a972e3b" />
+    <resource>
+      <Organization>
+        <id value="cf042e44-086a-4d51-9c77-172f9a972e3b" />
+        <meta>
+          <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Organization|1.1.0" />
+        </meta>
+        <identifier>
+          <type>
+            <coding>
+              <system value="http://terminology.hl7.org/CodeSystem/v2-0203" />
+              <code value="BSNR" />
+            </coding>
+          </type>
+          <system value="https://fhir.kbv.de/NamingSystem/KBV_NS_Base_BSNR" />
+          <value value="031234567" />
+        </identifier>
+        <name value="Hausarztpraxis Dr. Topp-Glücklich" />
+        <telecom>
+          <system value="phone" />
+          <value value="0301234567" />
+        </telecom>
+        <address>
+          <type value="both" />
+          <line value="Musterstr. 2">
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber">
+              <valueString value="2" />
+            </extension>
+            <extension url="http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName">
+              <valueString value="Musterstr." />
+            </extension>
+          </line>
+          <city value="Berlin" />
+          <postalCode value="10623" />
+        </address>
+      </Organization>
+    </resource>
+  </entry>
+  <entry>
+    <fullUrl value="http://pvs.praxis-topp-gluecklich.local/fhir/List/e49bed53-9fe3-47c3-9271-ee07fc919793" />
+    <resource>
+      <List>
+        <id value="e49bed53-9fe3-47c3-9271-ee07fc919793" />
+        <meta>
+          <profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno|1.1.0" />
+        </meta>
+        <status value="current" />
+        <mode value="changes" />
+        <entry>
+          <deleted value="true" />
+          <item>
+            <identifier>
+              <system value="urn:ietf:rfc:3986" />
+              <value value="urn:uuid:2ed6995a-ddcb-4af9-af62-80dac413408b" />
+            </identifier>
+          </item>
+        </entry>
+      </List>
+    </resource>
+  </entry>
+</Bundle>

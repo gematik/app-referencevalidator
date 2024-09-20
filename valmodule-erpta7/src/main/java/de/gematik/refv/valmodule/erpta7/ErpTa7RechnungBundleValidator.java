@@ -16,17 +16,23 @@ limitations under the License.
 package de.gematik.refv.valmodule.erpta7;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.commons.validation.GenericValidator;
 import de.gematik.refv.commons.validation.IntegratedValidationModule;
 import de.gematik.refv.commons.validation.ValidationModule;
 import de.gematik.refv.commons.validation.ValidationOptions;
 import de.gematik.refv.commons.validation.ValidationResult;
 import de.gematik.refv.valmodule.erpta7.helper.BundleReducer;
+import de.gematik.refv.valmodule.erpta7.helper.DocumentParser;
 import de.gematik.refv.valmodule.erpta7.helper.DuplicateChecker;
+import de.gematik.refv.valmodule.erpta7.helper.NonReachableEntriesChecker;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -34,12 +40,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 @Slf4j
 public class ErpTa7RechnungBundleValidator {
     private final DuplicateChecker duplicateChecker = new DuplicateChecker();
+    private final NonReachableEntriesChecker nonReachableEntriesChecker = new NonReachableEntriesChecker();
     private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
     private final ValidationModule validator;
+    private final DocumentParser documentParser = new DocumentParser();
 
     @SneakyThrows
     public ErpTa7RechnungBundleValidator() {
@@ -48,19 +57,35 @@ public class ErpTa7RechnungBundleValidator {
 
     @SneakyThrows
     public ValidationResult validateBundleConcurrently(String resourceBody, ValidationOptions options) {
-        BundleReducer bundleReducer = new BundleReducer(resourceBody);
+        Document document = documentParser.getDocument(resourceBody);
+
+        var nonReachableEntriesValidationMessages = nonReachableEntriesChecker.checkForNonReachableEntries(document);
+
+        BundleReducer bundleReducer = new BundleReducer(document);
         String reducedResourceBody = bundleReducer.getReducedResourceBody();
         log.debug("Extracting GKVSV_PR_TA7_RezeptBundle entries...");
         List<String> allRezeptBundlesAsString = bundleReducer.getAllRezeptBundlesAsString();
         log.debug("Validating reduced TA7-Bundle...");
-        ValidationResult result = validator.validateString(reducedResourceBody, options);
-        performConcurrentValidation(allRezeptBundlesAsString, result, options);
+        var reducedBodyValidationMessages = validator.validateString(reducedResourceBody, options).getValidationMessages();
+        var concurrentValidationMessages = performConcurrentValidation(allRezeptBundlesAsString, options).stream().map(ValidationResult::getValidationMessages);
         log.debug("Checking for duplicate fullURLs...");
-        result.getValidationMessages().addAll(duplicateChecker.findDuplicateFullUrls(resourceBody));
-        return result;
+        var duplicateFullUrlsMessages = duplicateChecker.findDuplicateFullUrls(resourceBody);
+
+        var allValidationMessages = new LinkedList<SingleValidationMessage>();
+        Stream.concat(
+                concurrentValidationMessages,
+                Stream.of(
+                        nonReachableEntriesValidationMessages,
+                        reducedBodyValidationMessages,
+                        duplicateFullUrlsMessages
+                )
+        ).forEach(allValidationMessages::addAll);
+
+        return new ValidationResult(allValidationMessages);
     }
 
-    private void performConcurrentValidation(List<String> allEntriesAsStrings, ValidationResult result, ValidationOptions options) {
+    private Collection<ValidationResult> performConcurrentValidation(List<String> allEntriesAsStrings, ValidationOptions options) {
+        var validationResults = new LinkedList<ValidationResult>();
         ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         List<Future<ValidationResult>> futures = new ArrayList<>();
 
@@ -76,7 +101,7 @@ public class ErpTa7RechnungBundleValidator {
         for (Future<ValidationResult> future : futures) {
             try {
                 ValidationResult futureResult = future.get();
-                result.getValidationMessages().addAll(futureResult.getValidationMessages());
+                validationResults.add(futureResult);
             } catch (InterruptedException | ExecutionException e) {
                 log.error("Error occurred while waiting for task to complete: {}", e.getMessage());
                 Thread.currentThread().interrupt();
@@ -97,6 +122,7 @@ public class ErpTa7RechnungBundleValidator {
             executor.shutdownNow();
         }
 
+        return validationResults;
     }
 
     private ValidationModule getErpValidationModule() {

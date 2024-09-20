@@ -17,7 +17,12 @@
     <li>
       <a href="#funktionsumfang">Funktionsumfang</a>
       <ul>
+        <li><a href="#unterstützte-validierungsmodule">Unterstützte Validierungsmodule</a></li>
         <li><a href="#e-rezept-modul">E-Rezept-Modul</a></li>
+        <li><a href="#eau-modul">EAU-Modul</a></li>
+        <li><a href="#core-modul">Code-Modul</a></li>
+        <li><a href="#e-rezept-abrechnungsdaten-modul-experimentell">E-Rezept Abrechnungsdaten-Modul (EXPERIMENTELL)</a></li>
+        <li><a href="#externe-validierungsmodule-plugins">Externe Validierungsmodule (Plugins)</a></li>
       </ul>
     </li>
     <li>
@@ -29,6 +34,7 @@
     </li>
     <li><a href="#verwendung">Verwendung</a></li>
     <li><a href="#lizenz">Lizenz</a></li>
+    <li><a href="#beiträge-zum-projekt-und-danksagung">Beiträge zum Projekt und Danksagung</a></li>
     <li><a href="#kontakt">Kontakt</a></li>
   </ol>
 </details>
@@ -66,17 +72,26 @@ Siehe [Release Notes](ReleaseNotes.md)
 
 | **Modul**                                      | **Version** |
 |------------------------------------------------|-------------|
-| E-Rezept                                       | 2.4         |
-| Elektronische Arbeitsunfähigkeitsbescheinigung | 0.9         |
+| E-Rezept                                       | 2.5         |
+| Elektronische Arbeitsunfähigkeitsbescheinigung | 0.91        |
 | FHIR Core                                      | 1.0         |
-| E-Rezept Abrechnungsdaten (experimentell)      | 0.2         |
+| E-Rezept Abrechnungsdaten (experimentell)      | 0.3         |
 
 
 
 ### E-Rezept-Modul
 
 Abweichend vom allgemeinen Prüfumfang verhält sich das E-Rezept-Modul wie folgt:
-- Codes aus den CodeSystemen `http://fhir.de/CodeSystem/ifa/pzn` und `http://fhir.de/CodeSystem/ask` werden nicht validiert
+- Folgende CodeSysteme werden nicht validiert:
+  - `http://fhir.de/CodeSystem/ifa/pzn`
+  - `http://fhir.de/CodeSystem/ask`
+  - `http://fhir.de/CodeSystem/bfarm/atc` (wird in _GEM_ERP_PR_Medication_ verwendet)
+  - `http://snomed.info/sct` (wird in _GEM_ERP_PR_Medication_ verwendet)
+  - `https://terminologieserver.bfarm.de/fhir/CodeSystem/arzneimittel-referenzdaten-pharmazeutisches-produkt` (wird in _GEM_ERP_PR_Medication_ verwendet)
+- Folgende CodeSysteme werden validiert, führt aber zu einer Warnung im Falle der Nicht-Validität:
+  - `http://unitsofmeasure.org`
+- Folgende ValueSets werden nicht validiert:
+  - `http://hl7.org/fhir/uv/ips/ValueSet/medicine-doseform` (wird in _GEM_ERP_PR_Medication_ verwendet)
 - Fehler, die bei Validierung von `http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle|1.0.3` im Zusammenhang mit falschen Angaben bei `http://fhir.abda.de/Identifier/DAV-Herstellerschluessel` stehen, werden ignoriert und führen zum **validen** Ergebnis
 - Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
 - Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis
@@ -103,6 +118,36 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das eAU-Modul wie folgt:
 - ICD-10-Codes (CodeSysteme `http://fhir.de/CodeSystem/dimdi/icd-10-gm` und `http://fhir.de/CodeSystem/bfarm/icd-10-gm`) werden nicht validiert
 - Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
 - Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis 
+
+Für folgende Profile erfolgen Instanz-datumsbasierte Auswahl der FHIR-Packages zur Validierung sowie Profilgültigkeitsprüfungen:
+
+<table id="creation-date-elements">
+<tr>
+<th>Profil</th>
+<th>Datenelement</th>
+<th>Anmerkung</th>
+</tr>
+<tr>
+<td>KBV_PR_EAU_Bundle</td>
+<td>Bundle.entry.resource.where(meta.profile.contains('KBV_PR_EAU_Composition')).date</td>
+<td>Ausstellungsdatum</td>
+</tr>
+<tr>
+<td>KBV_PR_EAU_Composition</td>
+<td>date</td>
+<td>Ausstellungsdatum</td>
+</tr>
+<tr>
+<td>KBV_PR_EAU_Storno_Bundle</td>
+<td>Bundle.entry.resource.where(meta.profile.contains('KBV_PR_EAU_Composition')).date</td>
+<td>Aktuelles Datum der Stornierung</td>
+</tr>
+<tr>
+<td>KBV_PR_EAU_Storno_Composition</td>
+<td>date</td>
+<td>Aktuelles Datum der Stornierung</td>
+</tr>
+</table>
 
 #### Anpassungen der Packages:
 - Alle Packages enthalten Snapshots
