@@ -19,15 +19,14 @@ import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.commons.configuration.ValidationMessageTransformation;
 import de.gematik.refv.commons.validation.support.IgnoreCodeSystemValidationSupport;
-import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.utilities.i18n.I18nConstants;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.utilities.i18n.I18nConstants;
 
 class SeverityLevelTransformer {
 
@@ -82,23 +81,12 @@ class SeverityLevelTransformer {
         }
     }
 
-    public static String extractValueSetUrl(String message) {
-        String urlPattern = "ValueSet ([^\\s]+) not found by validator";
-        Pattern pattern = Pattern.compile(urlPattern);
-        Matcher matcher = pattern.matcher(message);
-
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return null;
-    }
-
     private void escalateUnresolvedValueSetsToError(LinkedList<SingleValidationMessage> messages, Collection<String> ignoredValueSets) {
         for (SingleValidationMessage message:
                 messages) {
             if(I18nConstants.TERMINOLOGY_TX_VALUESET_NOTFOUND.equals(message.getMessageId())) {
-                String valueSetUrl = extractValueSetUrl(message.getMessage());
-                if(!ignoredValueSets.contains(valueSetUrl))
+                // Caution! message.getMessage() is locale specific
+                if(ignoredValueSets.stream().noneMatch(ignoredValueSet -> message.getMessage().contains(ignoredValueSet)))
                     message.setSeverity(ResultSeverityEnum.ERROR);
             }
         }

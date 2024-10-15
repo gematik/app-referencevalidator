@@ -2,6 +2,16 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.6.1
+
+> [!IMPORTANT] 
+> ERP module (version update to 2.6)
+
+#### fixed
+
+  - The ERP module evaluated `GEM_ERP_PR_Medication|1.4` resources as invalid if started on a machine with non-english locale (e.g. de_DE) and if the resources used the code system `http://standardterms.edqm.eu` to encode the `form` element (cf. [GitHub Issue 28](https://github.com/gematik/app-referencevalidator/issues/28)).  The behavior has been fixed. 
+  - Plugins, which made use of the `ignoredValueSets` [configuration option](https://github.com/gematik/app-referencevalidator-plugins?tab=readme-ov-file#plugin-definitionsdatei-configyaml) could invalidate and produce error messages for resources, which used codes coming from the configured ValueSets. 
+
 ## Release 2.6.0
 
 ### ERP module (version update to 2.5):
