@@ -1,6 +1,11 @@
 id: "simple"
 acceptedEncodings:
   - "xml"
+ignoredCodeSystems:
+  - "http://fhir.de/CodeSystem/ifa/pzn"
+  - "http://fhir.de/CodeSystem/ask"
+ignoredValueSets:
+  - "https://fhir.kbv.de/ValueSet/KBV_VS_Base_CommonLanguages"
 
 dependencyLists:
   package.with.non.existing.dependency:
@@ -59,7 +64,3 @@ supportedProfiles:
       0.0.0:
         dependencyLists:
           - "dependencyList1"
-
-ignoredCodeSystems:
-  - "http://fhir.de/CodeSystem/ifa/pzn"
-  - "http://fhir.de/CodeSystem/ask"
