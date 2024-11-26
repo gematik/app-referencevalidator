@@ -2,6 +2,18 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.6.2
+
+> [!IMPORTANT]
+> ERP module (version update to 2.7)
+
+#### fixed
+
+- A DAV-PR-ERP-Abrechnungszeilen|1.4 resource, which contained more than 20 subelements in the lineItem element, was evaluated as invalid with error "Angabe der NOCTU SOK und ZusatzattributAbgabeNoctu nur in Verbindung." (cf. [GitHub-Issue](https://github.com/gematik/app-referencevalidator/issues/31)). The behavior has been fixed by integrating the updated FHIR packages [de.abda.erezeptabgabedaten-1.4.2](https://simplifier.net/packages/de.abda.erezeptabgabedaten/1.4.2) and [de.abda.erezeptabgabedatenbasis-1.4.2](https://simplifier.net/packages/de.abda.erezeptabgabedatenbasis/1.4.2)
+- If a resource creation date was provided as date only (without time) and the time zone of the local machine was ahead of Europe/Berlin (e.g. UTC+02:00 instead of UTC+01:00 on winter), the profile validity rule evaluated wrong for some edge cases (cf. [GitHub-Issue](https://github.com/gematik/app-referencevalidator/issues/32)). The behavior has been fixed. To support future problem analysis the console version of the reference validator prints the ID of the local system time zone to the standard output.
+- The ERP module used the latest available dependency list to validate _GEM_ERP_PR_PAR_CloseOperation_Input|1.4_  and _GEM_ERP_PR_PAR_DispenseOperation_Input|1.4_ instances. Now, the dependency list is determined by the highest value of MedicationDispense.whenHandedOver (cf. [E-Rezept API-Dokumentation für Abgabeinformationen](https://github.com/gematik/api-erp/blob/dad05f7656c5d0477f23a0f2ef097153e697b76e/docs/erp_abrufen_dispense.adoc#profilversion-der-abgabeinformationen))
+
+
 ## Release 2.6.1
 
 > [!IMPORTANT] 

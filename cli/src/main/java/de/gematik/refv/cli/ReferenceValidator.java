@@ -29,18 +29,6 @@ import de.gematik.refv.commons.validation.ValidationModule;
 import de.gematik.refv.commons.validation.ValidationOptions;
 import de.gematik.refv.commons.validation.ValidationResult;
 import de.gematik.refv.commons.validation.ValidationResultToOperationOutcomeConverter;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Category;
-import org.apache.log4j.LogManager;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.OperationOutcome;
-import org.hl7.fhir.r4.model.StringType;
-import picocli.CommandLine;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
@@ -56,6 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -65,6 +54,17 @@ import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Category;
+import org.apache.log4j.LogManager;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.StringType;
+import picocli.CommandLine;
 
 @CommandLine.Command(
         name="java -jar referencevalidator-cli.jar",
@@ -236,7 +236,8 @@ public class ReferenceValidator implements Runnable {
                 + " (" + System.getProperty("sun.arch.data.model") + "bit). "
                 + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB, "
                 + Runtime.getRuntime().availableProcessors() + " CPU cores available");
-        sb.append("\r\nLocale: " + Locale.getDefault() + "\r\n");
+        sb.append("\r\nLocale: " + Locale.getDefault());
+        sb.append("\r\nTimezone: " + TimeZone.getDefault().getID() + "\r\n");
         log.info("{}",sb);
     }
 

@@ -17,7 +17,9 @@ package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import de.gematik.refv.commons.helper.ValidationModuleFactory;
+import java.util.TimeZone;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -31,11 +33,23 @@ class ValidityPeriodIT {
 
     private static ValidationModule validationModule;
 
+    static TimeZone systemTimeZone;
+
     @BeforeAll
     @SneakyThrows
     static void beforeAll() {
+        systemTimeZone = TimeZone.getDefault();
+        // Simulate reference validator running on a misconfigured machine.
+        // This is potentially dangerous, because the setting may influence other tests running in parallel, but no better solution has been found yet
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Taipei"));
+
         validationModule = ValidationModuleFactory.createInstance("simple");
         validationModule.initialize();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        TimeZone.setDefault(systemTimeZone);
     }
 
     @ParameterizedTest

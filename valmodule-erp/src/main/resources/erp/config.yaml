@@ -1,5 +1,5 @@
 id: "erp"
-version: "2.6"
+version: "2.7"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
@@ -304,10 +304,10 @@ dependencyLists:
     validFrom: "2024-01-01"
     validTill: "2025-04-15"
 
-  de.abda.erezeptabgabedaten.1.4.1:
+  de.abda.erezeptabgabedaten.1.4.2:
     packages:
-      - "de.abda.erezeptabgabedaten-1.4.1.tgz"
-      - "de.abda.erezeptabgabedatenbasis-1.4.1.tgz"
+      - "de.abda.erezeptabgabedaten-1.4.2.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.4.2.tgz"
       - "de.basisprofil.r4-1.3.2.tgz"
     validFrom: "2024-11-01"
 
@@ -324,7 +324,7 @@ dependencyLists:
     packages:
       - "de.abda.erezeptabgabedatenpkv-1.3.0.tgz"
       - "de.basisprofil.r4-1.3.2.tgz"
-      - "de.abda.erezeptabgabedatenbasis-1.4.1.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.4.2.tgz"
     validFrom: "2024-11-01"
 
   # https://simplifier.net/erezept-patientenrechnung
@@ -582,7 +582,7 @@ supportedProfiles:
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('DAV-PR-ERP-Abgabeinformationen')).whenHandedOver"
       1.4:
         dependencyLists:
-          - "de.abda.erezeptabgabedaten.1.4.1"
+          - "de.abda.erezeptabgabedaten.1.4.2"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('DAV-PR-ERP-Abgabeinformationen')).whenHandedOver"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenComposition":
@@ -602,7 +602,7 @@ supportedProfiles:
           - "de.abda.erezeptabgabedaten.1.3.2"
       1.4:
         dependencyLists:
-          - "de.abda.erezeptabgabedaten.1.4.1"
+          - "de.abda.erezeptabgabedaten.1.4.2"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Abgabeinformationen":
     profileVersions:
@@ -621,7 +621,7 @@ supportedProfiles:
         creationDateLocator: "whenHandedOver"
       1.4:
         dependencyLists:
-          - "de.abda.erezeptabgabedaten.1.4.1"
+          - "de.abda.erezeptabgabedaten.1.4.2"
         creationDateLocator: "whenHandedOver"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Abrechnungszeilen":
@@ -641,7 +641,7 @@ supportedProfiles:
           - "de.abda.erezeptabgabedaten.1.3.2"
       1.4:
         dependencyLists:
-          - "de.abda.erezeptabgabedaten.1.4.1"
+          - "de.abda.erezeptabgabedaten.1.4.2"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-Apotheke":
     profileVersions:
@@ -660,7 +660,7 @@ supportedProfiles:
           - "de.abda.erezeptabgabedaten.1.3.2"
       1.4:
         dependencyLists:
-          - "de.abda.erezeptabgabedaten.1.4.1"
+          - "de.abda.erezeptabgabedaten.1.4.2"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenEinheit":
     profileVersions:
@@ -679,7 +679,7 @@ supportedProfiles:
           - "de.abda.erezeptabgabedaten.1.3.2"
       1.4:
         dependencyLists:
-          - "de.abda.erezeptabgabedaten.1.4.1"
+          - "de.abda.erezeptabgabedaten.1.4.2"
 
   "http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-ZusatzdatenHerstellung":
     profileVersions:
@@ -698,7 +698,7 @@ supportedProfiles:
           - "de.abda.erezeptabgabedaten.1.3.2"
       1.4:
         dependencyLists:
-          - "de.abda.erezeptabgabedaten.1.4.1"
+          - "de.abda.erezeptabgabedaten.1.4.2"
 
   "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_Binary":
     profileVersions:
@@ -1490,6 +1490,7 @@ supportedProfiles:
       1.4:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.4.3"
+        creationDateLocator: "parameter.part.resource.whenHandedOver.aggregate(iif($total > $this, $total, $this))"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_PAR_DispenseOperation_Output":
     profileVersions:
@@ -1502,6 +1503,7 @@ supportedProfiles:
       1.4:
         dependencyLists:
           - "de.gematik.erezept-workflow.r4.1.4.3"
+        creationDateLocator: "parameter.part.resource.whenHandedOver.aggregate(iif($total > $this, $total, $this))"
 
   "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_PAR_ActivateOperation_Input":
     profileVersions:

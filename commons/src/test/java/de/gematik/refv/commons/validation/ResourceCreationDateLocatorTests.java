@@ -15,17 +15,21 @@ limitations under the License.
 */
 package de.gematik.refv.commons.validation;
 
+
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.DataFormatException;
-import org.junit.jupiter.api.AfterAll;
+import java.time.LocalDate;
+import java.util.TimeZone;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.TimeZone;
-
+@Execution(ExecutionMode.SAME_THREAD)
 class ResourceCreationDateLocatorTests {
     ResourceCreationDateLocator locator = new ResourceCreationDateLocator(FhirContext.forR4());
 
@@ -33,56 +37,58 @@ class ResourceCreationDateLocatorTests {
     @BeforeAll
     static void beforeAll() {
         systemTimeZone = TimeZone.getDefault();
-        // Simulate reference validator running on a misconfigured machine.
-        // This is potentially dangerous, because the setting may influence other tests running in parallel, but no better solution has been found yet
-        TimeZone.setDefault(TimeZone.getTimeZone("America/Thule"));
     }
 
-    @AfterAll
-    static void afterAll() {
+    @AfterEach
+    void afterEach() {
         TimeZone.setDefault(systemTimeZone);
     }
 
-    @Test
-    void testDateFormatIsSupported() {
-        String resource =
-                "<Patient xmlns=\"http://hl7.org/fhir\">\n"
-                        + "    <birthDate value=\"1980-01-01\" />\n"
-                        + "</Patient>";
-        var result = locator.findCreationDateIn(resource, "birthDate");
-        Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(LocalDate.of(1980, 01,01), result.get());
+    @CsvSource({
+            "Asia/Taipei,1980-01-01,1980,01,01", // Asia/Taipei is UTC+8 in winter
+            "Europe/Berlin,1980-01-01,1980,01,01", // Europe/Berlin is UTC+1 in winter
+            "America/Nome,1980-01-01,1980,01,01", // America/Nome is UTC-9 in winter
+
+            "Asia/Taipei,1980-01,1980,01,01",
+            "Europe/Berlin,1980-01,1980,01,01",
+            "America/Nome,1980-01,1980,01,01",
+
+            "Asia/Taipei,1980,1980,01,01",
+            "Europe/Berlin,1980,1980,01,01",
+            "America/Nome,1980,1980,01,01",
+
+            "Asia/Taipei,1980-01-01T10:00:00+05:00,1980,01,01",
+            "Europe/Berlin,1980-01-01T10:00:00+05:00,1980,01,01",
+            "America/Nome,1980-01-01T10:00:00+05:00,1980,01,01",
+
+            "Asia/Taipei,1980-01-01T00:00:00+01:00,1980,01,01",
+            "Europe/Berlin,1980-01-01T00:00:00+01:00,1980,01,01",
+            "America/Nome,1980-01-01T00:00:00+01:00,1980,01,01",
+
+            "Asia/Taipei,1980-01-01T00:00:00,1980,01,01",
+            "Europe/Berlin,1980-01-01T00:00:00,1980,01,01",
+            "America/Nome,1980-01-01T00:00:00,1980,01,01",
+
+            "Asia/Taipei,2023-06-30T22:00:00+00:00,2023,07,01",
+            "Europe/Berlin,2023-06-30T22:00:00+00:00,2023,07,01",
+            "America/Nome,2023-06-30T22:00:00+00:00,2023,07,01",
     }
+    )
+    @ParameterizedTest
+    void testCreationDateIsInterpretedInGermanTimeIndependentlyOfLocalMachineTimezone(String timezone, String date, int year, int month, int day) {
+        TimeZone.setDefault(TimeZone.getTimeZone(timezone));
 
-    @Test
-    void testDateTimeFormatIsSupported() {
-        String resource =
+        String resource = String.format(
                 "<Patient xmlns=\"http://hl7.org/fhir\">\n"
-                        + "    <birthDate value=\"1980-01-01T10:00:00+05:00\" />\n"
-                        + "</Patient>";
+                        + "    <birthDate value=\"%s\" />\n"
+                        + "</Patient>", date);
         var result = locator.findCreationDateIn(resource, "birthDate");
         Assertions.assertTrue(result.isPresent());
-        Assertions.assertEquals(LocalDate.of(1980, 01,01), result.get());
-    }
-
-    @Test
-    void testDateTimeIsConvertedToGermanTimeZone() {
-        String resource =
-                "<Patient xmlns=\"http://hl7.org/fhir\">\n"
-                        + "    <birthDate value=\"2023-06-30T22:00:00+00:00\" />\n" // corresponds to 2023-07-01 in Germany (UTC+1 in winter or UTC+2 in summer)
-                        + "</Patient>";
-
-        var result = locator.findCreationDateIn(resource, "birthDate");
-
-        Assertions.assertTrue(result.isPresent());
-        LocalDate expectedGermanDate = LocalDate.of(2023, 07, 01);
-        Assertions.assertEquals(expectedGermanDate, result.get());
+        Assertions.assertEquals(LocalDate.of(year, month,day), result.get());
     }
 
     @Test
     void testMissingDateElementIsSupported() {
-        System.out.println(ZoneId.systemDefault());
-
         String resource =
                 "<Patient xmlns=\"http://hl7.org/fhir\">\n"
                         + "</Patient>";
