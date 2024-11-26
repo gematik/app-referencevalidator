@@ -14,7 +14,7 @@
   <groupId>de.gematik.refv</groupId>
   <artifactId>referencevalidator</artifactId>
   <packaging>pom</packaging>
-  <version>2.6.1</version>
+  <version>2.6.2</version>
   <name>gematik Referenzvalidator</name>
   <description>Der Referenzvalidator ermöglicht eine erweiterte Validierung von FHIR-Ressourcen, die in den Anwendungen der Telematikinfrastruktur (TI) verwendet werden. Der Referenzvalidator liefert autoritative Antworten zur Validität von übertragenen Datensätzen und ist somit eine Referenz für eventuell sonst im Rahmen einer TI-Anwendung eingesetzte FHIR-Validatoren.</description>
   <url>https://github.com/gematik/app-referencevalidator</url>
@@ -74,12 +74,12 @@
     <version.surefire>3.5.1</version.surefire>
     <version.compiler>3.13.0</version.compiler>
     <version.hapi-fhir-validation>6.6.2</version.hapi-fhir-validation>
-    <version.lombok>1.18.34</version.lombok>
-    <version.log4j2>2.24.1</version.log4j2>
+    <version.lombok>1.18.36</version.lombok>
+    <version.log4j2>2.24.2</version.log4j2>
     <version.slf4j-api>2.0.16</version.slf4j-api>
     <version.slf4j-log4j>2.0.16</version.slf4j-log4j>
     <version.junit-jupiter-api>5.11.2</version.junit-jupiter-api>
-    <version.jackson>2.18.0</version.jackson>
+    <version.jackson>2.18.1</version.jackson>
     <version.woodstox>7.0.0</version.woodstox>
     <version.site>3.20.0</version.site>
     <version.maven-release>3.1.1</version.maven-release>
@@ -108,9 +108,9 @@
     <commons-compress.version>1.27.1</commons-compress.version>
     <guava.version>33.3.1-jre</guava.version>
     <thymeleaf.version>3.1.2.RELEASE</thymeleaf.version>
-    <checker-qual.version>3.48.1</checker-qual.version>
+    <checker-qual.version>3.48.2</checker-qual.version>
     <commons-codec.version>1.17.1</commons-codec.version>
-    <error_prone_annotations.version>2.33.0</error_prone_annotations.version>
+    <error_prone_annotations.version>2.35.1</error_prone_annotations.version>
     <commons-io.version>2.17.0</commons-io.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
   </properties>

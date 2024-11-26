@@ -10,6 +10,52 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+   file name: org.hl7.fhir.r4-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.r4@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-51132</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.r4-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.r4@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-52007</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.convertors-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.convertors@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-51132</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.validation-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.validation@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-51132</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.r5-6.0.1.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.r5@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-51132</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.r5-6.0.1.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.r5@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-52007</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
    file name: org.hl7.fhir.r5-6.0.1.jar
    the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
    ]]></notes>
@@ -23,6 +69,22 @@
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.r4b@.*$</packageUrl>
         <vulnerabilityName>CVE-2024-45294</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.r4b-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.r4b@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-51132</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.r4b-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.r4b@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-52007</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
@@ -47,5 +109,61 @@
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.dstu2016may@.*$</packageUrl>
         <vulnerabilityName>CVE-2024-45294</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.dstu3-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.dstu3@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-51132</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.dstu3-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.dstu3@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-52007</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.dstu2-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.dstu2@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-51132</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.utilities-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.utilities@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-51132</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.utilities-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.utilities@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-52007</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.dstu2016may-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.dstu2016may@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-51132</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: org.hl7.fhir.dstu2016may-6.0.1.jar
+   the vulnerability is mitigated in HAPI wrapper classes and in the implementation of ReferencedProfileLocator starting with version 2.5.1
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.dstu2016may@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-52007</vulnerabilityName>
     </suppress>
 </suppressions>

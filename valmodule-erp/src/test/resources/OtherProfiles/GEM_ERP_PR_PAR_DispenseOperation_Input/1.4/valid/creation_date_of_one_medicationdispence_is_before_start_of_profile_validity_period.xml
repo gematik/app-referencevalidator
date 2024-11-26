@@ -1,7 +1,7 @@
 <Parameters xmlns="http://hl7.org/fhir">
   <id value="ExampleCloseInputParametersMultipleMedicationDispenses" />
   <meta>
-    <profile value="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_PAR_CloseOperation_Input|1.4" />
+    <profile value="https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_PAR_DispenseOperation_Input|1.4" />
   </meta>
   <parameter>
     <name value="rxDispensation" />
@@ -120,7 +120,7 @@
               </identifier>
             </actor>
           </performer>
-          <whenHandedOver value="2024-04-03" />
+          <whenHandedOver value="2025-01-13" />
         </MedicationDispense>
       </resource>
     </part>
