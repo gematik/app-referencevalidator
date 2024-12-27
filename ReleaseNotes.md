@@ -2,6 +2,14 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.7.0
+
+> [!IMPORTANT]
+> ERP module (version update to 2.8)
+
+### added
+- validation of [EVDGA 1.1. profiles](https://simplifier.net/packages/kbv.itv.evdga/1.1.0) added
+
 ## Release 2.6.2
 
 > [!IMPORTANT]

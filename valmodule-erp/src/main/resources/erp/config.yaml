@@ -1,5 +1,5 @@
 id: "erp"
-version: "2.7"
+version: "2.8"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
@@ -122,6 +122,16 @@ dependencyLists:
       - "kbv.ita.for-1.1.0.tgz"
       - "kbv.basis-1.3.0.tgz"
     validFrom: "2024-10-01"
+
+  kbv.itv.evdga.1.1.0-4-2025:
+    packages:
+      - "kbv.itv.evdga-1.1.0.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.5.0.tgz"
+      - "de.basisprofil.r4-1.3.2.tgz"
+      - "kbv.ita.for-1.1.0.tgz"
+      - "kbv.basis-1.3.0.tgz"
+    validFrom: "2025-04-01"
+
 
   # https://simplifier.net/erezept-workflow/~packages
   de.gematik.erezept-workflow.r4.1.0.3-1:
@@ -1568,3 +1578,23 @@ supportedProfiles:
           - "de.gematik.erezept-patientenrechnung.r4.1.0.3-7-2024"
           - "de.gematik.erezept-patientenrechnung.r4.1.0.4-1-2025"
         creationDateLocator: "dateTime"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EVDGA_Bundle":
+    profileVersions:
+      1.1:
+        dependencyLists:
+          - "kbv.itv.evdga.1.1.0-4-2025"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_EVDGA_HealthAppRequest')).authoredOn"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EVDGA_HealthAppRequest":
+    profileVersions:
+      1.1:
+        dependencyLists:
+          - "kbv.itv.evdga.1.1.0-4-2025"
+        creationDateLocator: "authoredOn"
+
+  "https://fhir.kbv.de/StructureDefinition/KBV_PR_EVDGA_Composition":
+    profileVersions:
+      1.1:
+        dependencyLists:
+          - "kbv.itv.evdga.1.1.0-4-2025"
