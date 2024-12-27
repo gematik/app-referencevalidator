@@ -15,6 +15,8 @@ limitations under the License.
 */
 package de.gematik.refv.commons.validation.support;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.RuntimeResourceDefinition;
 import ca.uhn.fhir.context.support.ValidationSupportContext;
@@ -22,17 +24,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.benmanes.caffeine.cache.Scheduler;
 import de.gematik.refv.commons.Profile;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.Sets;
-import org.apache.commons.lang3.Validate;
-import org.hl7.fhir.common.hapi.validation.support.BaseValidationSupport;
-import org.hl7.fhir.instance.model.api.IBase;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.instance.model.api.IPrimitiveType;
-import org.hl7.fhir.r4.model.StructureDefinition;
-import org.hl7.fhir.utilities.npm.NpmPackage;
-
-import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,8 +37,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import javax.annotation.Nonnull;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.Sets;
+import org.apache.commons.lang3.Validate;
+import org.hl7.fhir.common.hapi.validation.support.BaseValidationSupport;
+import org.hl7.fhir.instance.model.api.IBase;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.hl7.fhir.r4.model.StructureDefinition;
+import org.hl7.fhir.utilities.npm.NpmPackage;
 
 @Slf4j
 public class CustomNpmPackageValidationSupport extends BaseValidationSupport {
@@ -191,6 +190,13 @@ public class CustomNpmPackageValidationSupport extends BaseValidationSupport {
         String version = versionValue.map(t -> (((IPrimitiveType<?>) t).getValueAsString())).orElse(null);
         if (isNotBlank(version)) {
             retVal.add(urlWithoutVersion + "|" + version);
+
+            // If the version is a semantic version, also add the major.minor version (e.g. 1.1.0 -> 1.1)
+            // (required for KBV profiles - EVGDA 1.1, ERP 1.2)
+            String[] versionParts = version.split("\\.");
+            if (versionParts.length == 3) {
+                retVal.add(urlWithoutVersion + "|" + versionParts[0] + "." + versionParts[1]);
+            }
         }
 
         return retVal;
