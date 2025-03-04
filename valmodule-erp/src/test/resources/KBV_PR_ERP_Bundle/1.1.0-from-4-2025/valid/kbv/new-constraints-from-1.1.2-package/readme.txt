@@ -1,0 +1,1 @@
+Im 1.1.1. Package von KBV haben einige Constraints die Möglichkeit der URN-Referenzierung nicht berücksichtigt. Im 1.1.2-Package wurden diese korrigiert und bewerten alle korrekte Beispiele aus diesem Ordner als valide (sowohl mit URL als auch URN-Referenzierung).

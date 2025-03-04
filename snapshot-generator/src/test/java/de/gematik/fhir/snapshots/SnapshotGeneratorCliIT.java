@@ -15,35 +15,98 @@ limitations under the License.
 */
 package de.gematik.fhir.snapshots;
 
-import de.gematik.refv.snapshots.SnapshotGeneratorCli;
-import lombok.SneakyThrows;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SnapshotGeneratorCliIT {
+import de.gematik.refv.snapshots.SnapshotGeneratorCli;
+import java.io.File;
+import lombok.SneakyThrows;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 
-    @Test
-    @SneakyThrows
-    void testSnapshotMainMandatoryArgumentsMissing() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> SnapshotGeneratorCli.main(new String[]{}));
-    }
+class SnapshotGeneratorCliIT {
 
     @Test
     @SneakyThrows
     void testSnapshotMain() {
         String srcPackagesDir = "src/test/resources/src-package/";
         String outputSnapshotPackagesDir = "target/generated-snapshots/";
-        String excludedPackages = "excluded.package-1.0.0.tgz";
         FileUtils.deleteDirectory(new File(outputSnapshotPackagesDir));
 
-        SnapshotGeneratorCli.main(new String[] {srcPackagesDir, outputSnapshotPackagesDir, "", excludedPackages});
+        SnapshotGeneratorCli.main(new String[] {srcPackagesDir, outputSnapshotPackagesDir});
 
-        File generatedSnapshotPackage = new File(outputSnapshotPackagesDir + "minimal.example-1.0.0.tgz");
-        assertTrue(generatedSnapshotPackage.exists());
+        File generatedSnapshotPackage1 = new File(outputSnapshotPackagesDir + "simplevalidationmodule.test-1.0.0.tgz");
+        File generatedSnapshotPackage2 = new File(outputSnapshotPackagesDir + "simplevalidationmodule.test-1.0.1.tgz");
+
+        assertTrue(generatedSnapshotPackage1.exists());
+        assertTrue(generatedSnapshotPackage2.exists());
+    }
+
+    @Test
+    @SneakyThrows
+    void testSnapshotMainWithOptionalArguments() {
+        String srcPackagesDir = "src/test/resources/src-package/";
+        String outputSnapshotPackagesDir = "target/generated-snapshots/";
+        String decompressDir = "target/temp-decompress/";
+        String packageNames = "simplevalidationmodule.test-1.0.0.tgz";
+
+        FileUtils.deleteDirectory(new File(outputSnapshotPackagesDir));
+        FileUtils.deleteDirectory(new File(decompressDir));
+
+        SnapshotGeneratorCli.main(new String[] {
+                srcPackagesDir,
+                outputSnapshotPackagesDir,
+                "--packages=" + packageNames,
+                "--tempDir=" + decompressDir
+        });
+
+        File generatedSnapshotPackage = new File(outputSnapshotPackagesDir + "simplevalidationmodule.test-1.0.0.tgz");
+        assertTrue(generatedSnapshotPackage.exists(), "The snapshot package should be generated");
+
+        File anotherPackage = new File(outputSnapshotPackagesDir + "simplevalidationmodule.test-1.0.1.tgz");
+        assertFalse(anotherPackage.exists(), "The dependency package should NOT be generated");
+
+        File decompressDirFile = new File(decompressDir);
+        assertTrue(decompressDirFile.exists() && decompressDirFile.isDirectory(), "The decompress directory should exist");
+    }
+
+    @Test
+    @SneakyThrows
+    void testSnapshotMainWithEmptyStringAsPackageNameShouldGenerateAllSnapshotPackages() {
+        String srcPackagesDir = "src/test/resources/src-package/";
+        String outputSnapshotPackagesDir = "target/generated-snapshots/";
+        String packageNames = "";
+
+        FileUtils.deleteDirectory(new File(outputSnapshotPackagesDir));
+
+        SnapshotGeneratorCli.main(new String[] {
+                srcPackagesDir,
+                outputSnapshotPackagesDir,
+                "--packages=" + packageNames
+        });
+
+        File generatedSnapshotPackage1 = new File(outputSnapshotPackagesDir + "simplevalidationmodule.test-1.0.0.tgz");
+        File generatedSnapshotPackage2 = new File(outputSnapshotPackagesDir + "simplevalidationmodule.test-1.0.1.tgz");
+
+        assertTrue(generatedSnapshotPackage1.exists());
+        assertTrue(generatedSnapshotPackage2.exists());
+    }
+
+    @Test
+    @SneakyThrows
+    void testSnapshotMainWithMissingRequiredArguments() {
+        String outputSnapshotPackagesDir = "target/generated-snapshots/";
+        FileUtils.deleteDirectory(new File(outputSnapshotPackagesDir));
+
+        SnapshotGeneratorCli.main(new String[] {});
+
+        File generatedSnapshotPackage1 = new File(outputSnapshotPackagesDir + "simplevalidationmodule.test-1.0.0.tgz");
+        File generatedSnapshotPackage2 = new File(outputSnapshotPackagesDir + "simplevalidationmodule.test-1.0.1.tgz");
+        File outputDir = new File(outputSnapshotPackagesDir);
+
+        assertThat(generatedSnapshotPackage1).doesNotExist();
+        assertThat(generatedSnapshotPackage2).doesNotExist();
+        assertThat(outputDir).doesNotExist();
     }
 }
