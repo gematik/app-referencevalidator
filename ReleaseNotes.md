@@ -2,6 +2,20 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.8.0
+
+> [!IMPORTANT]
+> ERP module (version update to 2.9)
+
+### added
+- integrated [KBV Schlüsseltabelle S_KBV_DARREICHUNGSFORM v1.15](https://applications.kbv.de/S_KBV_DARREICHUNGSFORM_V1.15.xhtml) (valid from 1.4.2025)
+
+### changed
+- Updated the FHIR package with [EVDGA 1.1. profiles](https://simplifier.net/packages/kbv.itv.evdga/1.1.1) to v1.1.1
+
+### fixed
+- Instances of the _GEM_ERP_PR_CloseOperationInputBundle|1.2_ profile with _whenHandedOver_ date starting from 1.10.2024 AND containing codes introduced by the [KBV Schlüsseltabelle S_KBV_DARREICHUNGSFORM v1.14](https://applications.kbv.de/S_KBV_DARREICHUNGSFORM_V1.14.xhtml) (e.g. "IID") were evaluated as invalid. The behavior has been fixed and the corresponding instances are now evaluated correctly. (cf. [GitHub Issue #37](https://github.com/gematik/app-referencevalidator/issues/37))
+
 ## Release 2.7.0
 
 > [!IMPORTANT]
