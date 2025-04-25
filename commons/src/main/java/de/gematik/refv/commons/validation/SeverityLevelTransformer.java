@@ -55,6 +55,9 @@ class SeverityLevelTransformer {
                     messageMatchesPattern(message.getMessage(), t.getLocatorString()) &&
                     (
                             t.getMessageId() == null || StringUtils.equals(t.getMessageId(), message.getMessageId())
+                    ) &&
+                    (
+                            t.getMessageLocationRegex() == null || messageMatchesPattern(message.getLocationString(), t.getMessageLocationRegex())
                     )
             ).findFirst();
             if(transformation.isEmpty()) {

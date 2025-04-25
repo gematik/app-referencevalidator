@@ -2,6 +2,29 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.9.0
+
+> [!IMPORTANT]
+> ERP module (version update to 2.10)
+
+### added:
+- ERP module: 
+  - validation of profiles from the following packages (profiles valid from 1.10.2025):
+    - [de.gkvsv.erezeptabrechnungsdaten#1.5.1](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.5.1)
+    - [de.abda.erezeptabgabedaten#1.5.0](https://simplifier.net/packages/de.abda.erezeptabgabedaten/1.5.0)
+    - [de.abda.erezeptabgabedatenpkv#1.4.0](https://simplifier.net/packages/de.abda.erezeptabgabedatenpkv/1.4.0)
+    - [de.gematik.erezept-patientenrechnung.r4#1.1.0](https://simplifier.net/packages/de.gematik.erezept-patientenrechnung.r4/1.1.0)
+    - [de.gematik.erezept-workflow.r4#1.5.0](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.5.0)
+    - [kbv.ita.erp#1.2.0](https://simplifier.net/packages/kbv.ita.erp/1.2.0)
+    - [kbv.itv.evdga#1.1.0](https://simplifier.net/packages/kbv.itv.evdga/1.1.0)
+
+### changed
+- Plugin infrastructure:
+  - While using a plugin, the reference validator did not automatically detect the profile of an input FHIR resource, if it contained a version number in the MAJOR.MINOR format (in contrast to MAJOR.MINOR.PATCH, e.g. "http://example.org/StructureDefinition/Some_Profile|1.0"). The behavior has been changed. The validator now accepts the shortened version number in the profile URL and validates the resource against the corresponding profile (even if the latter has a PATCH number in its StructureDefinition).
+
+### fixed:
+- Resources without meta.profile element on the top level, but with included inner resources with meta.profile element have been processed and validated incorrectly (e.g. not-profiled collection-Bundles). The behavior has been fixed. The validator now checks the meta.profile element of the top level resource only. If the provided profile is not known and no _-profile_ parameter is passed to validator, an error message is thrown.
+
 ## Release 2.8.0
 
 > [!IMPORTANT]

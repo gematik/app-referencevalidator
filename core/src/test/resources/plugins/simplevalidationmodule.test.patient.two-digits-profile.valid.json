@@ -1,0 +1,33 @@
+{
+    "meta": {
+        "profile": [
+            "http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate|1.0"
+        ]
+    },
+    "id": "66033",
+    "birthDate": "2023-01-01",
+    "name": [
+        {
+            "given": [
+                "Marie"
+            ],
+            "family": "Lux-Brennard"
+        }
+    ],
+    "identifier": [
+        {
+            "system": "urn:oid:1.3.182.4.4",
+            "value": "1998041799999"
+        },
+        {
+            "system": "urn:ietf:rfc:3986",
+            "value": "urn:uuid:647515ed-0d5e-4c99-b23d-073fbc593f76"
+        }
+    ],
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns='http://www.w3.org/1999/xhtml'>\n  <p style='border: 1px #661aff solid; background-color: #e6e6ff; padding: 10px;'>\n    <b>Marie Lux-Brennard</b>female, DoB: 1998-04-17 ( id: 1998041799999)</p>\n  <hr/>\n  <table class='grid'>\n    <tr>\n      <td title='Other Ids (see the one above)' style='background-color: #f3f5da'>Other Id:</td>\n      <td colspan='3'>id: urn:uuid:647515ed-0d5e-4c99-b23d-073fbc593f76</td>\n    </tr>\n  </table>\n</div>"
+    },
+    "gender": "male",
+    "resourceType": "Patient"
+}

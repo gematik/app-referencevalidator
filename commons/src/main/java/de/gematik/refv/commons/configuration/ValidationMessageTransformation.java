@@ -25,4 +25,5 @@ public class ValidationMessageTransformation {
     String severityLevelTo;
     String locatorString;
     String messageId;
+    String messageLocationRegex;
 }

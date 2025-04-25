@@ -72,7 +72,7 @@ Siehe [Release Notes](ReleaseNotes.md)
 
 | **Modul**                                      | **Version** |
 |------------------------------------------------|-------------|
-| E-Rezept                                       | 2.9         |
+| E-Rezept                                       | 2.10        |
 | Elektronische Arbeitsunfähigkeitsbescheinigung | 0.91        |
 | FHIR Core                                      | 1.0         |
 | E-Rezept Abrechnungsdaten (experimentell)      | 0.3         |
@@ -95,6 +95,10 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das E-Rezept-Modul wie folg
 - Fehler, die bei Validierung von `http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle|1.0.3` im Zusammenhang mit falschen Angaben bei `http://fhir.abda.de/Identifier/DAV-Herstellerschluessel` stehen, werden ignoriert und führen zum **validen** Ergebnis
 - Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
 - Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis
+- Alle E-Rezept-Ressourcen (auch verschachtelte) dürfen nur genau eine meta.profile-Angabe enthalten (obwohl manche Profile technisch auch mehrfache meta.profile-Angaben erlauben).  
+
+> **Warning**
+> Das E-Rezept-Modul validiert nur FHIR-Instanzen, für die ein Profil im Rahmen der jeweiligen FHIR-Spezifikationen definiert wurde. Manche Ausgaben vom E-Rezept-Fachdienst (z.B. collection-Bundles), für die kein dediziertes Profil definiert wurde, sind nicht Bestandteil des Prüfumfangs. Diese Instanzen sind daher nicht validierbar.
 
 #### Anpassungen der Packages:
 - Alle Packages enthalten Snapshots

@@ -16,13 +16,12 @@ limitations under the License.
 package de.gematik.refv;
 
 import de.gematik.refv.commons.validation.ValidationModule;
+import java.util.zip.ZipFile;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.zip.ZipFile;
 
 class PluginIT {
 
@@ -40,7 +39,8 @@ class PluginIT {
     @ValueSource(strings = {
             "src/test/resources/plugins/simplevalidationmodule.test-multiple-profiles.patient.valid.json",
             "src/test/resources/plugins/simplevalidationmodule.test.patient.valid.json",
-            "src/test/resources/plugins/simplevalidationmodule.test-profile-without-version.patient.valid.json"
+            "src/test/resources/plugins/simplevalidationmodule.test-profile-without-version.patient.valid.json",
+            "src/test/resources/plugins/simplevalidationmodule.test.patient.two-digits-profile.valid.json"
     })
     @SneakyThrows
     void testValidationUsingPlugin(String resourcePath) {

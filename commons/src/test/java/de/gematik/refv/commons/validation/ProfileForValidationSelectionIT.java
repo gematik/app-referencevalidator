@@ -15,8 +15,11 @@ limitations under the License.
 */
 package de.gematik.refv.commons.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import de.gematik.refv.commons.exceptions.UnsupportedProfileException;
 import de.gematik.refv.commons.helper.ValidationModuleFactory;
+import java.util.List;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -24,10 +27,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 class ProfileForValidationSelectionIT {
@@ -92,6 +91,17 @@ class ProfileForValidationSelectionIT {
             @DisplayName("--> IllegalArgumentException")
             void testNoProfile() {
                 Assertions.assertThrows(IllegalArgumentException.class, () -> validationModule.validateFile("src/test/resources/profile-for-validation-selection/no-meta-profile.json", options));
+            }
+        }
+
+        @Nested
+        @DisplayName("meta.profile is absent on the top level, but exists in an inner resource")
+        class ValidationWithoutReferencedMetaProfileButWithMetaProfileInInnerRessource {
+            @Test
+            @SneakyThrows
+            @DisplayName("--> IllegalArgumentException")
+            void testNoProfileOnTopLevelButInInnerResource() {
+                Assertions.assertThrows(IllegalArgumentException.class, () -> validationModule.validateFile("src/test/resources/profile-for-validation-selection/no-meta-profile-on-top-level-but-in-inner-resource.json", options));
             }
         }
 
