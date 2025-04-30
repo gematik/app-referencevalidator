@@ -16,20 +16,17 @@ limitations under the License.
 package de.gematik.refv.commons.validation;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import de.gematik.refv.commons.Profile;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.helper.ValidationModuleFactory;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 
 class ReferencedProfileLocatorJSONTests {
     public static final String CODE = "simple";
@@ -47,7 +44,6 @@ class ReferencedProfileLocatorJSONTests {
             "https://bla.bla|1.0.2",
             "https://bla.bla"
     })
-    @Disabled("Test should pass")
     void testProfileInCorrectResourceIsExtractedCorrectly(String canonical) {
         configuration = new ValidationModuleConfiguration();
         Profile profile = Profile.parse(canonical);
@@ -105,6 +101,24 @@ class ReferencedProfileLocatorJSONTests {
                     + "    ]\n"
                     + "  }\n"
                     + "}",
+
+            // meta.profile is absent on the top level, but present in an inner ressource
+            "{\n"
+                    + " \"resourceType\": \"Bundle\",\n"
+                    + " \"id\": \"123456789\",\n"
+                    + " \"entry\": [\n"
+                    + "     {\n"
+                    + "         \"resource\": {\n"
+                    + "             \"resourceType\": \"Patient\",\n"
+                    + "             \"meta\": {\n"
+                    + "                 \"profile\": [\n"
+                    + "                     \"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Bundle\"\n"
+                    + "                 ]\n"
+                    + "             }\n"
+                    + "         }\n"
+                    + "     }\n"
+                    + " ]\n"
+                    + "}"
     })
     void testNoProfile(String resource) {
         List<String> allProfilesInResource = locator.getAllReferencedProfilesInResource(resource);

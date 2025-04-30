@@ -72,7 +72,7 @@ Siehe [Release Notes](ReleaseNotes.md)
 
 | **Modul**                                      | **Version** |
 |------------------------------------------------|-------------|
-| E-Rezept                                       | 2.9         |
+| E-Rezept                                       | 2.10        |
 | Elektronische Arbeitsunfähigkeitsbescheinigung | 0.91        |
 | FHIR Core                                      | 1.0         |
 | E-Rezept Abrechnungsdaten (experimentell)      | 0.3         |
@@ -95,6 +95,10 @@ Abweichend vom allgemeinen Prüfumfang verhält sich das E-Rezept-Modul wie folg
 - Fehler, die bei Validierung von `http://fhir.abda.de/eRezeptAbgabedaten/StructureDefinition/DAV-PR-ERP-AbgabedatenBundle|1.0.3` im Zusammenhang mit falschen Angaben bei `http://fhir.abda.de/Identifier/DAV-Herstellerschluessel` stehen, werden ignoriert und führen zum **validen** Ergebnis
 - Instanzen mit unbekannten Profilen führen zum invaliden Ergebnis
 - Instanzen mit unbekannten Extensions führen zum invaliden Ergebnis
+- Alle E-Rezept-Ressourcen (auch verschachtelte) dürfen nur genau eine meta.profile-Angabe enthalten (obwohl manche Profile technisch auch mehrfache meta.profile-Angaben erlauben).  
+
+> **Warning**
+> Das E-Rezept-Modul validiert nur FHIR-Instanzen, für die ein Profil im Rahmen der jeweiligen FHIR-Spezifikationen definiert wurde. Manche Ausgaben vom E-Rezept-Fachdienst (z.B. collection-Bundles), für die kein dediziertes Profil definiert wurde, sind nicht Bestandteil des Prüfumfangs. Diese Instanzen sind daher nicht validierbar.
 
 #### Anpassungen der Packages:
 - Alle Packages enthalten Snapshots
@@ -226,6 +230,9 @@ System.out.println(result.isValid());
 
 Der Referenzvalidator wird als Java-Bibliothek und als Konsolenanwendung verteilt. Für die Verwendung ist JDK 11 erforderlich (z.B. [AdoptOpenJDK](https://adoptopenjdk.net/)).
 
+> **Warning**
+> Der Referenzvalidator verfolgt das Ziel, die Validierungsergebnisse unabhängig von den lokalen Einstellungen der Zeitzone oder der Zahlendarstellung zu produzieren. Bei den lokalen Spracheinstellungen ist allerdings darauf zu achten, dass Deutsch oder Englisch als Sprache voreingestellt ist (z.B. Locale de_DE oder en_US). Bei anderen Sprachen kann es in Randfällen zur Abweichung bei der Bewertung der Validität der Instanzen kommen.  
+
 ### Installation
 
 #### Konsolenanwendung
@@ -234,7 +241,10 @@ Für die Verwendung der Konsolenanwendung soll die Datei `referencevalidator-cli
 
 #### Java-Bibliothek
 
-Der Referenzvalidator wird zur Einbindung in andere Projekte auf [Maven Central](https://search.maven.org/artifact/de.gematik.refv/referencevalidator) veröffentlicht. Bei der Einbindung ist darauf zu achten, dass genau die angegebenen Versionen der Abhängigkeiten, insbesondere der HAPI-Bibliothekten (`ca.uhn.hapi.fhir`), zur Laufzeit eingebunden sind.
+Der Referenzvalidator wird zur Einbindung in andere Projekte auf [Maven Central](https://search.maven.org/artifact/de.gematik.refv/referencevalidator) veröffentlicht. 
+
+> **Warning**
+> Bei der Einbindung ist darauf zu achten, dass genau die angegebenen Versionen der Abhängigkeiten, insbesondere der HAPI-Bibliothekten (`ca.uhn.hapi.fhir`), zur Laufzeit eingebunden sind. Im Falle der Abweichung können die Validierungsergebnisse anders ausfallen als erwartet.
 
 Beispiel zur Einbindung des Referenzvalidator:
 

@@ -17,6 +17,14 @@ dependencyLists:
       - "de.abda.erezeptabgabedatenbasis-1.4.0.tgz"
       - "de.basisprofil.r4-1.3.2.tgz"
     validFrom: "2024-11-01"
+    validTill: "2025-09-30"
+
+  de.gkvsv.erezeptabrechnungsdaten.1.5.1:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.5.1.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.5.0.tgz"
+      - "de.basisprofil.r4-1.5.2.tgz"
+    validFrom: "2025-10-01"
 
 supportedProfiles:
   "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_Bundle":
@@ -28,4 +36,8 @@ supportedProfiles:
       1.4:
         dependencyLists:
           - "de.gkvsv.erezeptabrechnungsdaten.1.4.1"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Rechnung_Composition')).date"
+      1.5:
+        dependencyLists:
+          - "de.gkvsv.erezeptabrechnungsdaten.1.5.1"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Rechnung_Composition')).date"

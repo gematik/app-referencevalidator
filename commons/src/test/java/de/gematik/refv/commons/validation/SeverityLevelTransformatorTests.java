@@ -18,12 +18,11 @@ package de.gematik.refv.commons.validation;
 import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.commons.configuration.ValidationMessageTransformation;
+import java.util.LinkedList;
+import java.util.List;
 import org.hl7.fhir.utilities.i18n.I18nConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.LinkedList;
-import java.util.List;
 
 class SeverityLevelTransformatorTests {
 
@@ -35,22 +34,28 @@ class SeverityLevelTransformatorTests {
         m1.setSeverity(ResultSeverityEnum.ERROR);
         m1.setMessage("Error message");
         m1.setMessageId("testMessageId");
+        m1.setLocationString("testLocationString");
         var m2 = new SingleValidationMessage();
         m2.setSeverity(ResultSeverityEnum.ERROR);
         m2.setMessage("Error message");
         m2.setMessageId("testMessageId");
+        m2.setLocationString("testLocationString");
         var m3 = new SingleValidationMessage();
         m3.setSeverity(ResultSeverityEnum.WARNING);
         m3.setMessage("Warning message");
         m3.setMessageId("testMessageId");
+        m3.setLocationString("testLocationString");
         var m4 = new SingleValidationMessage();
         m4.setSeverity(ResultSeverityEnum.INFORMATION);
         m4.setMessage("Warning message");
         m4.setMessageId("testMessageId");
+        m4.setLocationString("testLocationString");
         var inputMessages = List.of(m1,m2,m3,m4);
 
-        var t1 = new ValidationMessageTransformation("error","information","Error mes", "testMessageId");
-        var t2 = new ValidationMessageTransformation("warning","information","Warning mes", "testMessageId");
+    var t1 =
+        new ValidationMessageTransformation(
+            "error", "information", "Error mes", "testMessageId", "testLocationString");
+        var t2 = new ValidationMessageTransformation("warning","information","Warning mes", "testMessageId", "testLocationString");
         var transformations = List.of(t1,t2);
 
         var transformedMessages = engine.applyTransformations(inputMessages, transformations);
@@ -67,7 +72,43 @@ class SeverityLevelTransformatorTests {
         m1.setMessageId("testMessageId");
         var inputMessages = List.of(m1);
 
-        var notApplyingTransformation = new ValidationMessageTransformation("information","error","not applying", "testMessageId");
+        var notApplyingTransformation = new ValidationMessageTransformation("error","information","not applying", "testMessageId", null);
+        var transformations = List.of(notApplyingTransformation);
+
+        var transformedMessages = engine.applyTransformations(inputMessages, transformations);
+
+        Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
+        Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.ERROR)));
+    }
+
+    @Test
+    void testTransformationWithMessageIdAndWithoutLocatorStringApply() {
+        var m1 = new SingleValidationMessage();
+        m1.setSeverity(ResultSeverityEnum.ERROR);
+        m1.setMessage("Error message");
+        m1.setMessageId("testMessageId");
+        m1.setLocationString("testLocationString");
+        var inputMessages = List.of(m1);
+
+        var notApplyingTransformation = new ValidationMessageTransformation("error","information",null, "testMessageId", null);
+        var transformations = List.of(notApplyingTransformation);
+
+        var transformedMessages = engine.applyTransformations(inputMessages, transformations);
+
+        Assertions.assertEquals(inputMessages.size(), transformedMessages.size());
+        Assertions.assertTrue(transformedMessages.stream().allMatch(m -> m.getSeverity().equals(ResultSeverityEnum.INFORMATION)));
+    }
+
+    @Test
+    void testTransformationWithNonMatchingMessageLocationRegexDoesntApply() {
+        var m1 = new SingleValidationMessage();
+        m1.setSeverity(ResultSeverityEnum.ERROR);
+        m1.setMessage("Error message");
+        m1.setMessageId("testMessageId");
+        m1.setLocationString("testLocationString");
+        var inputMessages = List.of(m1);
+
+        var notApplyingTransformation = new ValidationMessageTransformation("error","information","Error message", "testMessageId", "not matching location");
         var transformations = List.of(notApplyingTransformation);
 
         var transformedMessages = engine.applyTransformations(inputMessages, transformations);
@@ -84,7 +125,7 @@ class SeverityLevelTransformatorTests {
         m1.setMessageId("testMessageId");
         var inputMessages = List.of(m1);
 
-        var t1 = new ValidationMessageTransformation("error","information","Error mes", null);
+        var t1 = new ValidationMessageTransformation("error","information","Error mes", null, null);
         var transformations = List.of(t1);
 
         var transformedMessages = engine.applyTransformations(inputMessages, transformations);
@@ -105,7 +146,7 @@ class SeverityLevelTransformatorTests {
         m2.setMessageId("non matching message id");
         var inputMessages = List.of(m1, m2);
 
-        var t1 = new ValidationMessageTransformation("error","information","Error mes", "testMessageId");
+        var t1 = new ValidationMessageTransformation("error","information","Error mes", "testMessageId", null);
         var transformations = List.of(t1);
 
         var transformedMessages = engine.applyTransformations(inputMessages, transformations);
@@ -123,7 +164,7 @@ class SeverityLevelTransformatorTests {
         m1.setMessageId("testMessageId");
         var inputMessages = List.of(m1);
 
-        var t1 = new ValidationMessageTransformation("error","information","Error message", "someOtherMessageId");
+        var t1 = new ValidationMessageTransformation("error","information","Error message", "someOtherMessageId", null);
         var transformations = List.of(t1);
 
         var transformedMessages = engine.applyTransformations(inputMessages, transformations);
