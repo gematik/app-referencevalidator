@@ -55,6 +55,9 @@ class SeverityLevelTransformer {
                     messageMatchesPattern(message.getMessage(), t.getLocatorString()) &&
                     (
                             t.getMessageId() == null || StringUtils.equals(t.getMessageId(), message.getMessageId())
+                    ) &&
+                    (
+                            t.getMessageLocationRegex() == null || messageMatchesPattern(message.getLocationString(), t.getMessageLocationRegex())
                     )
             ).findFirst();
             if(transformation.isEmpty()) {
@@ -67,6 +70,9 @@ class SeverityLevelTransformer {
     }
 
     private static boolean messageMatchesPattern(String message, String locator) {
+        if(StringUtils.isEmpty(locator))
+            return true;
+
         Pattern pattern = Pattern.compile(locator);
         Matcher matcher = pattern.matcher(message);
         return matcher.find();

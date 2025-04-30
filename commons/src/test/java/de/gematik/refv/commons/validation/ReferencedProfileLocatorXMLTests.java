@@ -15,19 +15,17 @@ limitations under the License.
 */
 package de.gematik.refv.commons.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import de.gematik.refv.commons.Profile;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.helper.ValidationModuleFactory;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class ReferencedProfileLocatorXMLTests {
 
@@ -47,7 +45,6 @@ class ReferencedProfileLocatorXMLTests {
             "https://bla.bla|1.0.2",
             "https://bla.bla"
     })
-    @Disabled("Test should pass")
     void testProfileInCorrectResourceIsExtractedCorrectly(String canonical){
         configuration = new ValidationModuleConfiguration();
         Profile profile = Profile.parse(canonical);
@@ -95,6 +92,21 @@ class ReferencedProfileLocatorXMLTests {
                     + "        <profile value=\"\"/>\n"
                     + "        \n"
                     + "    </meta>\n"
+                    + "</Bundle>",
+
+            // meta.profile is absent on the top level, but present in an inner ressource
+            "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
+                    + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
+                    + "<entry>\n"
+                    + "    <resource>\n"
+                    + "        <Patient xmlns=\"http://hl7.org/fhir\">\n"
+                    + "            <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"
+                    + "            <meta>\n"
+                    + "                <profile value=\"https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Patient\"/>\n"
+                    + "            </meta>\n"
+                    + "        </Patient>\n"
+                    + "    </resource>\n"
+                    + "</entry>\n"
                     + "</Bundle>",
     })
     void testNoProfile(String resource) {

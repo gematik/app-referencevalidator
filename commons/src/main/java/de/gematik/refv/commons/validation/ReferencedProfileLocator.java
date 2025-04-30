@@ -19,9 +19,10 @@ import ca.uhn.fhir.rest.api.EncodingEnum;
 import com.ctc.wstx.stax.WstxInputFactory;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -30,10 +31,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.DTD;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 public class ReferencedProfileLocator {
@@ -67,6 +66,8 @@ public class ReferencedProfileLocator {
 
     private List<String> locateInXml(String resource) throws IllegalArgumentException {
         XMLEventReader xmlEventReader = null;
+
+        int treeLevel = 0;
         try (StringReader stringReader = new StringReader(resource)) {
             xmlEventReader = inputFactory.createXMLEventReader(stringReader);
             while (xmlEventReader.hasNext()) {
@@ -76,12 +77,22 @@ public class ReferencedProfileLocator {
                     throw new SecurityException("DTD is not allowed");
 
                 if (event.isStartElement()) {
+                    treeLevel++;
+
+                    // Scan top level only and skip inner resources (e.g. in Bundles)
+                    if(treeLevel > 2) {
+                        continue;
+                    }
+
                     StartElement nextTag = event.asStartElement();
 
                     if (nextTag.getName().getLocalPart().equalsIgnoreCase("meta")) {
 
                         return locateProfileInMetaTagXml(xmlEventReader);
                     }
+                }
+                else if(event.isEndElement()) {
+                    treeLevel--;
                 }
             }
         } catch (Exception e) {
@@ -148,14 +159,21 @@ public class ReferencedProfileLocator {
 
     private List<String> locateInJson(String resource) throws IOException {
         try (JsonParser jsonParser = jsonfactory.createParser(resource)) {
-            jsonParser.nextToken();
-            while (jsonParser.hasCurrentToken()) {
-                String fieldName = jsonParser.currentName();
-                jsonParser.nextToken();
-                if ("meta".equals(fieldName)) {
 
-                    return locateProfileInMetaJson(jsonParser);
+            int treeLevel = 0;
+            var token = jsonParser.nextToken();
+            while (jsonParser.hasCurrentToken()) {
+                if (token.isStructStart()) treeLevel++;
+                else if (token.isStructEnd()) treeLevel--;
+                else {
+                    if (treeLevel <= 2) {
+                        String fieldName = jsonParser.currentName();
+                        if ("meta".equals(fieldName)) {
+                            return locateProfileInMetaJson(jsonParser);
+                        }
+                    }
                 }
+                token = jsonParser.nextToken();
             }
         }
         log.debug("No meta element found");

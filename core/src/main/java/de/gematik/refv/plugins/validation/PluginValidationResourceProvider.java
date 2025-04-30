@@ -27,10 +27,6 @@ import de.gematik.refv.commons.validation.BaseValidationResourceProvider;
 import de.gematik.refv.commons.validation.support.CustomNpmPackageValidationSupport;
 import de.gematik.refv.plugins.configuration.MalformedPackageDeclarationException;
 import de.gematik.refv.plugins.configuration.PluginDefinition;
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,6 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PluginValidationResourceProvider extends BaseValidationResourceProvider {
@@ -117,11 +116,26 @@ public class PluginValidationResourceProvider extends BaseValidationResourceProv
                 ProfileConfiguration profileConfiguration = new ProfileConfiguration(List.of(fhirPackageName), null);
                 Map<String, ProfileConfiguration> profileVersions = new HashMap<>();
                 profileVersions.put(definition.getVersion(), profileConfiguration);
+
+                // Caution! If multiple profiles with the same base canonical are present, the last one will be used for validation of resources with meta.profile without patch number
+                addVersionWithoutPatchnumber(definition.getVersion(), profileVersions, profileConfiguration);
+
                 profileVersions.put("0.0.0", profileConfiguration);
                 SupportedProfileVersions supportedProfileVersions = new SupportedProfileVersions(profileVersions);
                 supportedProfiles.put(definition.getBaseCanonical(), supportedProfileVersions);
             }
         }
         return supportedProfiles;
+    }
+
+    /**
+     * Adds profile with MAJOR.MINOR version to the map so that the profile can be also referenced without the patch number, e.g. KBV_PR_ERP_Bundle|1.2
+     */
+    private static void addVersionWithoutPatchnumber(String profileVersion, Map<String, ProfileConfiguration> profileVersions, ProfileConfiguration profileConfiguration) {
+        if (profileVersion.matches("\\d+\\.\\d+\\.\\d+")) {
+            String[] versionParts = profileVersion.split("\\.");
+            String majorMinorVersion = versionParts[0] + "." + versionParts[1];
+            profileVersions.put(majorMinorVersion, profileConfiguration);
+        }
     }
 }
