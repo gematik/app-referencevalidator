@@ -16,7 +16,7 @@
     - [de.gematik.erezept-patientenrechnung.r4#1.1.0](https://simplifier.net/packages/de.gematik.erezept-patientenrechnung.r4/1.1.0)
     - [de.gematik.erezept-workflow.r4#1.5.0](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.5.0)
     - [kbv.ita.erp#1.2.0](https://simplifier.net/packages/kbv.ita.erp/1.2.0)
-    - [kbv.itv.evdga#1.1.0](https://simplifier.net/packages/kbv.itv.evdga/1.1.0)
+    - [kbv.itv.evdga#1.2.1](https://simplifier.net/packages/kbv.itv.evdga/1.2.1)
 - Requirements on [local environment settings](./README.md#voraussetzungen) in README.md, especially language settings (cf. [GitHub Issue #40](https://github.com/gematik/app-referencevalidator/issues/40))
 
 ### changed
