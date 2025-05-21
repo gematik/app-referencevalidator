@@ -1,0 +1,12 @@
+{
+  "name": "gematik.kbv.eau.sfhir.cs.vs",
+  "version": "1.2.0",
+  "description": "Externe Codesysteme und Valuesets der KBV für EAU, Gültig ab 01.10.2024 (Quelle: https://simplifier.net/packages/kbv.all.st-rc/1.4.0/~files, https://simplifier.net/packages/kbv.all.st/1.5.0/~files, https://update.kbv.de/ita-update/DigitaleMuster/eAU/KBV_FHIR_eAU_V1.1.0_zur_Validierung.zip, _Codesystem_ST)",
+  "author": "gematik",
+  "fhirVersions": [
+    "4.0.1"
+  ],
+  "dependencies": {
+    "hl7.fhir.r4.core": "4.0.1"
+  }
+}

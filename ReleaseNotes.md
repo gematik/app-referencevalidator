@@ -2,6 +2,23 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.10.0
+
+> [!IMPORTANT]
+> ERP module (version update to 2.11)
+> EAU module (version update to 1.0) 
+
+### added:
+- ERP module:
+  - validation of profiles from the [kbv.ita.erp#1.3.0](https://simplifier.net/packages/kbv.ita.erp/1.3.0) package (profiles valid from 1.10.2025, replaces [kbv.ita.erp#1.2.0](https://simplifier.net/packages/kbv.ita.erp/1.2.0))
+- EAU module:
+  - validation of profiles from the [kbv.ita.eau#1.2.0](https://simplifier.net/packages/kbv.ita.eau/1.2.0) packages (profiles valid from 1.10.2025)
+
+### removed
+- ERP module:
+  - profiles from the package [kbv.ita.erp#1.2.0](https://simplifier.net/packages/kbv.ita.erp/1.2.0) can not be validated anymore
+
+
 ## Release 2.9.0
 
 > [!IMPORTANT]

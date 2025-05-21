@@ -1,0 +1,48 @@
+{
+  "resourceType": "CodeSystem",
+  "url": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_STATUSKENNZEICHEN",
+  "identifier": [ {
+    "system": "urn:ietf:rfc:3986",
+    "value": "urn:oid:1.2.276.0.76.5.484"
+  } ],
+  "version": "1.01",
+  "name": "KBV_CS_SFHIR_KBV_STATUSKENNZEICHEN",
+  "status": "active",
+  "date": "2020-07-01",
+  "publisher": "Kassenärztliche Bundesvereinigung",
+  "contact": [ {
+    "telecom": [ {
+      "system": "url",
+      "value": "http://www.kbv.de"
+    } ]
+  } ],
+  "description": "Das Statuskennzeichen wird im Statusfeld des Personalienfeldes auf den KBV-Mustern angegeben. Weitere Informationen dazu siehe: technische Anlage zur Anlage 4a des BMV-Ä (http://www.kbv.de/media/sp/04a_elektr._Gesundheitskarte_technische_Anlage.pdf).",
+  "copyright": "Kassenärztliche Bundesvereinigung",
+  "caseSensitive": true,
+  "content": "complete",
+  "concept": [ {
+    "code": "00",
+    "display": "ohne Ersatzverordnungskennzeichen"
+  }, {
+    "code": "01",
+    "display": "ASV-Kennzeichen"
+  }, {
+    "code": "04",
+    "display": "Entlassmanagement-Kennzeichen"
+  }, {
+    "code": "07",
+    "display": "TSS-Kennzeichen"
+  }, {
+    "code": "10",
+    "display": "nur Ersatzverordnungskennzeichen"
+  }, {
+    "code": "11",
+    "display": "ASV-Kennzeichen mit Ersatzverordnungskennzeichen"
+  }, {
+    "code": "14",
+    "display": "Entlassmanagement-Kennzeichen mit Ersatzverordnungskennzeichen"
+  }, {
+    "code": "17",
+    "display": "TSS-Kennzeichen mit Ersatzverordnungskennzeichen"
+  } ]
+}

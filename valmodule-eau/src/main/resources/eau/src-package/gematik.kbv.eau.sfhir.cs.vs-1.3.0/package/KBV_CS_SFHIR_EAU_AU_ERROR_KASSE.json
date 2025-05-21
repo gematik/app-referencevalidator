@@ -1,0 +1,84 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "KBV-CS-SFHIR-EAU-AU-ERROR-KASSE",
+  "url": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_EAU_AU_ERROR_KASSE",
+  "identifier": [ {
+    "system": "urn:ietf:rfc:3986",
+    "value": "urn:oid:1.2.276.0.76.3.1.1.5.2.61"
+  } ],
+  "version": "1.00",
+  "name": "KBV_CS_SFHIR_EAU_AU_ERROR_KASSE",
+  "status": "active",
+  "date": "2023-07-01",
+  "publisher": "Kassenärztliche Bundesvereinigung",
+  "contact": [ {
+    "telecom": [ {
+      "system": "url",
+      "value": "http://www.kbv.de"
+    } ]
+  } ],
+  "copyright": "Kassenärztliche Bundesvereinigung",
+  "caseSensitive": true,
+  "content": "complete",
+  "concept": [ {
+    "code": "100",
+    "display": "Der Patient ist nicht bei der adressierten Krankenkasse versichert."
+  }, {
+    "code": "101",
+    "display": "Die übermittelte eAU entspricht nicht den Vorgaben und ist nicht lesbar."
+  }, {
+    "code": "102",
+    "display": "Die übermittelte Stornomeldung entspricht nicht den Vorgaben und ist nicht lesbar."
+  }, {
+    "code": "103",
+    "display": "Die übermittelte eAU besitzt einen falschen Zeichensatz."
+  }, {
+    "code": "104",
+    "display": "Die übermittelte Stornomeldung besitzt einen falschen Zeichensatz."
+  }, {
+    "code": "105",
+    "display": "Die zu stornierende eAU wurde von der Krankenkasse bereits als fehlerhaft abgewiesen."
+  }, {
+    "code": "201",
+    "display": "Die Signatur der eAU ist nicht gültig, da ein fehlerhaftes Zertifikat verwendet wurde."
+  }, {
+    "code": "202",
+    "display": "Die Signatur der eAU ist nicht gültig, da die übermittelten Daten nicht den signierten Daten entsprechen."
+  }, {
+    "code": "203",
+    "display": "Die Signatur der Stornomeldung ist nicht gültig, da ein fehlerhaftes Zertifikat verwendet wurde."
+  }, {
+    "code": "204",
+    "display": "Die Signatur der Stornomeldung ist nicht gültig, da die übermittelten Daten nicht den signierten Daten entsprechen."
+  }, {
+    "code": "301",
+    "display": "Die KIM-Nachricht für die Stornomeldung ist in einem falschen Format verschlüsselt."
+  }, {
+    "code": "303",
+    "display": "KIM-Nachricht der Stornomeldung besitzt keine Signatur."
+  }, {
+    "code": "304",
+    "display": "Die Signatur für die KIM-Nachricht der Stornomeldung hat das falsche Format."
+  }, {
+    "code": "305",
+    "display": "Die Signaturprüfung der KIM-Nachricht der Stornomeldung hat ergeben, dass der Nachrichteninhalt nicht mit der Signatur übereinstimmt."
+  }, {
+    "code": "307",
+    "display": "Die KIM-Nachricht für der eAU ist in einem falschen Format verschlüsselt."
+  }, {
+    "code": "309",
+    "display": "KIM-Nachricht der eAU besitzt keine Signatur."
+  }, {
+    "code": "310",
+    "display": "Die Signatur für die KIM-Nachricht der eAU hat das falsche Format."
+  }, {
+    "code": "311",
+    "display": "Die Signaturprüfung der KIM-Nachricht der eAU hat ergeben, dass der Nachrichteninhalt nicht mit der Signatur übereinstimmt."
+  }, {
+    "code": "313",
+    "display": "Die KIM-Nachricht der eAU konnte aufgrund es nicht verfügbaren Schlüssels nicht entschlüsselt werden."
+  }, {
+    "code": "314",
+    "display": "Die KIM-Nachricht der Stornomeldung konnte aufgrund es nicht verfügbaren Schlüssels nicht entschlüsselt werden."
+  } ]
+}
