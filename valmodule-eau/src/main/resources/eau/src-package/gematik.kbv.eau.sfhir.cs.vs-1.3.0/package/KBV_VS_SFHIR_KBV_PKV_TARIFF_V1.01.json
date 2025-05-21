@@ -1,0 +1,22 @@
+{
+  "resourceType": "ValueSet",
+  "url": "https://fhir.kbv.de/ValueSet/KBV_VS_SFHIR_KBV_PKV_TARIFF",
+  "version": "1.01",
+  "name": "KBV_VS_SFHIR_KBV_PKV_TARIFF",
+  "status": "active",
+  "date": "2021-02-19",
+  "publisher": "Kassenärztliche Bundesvereinigung",
+  "contact": [ {
+    "telecom": [ {
+      "system": "url",
+      "value": "http://www.kbv.de"
+    } ]
+  } ],
+  "description": "Das Valueset enthält alle Codes aus dem Codesystem https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_PKV_TARIFF",
+  "copyright": "Kassenärztliche Bundesvereinigung",
+  "compose": {
+    "include": [ {
+      "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_PKV_TARIFF"
+    } ]
+  }
+}

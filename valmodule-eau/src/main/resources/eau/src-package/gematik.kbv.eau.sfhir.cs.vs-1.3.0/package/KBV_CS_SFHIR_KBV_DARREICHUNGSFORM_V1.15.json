@@ -1,0 +1,1152 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "KBV-CS-SFHIR-KBV-DARREICHUNGSFORM",
+  "url": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_KBV_DARREICHUNGSFORM",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:1.2.276.0.76.3.1.1.5.2.15"
+    }
+  ],
+  "version": "1.15",
+  "name": "KBV_CS_SFHIR_KBV_DARREICHUNGSFORM",
+  "status": "active",
+  "date": "2025-04-01",
+  "publisher": "Kassenärztliche Bundesvereinigung",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://www.kbv.de"
+        }
+      ]
+    }
+  ],
+  "description": "Darreichungsform Arzneimittel/Rezeptur",
+  "copyright": "Kassenärztliche Bundesvereinigung",
+  "caseSensitive": true,
+  "content": "complete",
+  "concept": [
+    {
+      "code": "---",
+      "display": "keine Darreichungsform"
+    },
+    {
+      "code": "AEO",
+      "display": "Ätherisches Öl"
+    },
+    {
+      "code": "AMP",
+      "display": "Ampullen"
+    },
+    {
+      "code": "APA",
+      "display": "Ampullenpaare"
+    },
+    {
+      "code": "ASN",
+      "display": "Augen- und Nasensalbe"
+    },
+    {
+      "code": "ASO",
+      "display": "Augen- und Ohrensalbe"
+    },
+    {
+      "code": "ATO",
+      "display": "Augen- und Ohrentropfen"
+    },
+    {
+      "code": "ATR",
+      "display": "Augentropfen"
+    },
+    {
+      "code": "AUB",
+      "display": "Augenbad"
+    },
+    {
+      "code": "AUC",
+      "display": "Augencreme"
+    },
+    {
+      "code": "AUG",
+      "display": "Augengel"
+    },
+    {
+      "code": "AUS",
+      "display": "Augensalbe"
+    },
+    {
+      "code": "BAD",
+      "display": "Bad"
+    },
+    {
+      "code": "BAL",
+      "display": "Balsam"
+    },
+    {
+      "code": "BAN",
+      "display": "Bandage"
+    },
+    {
+      "code": "BEU",
+      "display": "Beutel"
+    },
+    {
+      "code": "BIN",
+      "display": "Binden"
+    },
+    {
+      "code": "BON",
+      "display": "Bonbons"
+    },
+    {
+      "code": "BPL",
+      "display": "Basisplatte"
+    },
+    {
+      "code": "BRE",
+      "display": "Brei"
+    },
+    {
+      "code": "BTA",
+      "display": "Brausetabletten"
+    },
+    {
+      "code": "CRE",
+      "display": "Creme"
+    },
+    {
+      "code": "DFL",
+      "display": "Durchstechflaschen"
+    },
+    {
+      "code": "DIG",
+      "display": "Digitale Gesundheitsanwendungen"
+    },
+    {
+      "code": "DIL",
+      "display": "Dilution"
+    },
+    {
+      "code": "DIS",
+      "display": "Depot-Injektionssuspension"
+    },
+    {
+      "code": "DKA",
+      "display": "Dragees in Kalenderpackung"
+    },
+    {
+      "code": "DOS",
+      "display": "Dosieraerosol"
+    },
+    {
+      "code": "DRA",
+      "display": "Dragees"
+    },
+    {
+      "code": "DRM",
+      "display": "Dragees magensaftresistent"
+    },
+    {
+      "code": "DSC",
+      "display": "Dosierschaum"
+    },
+    {
+      "code": "DSS",
+      "display": "Dosierspray"
+    },
+    {
+      "code": "EDP",
+      "display": "Einzeldosis-Pipetten"
+    },
+    {
+      "code": "EIN",
+      "display": "Einreibung"
+    },
+    {
+      "code": "ELE",
+      "display": "Elektroden"
+    },
+    {
+      "code": "ELI",
+      "display": "Elixier"
+    },
+    {
+      "code": "EMU",
+      "display": "Emulsion"
+    },
+    {
+      "code": "ESS",
+      "display": "Essenz"
+    },
+    {
+      "code": "ESU",
+      "display": "Erwachsenen-Suppositorien"
+    },
+    {
+      "code": "EXT",
+      "display": "Extrakt"
+    },
+    {
+      "code": "FBE",
+      "display": "Filterbeutel"
+    },
+    {
+      "code": "FBW",
+      "display": "Franzbranntwein"
+    },
+    {
+      "code": "FDA",
+      "display": "Filmdragees"
+    },
+    {
+      "code": "FER",
+      "display": "Fertigspritzen"
+    },
+    {
+      "code": "FET",
+      "display": "Fettsalbe"
+    },
+    {
+      "code": "FLA",
+      "display": "Flasche"
+    },
+    {
+      "code": "FLE",
+      "display": "Flüssigkeit zum Einnehmen"
+    },
+    {
+      "code": "FLU",
+      "display": "Flüssig"
+    },
+    {
+      "code": "FMR",
+      "display": "Filmtabletten magensaftresistent"
+    },
+    {
+      "code": "FOL",
+      "display": "Folie"
+    },
+    {
+      "code": "FRB",
+      "display": "Beutel mit retardierten Filmtabletten"
+    },
+    {
+      "code": "FSE",
+      "display": "Flüssigseife"
+    },
+    {
+      "code": "FTA",
+      "display": "Filmtabletten"
+    },
+    {
+      "code": "GEK",
+      "display": "Granulat zur Entnahme aus Kapseln"
+    },
+    {
+      "code": "GEL",
+      "display": "Gel"
+    },
+    {
+      "code": "GLI",
+      "display": "Gas und Lösungsmittel zur Herstellung einer Injektions-/Infusionsdispersion"
+    },
+    {
+      "code": "GLO",
+      "display": "Globuli"
+    },
+    {
+      "code": "GMR",
+      "display": "Magensaftresistentes Granulat"
+    },
+    {
+      "code": "GPA",
+      "display": "Gelplatte"
+    },
+    {
+      "code": "GRA",
+      "display": "Granulat"
+    },
+    {
+      "code": "GSE",
+      "display": "Granulat zur Herstellung einer Suspension zum Einnehmen"
+    },
+    {
+      "code": "GUL",
+      "display": "Gurgellösung"
+    },
+    {
+      "code": "HAS",
+      "display": "Handschuhe"
+    },
+    {
+      "code": "HKM",
+      "display": "Magensaftresistente Hartkapseln"
+    },
+    {
+      "code": "HKP",
+      "display": "Hartkapseln"
+    },
+    {
+      "code": "HPI",
+      "display": "Hartkapseln mit Pulver zur Inhalation"
+    },
+    {
+      "code": "HVW",
+      "display": "Hartkapseln mit veränderter Wirkstofffreisetzung"
+    },
+    {
+      "code": "IFA",
+      "display": "Infusionsampullen"
+    },
+    {
+      "code": "IFB",
+      "display": "Infusionsbeutel"
+    },
+    {
+      "code": "IFD",
+      "display": "Infusionsdispersion"
+    },
+    {
+      "code": "IFE",
+      "display": "Injektionslösung in einer Fertigspritze"
+    },
+    {
+      "code": "IFF",
+      "display": "Infusionsflaschen"
+    },
+    {
+      "code": "IFK",
+      "display": "Infusionslösungskonzentrat"
+    },
+    {
+      "code": "IFL",
+      "display": "Injektionsflaschen"
+    },
+    {
+      "code": "IFS",
+      "display": "Infusionsset"
+    },
+    {
+      "code": "IHA",
+      "display": "Inhalationsampullen"
+    },
+    {
+      "code": "IHP",
+      "display": "Inhalationspulver"
+    },
+    {
+      "code": "IID",
+      "display": "Injektions- und Infusionsdispersion"
+    },
+    {
+      "code": "IIE",
+      "display": "Injektions- oder Infusionslösung oder Lösung zum Einnehmen"
+    },
+    {
+      "code": "IIL",
+      "display": "Injektions-, Infusionslösung"
+    },
+    {
+      "code": "IIM",
+      "display": "Injektionslösung zur intramuskulären Anwendung"
+    },
+    {
+      "code": "IJD",
+      "display": "Injektionsdispersion"
+    },
+    {
+      "code": "IKA",
+      "display": "Inhalationskapseln"
+    },
+    {
+      "code": "ILO",
+      "display": "Injektionslösung"
+    },
+    {
+      "code": "IMP",
+      "display": "Implantat"
+    },
+    {
+      "code": "INF",
+      "display": "Infusionslösung"
+    },
+    {
+      "code": "INH",
+      "display": "Inhalat"
+    },
+    {
+      "code": "INI",
+      "display": "Injektions-, Infusionsflaschen"
+    },
+    {
+      "code": "INL",
+      "display": "Inhalationslösung"
+    },
+    {
+      "code": "INS",
+      "display": "Instant-Tee"
+    },
+    {
+      "code": "IST",
+      "display": "Instillation"
+    },
+    {
+      "code": "ISU",
+      "display": "Injektionssuspension"
+    },
+    {
+      "code": "IUP",
+      "display": "Intrauterinpessar"
+    },
+    {
+      "code": "KAN",
+      "display": "Kanülen"
+    },
+    {
+      "code": "KAP",
+      "display": "Kapseln"
+    },
+    {
+      "code": "KAT",
+      "display": "Katheter"
+    },
+    {
+      "code": "KDA",
+      "display": "Kaudragees"
+    },
+    {
+      "code": "KEG",
+      "display": "Kegel"
+    },
+    {
+      "code": "KER",
+      "display": "Kerne"
+    },
+    {
+      "code": "KGU",
+      "display": "Kaugummi"
+    },
+    {
+      "code": "KID",
+      "display": "Konzentrat zur Herstellung einer Infusionsdispersion"
+    },
+    {
+      "code": "KII",
+      "display": "Konzentrat zur Herstellung einer Injektions- oder Infusionslösung"
+    },
+    {
+      "code": "KKS",
+      "display": "Kleinkinder-Suppositorien"
+    },
+    {
+      "code": "KLI",
+      "display": "Klistiere"
+    },
+    {
+      "code": "KLT",
+      "display": "Klistier-Tabletten"
+    },
+    {
+      "code": "KMP",
+      "display": "Hartkapseln mit magensaftresistent überzogenen Pellets"
+    },
+    {
+      "code": "KMR",
+      "display": "Kapseln magensaftresistent"
+    },
+    {
+      "code": "KOD",
+      "display": "Kondome"
+    },
+    {
+      "code": "KOM",
+      "display": "Kompressen"
+    },
+    {
+      "code": "KON",
+      "display": "Konzentrat"
+    },
+    {
+      "code": "KPG",
+      "display": "Kombipackung"
+    },
+    {
+      "code": "KRI",
+      "display": "Kristallsuspension"
+    },
+    {
+      "code": "KSS",
+      "display": "Kinder- und Säuglings-Suppositorien"
+    },
+    {
+      "code": "KSU",
+      "display": "Kinder-Suppositorien"
+    },
+    {
+      "code": "KTA",
+      "display": "Kautabletten"
+    },
+    {
+      "code": "LAN",
+      "display": "Lanzetten"
+    },
+    {
+      "code": "LII",
+      "display": "Lösung zur Injektion, Infusion und Inhalation"
+    },
+    {
+      "code": "LIQ",
+      "display": "Liquidum"
+    },
+    {
+      "code": "LIV",
+      "display": "Lösung zur intravesikalen Anwendung"
+    },
+    {
+      "code": "LOE",
+      "display": "Lösung"
+    },
+    {
+      "code": "LOT",
+      "display": "Lotion"
+    },
+    {
+      "code": "LOV",
+      "display": "Lösung für einen Vernebler"
+    },
+    {
+      "code": "LSE",
+      "display": "Lösung zum Einnehmen"
+    },
+    {
+      "code": "LTA",
+      "display": "Lacktabletten"
+    },
+    {
+      "code": "LUP",
+      "display": "Lutschpastillen"
+    },
+    {
+      "code": "LUT",
+      "display": "Lutschtabletten"
+    },
+    {
+      "code": "LYE",
+      "display": "Lyophilisat zum Einnehmen"
+    },
+    {
+      "code": "LYO",
+      "display": "Lyophilisat zur Herstellung einer Infusionslösung"
+    },
+    {
+      "code": "MIL",
+      "display": "Milch"
+    },
+    {
+      "code": "MIS",
+      "display": "Mischung"
+    },
+    {
+      "code": "MIX",
+      "display": "Mixtur"
+    },
+    {
+      "code": "MRG",
+      "display": "Magensaftresistentes Retardgranulat"
+    },
+    {
+      "code": "MRP",
+      "display": "Magensaftresistente Pellets"
+    },
+    {
+      "code": "MTA",
+      "display": "Manteltabletten"
+    },
+    {
+      "code": "MUW",
+      "display": "Mundwasser"
+    },
+    {
+      "code": "NAG",
+      "display": "Nasengel"
+    },
+    {
+      "code": "NAO",
+      "display": "Nasenöl"
+    },
+    {
+      "code": "NAS",
+      "display": "Nasenspray"
+    },
+    {
+      "code": "NAW",
+      "display": "Wirkstoffhaltiger Nagellack"
+    },
+    {
+      "code": "NDS",
+      "display": "Nasendosierspray"
+    },
+    {
+      "code": "NSA",
+      "display": "Nasensalbe"
+    },
+    {
+      "code": "NTR",
+      "display": "Nasentropfen"
+    },
+    {
+      "code": "OCU",
+      "display": "Ocusert"
+    },
+    {
+      "code": "OEL",
+      "display": "Öl"
+    },
+    {
+      "code": "OHT",
+      "display": "Ohrentropfen"
+    },
+    {
+      "code": "OVU",
+      "display": "Ovula"
+    },
+    {
+      "code": "PAM",
+      "display": "Packungsmasse"
+    },
+    {
+      "code": "PAS",
+      "display": "Pastillen"
+    },
+    {
+      "code": "PEL",
+      "display": "Pellets"
+    },
+    {
+      "code": "PEN",
+      "display": "Injektionslösung in einem Fertigpen"
+    },
+    {
+      "code": "PER",
+      "display": "Perlen"
+    },
+    {
+      "code": "PFL",
+      "display": "Pflaster"
+    },
+    {
+      "code": "PFT",
+      "display": "Pflaster transdermal"
+    },
+    {
+      "code": "PHI",
+      "display": "Pulver zur Herstellung einer Injektions-, Infusions- oder Inhalationslösung"
+    },
+    {
+      "code": "PHV",
+      "display": "Pulver zur Herstellung einer Injektions- bzw. Infusionslösung oder Pulver und Lösungsmittel zur Herstellung einer Lösung zur intravesikalen Anwendung"
+    },
+    {
+      "code": "PIE",
+      "display": "Pulver für ein Konzentrat zur Herstellung einer Infusionslösung, Pulver zur Herstellung einer Lösung zum Einnehmen"
+    },
+    {
+      "code": "PIF",
+      "display": "Pulver zur Herstellung einer Infusionslösung"
+    },
+    {
+      "code": "PII",
+      "display": "Pulver zur Herstellung einer Injektions- oder Infusionslösung"
+    },
+    {
+      "code": "PIJ",
+      "display": "Pulver zur Herstellung einer Injektionslösung"
+    },
+    {
+      "code": "PIK",
+      "display": "Pulver zur Herstellung eines Infusionslösungskonzentrates"
+    },
+    {
+      "code": "PIS",
+      "display": "Pulver zur Herstellung einer Infusionssuspension"
+    },
+    {
+      "code": "PIV",
+      "display": "Pulver zur Herstellung einer Injektions- bzw. Infusionslösung oder einer Lösung zur intravesikalen Anwendung"
+    },
+    {
+      "code": "PKI",
+      "display": "Pulver für ein Konzentrat zur Herstellung einer Infusionslösung"
+    },
+    {
+      "code": "PLD",
+      "display": "Pulver und Lösungsmittel zur Herstellung einer Depot-Injektionssuspension"
+    },
+    {
+      "code": "PLE",
+      "display": "Pulver zur Herstellung einer Lösung zum Einnehmen"
+    },
+    {
+      "code": "PLF",
+      "display": "Pulver und Lösungsmittel zur Herstellung einer Infusionslösung"
+    },
+    {
+      "code": "PLG",
+      "display": "Perlongetten"
+    },
+    {
+      "code": "PLH",
+      "display": "Pulver und Lösungsmittel zur Herstellung einer Injektions- bzw. Infusionslösung"
+    },
+    {
+      "code": "PLI",
+      "display": "Pulver und Lösungsmittel zur Herstellung einer Injektionslösung"
+    },
+    {
+      "code": "PLK",
+      "display": "Pulver und Lösungsmittel für ein Konzentrat zur Herstellung einer Infusionslösung"
+    },
+    {
+      "code": "PLS",
+      "display": "Pulver und Lösungsmittel zur Herstellung einer Injektionssuspension"
+    },
+    {
+      "code": "PLV",
+      "display": "Pulver und Lösungsmittel zur Herstellung einer Lösung zur intravesikalen Anwendung"
+    },
+    {
+      "code": "PPL",
+      "display": "Pumplösung"
+    },
+    {
+      "code": "PRS",
+      "display": "Presslinge"
+    },
+    {
+      "code": "PSE",
+      "display": "Pulver zur Herstellung einer Suspension zum Einnehmen"
+    },
+    {
+      "code": "PST",
+      "display": "Paste"
+    },
+    {
+      "code": "PUD",
+      "display": "Puder"
+    },
+    {
+      "code": "PUE",
+      "display": "Pulver zum Einnehmen"
+    },
+    {
+      "code": "PUL",
+      "display": "Pulver"
+    },
+    {
+      "code": "RED",
+      "display": "Retard-Dragees"
+    },
+    {
+      "code": "REK",
+      "display": "Retard-Kapseln"
+    },
+    {
+      "code": "RET",
+      "display": "Retard-Tabletten"
+    },
+    {
+      "code": "RGR",
+      "display": "Retard-Granulat"
+    },
+    {
+      "code": "RKA",
+      "display": "Rektalkapseln"
+    },
+    {
+      "code": "RMS",
+      "display": "Retardmikrokapseln und Suspensionsmittel"
+    },
+    {
+      "code": "RSC",
+      "display": "Rektalschaum"
+    },
+    {
+      "code": "RSU",
+      "display": "Rektalsuspension"
+    },
+    {
+      "code": "RUT",
+      "display": "Retard-überzogene Tabletten"
+    },
+    {
+      "code": "SAF",
+      "display": "Saft"
+    },
+    {
+      "code": "SAL",
+      "display": "Salbe"
+    },
+    {
+      "code": "SAM",
+      "display": "Salbe zur Anwendung in der Mundhöhle"
+    },
+    {
+      "code": "SCH",
+      "display": "Schaum"
+    },
+    {
+      "code": "SEI",
+      "display": "Seife"
+    },
+    {
+      "code": "SHA",
+      "display": "Shampoo"
+    },
+    {
+      "code": "SIR",
+      "display": "Sirup"
+    },
+    {
+      "code": "SLZ",
+      "display": "Salz"
+    },
+    {
+      "code": "SMF",
+      "display": "Schmelzfilm"
+    },
+    {
+      "code": "SMT",
+      "display": "Schmelztabletten"
+    },
+    {
+      "code": "SMU",
+      "display": "Suppositorien mit Mulleinlage"
+    },
+    {
+      "code": "SPA",
+      "display": "Spritzampullen"
+    },
+    {
+      "code": "SPF",
+      "display": "Sprühflasche"
+    },
+    {
+      "code": "SPL",
+      "display": "Spüllösung"
+    },
+    {
+      "code": "SPR",
+      "display": "Spray"
+    },
+    {
+      "code": "SPT",
+      "display": "Transdermales Spray"
+    },
+    {
+      "code": "SRI",
+      "display": "Spritzen"
+    },
+    {
+      "code": "SSU",
+      "display": "Säuglings-Suppositorien"
+    },
+    {
+      "code": "STA",
+      "display": "Stechampullen"
+    },
+    {
+      "code": "STB",
+      "display": "Stäbchen"
+    },
+    {
+      "code": "STI",
+      "display": "Stifte"
+    },
+    {
+      "code": "STR",
+      "display": "Streifen"
+    },
+    {
+      "code": "SUB",
+      "display": "Substanz"
+    },
+    {
+      "code": "SUE",
+      "display": "Suspension zum Einnehmen"
+    },
+    {
+      "code": "SUI",
+      "display": "Suspension zur Implantation"
+    },
+    {
+      "code": "SUL",
+      "display": "Sublingualspray, Lösung"
+    },
+    {
+      "code": "SUP",
+      "display": "Suppositorien"
+    },
+    {
+      "code": "SUS",
+      "display": "Suspension"
+    },
+    {
+      "code": "SUT",
+      "display": "Sublingualtabletten"
+    },
+    {
+      "code": "SUV",
+      "display": "Suspension für einen Vernebler"
+    },
+    {
+      "code": "SWA",
+      "display": "Schwämme"
+    },
+    {
+      "code": "TAB",
+      "display": "Tabletten"
+    },
+    {
+      "code": "TAE",
+      "display": "Täfelchen"
+    },
+    {
+      "code": "TAM",
+      "display": "Trockenampullen"
+    },
+    {
+      "code": "TEE",
+      "display": "Tee"
+    },
+    {
+      "code": "TEI",
+      "display": "Tropfen zum Einnehmen"
+    },
+    {
+      "code": "TES",
+      "display": "Test"
+    },
+    {
+      "code": "TIN",
+      "display": "Tinktur"
+    },
+    {
+      "code": "TKA",
+      "display": "Tabletten in Kalenderpackung"
+    },
+    {
+      "code": "TLE",
+      "display": "Tablette zur Herstellung einer Lösung zum Einnehmen"
+    },
+    {
+      "code": "TMR",
+      "display": "Tabletten magensaftresistent"
+    },
+    {
+      "code": "TON",
+      "display": "Tonikum"
+    },
+    {
+      "code": "TPN",
+      "display": "Tampon"
+    },
+    {
+      "code": "TPO",
+      "display": "Tamponaden"
+    },
+    {
+      "code": "TRA",
+      "display": "Trinkampullen"
+    },
+    {
+      "code": "TRI",
+      "display": "Trituration"
+    },
+    {
+      "code": "TRO",
+      "display": "Tropfen"
+    },
+    {
+      "code": "TRS",
+      "display": "Trockensubstanz mit Lösungsmittel"
+    },
+    {
+      "code": "TRT",
+      "display": "Trinktabletten"
+    },
+    {
+      "code": "TSA",
+      "display": "Trockensaft"
+    },
+    {
+      "code": "TSD",
+      "display": "Tabletten zur Herstellung einer Suspension zum Einnehmen für einen Dosierspender"
+    },
+    {
+      "code": "TSE",
+      "display": "Tablette zur Herstellung einer Suspension zum Einnehmen"
+    },
+    {
+      "code": "TSS",
+      "display": "Trockensubstanz ohne Lösungsmittel"
+    },
+    {
+      "code": "TST",
+      "display": "Teststäbchen"
+    },
+    {
+      "code": "TSY",
+      "display": "Transdermales System"
+    },
+    {
+      "code": "TTR",
+      "display": "Teststreifen"
+    },
+    {
+      "code": "TUB",
+      "display": "Tube"
+    },
+    {
+      "code": "TUE",
+      "display": "Tücher"
+    },
+    {
+      "code": "TUP",
+      "display": "Tupfer"
+    },
+    {
+      "code": "TVW",
+      "display": "Tablette mit veränderter Wirkstofffreisetzung"
+    },
+    {
+      "code": "UTA",
+      "display": "Überzogene Tabletten"
+    },
+    {
+      "code": "VAL",
+      "display": "Vaginallösung"
+    },
+    {
+      "code": "VAR",
+      "display": "Vaginalring"
+    },
+    {
+      "code": "VCR",
+      "display": "Vaginalcreme"
+    },
+    {
+      "code": "VER",
+      "display": "Verband"
+    },
+    {
+      "code": "VGE",
+      "display": "Vaginalgel"
+    },
+    {
+      "code": "VKA",
+      "display": "Vaginalkapseln"
+    },
+    {
+      "code": "VLI",
+      "display": "Vlies"
+    },
+    {
+      "code": "VOV",
+      "display": "Vaginalovula"
+    },
+    {
+      "code": "VST",
+      "display": "Vaginalstäbchen"
+    },
+    {
+      "code": "VSU",
+      "display": "Vaginalsuppositorien"
+    },
+    {
+      "code": "VTA",
+      "display": "Vaginaltabletten"
+    },
+    {
+      "code": "WAT",
+      "display": "Watte"
+    },
+    {
+      "code": "WGA",
+      "display": "Wundgaze"
+    },
+    {
+      "code": "WKA",
+      "display": "Weichkapseln"
+    },
+    {
+      "code": "WKM",
+      "display": "Magensaftresistente Weichkapseln"
+    },
+    {
+      "code": "WUE",
+      "display": "Würfel"
+    },
+    {
+      "code": "XDG",
+      "display": "Duschgel"
+    },
+    {
+      "code": "XDS",
+      "display": "Deo-Spray"
+    },
+    {
+      "code": "XFE",
+      "display": "Festiger"
+    },
+    {
+      "code": "XGM",
+      "display": "Gesichtsmaske"
+    },
+    {
+      "code": "XHA",
+      "display": "Halsband"
+    },
+    {
+      "code": "XHS",
+      "display": "Haarspülung"
+    },
+    {
+      "code": "XNC",
+      "display": "Nachtcreme"
+    },
+    {
+      "code": "XPK",
+      "display": "Körperpflege"
+    },
+    {
+      "code": "XTC",
+      "display": "Tagescreme"
+    },
+    {
+      "code": "ZAM",
+      "display": "Zylinderampullen"
+    },
+    {
+      "code": "ZBU",
+      "display": "Zahnbürste"
+    },
+    {
+      "code": "ZCR",
+      "display": "Zahncreme"
+    },
+    {
+      "code": "ZGE",
+      "display": "Zahngel"
+    },
+    {
+      "code": "ZKA",
+      "display": "Zerbeisskapseln"
+    },
+    {
+      "code": "ZPA",
+      "display": "Zahnpasta"
+    }
+  ]
+}
