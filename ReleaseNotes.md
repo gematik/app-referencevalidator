@@ -10,7 +10,7 @@
 
 ### added:
 - ERP module:
-  - validation of profiles from the [kbv.ita.erp#1.3.0](https://simplifier.net/packages/kbv.ita.erp/1.3.0) package (profiles valid from 1.10.2025, replaces [kbv.ita.erp#1.2.0](https://simplifier.net/packages/kbv.ita.erp/1.2.0))
+  - validation of profiles from the [kbv.ita.erp#1.3.1](https://simplifier.net/packages/kbv.ita.erp/1.3.1) package (profiles valid from 1.10.2025, replaces [kbv.ita.erp#1.2.0](https://simplifier.net/packages/kbv.ita.erp/1.2.0))
 - EAU module:
   - validation of profiles from the [kbv.ita.eau#1.2.0](https://simplifier.net/packages/kbv.ita.eau/1.2.0) packages (profiles valid from 1.10.2025)
 
