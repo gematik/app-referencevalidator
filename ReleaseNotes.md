@@ -2,6 +2,22 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.11.0
+
+> [!IMPORTANT]
+> ERP module (version update to 2.12)
+> ERPTA7 module (version update to 0.4)
+
+### changed
+- ERP module:
+  - replaced the [kbv.ita.erp#1.3.1](https://simplifier.net/packages/kbv.ita.erp/1.3.1) package with  [kbv.ita.erp#1.3.2](https://simplifier.net/packages/kbv.ita.erp/1.3.2)
+  - replaced the [de.gematik.erezept-workflow.r4#1.5.0](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.5.0) package with  [de.gematik.erezept-workflow.r4#1.5.2](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.5.2)
+  - replaced the [de.gkvsv.erezeptabrechnungsdaten#1.3.3](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.3.3) package with  [de.gkvsv.erezeptabrechnungsdaten#1.3.4](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.3.4)
+  - replaced the [de.gkvsv.erezeptabrechnungsdaten#1.4.1](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.4.1) package with  [de.gkvsv.erezeptabrechnungsdaten#1.4.2](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.4.2)
+- ERPTA7 module:
+  - replaced the [de.gkvsv.erezeptabrechnungsdaten#1.3.3](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.3.3) package with  [de.gkvsv.erezeptabrechnungsdaten#1.3.4](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.3.4)
+  - replaced the [de.gkvsv.erezeptabrechnungsdaten#1.4.1](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.4.1) package with  [de.gkvsv.erezeptabrechnungsdaten#1.4.2](https://simplifier.net/packages/de.gkvsv.erezeptabrechnungsdaten/1.4.2)
+
 ## Release 2.10.0
 
 > [!IMPORTANT]
