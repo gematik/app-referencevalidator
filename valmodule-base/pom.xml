@@ -9,6 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Base classes for validation modules of reference validator</description>
     <artifactId>valmodule-base</artifactId>
 
     <dependencies>

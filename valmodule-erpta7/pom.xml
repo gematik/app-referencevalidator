@@ -9,6 +9,8 @@
         <version>2.11.0</version>
     </parent>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Reference validator ERPTA7 validation module</description>
     <groupId>de.gematik.refv.plugins</groupId>
     <artifactId>valmodule-erpta7</artifactId>
 
