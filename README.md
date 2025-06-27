@@ -71,11 +71,11 @@ Siehe [Release Notes](ReleaseNotes.md)
 ### Unterstützte Validierungsmodule
 
 | **Modul**                                      | **Version** |
-|------------------------------------------------|------------|
-| E-Rezept                                       | 2.11       |
-| Elektronische Arbeitsunfähigkeitsbescheinigung | 1.0        |
-| FHIR Core                                      | 1.0        |
-| E-Rezept Abrechnungsdaten (experimentell)      | 0.3        |
+|------------------------------------------------|-------------|
+| E-Rezept                                       | 2.12        |
+| Elektronische Arbeitsunfähigkeitsbescheinigung | 1.0         |
+| FHIR Core                                      | 1.0         |
+| E-Rezept Abrechnungsdaten (experimentell)      | 0.4         |
 
 
 
