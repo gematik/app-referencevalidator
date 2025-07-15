@@ -50,10 +50,11 @@ class GenericValidatorTests {
     @Test
     @SneakyThrows
     void testUnknownDependencyListThrowsException() {
-        var configuration = new ValidationModuleConfiguration();
-        configuration.getSupportedProfiles().put("https://bla.bla",new SupportedProfileVersions(new HashMap<>() {{
+        var supportedProfiles = new HashMap<String, SupportedProfileVersions>();
+        supportedProfiles.put("https://bla.bla",new SupportedProfileVersions(new HashMap<>() {{
             put("1.0.2", new ProfileConfiguration(List.of("unknownDependencyList"), null));
         }}));
+        var configuration = ValidationModuleConfiguration.builder().supportedProfiles(supportedProfiles).build();
         var resourceProvider = new ConfigurationOnlyResourceProvider(configuration);
         var input = "<Bundle xmlns=\"http://hl7.org/fhir\">\n"
                 + "    <id value=\"fb16b9fb-eca9-4a64-b257-083ac87c9c9c\"/>\n"

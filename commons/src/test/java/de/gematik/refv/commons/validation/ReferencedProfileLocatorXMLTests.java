@@ -54,7 +54,7 @@ class ReferencedProfileLocatorXMLTests {
             "https://bla.bla"
     })
     void testProfileInCorrectResourceIsExtractedCorrectly(String canonical){
-        configuration = new ValidationModuleConfiguration();
+        configuration = ValidationModuleConfiguration.builder().build();
         Profile profile = Profile.parse(canonical);
         String resource =String.format(
                 "<Bundle xmlns=\"http://hl7.org/fhir\">\n"

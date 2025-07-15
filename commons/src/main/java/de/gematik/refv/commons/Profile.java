@@ -23,14 +23,19 @@
  */
 package de.gematik.refv.commons;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Modified from <a href="https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/478e8a2e3f0e24f54a331d561f518eeb2817ed58/core/src/main/java/de/abda/fhir/validator/core/util/Profile.java">https://github.com/DAV-ABDA/eRezept-Referenzvalidator/blob/478e8a2e3f0e24f54a331d561f518eeb2817ed58/core/src/main/java/de/abda/fhir/validator/core/util/Profile.java</a>
  * Copyright 2022 Deutscher Apothekerverband (DAV), Apache License, Version 2.0
  */
-@Data
+@Getter
+@Setter(AccessLevel.PRIVATE)
+@EqualsAndHashCode
 @AllArgsConstructor
 public class Profile {
     private String canonical;

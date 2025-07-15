@@ -2,6 +2,19 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.12.0
+
+> [!IMPORTANT]
+> ERP module (version update to 2.13)
+> EAU module (version update to 1.1)
+
+### added
+- Support for the new plugin description format (configSpecVersion: 2.0), which enables multiple FHIR validation lists in a single plugin. (cf. [gematik Referenzvalidator Plugins](https://github.com/gematik/app-referencevalidator-plugins)). The old plugin description format (configSpecVersion: 1.0) is still supported for backward compatibility.
+
+### changed
+- Validation behavior for profiles, which have multiple FHIR package lists assigned in the validation module configuration. In the past, if multiple FHIR package lists were defined *without* a FhirPath expression to determine the instance creation date, then the latest package list was used for validation. If a FhirPath expression was defined, but multiple package lists were resolved for a given instance creation date, the validator threw an exception. Now,  the validator tries to validate the input resource against all resolved FHIR package lists - for both cases. The validation will be successful if the resource is valid against at least one of the referenced FHIR package lists.
+- Internal optimizations (thread-safety of validation module configuration classes cf. [GitHub Issue #9](https://github.com/gematik/app-referencevalidator/issues/9))
+
 ## Release 2.11.0
 
 > [!IMPORTANT]

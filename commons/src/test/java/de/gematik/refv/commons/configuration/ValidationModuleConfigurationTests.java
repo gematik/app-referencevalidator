@@ -34,13 +34,14 @@ class ValidationModuleConfigurationTests {
 
     @Test
     void testFindFirstSupportedProfile() {
-        var configuration = new ValidationModuleConfiguration();
-        configuration.getSupportedProfiles().put("https://supported-profile1",new SupportedProfileVersions(new HashMap<>() {{
+        var supportedProfiles = new HashMap<String, SupportedProfileVersions>();
+        supportedProfiles.put("https://supported-profile1",new SupportedProfileVersions(new HashMap<>() {{
             put("1.0.0", new ProfileConfiguration(List.of("dependency-list"), null));
         }}));
-        configuration.getSupportedProfiles().put("https://supported-profile2",new SupportedProfileVersions(new HashMap<>() {{
+        supportedProfiles.put("https://supported-profile2",new SupportedProfileVersions(new HashMap<>() {{
             put("1.0.0", new ProfileConfiguration(List.of("dependency-list"), null));
         }}));
+        var configuration = ValidationModuleConfiguration.builder().supportedProfiles(supportedProfiles).build();
 
         List<String> referencedProfiles = List.of("http://unknown-profile1", "http://unknown-profile2", "https://supported-profile1|1.0.0", "https://supported-profile2|1.0.0");
         Profile firstSupportedProfile = configuration.findFirstSupportedProfileWithExistingConfiguration(referencedProfiles);
@@ -51,10 +52,11 @@ class ValidationModuleConfigurationTests {
 
     @Test
     void testFindFirstSupportedProfileReturnsNullIfProfileVersionIsNotSupported() {
-        var configuration = new ValidationModuleConfiguration();
-        configuration.getSupportedProfiles().put("https://supported-profile1",new SupportedProfileVersions(new HashMap<>() {{
+        var supportedProfiles = new HashMap<String, SupportedProfileVersions>();
+        supportedProfiles.put("https://supported-profile1",new SupportedProfileVersions(new HashMap<>() {{
             put("1.0.0", new ProfileConfiguration(List.of("dependency-list"), null));
         }}));
+        var configuration = ValidationModuleConfiguration.builder().supportedProfiles(supportedProfiles).build();
 
         List<String> referencedProfiles = List.of("https://supported-profile1");
         Profile firstSupportedProfile = configuration.findFirstSupportedProfileWithExistingConfiguration(referencedProfiles);
@@ -64,10 +66,11 @@ class ValidationModuleConfigurationTests {
 
     @Test
     void testFindFirstSupportedProfileReturnsNotNullIfNoProfileVersionIsGivenAndTheProfileIsSupported() {
-        var configuration = new ValidationModuleConfiguration();
-        configuration.getSupportedProfiles().put("https://supported-profile1",new SupportedProfileVersions(new HashMap<>() {{
+        var supportedProfiles = new HashMap<String, SupportedProfileVersions>();
+        supportedProfiles.put("https://supported-profile1",new SupportedProfileVersions(new HashMap<>() {{
             put("0.0.0", new ProfileConfiguration(List.of("dependency-list"), null));
         }}));
+        var configuration = ValidationModuleConfiguration.builder().supportedProfiles(supportedProfiles).build();
 
         List<String> referencedProfiles = List.of("https://supported-profile1");
         Profile firstSupportedProfile = configuration.findFirstSupportedProfileWithExistingConfiguration(referencedProfiles);
@@ -78,13 +81,14 @@ class ValidationModuleConfigurationTests {
 
     @Test
     void testFindFirstSupportedProfileWhenMultipleSupportedProfilesFound() {
-        var configuration = new ValidationModuleConfiguration();
-        configuration.getSupportedProfiles().put("https://supported-profile1",new SupportedProfileVersions(new HashMap<>() {{
+        var supportedProfiles = new HashMap<String, SupportedProfileVersions>();
+        supportedProfiles.put("https://supported-profile1",new SupportedProfileVersions(new HashMap<>() {{
             put("1.0.0", new ProfileConfiguration(List.of("dependency-list"), null));
         }}));
-        configuration.getSupportedProfiles().put("https://supported-profile2",new SupportedProfileVersions(new HashMap<>() {{
+        supportedProfiles.put("https://supported-profile2",new SupportedProfileVersions(new HashMap<>() {{
             put("1.0.0", new ProfileConfiguration(List.of("dependency-list"), null));
         }}));
+        var configuration = ValidationModuleConfiguration.builder().supportedProfiles(supportedProfiles).build();
 
         List<String> referencedProfiles = List.of("http://unknown-profile1", "http://unknown-profile2", "https://supported-profile1|1.0.0", "https://supported-profile2|1.0.0");
         Profile firstSupportedProfile = configuration.findFirstSupportedProfileWithExistingConfiguration(referencedProfiles);
@@ -95,10 +99,11 @@ class ValidationModuleConfigurationTests {
 
     @Test
     void testFindFirstSupportedProfileWhenNoSupportedProfilesPresent() {
-        var configuration = new ValidationModuleConfiguration();
-        configuration.getSupportedProfiles().put("https://supported-profile",new SupportedProfileVersions(new HashMap<>() {{
+        var supportedProfiles = new HashMap<String, SupportedProfileVersions>();
+        supportedProfiles.put("https://supported-profile",new SupportedProfileVersions(new HashMap<>() {{
             put("1.0.0", new ProfileConfiguration(List.of("dependency-list"), null));
         }}));
+        var configuration = ValidationModuleConfiguration.builder().supportedProfiles(supportedProfiles).build();
 
         List<String> referencedProfiles = List.of("http://unknown-profile1", "http://unknown-profile2", "http://unknown-profile3");
         Profile firstSupportedProfile = configuration.findFirstSupportedProfileWithExistingConfiguration(referencedProfiles);

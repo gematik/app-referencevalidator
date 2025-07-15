@@ -23,16 +23,17 @@
  */
 package de.gematik.refv.commons.configuration;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+
+import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DependencyListsWrapperTest {
@@ -53,38 +54,33 @@ class DependencyListsWrapperTest {
 
     @Test
     void testDependencyListValidAtReturnsCorrectResults() {
-        Assertions.assertEquals(Optional.of(dl1), wrapper.getDependencyListValidAt(LocalDate.parse(dl1Start)));
-        Assertions.assertEquals(Optional.of(dl1), wrapper.getDependencyListValidAt(LocalDate.parse(dl1End)));
-        Assertions.assertEquals(Optional.of(dl1), wrapper.getDependencyListValidAt(LocalDate.parse(dl1Start).plusDays(1)));
+        Assertions.assertEquals(List.of(dl1), wrapper.getDependencyListsValidAt(LocalDate.parse(dl1Start)));
+        Assertions.assertEquals(List.of(dl1), wrapper.getDependencyListsValidAt(LocalDate.parse(dl1End)));
+        Assertions.assertEquals(List.of(dl1), wrapper.getDependencyListsValidAt(LocalDate.parse(dl1Start).plusDays(1)));
 
-        Assertions.assertEquals(Optional.of(dl2), wrapper.getDependencyListValidAt(LocalDate.parse(dl2Start)));
-        Assertions.assertEquals(Optional.of(dl2), wrapper.getDependencyListValidAt(LocalDate.parse(dl2End)));
-        Assertions.assertEquals(Optional.of(dl2), wrapper.getDependencyListValidAt(LocalDate.parse(dl2Start).plusDays(2)));
+        Assertions.assertEquals(List.of(dl2), wrapper.getDependencyListsValidAt(LocalDate.parse(dl2Start)));
+        Assertions.assertEquals(List.of(dl2), wrapper.getDependencyListsValidAt(LocalDate.parse(dl2End)));
+        Assertions.assertEquals(List.of(dl2), wrapper.getDependencyListsValidAt(LocalDate.parse(dl2Start).plusDays(2)));
 
-        Assertions.assertFalse(wrapper.getDependencyListValidAt(LocalDate.parse(dl1Start).minusDays(1)).isPresent());
-        Assertions.assertFalse(wrapper.getDependencyListValidAt(LocalDate.parse(dl2End).plusDays(1)).isPresent());
+        assertThat(wrapper.getDependencyListsValidAt(LocalDate.parse(dl1Start).minusDays(1))).isEmpty();
+        assertThat(wrapper.getDependencyListsValidAt(LocalDate.parse(dl2End).plusDays(1))).isEmpty();
     }
 
     @Test
     void testDependencyListValidAtReturnsCorrectResultsForOpenEndedLists() {
         DependencyList dl3 = new DependencyList(dl2End, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
         DependencyListsWrapper wrapper2 = new DependencyListsWrapper(dl1, dl2, dl3);
-        Assertions.assertEquals(Optional.of(dl3), wrapper2.getDependencyListValidAt(LocalDate.parse(dl2End).plusDays(1)));
+        Assertions.assertEquals(List.of(dl3), wrapper2.getDependencyListsValidAt(LocalDate.parse(dl2End).plusDays(1)));
     }
 
     @Test
-    void testDependencyListValidAtThrowsExceptionOnTwoOpenEndedLists() {
+    void testDependencyListValidAtReturnsMultipleLists() {
         DependencyList dl3 = new DependencyList(dl2End, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
         DependencyList dl4 = new DependencyList(dl2End, null, List.of("simplevalidationmodule.test-1.0.0.tgz"), new LinkedList<>());
         DependencyListsWrapper wrapper2 = new DependencyListsWrapper(dl1, dl2, dl3, dl4);
 
         LocalDate targetDate = LocalDate.parse(dl2End).plusDays(1);
-        assertThatThrownBy(() -> assertValidAtDate(wrapper2, targetDate))
-                .isInstanceOf(IllegalStateException.class);
-    }
-
-    private void assertValidAtDate(DependencyListsWrapper wrapper, LocalDate targetDate) {
-        wrapper.getDependencyListValidAt(targetDate);
+        assertThat(wrapper2.getDependencyListsValidAt(targetDate)).isEqualTo(List.of(dl3, dl4));
     }
 
 

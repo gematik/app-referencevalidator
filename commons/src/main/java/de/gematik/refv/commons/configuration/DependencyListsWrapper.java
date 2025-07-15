@@ -23,28 +23,26 @@
  */
 package de.gematik.refv.commons.configuration;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class DependencyListsWrapper {
+
+    @Getter
     private List<DependencyList> dependencyLists;
 
     public DependencyListsWrapper(DependencyList...  lists) {
         dependencyLists = List.of(lists);
     }
 
-    public Optional<DependencyList> getDependencyListValidAt(LocalDate resourceCreationDate) {
-        var matchingDependencyLists = dependencyLists.stream().filter(dl -> dl.isValidFor(resourceCreationDate)).collect(Collectors.toList());
-        if(matchingDependencyLists.size() > 1)
-            throw new IllegalStateException(String.format("Multiple dependency lists are valid for the date %s",resourceCreationDate));
-        if(matchingDependencyLists.isEmpty())
-            return Optional.empty();
-
-        return Optional.of(matchingDependencyLists.get(0));
+    public List<DependencyList> getDependencyListsValidAt(LocalDate resourceCreationDate) {
+        return dependencyLists.stream().filter(dl -> dl.isValidFor(resourceCreationDate)).collect(Collectors.toList());
     }
 
     public DependencyList getLatestDependencyList() {
@@ -85,7 +83,7 @@ public class DependencyListsWrapper {
         var dependencyListOptional = dependencyLists.stream().filter(dl -> dl.getValidTill() != null).min((o1, o2) -> {
             LocalDate d1 = LocalDate.parse(o1.getValidTill());
             LocalDate d2 = LocalDate.parse(o2.getValidTill());
-            return d2.isAfter(d1) || d2.isEqual(d1) ? 1 : -1;
+            return d2.compareTo(d1);
         });
         return dependencyListOptional.map(dependencyList -> LocalDate.parse(dependencyList.getValidTill()));
 
@@ -95,7 +93,7 @@ public class DependencyListsWrapper {
         var dependencyListsSortedOptional = dependencyLists.stream().filter(dl -> dl.getValidFrom() != null).min((o1, o2) -> {
             LocalDate d1 = LocalDate.parse(o1.getValidFrom());
             LocalDate d2 = LocalDate.parse(o2.getValidFrom());
-            return d2.isAfter(d1) || d2.isEqual(d1) ? -1 : 1;
+            return d1.compareTo(d2);
         });
         return dependencyListsSortedOptional.map(dependencyList -> LocalDate.parse(dependencyList.getValidFrom()));
 

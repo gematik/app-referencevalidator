@@ -23,35 +23,32 @@
  */
 package de.gematik.refv.commons.configuration;
 
+import java.time.LocalDate;
 import java.util.Optional;
-import lombok.Data;
 
-@Data
 public class ProfileValidityPeriodProvider {
 
     public Optional<ProfileValidityPeriod> calculateFrom(DependencyListsWrapper dependencyLists) {
-        ProfileValidityPeriod validityPeriod = new ProfileValidityPeriod();
-
         if(dependencyLists.areNoValidityPeriodsDefined())
             return Optional.empty();
 
-        findMinimalValidityFrom(dependencyLists, validityPeriod);
-        findMaximalValidityTill(dependencyLists, validityPeriod);
+        var validityFrom = findMinimalValidityFrom(dependencyLists);
+        var validityTill = findMaximalValidityTill(dependencyLists);
 
-        return Optional.of(validityPeriod);
+        return Optional.of(new ProfileValidityPeriod(validityFrom, validityTill));
     }
 
-    private static void findMaximalValidityTill(DependencyListsWrapper dependencyLists, ProfileValidityPeriod validityPeriod) {
+    private static Optional<LocalDate> findMaximalValidityTill(DependencyListsWrapper dependencyLists) {
         if(dependencyLists.isAnyDependencyListWithOpenEndExists())
-            validityPeriod.setValidTill(Optional.empty());
+            return Optional.empty();
         else
-            validityPeriod.setValidTill(dependencyLists.getLatestValidTill());
+            return dependencyLists.getLatestValidTill();
     }
 
-    private static void findMinimalValidityFrom(DependencyListsWrapper dependencyLists, ProfileValidityPeriod validityPeriod) {
+    private static Optional<LocalDate> findMinimalValidityFrom(DependencyListsWrapper dependencyLists) {
         if(dependencyLists.isAnyDependencyListWithOpenStartExists())
             throw new IllegalStateException("Unexpected empty validFrom in one of dependency lists");
 
-        validityPeriod.setValidFrom(dependencyLists.getEarliestValidFrom());
+        return dependencyLists.getEarliestValidFrom();
     }
 }

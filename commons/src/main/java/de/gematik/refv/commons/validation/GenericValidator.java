@@ -37,14 +37,17 @@ import de.gematik.refv.commons.configuration.ProfileConfiguration;
 import de.gematik.refv.commons.configuration.ValidationModuleConfiguration;
 import de.gematik.refv.commons.exceptions.UnsupportedProfileException;
 import de.gematik.refv.commons.validation.support.XmlCommentRemover;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 public class GenericValidator {
@@ -116,7 +119,11 @@ public class GenericValidator {
                 if (profileForValidation == null)
                     throw new UnsupportedProfileException(allReferencedProfilesInResource);
 
-                result = validateResource(resourceBody, resourceProvider, validationOptions, profileForValidation, configuration, allReferencedProfilesInResource);
+                result = validateResource(
+                        new ResourceToValidate(resourceBody, allReferencedProfilesInResource),
+                        resourceProvider,
+                        validationOptions.getProfileValidityPeriodCheckStrategy(),
+                        profileForValidation);
             }
         }
 
@@ -128,7 +135,9 @@ public class GenericValidator {
         return allReferencedProfilesInResource.stream().noneMatch(p -> profileFilterRegex.matcher(p).find());
     }
 
-    private ValidationResult validateResource(String resourceBody, ValidationModuleResourceProvider resourceProvider, ValidationOptions validationOptions, Profile profileForValidation, ValidationModuleConfiguration configuration, List<String> allReferencedProfilesInResource) {
+    private ValidationResult validateResource(ResourceToValidate resource, ValidationModuleResourceProvider resourceProvider, ProfileValidityPeriodCheckStrategy profileValidityPeriodCheckStrategy, Profile profileForValidation) {
+        var configuration = resourceProvider.getConfiguration();
+
         log.info("Validating against {}...", profileForValidation);
 
         var profileConfigurationOptional = configuration.getSupportedProfileConfiguration(profileForValidation);
@@ -139,20 +148,21 @@ public class GenericValidator {
         ProfileConfiguration profileConfiguration = profileConfigurationOptional.get();
 
         String creationDateLocator = profileConfiguration.getCreationDateLocator();
-        var dependencyLists = configuration.getDependencyListsForProfile(profileConfiguration);
+        var dependencyListsWrapper = configuration.getDependencyListsForProfile(profileConfiguration);
 
         // Assumption: each profile has at least one dependency list configured
         if (StringUtils.isEmpty(creationDateLocator)) {
-            return validateWithoutConfiguredLocator(resourceBody, resourceProvider, profileForValidation, dependencyLists, allReferencedProfilesInResource, configuration.getIgnoredValueSets());
+            log.debug("No creation date locator expression is configured for the profile {}. Validating against all configured dependency lists...", profileForValidation);
+            return validateUsingMultipleDependencyLists(resource, resourceProvider, profileForValidation, dependencyListsWrapper.getDependencyLists());
         }
         else {
-            return validateUsingConfiguredLocator(resourceBody, resourceProvider, validationOptions, creationDateLocator, dependencyLists, profileForValidation, allReferencedProfilesInResource, configuration.getIgnoredValueSets());
+            return validateUsingConfiguredLocator(resource, resourceProvider, profileValidityPeriodCheckStrategy, creationDateLocator, dependencyListsWrapper, profileForValidation);
         }
     }
 
-    private ValidationResult validateUsingConfiguredLocator(String resourceBody, ValidationModuleResourceProvider resourceProvider, ValidationOptions validationOptions, String creationDateLocator, DependencyListsWrapper dependencyLists, Profile profileForValidation, List<String> allReferencedProfilesInResource, Collection<String> ignoredValueSets) {
+    private ValidationResult validateUsingConfiguredLocator(ResourceToValidate resource, ValidationModuleResourceProvider resourceProvider, ProfileValidityPeriodCheckStrategy profileValidityPeriodCheckStrategy, String creationDateLocator, DependencyListsWrapper dependencyListsWrapper, Profile profileForValidation) {
         try {
-            var resourceCreationDateOptional = new ResourceCreationDateLocator(fhirContext).findCreationDateIn(resourceBody, creationDateLocator);
+            var resourceCreationDateOptional = new ResourceCreationDateLocator(fhirContext).findCreationDateIn(resource.getBody(), creationDateLocator);
 
             log.debug("Resource creation date: {}", resourceCreationDateOptional);
 
@@ -162,20 +172,21 @@ public class GenericValidator {
             }
 
             // Use Case 2.2 Creation date could be located in the resource
-            var dependencyListOptional = dependencyLists.getDependencyListValidAt(resourceCreationDateOptional.get());
-            if (dependencyListOptional.isPresent())
-                // Use Case 2.2.1 Dependency list for the resource creation date is present
-                return validateUsingDependencyList(resourceBody, resourceProvider, dependencyListOptional.get(), profileForValidation, allReferencedProfilesInResource, ignoredValueSets);
+            List<DependencyList> dependencyLists = dependencyListsWrapper.getDependencyListsValidAt(resourceCreationDateOptional.get());
+            if (!dependencyLists.isEmpty()) {
+                // Use Case 2.2.1 At least one dependency list for the resource creation date is present
+                return validateUsingMultipleDependencyLists(resource, resourceProvider, profileForValidation, dependencyLists);
+            }
 
             // Use Case 2.2.2 No Dependency list is found for the creation date
-            if (isValidateProfileValidityPeriod(validationOptions)) {
+            if (profileValidityPeriodCheckStrategy == ProfileValidityPeriodCheckStrategy.VALIDATE) {
                 // Use Case 2.2.2.1 ValidityPeriodCheck is turned on and no dependency lists were found -> Profile is outside of validity period!
-                String diagnostics = new DiagnosticsMessageBuilder().createValidityPeriodDiagnosticsString(dependencyLists, profileForValidation, resourceCreationDateOptional.get());
+                String diagnostics = new DiagnosticsMessageBuilder().createValidityPeriodDiagnosticsString(dependencyListsWrapper, profileForValidation, resourceCreationDateOptional.get());
                 return ValidationResult.createInstance(ResultSeverityEnum.ERROR, ERR_REFV_PROFILE_OUTSIDE_OF_VALIDITY_PERIOD, diagnostics);
             }
 
             // Use Case 2.2.2.2 ValidityPeriodChek is turned off -> use latest dependencies
-            var result = validateUsingDependencyList(resourceBody, resourceProvider, dependencyLists.getLatestDependencyList(), profileForValidation, allReferencedProfilesInResource, ignoredValueSets);
+            var result = validateUsingDependencyList(resource, resourceProvider, dependencyListsWrapper.getLatestDependencyList(), profileForValidation);
             addWarningAboutDeactivatedValidityPeriodCheckTo(result);
             return result;
 
@@ -185,11 +196,13 @@ public class GenericValidator {
         }
     }
 
-    private ValidationResult validateWithoutConfiguredLocator(String resourceBody, ValidationModuleResourceProvider resourceProvider, Profile profileForValidation, DependencyListsWrapper dependencyLists, List<String> allReferencedProfilesInResource, Collection<String> ignoredValueSets) {
-        ValidationResult result;
-        log.debug("No creation date locator expression is configured for the profile {}. Using the latest package dependencies available...", profileForValidation);
-        var dependencyList = dependencyLists.getLatestDependencyList();
-        result = validateUsingDependencyList(resourceBody, resourceProvider, dependencyList, profileForValidation, allReferencedProfilesInResource, ignoredValueSets);
+    private ValidationResult validateUsingMultipleDependencyLists(ResourceToValidate resource, ValidationModuleResourceProvider resourceProvider, Profile profileForValidation, List<DependencyList> dependencyLists) {
+        ValidationResult result = null;
+        for(var dependencyList : dependencyLists) {
+            result = validateUsingDependencyList(resource, resourceProvider, dependencyList, profileForValidation);
+            if(result.isValid())
+                break;
+        }
         return result;
     }
 
@@ -224,7 +237,9 @@ public class GenericValidator {
         result.getValidationMessages().add(m);
     }
 
-    private ValidationResult validateUsingDependencyList(String resourceBody, ValidationModuleResourceProvider resourceProvider, DependencyList dependencyList, Profile profileForValidation, List<String> allReferencedProfilesInResource, Collection<String> ignoredValueSets) {
+    private ValidationResult validateUsingDependencyList(ResourceToValidate resource, ValidationModuleResourceProvider resourceProvider, DependencyList dependencyList, Profile profileForValidation) {
+        var ignoredValueSets = resourceProvider.getConfiguration().getIgnoredValueSets();
+
         log.debug("Applying dependency list: {}", dependencyList);
         var fhirValidator = hapiFhirValidatorCache.computeIfAbsent(dependencyList, k ->
                 hapiFhirValidatorFactory.createInstance(
@@ -233,10 +248,10 @@ public class GenericValidator {
                 ));
 
         var options = new ca.uhn.fhir.validation.ValidationOptions();
-        boolean isValidationProfileReferencedInTheResource = allReferencedProfilesInResource.contains(profileForValidation.getCanonical());
+        boolean isValidationProfileReferencedInTheResource = resource.getProfiles().contains(profileForValidation.getCanonical());
         if(!isValidationProfileReferencedInTheResource)
             options.addProfile(profileForValidation.getCanonical());
-        var intermediateResult = fhirValidator.validateWithResult(resourceBody, options);
+        var intermediateResult = fhirValidator.validateWithResult(resource.getBody(), options);
         
         log.debug("Pre-Transformation ValidationResult: Valid: {}, Messages: {}", intermediateResult.isSuccessful(), intermediateResult.getMessages());
 
@@ -245,7 +260,7 @@ public class GenericValidator {
         if(!isValidationProfileReferencedInTheResource) {
             SingleValidationMessage m = new SingleValidationMessage();
             m.setSeverity(ResultSeverityEnum.WARNING);
-            m.setMessage(String.format("Resource meta.profile differs from the passed profile for validation: meta.profile=%s; passed=%s", allReferencedProfilesInResource, profileForValidation));
+            m.setMessage(String.format("Resource meta.profile differs from the passed profile for validation: meta.profile=%s; passed=%s", resource.getProfiles(), profileForValidation));
             m.setMessageId(WARN_REFV_PASSED_PROFILE_DIFFERS_FROM_META_PROFILE);
             filteredMessages.add(m);
         }
@@ -253,7 +268,10 @@ public class GenericValidator {
         return new ValidationResult(filteredMessages);
     }
 
-    private boolean isValidateProfileValidityPeriod(de.gematik.refv.commons.validation.ValidationOptions validationOptions) {
-        return validationOptions.getProfileValidityPeriodCheckStrategy() == ProfileValidityPeriodCheckStrategy.VALIDATE;
+    @AllArgsConstructor
+    @Getter
+    private static class ResourceToValidate {
+        private String body;
+        private Collection<String> profiles;
     }
 }

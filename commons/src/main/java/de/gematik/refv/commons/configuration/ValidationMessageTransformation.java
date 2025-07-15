@@ -23,10 +23,15 @@
  */
 package de.gematik.refv.commons.configuration;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter(AccessLevel.PRIVATE)
+@EqualsAndHashCode
 @AllArgsConstructor
 public class ValidationMessageTransformation {
     String severityLevelFrom;

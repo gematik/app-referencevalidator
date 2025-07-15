@@ -25,46 +25,73 @@ package de.gematik.refv.commons.configuration;
 
 import ca.uhn.fhir.context.support.IValidationSupport;
 import de.gematik.refv.commons.Profile;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-@Data
+@Getter
+@Setter(AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Slf4j
+@Builder
 public class ValidationModuleConfiguration {
 
     private String id;
-    private Map<String, DependencyList> dependencyLists = new HashMap<>();
-    private Map<String, SupportedProfileVersions> supportedProfiles = new HashMap<>();
-
-    private List<String> ignoredCodeSystems = new LinkedList<>();
-
-    private List<String> ignoredValueSets = new LinkedList<>();
-    private List<String> acceptedEncodings = new LinkedList<>();
-
+    private Map<String, DependencyList> dependencyLists;
+    private Map<String, SupportedProfileVersions> supportedProfiles;
+    private List<String> ignoredCodeSystems;
+    private List<String> ignoredValueSets;
+    private List<String> acceptedEncodings;
     private boolean errorOnUnknownProfile;
     private boolean anyExtensionsAllowed;
     private String version;
+    @Builder.Default
     private IValidationSupport.IssueSeverity ucumValidationSeverityLevel = IValidationSupport.IssueSeverity.ERROR;
+
+    public Map<String, DependencyList> getDependencyLists() {
+        return Collections.unmodifiableMap(Objects.requireNonNullElse(dependencyLists, new HashMap<>()));
+    }
+
+    public Map<String, SupportedProfileVersions> getSupportedProfiles() {
+        return Collections.unmodifiableMap(Objects.requireNonNullElse(supportedProfiles, new HashMap<>()));
+    }
+
+    public List<String> getIgnoredCodeSystems() {
+        return Collections.unmodifiableList(Objects.requireNonNullElse(ignoredCodeSystems, new LinkedList<>()));
+    }
+
+    public List<String> getIgnoredValueSets() {
+        return Collections.unmodifiableList(Objects.requireNonNullElse(ignoredValueSets, new LinkedList<>()));
+    }
+
+    public List<String> getAcceptedEncodings() {
+        return Collections.unmodifiableList(Objects.requireNonNullElse(acceptedEncodings, new LinkedList<>()));
+    }
 
     public Optional<ProfileConfiguration> getSupportedProfileConfiguration(Profile profile) {
         String lookupVersion = profile.getVersion() == null ? "0.0.0" : profile.getVersion();
         String baseCanonical = profile.getBaseCanonical();
 
-        if(supportedProfiles.containsKey(baseCanonical)) {
-            var profileVersions = supportedProfiles.get(baseCanonical).getProfileVersions();
+        if(getSupportedProfiles().containsKey(baseCanonical)) {
+            var profileVersions = getSupportedProfiles().get(baseCanonical).getProfileVersions();
             if(profileVersions.containsKey(lookupVersion))
                 return Optional.of(profileVersions.get(lookupVersion));
         }
-        if(supportedProfiles.isEmpty()) {
+        if(getSupportedProfiles().isEmpty()) {
             // There are no supportedProfiles defined for valmodule-core.
             // But if we don't return a dependencyList here,the validator will always return an Unsupported Profile Error
-            var firstDependencyList = dependencyLists.keySet().stream().findFirst();
+            var firstDependencyList = getDependencyLists().keySet().stream().findFirst();
             if(firstDependencyList.isEmpty())
                 throw new IllegalStateException("Supported profiles are not explicitly defined and no dependency lists found. Define at least one dependency list");
 
@@ -75,11 +102,11 @@ public class ValidationModuleConfiguration {
 
     public DependencyListsWrapper getDependencyListsForProfile(ProfileConfiguration profileConfiguration) {
         var lists = profileConfiguration.getDependencyLists();
-        boolean allKeysExist = lists.stream().allMatch(key -> dependencyLists.containsKey(key));
+        boolean allKeysExist = lists.stream().allMatch(key -> getDependencyLists().containsKey(key));
         if (!allKeysExist)
             throw new IllegalStateException(String.format("Some of the dependency lists are undefined: %s", String.join(",", profileConfiguration.getDependencyLists())));
 
-        return new DependencyListsWrapper(lists.stream().map(key -> dependencyLists.get(key)).collect(Collectors.toList()));
+        return new DependencyListsWrapper(lists.stream().map(key -> getDependencyLists().get(key)).collect(Collectors.toList()));
     }
 
     public Profile findFirstSupportedProfileWithExistingConfiguration(List<String> profiles) {

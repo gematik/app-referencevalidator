@@ -14,7 +14,7 @@ dependencyLists:
       - "non.existing.dependency-1.0.0.tgz"
   dependencyList1: # birthDate.min -> 1; gender.min -> 0
     validFrom: "2023-01-01"
-    validTill: "2023-01-31"
+    validTill: "2023-02-15" # Simulation eines Übergangszeitraums
     packages:
       - "simplevalidationmodule.test-1.0.0.tgz"
   dependencyList2: # birthDate.min -> 1; gender.min -> 1
@@ -43,6 +43,11 @@ supportedProfiles:
   "http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate":
     profileVersions:
       1.0.0:
+        dependencyLists:
+          - "dependencyList1"
+          - "dependencyList2"
+        creationDateLocator: "birthDate"
+      0.0.0:
         dependencyLists:
           - "dependencyList1"
           - "dependencyList2"

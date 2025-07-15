@@ -23,9 +23,14 @@
  */
 package de.gematik.refv.commons.configuration;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -33,10 +38,15 @@ import lombok.Data;
  * Copyright 2022 Deutscher Apothekerverband (DAV), Apache License, Version 2.0
  *
  */
-@Data
+@Getter
+@Setter(AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class SupportedProfileVersions {
     // Key: Version of Profile
     private Map<String, ProfileConfiguration> profileVersions;
+
+    public Map<String, ProfileConfiguration> getProfileVersions() {
+        return Collections.unmodifiableMap(Objects.requireNonNullElse(profileVersions, new HashMap<>()));
+    }
 
 }

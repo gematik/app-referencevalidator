@@ -231,6 +231,9 @@ public class CustomNpmPackageValidationSupport extends BaseValidationSupport {
     private NpmPackage loadNpmPackage(String packagePath) throws IOException {
         NpmPackage npmPackage;
         try(var is = packageInputStreamProvider.apply(packagePath)) {
+            if(is == null) {
+                throw new IllegalArgumentException("Package " + packagePath + " not found");
+            }
             npmPackage = NpmPackage.fromPackage(is);
             if(!(npmPackage.getFolders().containsKey(PACKAGE)))
                 throw new IllegalArgumentException("Package " + packagePath + " doesn't contain the package subfolder");
