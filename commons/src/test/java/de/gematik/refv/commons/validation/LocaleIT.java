@@ -27,16 +27,10 @@ import de.gematik.refv.commons.helper.ValidationModuleFactory;
 import java.util.Locale;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class LocaleIT {
-
-    @BeforeAll
-    @SneakyThrows
-    static void beforeAll() {
-    }
 
     @ParameterizedTest
     @CsvSource({

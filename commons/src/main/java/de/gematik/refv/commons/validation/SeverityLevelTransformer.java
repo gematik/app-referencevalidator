@@ -27,14 +27,16 @@ import ca.uhn.fhir.validation.ResultSeverityEnum;
 import ca.uhn.fhir.validation.SingleValidationMessage;
 import de.gematik.refv.commons.configuration.ValidationMessageTransformation;
 import de.gematik.refv.commons.validation.support.IgnoreCodeSystemValidationSupport;
+import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
+import org.hl7.fhir.utilities.i18n.I18nConstants;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.utilities.i18n.I18nConstants;
 
 class SeverityLevelTransformer {
 
@@ -62,7 +64,7 @@ class SeverityLevelTransformer {
             var transformation = transformations.stream().filter(t -> t.getSeverityLevelFrom().equals(message.getSeverity().getCode()) &&
                     messageMatchesPattern(message.getMessage(), t.getLocatorString()) &&
                     (
-                            t.getMessageId() == null || StringUtils.equals(t.getMessageId(), message.getMessageId())
+                            t.getMessageId() == null || Strings.CS.equals(t.getMessageId(), message.getMessageId())
                     ) &&
                     (
                             t.getMessageLocationRegex() == null || messageMatchesPattern(message.getLocationString(), t.getMessageLocationRegex())

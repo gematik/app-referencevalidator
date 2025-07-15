@@ -53,7 +53,7 @@ class ReferencedProfileLocatorJSONTests {
             "https://bla.bla"
     })
     void testProfileInCorrectResourceIsExtractedCorrectly(String canonical) {
-        configuration = new ValidationModuleConfiguration();
+        configuration = ValidationModuleConfiguration.builder().build();
         Profile profile = Profile.parse(canonical);
         String resource = String.format(
                 "{\n"

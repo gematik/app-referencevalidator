@@ -28,6 +28,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.zip.ZipFile;
 import lombok.NonNull;
@@ -38,10 +40,15 @@ import org.yaml.snakeyaml.Yaml;
 
 public class Plugin {
     private static final String CONFIG_FILE = "config.yaml";
-    private final ZipFile zipFile;
+    private ZipFile zipFile;
+    private Path pluginFolder;
 
     private Plugin(ZipFile zipFile) {
         this.zipFile = zipFile;
+    }
+
+    public Plugin(@NonNull Path pluginFolder) {
+        this.pluginFolder = pluginFolder;
     }
 
     @SneakyThrows
@@ -51,7 +58,8 @@ public class Plugin {
             Map<Object, Object> document = yaml.load(packagesConfigFile);
             return document.get("id").toString();
         } finally {
-            zipFile.close();
+            if(zipFile != null)
+                zipFile.close();
         }
     }
 
@@ -59,20 +67,35 @@ public class Plugin {
         return new Plugin(zipFile);
     }
 
+    public static Plugin createFromFolder(@NonNull Path pluginFolder) {
+        return new Plugin(pluginFolder);
+    }
+
     @SneakyThrows
     public InputStream getResource(@NonNull String path) {
-        try (InputStream is = new FileInputStream(zipFile.getName());
-             ZipArchiveInputStream zipInputStream = new ZipArchiveInputStream(is)) {
-            ZipArchiveEntry entry;
-            while ((entry = zipInputStream.getNextEntry()) != null) {
-                if (entry.getName().contains(path)) {
-                    return createEntryInputStream(zipInputStream);
+        if (zipFile != null) {
+            try (InputStream is = new FileInputStream(zipFile.getName());
+                ZipArchiveInputStream zipInputStream = new ZipArchiveInputStream(is)) {
+                ZipArchiveEntry entry;
+                while ((entry = zipInputStream.getNextEntry()) != null) {
+                      if (entry.getName().contains(path)) {
+                        return createEntryInputStream(zipInputStream);
+                      }
                 }
+            } finally {
+                zipFile.close();
             }
-        } finally {
-            zipFile.close();
+            return null;
         }
-        return null;
+
+        try (var filesStream = Files.walk(pluginFolder)){
+            var file = filesStream.filter(p -> p.endsWith(path) && Files.isRegularFile(p)).findFirst();
+
+            if(file.isEmpty())
+                return null;
+
+            return Files.newInputStream(file.get());
+        }
     }
 
     private InputStream createEntryInputStream(@NonNull ZipArchiveInputStream zipInputStream) throws IOException {

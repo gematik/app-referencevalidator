@@ -25,14 +25,15 @@ package de.gematik.refv.commons.configuration;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter(AccessLevel.PRIVATE)
 @AllArgsConstructor
-@NoArgsConstructor
 public class ProfileValidityPeriod {
-    Optional<LocalDate> validFrom = Optional.empty();
-    Optional<LocalDate> validTill = Optional.empty();
+    Optional<LocalDate> validFrom;
+    Optional<LocalDate> validTill;
 }

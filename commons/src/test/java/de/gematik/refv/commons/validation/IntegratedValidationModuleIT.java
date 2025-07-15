@@ -25,12 +25,15 @@ package de.gematik.refv.commons.validation;
 
 import ca.uhn.fhir.util.ClasspathUtil;
 import de.gematik.refv.commons.helper.ValidationModuleFactory;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 class IntegratedValidationModuleIT {
 
@@ -55,6 +58,20 @@ class IntegratedValidationModuleIT {
 
         var result = module.validateString(IOUtils.toString(input, StandardCharsets.UTF_8));
         Assertions.assertFalse(result.isValid());
+    }
+
+    @ParameterizedTest()
+    @ValueSource(
+        strings = {
+                "simplevalidationmodule.test.patient-1-0-0.valid.without-profile-version.xml",
+                "simplevalidationmodule.test.patient-2-0-0.valid.without-profile-version.xml"
+        }
+    )
+    @SneakyThrows
+    void testValidIfNoProfileVersionIsGivenInMetaProfileAndMultipleDependencyListsAreDefined(String filename) {
+        var input = ClasspathUtil.loadResourceAsStream("classpath:" + filename);
+        var result = module.validateString(IOUtils.toString(input, StandardCharsets.UTF_8));
+        Assertions.assertTrue(result.isValid());
     }
 
     @Test

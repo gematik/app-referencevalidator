@@ -26,7 +26,7 @@ package de.gematik.refv.commons.validation.support;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.IValidationSupport;
 import de.gematik.refv.commons.Profile;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.StructureDefinition;
 
@@ -49,7 +49,7 @@ public class PipedCanonicalCoreResourcesValidationSupport implements IValidation
         if(resource == null)
             return null;
 
-        if(StringUtils.equals(((StructureDefinition) resource).getVersion(), p.getVersion()))
+        if(Strings.CS.equals(((StructureDefinition) resource).getVersion(), p.getVersion()))
             return resource;
 
         return null;

@@ -1,0 +1,9 @@
+{
+    "meta": {
+        "profile": [
+            "http://example.gematik.de/fhir/StructureDefinition/patient-with-birthdate|2.0.0"
+        ]
+    },
+    "birthDate": "2023-02-01",
+    "resourceType": "Patient"
+}

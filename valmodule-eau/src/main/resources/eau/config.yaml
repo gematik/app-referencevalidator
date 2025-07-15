@@ -1,5 +1,5 @@
 id: "eau"
-version: "1.0"
+version: "1.1"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
