@@ -2,6 +2,15 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.12.1 (2025-11)
+
+### changed
+- bumped dependencies
+- bumped plugin versions
+
+### fixed
+- dependency on Apache commons-lang3 is now explicit (cf. [GitHub Issue #51](https://github.com/gematik/app-referencevalidator/issues/51))
+
 ## Release 2.12.0
 
 > [!IMPORTANT]
