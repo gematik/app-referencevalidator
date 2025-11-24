@@ -166,4 +166,12 @@
         <packageUrl regex="true">^pkg:maven/ca\.uhn\.hapi\.fhir/org\.hl7\.fhir\.dstu2016may@.*$</packageUrl>
         <vulnerabilityName>CVE-2024-52007</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: referencevalidator-cli-2.12.1-SNAPSHOT-jar-with-dependencies.jar (shaded: com.google.code.gson:gson:2.8.9)
+   JWTs are not used in the project
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.code\.gson/gson@.*$</packageUrl>
+        <vulnerabilityName>CVE-2025-53864</vulnerabilityName>
+    </suppress>
 </suppressions>
