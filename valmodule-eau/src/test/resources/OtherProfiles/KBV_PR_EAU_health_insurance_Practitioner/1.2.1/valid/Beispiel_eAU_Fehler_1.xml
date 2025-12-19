@@ -1,0 +1,25 @@
+<OperationOutcome xmlns="http://hl7.org/fhir">
+	<id value="c42a922c-c1fa-4aed-a2ba-7e658aecb7dc" />
+	<meta>
+		<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_health_insurance_Practitioner|1.2" />
+	</meta>
+	<issue>
+		<extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_EAU_health_insurance_Practitioner_Identifier">
+			<extension url="Message-ID">
+				<valueIdentifier>
+					<system value="https://fhir.kbv.de/NamingSystem/KBV_NS_EAU_Message_ID_KIM" />
+					<value value="96d6a790-afc2-4556-ab73-301e51a7bf30@kim.de" />
+				</valueIdentifier> 
+			</extension>	
+		</extension>
+		<severity value="fatal" />
+		<code value="processing" />
+		<details>
+			<coding>
+				<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_EAU_AU_ERROR_KASSE" />
+				<code value="301" />
+				<display value="Die KIM-Nachricht für die Stornomeldung ist in einem falschen Format verschlüsselt." />
+			</coding>
+		</details>
+	</issue>
+</OperationOutcome>

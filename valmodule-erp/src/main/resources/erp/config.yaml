@@ -1,5 +1,5 @@
 id: "erp"
-version: "2.13"
+version: "2.14"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
@@ -152,6 +152,25 @@ dependencyLists:
         locatorString: stimmt mit keinem bekannten Slice
         messageLocationRegex: meta.profile
     validFrom: "2025-10-01"
+    validTill: "2026-01-26"
+
+  kbv.ita.erp-1.3.3:
+    packages:
+      - "kbv.ita.erp-1.3.3.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.6.0.tgz" # Update Darreichungsformen 1.14 --> 1.15
+      - "kbv.ita.for-1.2.1.tgz"
+      - "kbv.basis-1.7.0.tgz"
+      - "de.basisprofil.r4-1.5.2.tgz"
+    validationMessageTransformations: # Obwohl die Profile mehrfache meta.profile-Angaben technisch zulassen, wurden diese bis auf Weiteres für die Verwendung im E-Rezept-Kontext verboten
+      - severityLevelFrom: "information"
+        severityLevelTo: "error"
+        locatorString: does not match any known slice
+        messageLocationRegex: meta.profile
+      - severityLevelFrom: "information"
+        severityLevelTo: "error"
+        locatorString: stimmt mit keinem bekannten Slice
+        messageLocationRegex: meta.profile
+    validFrom: "2026-01-27"
 
   kbv.itv.evdga.1.1.0-4-2025:
     packages:
@@ -180,6 +199,25 @@ dependencyLists:
         locatorString: stimmt mit keinem bekannten Slice
         messageLocationRegex: meta.profile
     validFrom: "2025-10-01"
+    validTill: "2026-01-26"
+
+  kbv.itv.evdga.1.2.2:
+    packages:
+      - "kbv.itv.evdga-1.2.2.tgz"
+      - "de.basisprofil.r4-1.5.2.tgz"
+      - "kbv.ita.for-1.2.1.tgz"
+      - "kbv.basis-1.7.0.tgz"
+      - "gematik.kbv.sfhir.cs.vs-1.6.0.tgz"
+    validationMessageTransformations: # # Obwohl die Profile mehrfache meta.profile-Angaben technisch zulassen, wurden diese bis auf Weiteres für die Verwendung im E-Rezept-Kontext verboten
+      - severityLevelFrom: "information"
+        severityLevelTo: "error"
+        locatorString: does not match any known slice
+        messageLocationRegex: meta.profile
+      - severityLevelFrom: "information"
+        severityLevelTo: "error"
+        locatorString: stimmt mit keinem bekannten Slice
+        messageLocationRegex: meta.profile
+    validFrom: "2026-01-27"
 
   # https://simplifier.net/erezept-workflow/~packages
   de.gematik.erezept-workflow.r4.1.0.3-1:
@@ -1176,6 +1214,7 @@ supportedProfiles:
       1.3:
         dependencyLists:
           - "kbv.ita.erp-1.3.2"
+          - "kbv.ita.erp-1.3.3"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_ERP_Prescription') or meta.profile.contains('KBV_PR_ERP_PracticeSupply')).authoredOn"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Composition":
@@ -1200,6 +1239,7 @@ supportedProfiles:
       1.3:
         dependencyLists:
           - "kbv.ita.erp-1.3.2"
+          - "kbv.ita.erp-1.3.3"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Compounding":
     profileVersions:
@@ -1223,6 +1263,7 @@ supportedProfiles:
       1.3:
         dependencyLists:
           - "kbv.ita.erp-1.3.2"
+          - "kbv.ita.erp-1.3.3"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_FreeText":
     profileVersions:
@@ -1246,6 +1287,7 @@ supportedProfiles:
       1.3:
         dependencyLists:
           - "kbv.ita.erp-1.3.2"
+          - "kbv.ita.erp-1.3.3"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_Ingredient":
     profileVersions:
@@ -1269,6 +1311,7 @@ supportedProfiles:
       1.3:
         dependencyLists:
           - "kbv.ita.erp-1.3.2"
+          - "kbv.ita.erp-1.3.3"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Medication_PZN":
     profileVersions:
@@ -1292,6 +1335,7 @@ supportedProfiles:
       1.3:
         dependencyLists:
           - "kbv.ita.erp-1.3.2"
+          - "kbv.ita.erp-1.3.3"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_PracticeSupply":
     profileVersions:
@@ -1318,6 +1362,7 @@ supportedProfiles:
       1.3:
         dependencyLists:
           - "kbv.ita.erp-1.3.2"
+          - "kbv.ita.erp-1.3.3"
         creationDateLocator: "authoredOn"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_ERP_Prescription":
@@ -1347,6 +1392,7 @@ supportedProfiles:
       1.3:
         dependencyLists:
           - "kbv.ita.erp-1.3.2"
+          - "kbv.ita.erp-1.3.3"
         creationDateLocator: "authoredOn"
 
   "https://gematik.de/fhir/StructureDefinition/ErxAcceptOperationOutParameters":
@@ -2024,6 +2070,7 @@ supportedProfiles:
       1.2:
         dependencyLists:
           - "kbv.itv.evdga.1.2.1"
+          - "kbv.itv.evdga.1.2.2"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_EVDGA_HealthAppRequest')).authoredOn"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EVDGA_HealthAppRequest":
@@ -2035,6 +2082,7 @@ supportedProfiles:
       1.2:
         dependencyLists:
           - "kbv.itv.evdga.1.2.1"
+          - "kbv.itv.evdga.1.2.2"
         creationDateLocator: "authoredOn"
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EVDGA_Composition":
@@ -2045,3 +2093,4 @@ supportedProfiles:
       1.2:
         dependencyLists:
           - "kbv.itv.evdga.1.2.1"
+          - "kbv.itv.evdga.1.2.2"
