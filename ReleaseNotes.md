@@ -2,6 +2,24 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.13.0 (2025-12)
+
+> [!IMPORTANT]
+> ERP module (version update to 2.14)
+> EAU module (version update to 1.2)
+
+### added
+- ERP module  (version update to 2.14):
+  - added  [kbv.ita.erp#1.3.3](https://simplifier.net/packages/kbv.ita.erp/1.3.3) (from 27.01.2026)
+  - added [kbv.itv.evdga#1.2.2](https://simplifier.net/packages/kbv.itv.evdga/1.2.2) (from 27.01.2026)
+- EAU module  (version update to 1.2):
+  - added [kbv.ita.eau#1.2.1](https://simplifier.net/packages/kbv.ita.eau/1.2.1) (from 27.01.2026)
+
+The profiles KBV_PR_FOR_Coverage.json, KBV_PR_FOR_Organization.json, KBV_PR_FOR_Patient.json, KBV_PR_FOR_Practitioner.json from the dependency package "kbv.ita.for-1.2.1" have been patched to produce errors on length constraint violations in the current HAPI engine (-for-laengeIK, -for-laengeBSNR, -for-laengeKZVA, -for-laengeLANR, -for-laengeZANR, -for-laengeVersichertenId) 
+
+### changed
+validity period of [kbv.ita.eau.1.1.0](https://simplifier.net/packages/kbv.ita.eau/1.1.1) package extended till 31.3.2026
+
 ## Release 2.12.1 (2025-11)
 
 ### changed

@@ -1,0 +1,19 @@
+kbv.ita.for-1.2.1.tgz:
+- in KBV_PR_FOR_Organization.json 
+	- constraint "-for-laengeIK" on "Organization.identifier:Institutionskennzeichen.value"
+	CHANGE--> "expression": "matches('^[0-9]{9}$')" to "matches('^[0-9]{9,9}$')"
+
+	- constraint "-for-laengeBSNR" on "Organization.identifier:Betriebsstaettennummer.value"
+	CHANGE--> "expression": "matches('^[0-9]{9}$')" to "matches('^[0-9]{9,9}$')"
+
+	- constraint "-for-laengeKZVA" on "Organization.identifier:KZV-Abrechnungsnummer.value"
+	CHANGE--> "expression": "matches('^[0-9]{9}$')" to "matches('^[0-9]{9,9}$')"
+
+- in KBV_PR_FOR_Practitioner.json
+    - syntactic change in constraints "-for-laengeLANR" and "-for-laengeZANR" to activate evaluation of the error severity level
+
+- in KBV_PR_FOR_Patient.json
+    - syntactic change in constraint "-for-laengeVersichertenId" to activate evaluation of the error severity level
+
+- in KBV_PR_FOR_Coverage.json
+    - syntactic change in constraint "-for-laengeIK" to activate evaluation of the error severity level

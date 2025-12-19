@@ -1,0 +1,25 @@
+<OperationOutcome xmlns="http://hl7.org/fhir">
+	<id value="f135ed4d-ac50-4a85-aec1-1ba5786344cc" />
+	<meta>
+		<profile value="https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_health_insurance_Practitioner|1.2" />
+	</meta>
+	<issue>
+		<extension url="https://fhir.kbv.de/StructureDefinition/KBV_EX_EAU_health_insurance_Practitioner_Identifier">
+			<extension url="Bundle-Identifier">
+				<valueIdentifier>
+					<system value="urn:ietf:rfc:3986" />
+					<value value="urn:uuid:96d6a790-afc2-4556-ab73-301e51a7bf30" />
+				</valueIdentifier> 
+			</extension>
+		</extension>
+		<severity value="fatal" />
+		<code value="processing" />
+		<details>
+			<coding>
+				<system value="https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_EAU_AU_ERROR_KASSE" />
+				<code value="100" />
+				<display value="Der Patient ist nicht bei der adressierten Krankenkasse versichert." />
+			</coding>
+		</details>
+	</issue>
+</OperationOutcome>
