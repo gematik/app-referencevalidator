@@ -2,6 +2,11 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.14.1 (2026-02)
+
+### fixed
+- Correction of configuration for the erp module (missing dependency on kbv.ita.eau package)
+
 ## Release 2.14.0 (2026-02)
 
 > [!IMPORTANT]
