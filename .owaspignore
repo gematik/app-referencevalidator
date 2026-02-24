@@ -174,4 +174,18 @@
         <packageUrl regex="true">^pkg:maven/com\.google\.code\.gson/gson@.*$</packageUrl>
         <vulnerabilityName>CVE-2025-53864</vulnerabilityName>
     </suppress>
+    <suppress>
+       <notes><![CDATA[
+       file name: referencevalidator-cli-2.14.0-SNAPSHOT-jar-with-dependencies.jar (shaded: org.apache.logging.log4j:log4j-api:2.25.2)
+       ]]></notes>
+       <packageUrl regex="true">^pkg:maven/org\.apache\.logging\.log4j/log4j-api@.*$</packageUrl>
+       <cve>CVE-2025-68161</cve>
+    </suppress>
+    <suppress>
+       <notes><![CDATA[
+       file name: referencevalidator-cli-2.14.0-SNAPSHOT-jar-with-dependencies.jar (shaded: org.apache.logging.log4j:log4j-core:2.25.2)
+       ]]></notes>
+       <packageUrl regex="true">^pkg:maven/org\.apache\.logging\.log4j/log4j-core@.*$</packageUrl>
+       <cve>CVE-2025-68161</cve>
+    </suppress>
 </suppressions>

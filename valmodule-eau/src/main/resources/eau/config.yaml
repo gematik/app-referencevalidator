@@ -100,13 +100,13 @@ supportedProfiles:
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_AU":
     profileVersions:
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
       1.1.0:
         dependencyLists:
           - "kbv.ita.eau.1.1.0"
           - "kbv.ita.eau.1.1.0-from-10-2024"
-      1.0.2:
-        dependencyLists:
-          - "kbv.ita.eau.1.0.2"
       1.2:
         dependencyLists:
           - "kbv.ita.eau.1.2.0"
@@ -114,13 +114,13 @@ supportedProfiles:
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_ICD":
     profileVersions:
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
       1.1.0:
         dependencyLists:
           - "kbv.ita.eau.1.1.0"
           - "kbv.ita.eau.1.1.0-from-10-2024"
-      1.0.2:
-        dependencyLists:
-          - "kbv.ita.eau.1.0.2"
       1.2:
         dependencyLists:
           - "kbv.ita.eau.1.2.0"
@@ -128,13 +128,13 @@ supportedProfiles:
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Condition_Text":
     profileVersions:
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
       1.1.0:
         dependencyLists:
           - "kbv.ita.eau.1.1.0"
           - "kbv.ita.eau.1.1.0-from-10-2024"
-      1.0.2:
-        dependencyLists:
-          - "kbv.ita.eau.1.0.2"
       1.2:
         dependencyLists:
           - "kbv.ita.eau.1.2.0"
@@ -142,13 +142,13 @@ supportedProfiles:
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_ServiceRequest_steps":
     profileVersions:
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
       1.1.0:
         dependencyLists:
           - "kbv.ita.eau.1.1.0"
           - "kbv.ita.eau.1.1.0-from-10-2024"
-      1.0.2:
-        dependencyLists:
-          - "kbv.ita.eau.1.0.2"
       1.2:
         dependencyLists:
           - "kbv.ita.eau.1.2.0"
@@ -156,13 +156,13 @@ supportedProfiles:
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno":
     profileVersions:
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
       1.1.0:
         dependencyLists:
           - "kbv.ita.eau.1.1.0"
           - "kbv.ita.eau.1.1.0-from-10-2024"
-      1.0.2:
-        dependencyLists:
-          - "kbv.ita.eau.1.0.2"
       1.2:
         dependencyLists:
           - "kbv.ita.eau.1.2.0"
@@ -170,14 +170,14 @@ supportedProfiles:
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno_Bundle":
     profileVersions:
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_EAU_Storno_Composition')).date"
       1.1.0:
         dependencyLists:
           - "kbv.ita.eau.1.1.0"
           - "kbv.ita.eau.1.1.0-from-10-2024"
-        creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_EAU_Storno_Composition')).date"
-      1.0.2:
-        dependencyLists:
-          - "kbv.ita.eau.1.0.2"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_EAU_Storno_Composition')).date"
       1.2:
         dependencyLists:
@@ -187,14 +187,14 @@ supportedProfiles:
 
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_Storno_Composition":
     profileVersions:
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
+        creationDateLocator: "date"
       1.1.0:
         dependencyLists:
           - "kbv.ita.eau.1.1.0"
           - "kbv.ita.eau.1.1.0-from-10-2024"
-        creationDateLocator: "date"
-      1.0.2:
-        dependencyLists:
-          - "kbv.ita.eau.1.0.2"
         creationDateLocator: "date"
       1.2:
         dependencyLists:
@@ -202,16 +202,15 @@ supportedProfiles:
           - "kbv.ita.eau.1.2.1"
         creationDateLocator: "date"
 
-
   "https://fhir.kbv.de/StructureDefinition/KBV_PR_EAU_health_insurance_Practitioner":
     profileVersions:
+      1.0.2:
+        dependencyLists:
+          - "kbv.ita.eau.1.0.2"
       1.1.0:
         dependencyLists:
           - "kbv.ita.eau.1.1.0"
           - "kbv.ita.eau.1.1.0-from-10-2024"
-      1.0.2:
-        dependencyLists:
-          - "kbv.ita.eau.1.0.2"
       1.2:
         dependencyLists:
           - "kbv.ita.eau.1.2.0"
