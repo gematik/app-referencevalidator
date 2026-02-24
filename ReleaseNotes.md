@@ -2,6 +2,17 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.14.0 (2026-02)
+
+> [!IMPORTANT]
+> ERP module (version update to 2.15)
+
+### added
+- ERP module  (version update to 2.15):
+  - added [de.gematik.erezept-workflow.r4#1.6.1](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.6.1)
+  - added [kbv.ita.erp#1.4.1](https://simplifier.net/packages/kbv.ita.erp/1.4.1)
+  - added [kbv.ita.for#1.3.1](https://simplifier.net/packages/kbv.ita.eau/1.3.1)
+
 ## Release 2.13.0 (2025-12)
 
 > [!IMPORTANT]
