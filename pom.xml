@@ -71,7 +71,7 @@
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <version.surefire>3.5.4</version.surefire>
+    <version.surefire>3.5.5</version.surefire>
     <version.compiler>3.14.1</version.compiler>
     <version.hapi-fhir-validation>6.6.2</version.hapi-fhir-validation>
     <version.lombok>1.18.42</version.lombok>
