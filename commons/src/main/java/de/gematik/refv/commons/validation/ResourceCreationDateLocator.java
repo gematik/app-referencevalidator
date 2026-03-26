@@ -7,17 +7,17 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * *******
- * 
+ *
  * For additional notes and disclaimer from gematik and in case of changes
  * by gematik, find details in the "Readme" file.
  * #L%
@@ -48,7 +48,8 @@ class ResourceCreationDateLocator {
    *
    * @param resourceBody FHIR-Ressource, deren Erstellungsdatum ermittelt werden soll
    * @param creationDateLocator FHIRPath-Ausdruck zur Ermittlung des Erstellungsdatums
-   * @return Optional.empty() falls mit dem FHIRPath-Ausdruck kein Erstellungsdatum lokalisiert werden konnte und das ermittelte Erstellungsdatum andernfalls
+   * @return Optional.empty() falls mit dem FHIRPath-Ausdruck kein Erstellungsdatum lokalisiert
+   *     werden konnte und das ermittelte Erstellungsdatum andernfalls
    */
   public Optional<LocalDate> findCreationDateIn(String resourceBody, String creationDateLocator) {
     var context = ValidationContext.forText(fhirContext, resourceBody, null);
@@ -66,7 +67,7 @@ class ResourceCreationDateLocator {
 
     var creationDate = creationDateList.get(0);
     if (creationDate == null) // Date could not be parsed
-      throw new DataFormatException(
+    throw new DataFormatException(
           String.format("Could not parse date %s", creationDateList.get(0).toString()));
 
     if (creationDate.getValue() == null)
@@ -74,8 +75,9 @@ class ResourceCreationDateLocator {
           "Could not parse creationDate: " + creationDate.asStringValue());
 
     // Not timezone information supplied --> assume Europe/Berlin
-    if(creationDate.getTimeZone() == null)
-      return Optional.of(LocalDate.of(creationDate.getYear(), creationDate.getMonth()+1, creationDate.getDay()));
+    if (creationDate.getTimeZone() == null)
+      return Optional.of(
+          LocalDate.of(creationDate.getYear(), creationDate.getMonth() + 1, creationDate.getDay()));
 
     // TimeZone information supplied
     return Optional.of(

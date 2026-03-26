@@ -1,5 +1,5 @@
 id: "eau"
-version: "1.2"
+version: "1.3"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
@@ -36,7 +36,7 @@ dependencyLists:
       - "kbv.basis-1.3.0.tgz"
       - "de.basisprofil.r4-1.3.2.tgz"
     validFrom: "2024-10-01"
-    validTill: "2026-03-31"
+    validTill: "2026-06-30"
 
   kbv.ita.eau.1.2.0:
     packages:

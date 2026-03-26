@@ -7,17 +7,17 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * *******
- * 
+ *
  * For additional notes and disclaimer from gematik and in case of changes
  * by gematik, find details in the "Readme" file.
  * #L%
@@ -38,89 +38,97 @@ import org.slf4j.LoggerFactory;
 
 public class BaseValidationModule implements ValidationModule {
 
-    static Logger logger = LoggerFactory.getLogger(BaseValidationModule.class);
-    private final ValidationModuleResourceProvider resourceProvider;
+  static Logger logger = LoggerFactory.getLogger(BaseValidationModule.class);
+  private final ValidationModuleResourceProvider resourceProvider;
 
-    public String getId() {
-        return code;
+  public String getId() {
+    return code;
+  }
+
+  @Override
+  public ValidationModuleConfiguration getConfiguration() {
+    return configuration;
+  }
+
+  private String code;
+  private ValidationModuleConfiguration configuration;
+  private final GenericValidator genericValidator;
+
+  public BaseValidationModule(
+      @NonNull ValidationModuleResourceProvider resourceProvider,
+      GenericValidator genericValidator) {
+    this.genericValidator = genericValidator;
+    this.resourceProvider = resourceProvider;
+  }
+
+  public void initialize() throws ValidationModuleInitializationException {
+    try {
+      this.configuration = this.resourceProvider.getConfiguration();
+      this.code = this.configuration.getId();
+    } catch (Exception e) {
+      throw new ValidationModuleInitializationException("Initialization failed", e);
     }
+  }
 
-    @Override
-    public ValidationModuleConfiguration getConfiguration() {
-        return configuration;
-    }
+  @Override
+  public ValidationResult validateFile(
+      @NonNull String inputFile, ValidationOptions validationOptions)
+      throws IllegalArgumentException, IOException {
+    return validateFile(Path.of(inputFile), validationOptions);
+  }
 
-    private String code;
-    private ValidationModuleConfiguration configuration;
-    private final GenericValidator genericValidator;
+  @Override
+  public ValidationResult validateString(
+      String fhirResourceAsString, ValidationOptions validationOptions) {
+    ValidationResult result =
+        genericValidator.validate(fhirResourceAsString, resourceProvider, validationOptions);
 
-    public BaseValidationModule(@NonNull ValidationModuleResourceProvider resourceProvider, GenericValidator genericValidator) {
-        this.genericValidator = genericValidator;
-        this.resourceProvider = resourceProvider;
-    }
+    logger.debug("ValidationResult: {}", result);
 
-    public void initialize() throws ValidationModuleInitializationException {
-        try {
-            this.configuration = this.resourceProvider.getConfiguration();
-            this.code = this.configuration.getId();
-        } catch (Exception e) {
-            throw new ValidationModuleInitializationException("Initialization failed", e);
-        }
-    }
+    return result;
+  }
 
-    @Override
-    public ValidationResult validateFile(@NonNull String inputFile, ValidationOptions validationOptions) throws IllegalArgumentException, IOException {
-        return validateFile(Path.of(inputFile), validationOptions);
-    }
+  @Override
+  public ValidationResult validateFile(Path inputPath, ValidationOptions validationOptions)
+      throws IllegalArgumentException, IOException {
+    logger.info("Reading input file {}...", inputPath);
+    String body = Files.readString(inputPath, StandardCharsets.UTF_8);
+    return validateString(body, validationOptions);
+  }
 
-    @Override
-    public ValidationResult validateString(String fhirResourceAsString, ValidationOptions validationOptions) {
-        ValidationResult result = genericValidator.validate(
-                fhirResourceAsString,
-                resourceProvider,
-                validationOptions
-        );
+  /**
+   * Validates the given File
+   *
+   * @param inputFile String path, not null
+   * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage}
+   *     as key
+   */
+  public ValidationResult validateFile(@NonNull String inputFile)
+      throws IllegalArgumentException, IOException {
+    return validateFile(inputFile, ValidationOptions.getDefaults());
+  }
 
-        logger.debug("ValidationResult: {}", result);
+  /**
+   * Validates the given String containing a FHIR resource
+   *
+   * @param fhirResourceAsString String, not null or empty
+   * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage}
+   *     as key
+   */
+  public ValidationResult validateString(@NonNull String fhirResourceAsString)
+      throws IllegalArgumentException {
+    return validateString(fhirResourceAsString, ValidationOptions.getDefaults());
+  }
 
-        return result;
-    }
-
-    @Override
-    public ValidationResult validateFile(Path inputPath, ValidationOptions validationOptions) throws IllegalArgumentException, IOException {
-        logger.info("Reading input file {}...", inputPath);
-        String body = Files.readString(inputPath, StandardCharsets.UTF_8);
-        return validateString(body, validationOptions);
-    }
-
-    /**
-     * Validates the given File
-     *
-     * @param inputFile String path, not null
-     * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage} as key
-     */
-    public ValidationResult validateFile(@NonNull String inputFile) throws IllegalArgumentException, IOException {
-        return validateFile(inputFile, ValidationOptions.getDefaults());
-    }
-
-    /**
-     * Validates the given String containing a FHIR resource
-     *
-     * @param fhirResourceAsString String, not null or empty
-     * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage} as key
-     */
-    public ValidationResult validateString(@NonNull String fhirResourceAsString) throws IllegalArgumentException {
-        return validateString(fhirResourceAsString, ValidationOptions.getDefaults());
-    }
-
-    /**
-     * Validates the given File
-     *
-     * @param inputPath        String path, not null or empty
-     * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage} as key
-     */
-    public ValidationResult validateFile(@NonNull Path inputPath) throws IllegalArgumentException, IOException {
-        return validateFile(inputPath, ValidationOptions.getDefaults());
-    }
-
+  /**
+   * Validates the given File
+   *
+   * @param inputPath String path, not null or empty
+   * @return Map of {@link ResultSeverityEnum} as key and a List of {@link SingleValidationMessage}
+   *     as key
+   */
+  public ValidationResult validateFile(@NonNull Path inputPath)
+      throws IllegalArgumentException, IOException {
+    return validateFile(inputPath, ValidationOptions.getDefaults());
+  }
 }

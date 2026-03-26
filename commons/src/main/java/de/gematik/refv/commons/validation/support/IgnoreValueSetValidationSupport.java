@@ -7,17 +7,17 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * *******
- * 
+ *
  * For additional notes and disclaimer from gematik and in case of changes
  * by gematik, find details in the "Readme" file.
  * #L%
@@ -42,55 +42,62 @@ import org.slf4j.LoggerFactory;
 
 public class IgnoreValueSetValidationSupport extends BaseValidationSupport {
 
-    static Logger logger = LoggerFactory.getLogger(IgnoreValueSetValidationSupport.class);
+  static Logger logger = LoggerFactory.getLogger(IgnoreValueSetValidationSupport.class);
 
-    private final Collection<String> valueSetsToIgnore = new HashSet<>();
+  private final Collection<String> valueSetsToIgnore = new HashSet<>();
 
-    public static final String VALUE_SET_IS_IGNORED_MESSAGE = "Value set {0} has been ignored due to module configuration";
+  public static final String VALUE_SET_IS_IGNORED_MESSAGE =
+      "Value set {0} has been ignored due to module configuration";
 
-    /**
-     * Constructor
-     * @param theFhirContext {@link FhirContext}
-     */
-    public IgnoreValueSetValidationSupport(FhirContext theFhirContext, Collection<String> valueSetsToIgnore) {
-        super(theFhirContext);
-        for (String valueSetToIgnore :
-                valueSetsToIgnore) {
-            if(StringUtils.isEmpty(valueSetToIgnore))
-                throw new IllegalArgumentException("Empty value sets to ignore are not allowed");
-            this.valueSetsToIgnore.add(valueSetToIgnore);
-        }
+  /**
+   * Constructor
+   *
+   * @param theFhirContext {@link FhirContext}
+   */
+  public IgnoreValueSetValidationSupport(
+      FhirContext theFhirContext, Collection<String> valueSetsToIgnore) {
+    super(theFhirContext);
+    for (String valueSetToIgnore : valueSetsToIgnore) {
+      if (StringUtils.isEmpty(valueSetToIgnore))
+        throw new IllegalArgumentException("Empty value sets to ignore are not allowed");
+      this.valueSetsToIgnore.add(valueSetToIgnore);
+    }
+  }
+
+  @Override
+  public boolean isValueSetSupported(
+      ValidationSupportContext theValidationSupportContext, String theValueSetUrl) {
+    if (theValueSetUrl == null) return false;
+
+    var resource =
+        theValidationSupportContext.getRootValidationSupport().fetchValueSet(theValueSetUrl);
+    if (resource == null) return false;
+
+    var valueSet = (ValueSet) resource;
+
+    return valueSetsToIgnore.contains(valueSet.getUrl());
+  }
+
+  @Override
+  @Nullable
+  public CodeValidationResult validateCodeInValueSet(
+      ValidationSupportContext theValidationSupportContext,
+      ConceptValidationOptions theOptions,
+      String theCodeSystem,
+      String theCode,
+      String theDisplay,
+      @Nonnull IBaseResource theValueSet) {
+    var valueSet = (ValueSet) theValueSet;
+    if (valueSetsToIgnore.contains(valueSet.getUrl())) {
+      CodeValidationResult result = new CodeValidationResult();
+      result.setSeverity(IssueSeverity.INFORMATION);
+      result.setSeverityCode(ValidationMessage.IssueSeverity.INFORMATION.toCode());
+      String message = MessageFormat.format(VALUE_SET_IS_IGNORED_MESSAGE, valueSet.getUrl());
+      result.setMessage(message);
+      logger.info(message);
+      return result;
     }
 
-    @Override
-    public boolean isValueSetSupported(ValidationSupportContext theValidationSupportContext, String theValueSetUrl) {
-        if(theValueSetUrl == null)
-            return false;
-
-        var resource = theValidationSupportContext.getRootValidationSupport().fetchValueSet(theValueSetUrl);
-        if(resource == null)
-            return false;
-
-        var valueSet = (ValueSet)resource;
-
-        return valueSetsToIgnore.contains(valueSet.getUrl());
-    }
-
-    @Override
-    @Nullable
-    public CodeValidationResult validateCodeInValueSet(ValidationSupportContext theValidationSupportContext, ConceptValidationOptions theOptions, String theCodeSystem, String theCode, String theDisplay, @Nonnull IBaseResource theValueSet) {
-        var valueSet = (ValueSet)theValueSet;
-        if (valueSetsToIgnore.contains(valueSet.getUrl())) {
-            CodeValidationResult result = new CodeValidationResult();
-            result.setSeverity(IssueSeverity.INFORMATION);
-            result.setSeverityCode(ValidationMessage.IssueSeverity.INFORMATION.toCode());
-            String message = MessageFormat.format(VALUE_SET_IS_IGNORED_MESSAGE, valueSet.getUrl());
-            result.setMessage(message);
-            logger.info(message);
-            return result;
-        }
-
-        return null;
-    }
-
+    return null;
+  }
 }

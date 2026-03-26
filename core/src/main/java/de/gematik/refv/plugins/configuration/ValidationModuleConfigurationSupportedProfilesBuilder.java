@@ -7,17 +7,17 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * *******
- * 
+ *
  * For additional notes and disclaimer from gematik and in case of changes
  * by gematik, find details in the "Readme" file.
  * #L%
@@ -28,8 +28,6 @@ import ca.uhn.fhir.context.FhirContext;
 import de.gematik.refv.commons.Profile;
 import de.gematik.refv.commons.configuration.ProfileConfiguration;
 import de.gematik.refv.commons.validation.support.CustomNpmPackageValidationSupport;
-import lombok.NonNull;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -37,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import lombok.NonNull;
 
 public class ValidationModuleConfigurationSupportedProfilesBuilder {
 
@@ -50,10 +49,10 @@ public class ValidationModuleConfigurationSupportedProfilesBuilder {
   }
 
   /**
-   *
    * @param fhirPackage
    * @param creationDateLocators
-   * @return Map of supported profiles with their versions (Map: <profileCanonical: String, <version: String, profileConfiguration: ProfileConfiguration>>)
+   * @return Map of supported profiles with their versions (Map: <profileCanonical: String,
+   *     <version: String, profileConfiguration: ProfileConfiguration>>)
    * @throws IOException
    */
   public Map<String, Map<String, ProfileConfiguration>> buildSupportedProfilesMap(
@@ -67,15 +66,16 @@ public class ValidationModuleConfigurationSupportedProfilesBuilder {
     if (allProfiles != null) {
       for (Profile definition : allProfiles) {
 
-        Optional<String> creationDateLocator = creationDateLocators == null ? Optional.empty() :
-            creationDateLocators.stream()
-                .filter(locator -> locator.getProfile().equals(definition.getBaseCanonical()))
-                .map(CreationDateLocator::getFhirPath)
-                .findFirst();
+        Optional<String> creationDateLocator =
+            creationDateLocators == null
+                ? Optional.empty()
+                : creationDateLocators.stream()
+                    .filter(locator -> locator.getProfile().equals(definition.getBaseCanonical()))
+                    .map(CreationDateLocator::getFhirPath)
+                    .findFirst();
         ProfileConfiguration profileConfiguration =
             new ProfileConfiguration(
-                List.of(fhirPackage.toNameAndVersion()),
-                creationDateLocator.orElse(null));
+                List.of(fhirPackage.toNameAndVersion()), creationDateLocator.orElse(null));
         Map<String, ProfileConfiguration> profileVersions = new HashMap<>();
         profileVersions.put(definition.getVersion(), profileConfiguration);
 

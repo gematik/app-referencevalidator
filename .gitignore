@@ -1,0 +1,11 @@
+.classpath
+.project
+target/
+*.log
+.idea/
+!**/src/main/**/target/
+!**/src/test/**/target/
+*.iml
+jenkinsfile.*
+.githubignore
+tools
