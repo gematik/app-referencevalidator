@@ -2,6 +2,14 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.15.0 (2026-03)
+
+> [!IMPORTANT]
+> EAU module (version update to 1.3)
+
+### changed
+- Extended validity period for eAU 1.1.0 until 30.06.2026
+
 ## Release 2.14.1 (2026-02)
 
 ### fixed
