@@ -27,10 +27,12 @@ package de.gematik.refv.commons.validation;
 import de.gematik.refv.commons.helper.ValidationModuleFactory;
 import java.io.IOException;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+@Slf4j
 class BundlesIT {
 
   private static ValidationModule validationModule;
@@ -54,6 +56,14 @@ class BundlesIT {
       throws IOException {
     var result = validationModule.validateFile(path);
     Assertions.assertFalse(result.isValid(), result.toString());
+    result
+        .getValidationMessages()
+        .forEach(
+            singleValidationMessage ->
+                log.info(
+                    "{} - {}",
+                    singleValidationMessage.getMessageId(),
+                    singleValidationMessage.getMessage()));
     Assertions.assertTrue(
         result.getValidationMessages().stream().anyMatch(m -> m.getMessageId().equals(messageId)),
         "Expected error not found");
@@ -88,16 +98,22 @@ class BundlesIT {
   @Test
   @SneakyThrows
   void validForMismatchingRelativeAndAbsoluteUrlsEvenIfTargetProfileDoesntMatch() {
-    assertValidAndThatMessageIdIsReturned(
+    // REFV-207
+    // the original bundle contains invalid references, so the validator triggers errors
+    // TESTCHANGE
+    assertInvalidAndThatMessageIdIsReturned(
         "src/test/resources/bundles/valid/Target_Profiles_Are_Not_Validated_If_Local_References_Do_Not_Match_Full_URLs.xml",
-        "BUNDLE_BUNDLE_POSSIBLE_MATCH_WRONG_FU");
+        "BUNDLE_BUNDLE_ENTRY_NOTFOUND_CANNOT");
   }
 
   @Test
   @SneakyThrows
   void validForMixedURNsAndURLs() {
-    assertValidAndThatMessageIdIsReturned(
+    // REFV-207
+    // the original bundle contains invalid references, so the validator triggers errors
+    // TESTCHANGE
+    assertInvalidAndThatMessageIdIsReturned(
         "src/test/resources/bundles/valid/Mix_Of_URNs_And_URLs_In_Full_URLs.xml",
-        "BUNDLE_BUNDLE_POSSIBLE_MATCH_WRONG_FU");
+        "BUNDLE_BUNDLE_ENTRY_NOTFOUND_CANNOT");
   }
 }

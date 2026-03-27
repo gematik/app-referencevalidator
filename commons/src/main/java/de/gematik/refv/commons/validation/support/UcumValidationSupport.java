@@ -41,13 +41,14 @@ import org.hl7.fhir.common.hapi.validation.support.CommonCodeSystemsTerminologyS
 @Slf4j
 public class UcumValidationSupport implements IValidationSupport {
 
-  private FhirContext fhirContext;
+  private final FhirContext fhirContext;
 
-  private IssueSeverity issueSeverity;
+  private final IssueSeverity issueSeverity;
 
   public UcumValidationSupport(FhirContext theFhirContext, IssueSeverity issueSeverity) {
     this.fhirContext = theFhirContext;
-    this.issueSeverity = issueSeverity;
+    this.issueSeverity = issueSeverity != null ? issueSeverity : IssueSeverity.ERROR;
+    ;
   }
 
   @Override
@@ -113,8 +114,9 @@ public class UcumValidationSupport implements IValidationSupport {
       String theValueSetUrl) {
     LookupCodeResult lookupResult =
         lookupCode(theValidationSupportContext, theCodeSystem, theCode, null);
-    if (lookupResult.isFound())
+    if (lookupResult != null && lookupResult.isFound()) {
       return new CodeValidationResult().setCode(theCode).setDisplay(lookupResult.getCodeDisplay());
+    }
 
     // The presence of only the following two attributes is important to make sure the code
     // validation will result in a Warning or an Error

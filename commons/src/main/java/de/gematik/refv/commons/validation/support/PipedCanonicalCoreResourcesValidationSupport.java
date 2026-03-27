@@ -42,14 +42,19 @@ public class PipedCanonicalCoreResourcesValidationSupport implements IValidation
   @Override
   public IBaseResource fetchStructureDefinition(String theUrl) {
     Profile p = Profile.parse(theUrl);
-    if (p.getVersion() == null) return null;
+    if (p.getVersion() == null) {
+      return null;
+    }
 
     IValidationSupport support = ctx.getValidationSupport();
     IBaseResource resource = support.fetchStructureDefinition(p.getBaseCanonical());
-    if (resource == null) return null;
+    if (resource == null) {
+      return null;
+    }
 
-    if (Strings.CS.equals(((StructureDefinition) resource).getVersion(), p.getVersion()))
+    if (Strings.CS.equals(((StructureDefinition) resource).getVersion(), p.getVersion())) {
       return resource;
+    }
 
     return null;
   }

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>referencevalidator</artifactId>
         <groupId>de.gematik.refv</groupId>
-        <version>2.15.0</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -25,11 +25,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.gematik.refv.commons</groupId>
-            <artifactId>commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>de.gematik.refv.valmodule</groupId>
             <artifactId>valmodule-core</artifactId>
             <version>${project.version}</version>
@@ -40,24 +35,13 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>de.gematik.refv.commons</groupId>
+            <artifactId>commons</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
         </dependency>
     </dependencies>
 
