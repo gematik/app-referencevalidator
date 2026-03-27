@@ -1,0 +1,18 @@
+@Library('gematik-jenkins-shared-library') _
+
+pipelineMultibranchMavenCi(
+    // Required Parameters
+    ARTIFACT_NAME             : 'referencevalidator',
+    GITLAB_PROJECT_ID         : 1057,
+    JIRA_PROJECT_ID           : 'REFV',
+    JIRA_VERSION_PATTERN      : '^Referencevalidator-([0-9]){1,2}\\.([0-9]){1,2}\\.([0-9]){1,2}$',
+    // Override defaults
+    EMAIL_RECIPIENTS          : getDataEMailList(),
+    ENABLE_OSPO_CHECKS        : true,
+    ENABLE_BUILD_DOCKER_IMAGE : false,
+    ENABLE_DEPENDENCY_TRACK   : false,
+    ENABLE_PUSH_TO_NEXUS      : true,
+    ENABLE_SONAR_SCAN         : false,
+    JAVA_VERSION              : 17,
+    JENKINS_AGENT             : 'k8-backend-medium'
+)

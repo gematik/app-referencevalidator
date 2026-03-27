@@ -1,0 +1,45 @@
+@Library('gematik-jenkins-shared-library') _
+
+pipeline {
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout()
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
+    }
+    agent { label 'k8-backend-small' }
+
+    parameters {
+        string(name: 'RELEASE_VERSION', defaultValue: '', description: 'Bitte die zu releasende Version (Format x.y.z) eingeben')
+    }
+
+    stages {
+
+        stage('Internal-JIRA-Release') {
+            steps {
+                build job: 'Referenzvalidator-Referenzvalidator-JIRA_Release',
+                        parameters: [
+                                string(name: 'JIRA_RELEASE_VERSION', value: String.valueOf("Referencevalidator-${RELEASE_VERSION}"))
+                        ]
+            }
+        }
+
+        stage('Publish to GitHub') {
+            steps {
+                build job: 'Referenzvalidator-Referenzvalidator-GitHub_Release',
+                        parameters: [
+                                string(name: 'GITLAB_TAG', value: String.valueOf("v${RELEASE_VERSION}")),
+                                text(name: 'COMMIT_MESSAGE', value: String.valueOf("Release ${RELEASE_VERSION}")),
+                                text(name: 'REMOTE_BRANCH', value: String.valueOf("main")),
+                                string(name: 'AUTOMATIC_MERGE', value: String.valueOf("YES")),
+                                string(name: 'GITHUB_TAG', value: String.valueOf("${RELEASE_VERSION}"))
+                        ]
+            }
+        }
+
+        stage('Build and Publish Artifacts') {
+            steps {
+                build job: 'Referenzvalidator-Referenzvalidator-Maven_Central_and_CLI_Release'
+            }
+        }
+    }
+}

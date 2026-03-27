@@ -1,0 +1,8 @@
+@Library('gematik-jenkins-shared-library') _
+
+pipelineGitHubPublishSources {
+    GITHUB_PROJECT_NAME = 'app-referencevalidator'
+    GEMATIK_PROJECT_NAME = 'referenzvalidator/gematik-referenzvalidator.git'
+    GITLAB_MAIN_BRANCH = 'main'
+    REMOTE_BRANCH = 'main'
+}

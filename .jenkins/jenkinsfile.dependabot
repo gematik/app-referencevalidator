@@ -1,0 +1,9 @@
+@Library('gematik-jenkins-shared-library') _
+
+pipelineDependabot(
+    CRON_JOB_SCHEDULE         : '0 5 */14 * 1', // Every two weeks, on Monday at 05:00 AM
+    DEFAULT_BRANCH_NAME       : 'main',
+    GIT_PROJECT_PATH          : 'referenzvalidator/gematik-referenzvalidator',
+    MERGE_REQUEST_REVIEWER_ID : getDataDependabotReviewers(),
+    PROJECT_TYPES             : 'maven'
+)
