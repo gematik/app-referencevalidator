@@ -6,6 +6,5 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 *.iml
-jenkinsfile.*
 .githubignore
 tools
