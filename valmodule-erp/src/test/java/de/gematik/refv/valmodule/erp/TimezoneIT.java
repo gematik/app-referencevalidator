@@ -67,7 +67,7 @@ class TimezoneIT {
     var allFiles =
         Files.walk(Paths.get(String.format("src/test/resources/%s", DIR)))
             .filter(path -> path.toString().endsWith(String.format(".%s", "xml")))
-            .collect(Collectors.toList());
+            .toList();
     var timeZones = List.of("Asia/Taipei", "Europe/Berlin", "America/Nome");
 
     var allDynamicTests = new LinkedList<DynamicTest>();
@@ -75,7 +75,7 @@ class TimezoneIT {
       for (var timezone : timeZones) {
         allDynamicTests.add(
             DynamicTest.dynamicTest(
-                file.toString() + " in " + timezone, () -> validateFile(file, timezone)));
+                file + " in " + timezone, () -> validateFile(file, timezone)));
       }
     }
     return allDynamicTests.stream();

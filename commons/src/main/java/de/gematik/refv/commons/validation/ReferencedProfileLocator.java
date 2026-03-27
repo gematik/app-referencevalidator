@@ -66,7 +66,9 @@ public class ReferencedProfileLocator {
       } catch (IOException e) {
         throw new IllegalArgumentException("Could not parse resource", e);
       }
-    } else allProfilesInResource = locateInXml(resourceBody);
+    } else {
+      allProfilesInResource = locateInXml(resourceBody);
+    }
 
     return allProfilesInResource;
   }
@@ -80,7 +82,9 @@ public class ReferencedProfileLocator {
       while (xmlEventReader.hasNext()) {
         XMLEvent event = xmlEventReader.nextEvent();
 
-        if (event instanceof DTD) throw new SecurityException("DTD is not allowed");
+        if (event instanceof DTD) {
+          throw new SecurityException("DTD is not allowed");
+        }
 
         if (event.isStartElement()) {
           treeLevel++;
@@ -151,7 +155,9 @@ public class ReferencedProfileLocator {
     while (xmlEventReader.hasNext()) {
       event = xmlEventReader.nextEvent();
       if (event.isEndElement()
-          && event.asEndElement().getName().getLocalPart().equalsIgnoreCase("meta")) break;
+          && event.asEndElement().getName().getLocalPart().equalsIgnoreCase("meta")) {
+        break;
+      }
       if (event.isStartElement()) {
         nextTag = event.asStartElement();
         if (nextTag.getName().getLocalPart().equalsIgnoreCase(PROFILE_STRING)
@@ -171,9 +177,11 @@ public class ReferencedProfileLocator {
       int treeLevel = 0;
       var token = jsonParser.nextToken();
       while (jsonParser.hasCurrentToken()) {
-        if (token.isStructStart()) treeLevel++;
-        else if (token.isStructEnd()) treeLevel--;
-        else {
+        if (token.isStructStart()) {
+          treeLevel++;
+        } else if (token.isStructEnd()) {
+          treeLevel--;
+        } else {
           if (treeLevel <= 2) {
             String fieldName = jsonParser.currentName();
             if ("meta".equals(fieldName)) {

@@ -6,7 +6,7 @@
     <parent>
         <groupId>de.gematik.refv</groupId>
         <artifactId>referencevalidator</artifactId>
-        <version>2.15.0</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -15,8 +15,6 @@
     <artifactId>valmodule-core</artifactId>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

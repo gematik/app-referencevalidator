@@ -53,9 +53,14 @@ class ValidationResultToOperationOutcomeConverterTest {
             .parseResource(
                 ClassLoader.getSystemClassLoader()
                     .getResourceAsStream("operationoutcome-invalid.json"));
-    assertThat(expectedOperationOutcome)
+
+    assertThat(returnedOperationOutcome)
         .usingRecursiveComparison()
+        // suppresses the generated meta information
+        // "ca.uhn.fhir.parser.BaseParser_RESOURCE_CREATED_BY_PARSER"=true
         .ignoringFields("userData")
-        .isEqualTo(returnedOperationOutcome);
+        // suppresses the extra information added in the Extension by HAPI
+        .ignoringFieldsMatchingRegexes(".*\\.extension")
+        .isEqualTo(expectedOperationOutcome);
   }
 }
