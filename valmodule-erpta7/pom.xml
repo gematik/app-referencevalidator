@@ -12,24 +12,36 @@
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Reference validator ERPTA7 validation module</description>
     <groupId>de.gematik.refv.plugins</groupId>
-    <artifactId>valmodule-erpta7</artifactId>
+    <artifactId>erpta7</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>de.gematik.refv.commons</groupId>
+            <groupId>de.gematik.refv.core</groupId>
             <artifactId>commons</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.gematik.refv.valmodule</groupId>
-            <artifactId>valmodule-erp</artifactId>
-            <version>${project.version}</version>
+            <groupId>de.gematik.refv.plugins</groupId>
+            <artifactId>erp</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.gematik.refv</groupId>
-            <artifactId>valmodule-base</artifactId>
-            <version>${project.version}</version>
+            <groupId>de.gematik.refv.plugins</groupId>
+            <artifactId>base</artifactId>
             <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

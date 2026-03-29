@@ -11,13 +11,28 @@
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Base classes for validation modules of reference validator</description>
-    <artifactId>valmodule-base</artifactId>
+    <groupId>de.gematik.refv.plugins</groupId>
+    <artifactId>base</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>de.gematik.refv.commons</groupId>
+            <groupId>de.gematik.refv.core</groupId>
             <artifactId>commons</artifactId>
-            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

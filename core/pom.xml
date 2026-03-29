@@ -11,38 +11,47 @@
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Reference validator Java library</description>
-    <artifactId>referencevalidator-lib</artifactId>
+    <artifactId>validation</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>de.gematik.refv.valmodule</groupId>
-            <artifactId>valmodule-erp</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.gematik.refv.valmodule</groupId>
-            <artifactId>valmodule-eau</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.gematik.refv.valmodule</groupId>
-            <artifactId>valmodule-core</artifactId>
-            <version>${project.version}</version>
+            <groupId>de.gematik.refv.plugins</groupId>
+            <artifactId>erp</artifactId>
         </dependency>
         <dependency>
             <groupId>de.gematik.refv.plugins</groupId>
-            <artifactId>valmodule-erpta7</artifactId>
-            <version>${project.version}</version>
+            <artifactId>eau</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.gematik.refv.commons</groupId>
+            <groupId>de.gematik.refv.plugins</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gematik.refv.plugins</groupId>
+            <artifactId>erpta7</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.gematik.refv.core</groupId>
             <artifactId>commons</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
 </project>
