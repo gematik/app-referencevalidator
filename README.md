@@ -52,6 +52,9 @@ Siehe [Use Cases, Anforderungen, Architektur, Entwicklungsprozess](docs/concept/
 > **Warning**
 > Der Betrieb des Referenzvalidators in bestehenden Anwendungen oder Anwendungslandschaften obliegt der Verantwortung der Nutzer. Die gematik trifft angemessene Maßnahmen, um die Sicherheit und Performance des Referenzvalidators zu gewährleisten. Sie übernimmt aber keine Verantwortung für etwaige Schäden, die durch die Integration des Referenzvalidators in Produktionssysteme entstehen (siehe auch Haftungsausschuss der [Apache 2.0-Lizenz](https://www.apache.org/licenses/LICENSE-2.0). Insbesondere müssen die Sicherheitsaspekte des Gesamtsystems unter Einbeziehung der technischen und organisatorischen Rahmenbedingungen der jeweiligen Betriebsumgebung durch die Nutzer selbst bewertet werden. Des Weiteren hängen die Performance-Eigenschaften des Validators stark von der jeweiligen Betriebsumgebung ab.
 
+> **Warning**
+> Der Referenzvalididator ist nicht für die Prüfung von KIM Payloads in der Produktivumgebung gedacht.
+
 ### Release Notes
 
 Siehe [Release Notes](ReleaseNotes.md)

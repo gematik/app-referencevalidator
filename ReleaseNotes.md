@@ -2,6 +2,12 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.15.1 (2026-04)
+
+### changed
+
+- Added usage notice for KIM
+
 ## Release 2.15.0 (2026-03)
 
 > [!IMPORTANT]
