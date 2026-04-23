@@ -5,13 +5,13 @@
     <parent>
         <artifactId>referencevalidator</artifactId>
         <groupId>de.gematik.refv</groupId>
-        <version>2.16.0</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Reference validator common classes</description>
-    <groupId>de.gematik.refv.commons</groupId>
+    <groupId>de.gematik.refv.core</groupId>
     <artifactId>commons</artifactId>
 
     <dependencies>
@@ -56,10 +56,45 @@
             <artifactId>hapi-fhir-validation</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>ca.uhn.hapi.fhir</groupId>
-                    <artifactId>hapi-fhir-jpaserver-model</artifactId>
-                </exclusion>
+                        <groupId>ca.uhn.hapi.fhir</groupId>
+                        <artifactId>hapi-fhir-jpaserver-model</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.squareup.okhttp3</groupId>
+                        <artifactId>okhttp</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>Saxon-HE</artifactId>
+                        <groupId>net.sf.saxon</groupId>
+                    </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>hapi-fhir-caching-caffeine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

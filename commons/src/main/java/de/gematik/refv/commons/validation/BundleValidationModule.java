@@ -51,9 +51,10 @@ class BundleValidationModule implements IValidatorModule {
   @Override
   public void validateResource(IValidationContext<IBaseResource> iValidationContext) {
     var resource = iValidationContext.getResource();
-    if (!(resource instanceof Bundle)) return;
+    if (!(resource instanceof Bundle bundle)) {
+      return;
+    }
 
-    var bundle = (Bundle) resource;
     var i = 0;
     for (var entry : bundle.getEntry()) {
       String fullUrl = entry.getFullUrl();

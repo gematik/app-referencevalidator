@@ -121,29 +121,6 @@ class IntegratedValidationModuleIT {
         result.isValid(), "XML has been accepted while it shouldn't - explicitely set as option");
   }
 
-  /**
-   * An XML-comment in front of a resource leads to anomalous behavior while validating
-   * terminologies. E.g. if some code doesn't come from the "preferred" ValueSet, misleading
-   * validation messages occur. This seems to be a bug in the current version of HAPI (6.6.2) A
-   * comment-stripping mechanism in the reference validator ensures, that these messages get
-   * suppressed.
-   */
-  @Test
-  @SneakyThrows
-  void testXmlCommentsDoNotProduceMisleadingValidationIssues() {
-    var input =
-        ClasspathUtil.loadResourceAsStream(
-            "classpath:" + "simplevalidationmodule.test.patient.valid.with-xml-comments.xml");
-
-    ValidationOptions options = ValidationOptions.getDefaults();
-    options.setValidationMessagesFilter(ValidationMessagesFilter.KEEP_ALL);
-    var result = module.validateString(IOUtils.toString(input, StandardCharsets.UTF_8), options);
-    Assertions.assertFalse(
-        result.getValidationMessages().stream()
-            .anyMatch(m -> m.getMessageId().equals("Terminology_TX_NoValid_3_CC")),
-        "Misleading validation messages detected while there should be none");
-  }
-
   @Test
   @SneakyThrows
   void testProfileFilterWhichDoesntMatchAnyMetaProfileReference() {

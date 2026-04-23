@@ -48,9 +48,9 @@ public class Profile {
     String[] splittedString = canonical.split("\\|");
     if (splittedString.length < 2) {
       return new Profile(canonical, splittedString[0], null);
-    } else {
-      return new Profile(canonical, splittedString[0], splittedString[1]);
     }
+
+    return new Profile(canonical, splittedString[0], splittedString[1]);
   }
 
   @Override

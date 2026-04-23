@@ -103,7 +103,7 @@ public class GenericValidator {
     ValidationResult result;
     var configuration = resourceProvider.getConfiguration();
 
-    if (!validateEncoding(resourceBody, configuration, validationOptions))
+    if (!validateEncoding(resourceBody, configuration, validationOptions)) {
       result =
           ValidationResult.createInstance(
               ResultSeverityEnum.ERROR,
@@ -111,7 +111,7 @@ public class GenericValidator {
               String.format(
                   "Wrong instance encoding. Allowed encodings: %s",
                   String.join(",", getAcceptedEncodings(configuration, validationOptions))));
-    else {
+    } else {
 
       List<String> allReferencedProfilesInResource =
           referencedProfileLocator.getAllReferencedProfilesInResource(resourceBody);
@@ -131,21 +131,23 @@ public class GenericValidator {
           var userDefinedProfile =
               validationOptions
                   .getProfiles()
-                  .get(0); // Only one user defined profile is supported at the moment
+                  .getFirst(); // Only one user defined profile is supported at the moment
           log.warn("Profile for validation has been passed by user: " + userDefinedProfile);
           profileForValidation =
               configuration.findFirstSupportedProfileWithExistingConfiguration(
                   List.of(userDefinedProfile));
-        } else if (!allReferencedProfilesInResource.isEmpty())
+        } else if (!allReferencedProfilesInResource.isEmpty()) {
           profileForValidation =
               configuration.findFirstSupportedProfileWithExistingConfiguration(
                   allReferencedProfilesInResource);
-        else
+        } else {
           throw new IllegalArgumentException(
               "FHIR resources without a referenced profile are currently unsupported. Please provide a profile parameter or a profile in the resource meta.profile element.");
+        }
 
-        if (profileForValidation == null)
+        if (profileForValidation == null) {
           throw new UnsupportedProfileException(allReferencedProfilesInResource);
+        }
 
         result =
             validateResource(
@@ -179,11 +181,12 @@ public class GenericValidator {
 
     var profileConfigurationOptional =
         configuration.getSupportedProfileConfiguration(profileForValidation);
-    if (profileConfigurationOptional.isEmpty())
+    if (profileConfigurationOptional.isEmpty()) {
       // Profile is listed among supported profiles, but there are no dependency lists defined -->
       // corrupted module configuration
       throw new IllegalStateException(
           String.format("Could not retrieve profile configuration for %s", profileForValidation));
+    }
 
     ProfileConfiguration profileConfiguration = profileConfigurationOptional.get();
 
@@ -296,15 +299,19 @@ public class GenericValidator {
       de.gematik.refv.commons.validation.ValidationOptions validationOptions) {
     List<String> acceptedEncodings = getAcceptedEncodings(configuration, validationOptions);
 
-    if (acceptedEncodings.isEmpty()) return true;
+    if (acceptedEncodings.isEmpty()) {
+      return true;
+    }
 
     EncodingEnum encoding = EncodingEnum.detectEncodingNoDefault(resourceBody);
 
-    if (acceptedEncodings.contains(Constants.FORMAT_XML) && encoding == EncodingEnum.XML)
+    if (acceptedEncodings.contains(Constants.FORMAT_XML) && encoding == EncodingEnum.XML) {
       return true;
+    }
 
-    if (acceptedEncodings.contains(Constants.FORMAT_JSON) && encoding == EncodingEnum.JSON)
+    if (acceptedEncodings.contains(Constants.FORMAT_JSON) && encoding == EncodingEnum.JSON) {
       return true;
+    }
 
     log.warn("Unknown resource encoding: {}", encoding);
     return false;

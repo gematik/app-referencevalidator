@@ -91,7 +91,9 @@ public class Plugin {
     try (var filesStream = Files.walk(pluginFolder)) {
       var file = filesStream.filter(p -> p.endsWith(path) && Files.isRegularFile(p)).findFirst();
 
-      if (file.isEmpty()) return null;
+      if (file.isEmpty()) {
+        return null;
+      }
 
       return Files.newInputStream(file.get());
     }

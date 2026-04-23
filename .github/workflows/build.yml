@@ -1,0 +1,48 @@
+name: CI Build
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    permissions:
+      contents: read          # checkout
+      actions: read           # needed for upload‑artifact
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Build with Maven
+        run: mvn clean install -DskipTests --no-transfer-progress
+
+      - name: Run Tests
+        run: |
+          mvn verify \
+            -Dsurefire.reportFormat=xml \
+            --no-transfer-progress
+
+      - name: Upload JUnit reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: junit-reports
+          path: target/surefire-reports/*.xml
+
+      - name: Upload JaCoCo coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/**

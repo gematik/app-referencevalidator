@@ -30,7 +30,9 @@ import java.util.stream.Collectors;
 class ValidationResultOutputFilter {
   public ValidationResult apply(
       ValidationResult result, ValidationMessagesFilter validationMessagesFilter) {
-    if (validationMessagesFilter == ValidationMessagesFilter.KEEP_ALL) return result;
+    if (validationMessagesFilter == ValidationMessagesFilter.KEEP_ALL) {
+      return result;
+    }
 
     if (validationMessagesFilter == ValidationMessagesFilter.KEEP_ERRORS_AND_WARNINGS_ONLY) {
       var filteredMessages =

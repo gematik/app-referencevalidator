@@ -34,7 +34,6 @@ import de.gematik.refv.commons.validation.support.UcumValidationSupport;
 import java.util.Collection;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.hl7.fhir.common.hapi.validation.support.CachingValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.SnapshotGeneratingValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
@@ -66,7 +65,10 @@ class HapiFhirValidatorFactory {
       ValidationModuleConfiguration configuration, ValidationSupportChain validationSupportChain) {
     FhirInstanceValidator hapiValidatorModule = new FhirInstanceValidator(validationSupportChain);
     hapiValidatorModule.setErrorForUnknownProfiles(configuration.isErrorOnUnknownProfile());
-    hapiValidatorModule.setNoExtensibleWarnings(true);
+    hapiValidatorModule.setNoExtensibleWarnings(
+        Boolean.parseBoolean(System.getenv().getOrDefault("DISABLE_EXTENSIBLE_WARNINGS", "true")));
+    hapiValidatorModule.setNoTerminologyChecks(
+        Boolean.parseBoolean(System.getenv().getOrDefault("DISABLE_TERMINOLOGY_CHECKS", "false")));
     hapiValidatorModule.setAnyExtensionsAllowed(configuration.isAnyExtensionsAllowed());
     FhirValidator fhirValidator = fhirContext.newValidator();
     fhirValidator.registerValidatorModule(hapiValidatorModule);
@@ -91,12 +93,9 @@ class HapiFhirValidatorFactory {
     return new ValidationSupportChain(
         new UcumValidationSupport(fhirContext, configuration.getUcumValidationSeverityLevel()),
         new SnapshotGeneratingValidationSupport(fhirContext),
-        new CachingValidationSupport(
-            new IgnoreCodeSystemValidationSupport(
-                fhirContext, configuration.getIgnoredCodeSystems())),
-        new CachingValidationSupport(
-            new IgnoreValueSetValidationSupport(fhirContext, configuration.getIgnoredValueSets())),
-        new CachingValidationSupport(validationSupport),
+        new IgnoreCodeSystemValidationSupport(fhirContext, configuration.getIgnoredCodeSystems()),
+        new IgnoreValueSetValidationSupport(fhirContext, configuration.getIgnoredValueSets()),
+        validationSupport,
         new PipedCanonicalCoreResourcesValidationSupport(fhirContext));
   }
 }

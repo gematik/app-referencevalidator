@@ -33,7 +33,6 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -67,15 +66,14 @@ class TimezoneIT {
     var allFiles =
         Files.walk(Paths.get(String.format("src/test/resources/%s", DIR)))
             .filter(path -> path.toString().endsWith(String.format(".%s", "xml")))
-            .collect(Collectors.toList());
+            .toList();
     var timeZones = List.of("Asia/Taipei", "Europe/Berlin", "America/Nome");
 
     var allDynamicTests = new LinkedList<DynamicTest>();
     for (var file : allFiles) {
       for (var timezone : timeZones) {
         allDynamicTests.add(
-            DynamicTest.dynamicTest(
-                file.toString() + " in " + timezone, () -> validateFile(file, timezone)));
+            DynamicTest.dynamicTest(file + " in " + timezone, () -> validateFile(file, timezone)));
       }
     }
     return allDynamicTests.stream();

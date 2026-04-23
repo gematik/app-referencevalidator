@@ -129,12 +129,12 @@ public class ValidationModuleConfiguration {
         profiles.stream()
             .map(Profile::parse)
             .filter(profile -> getSupportedProfileConfiguration(profile).isPresent())
-            .collect(Collectors.toList());
+            .toList();
     if (supportedProfilesFound.isEmpty()) return null;
     if (supportedProfilesFound.size() > 1)
       log.warn(
           "Multiple supported profiles found. Selecting the first one for further processing: {}",
-          supportedProfilesFound.get(0));
-    return supportedProfilesFound.get(0);
+          supportedProfilesFound.getFirst());
+    return supportedProfilesFound.getFirst();
   }
 }
