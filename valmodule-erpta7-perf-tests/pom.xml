@@ -1,22 +1,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.gematik.refv</groupId>
-        <artifactId>referencevalidator</artifactId>
-        <version>2.16.0</version>
+        <artifactId>referencevalidator-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../referencevalidator-parent/pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.gematik.fhir</groupId>
+    <groupId>de.gematik.refv</groupId>
     <artifactId>valmodule-erpta7-perf-tests</artifactId>
     <packaging>jar</packaging>
 
     <name>valmodule-erpta7-perf-tests</name>
+    <description>Performance Tests for E-Rezept Validation Module</description>
 
     <properties>
         <!-- The value depends on the machine where the tests are executed. It is overwritten in the Jenkins file -->
         <max-heap-size>4G</max-heap-size>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.gematik.refv</groupId>
+                <artifactId>referencevalidator-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -25,25 +39,36 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
+         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${version.slf4j-api}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-reload4j</artifactId>
-            <version>${version.slf4j-log4j}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${version.log4j2}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>${version.log4j2}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -69,7 +94,6 @@
                     </systemProperties>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 </project>

@@ -2,6 +2,21 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.17.0 (2026-05)
+
+### added
+
+- Maven Parent POM, Maven BOM, Aggregation of JaCoCo Reports
+- Centralized the dependencies
+- Log4J2 Configuration as XML, level can be fine tuned by using the environment variables:
+  - `FHIR_LOG_LEVEL` to configure the level of the HAPI FHIR operations (defaults to: `WARN`)
+  - `ROOT_LOG_LEVEL` to configure the application log level (defaults to: `INFO`)
+
+### changed
+
+- Name of Maven Packages
+- Minor test improvements
+
 ## Release 2.16.0 (2026-04)
 
 ### changed

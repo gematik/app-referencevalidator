@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="
+                   https://logging.apache.org/xml/ns
+                   https://logging.apache.org/xml/ns/log4j-config-2.xsd">
+  <Properties>
+    <Property name="ROOT_LOG_LEVEL">${sys:root.log.level:-${env:ROOT_LOG_LEVEL:-INFO}}</Property>
+    <Property name="FHIR_LOG_LEVEL">${sys:fhir.log.level:-${env:FHIR_LOG_LEVEL:-WARN}}</Property>
+  </Properties>
+  <Appenders>
+    <Console name="CONSOLE">
+      <PatternLayout pattern="[%d{ISO8601}] [%p] [%t] [%c] %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="${ROOT_LOG_LEVEL}">
+      <AppenderRef ref="CONSOLE"/>
+    </Root>
+    <Logger name="ca.uhn.fhir" level="${FHIR_LOG_LEVEL}" additivity="false">
+      <AppenderRef ref="CONSOLE"/>  
+    </Logger>
+  </Loggers>
+</Configuration>

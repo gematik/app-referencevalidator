@@ -26,26 +26,43 @@ package de.gematik.refv.cli.support;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
-public class TestAppender extends AppenderSkeleton {
-  private final List<LoggingEvent> log = new ArrayList<>();
+public class TestAppender extends AbstractAppender {
+  private final List<LogEvent> log = new CopyOnWriteArrayList<>();
 
-  @Override
-  public boolean requiresLayout() {
-    return false;
+  public TestAppender() {
+    super(
+        "TestAppender-" + UUID.randomUUID(),
+        null,
+        PatternLayout.createDefaultLayout(),
+        false,
+        Property.EMPTY_ARRAY);
   }
 
   @Override
-  protected void append(final LoggingEvent loggingEvent) {
-    log.add(loggingEvent);
+  public void append(final LogEvent loggingEvent) {
+    log.add(loggingEvent.toImmutable());
   }
 
-  @Override
-  public void close() {}
+  public int size() {
+    return log.size();
+  }
 
-  public List<LoggingEvent> getLogs() {
+  public List<LogEvent> getLogsFrom(int startIndex) {
+    int safeStart = Math.max(0, startIndex);
+    if (safeStart >= log.size()) {
+      return new ArrayList<>();
+    }
+    return new ArrayList<>(log.subList(safeStart, log.size()));
+  }
+
+  public List<LogEvent> getLogs() {
     return new ArrayList<>(log);
   }
 }

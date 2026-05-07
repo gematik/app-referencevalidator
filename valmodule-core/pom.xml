@@ -2,36 +2,58 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>de.gematik.refv</groupId>
-        <artifactId>referencevalidator</artifactId>
-        <version>2.16.0</version>
+        <artifactId>referencevalidator-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../referencevalidator-parent/pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <name>${project.groupId}:${project.artifactId}</name>
-    <description>Reference validator core validation module</description>
-    <groupId>de.gematik.refv.valmodule</groupId>
+    <groupId>de.gematik.refv</groupId>
     <artifactId>valmodule-core</artifactId>
+    <packaging>jar</packaging>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <name>valmodule-core</name>
+    <description>Reference validator core validation module</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.gematik.refv</groupId>
+                <artifactId>referencevalidator-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
-            <groupId>de.gematik.refv.commons</groupId>
-            <artifactId>commons</artifactId>
-            <version>${project.version}</version>
+            <groupId>de.gematik.refv</groupId>
+            <artifactId>referencevalidator-commons</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.gematik.refv</groupId>
             <artifactId>valmodule-base</artifactId>
-            <version>${project.version}</version>
             <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

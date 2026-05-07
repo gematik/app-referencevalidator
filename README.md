@@ -286,7 +286,14 @@ Optionen:
   - Prüfen, dass es sich bei einer Instanz um Abgabedaten (GKV oder PKV) handelt: `--profile-filter "DAV-(PKV-)?PR-ERP-AbgabedatenBundle"`
 - `--module-info` - Ausgabe der unterstützten Profile, Profilversionen und FHIR-Packages zu einem Validierungsmodul
 - `--accepted-encodings` - Komma-separierte Liste mit den zu akzeptierenden Serialisierungsformaten der FHIR-Ressourcen. Unterstützte Werte: `xml`,`json`. Überschreibt die Modul-eigene Konfiguration.
-- `--output` - Angabe eines Dateipfades um das Validierungsergebnis in Form einer FHIR OperationOutcome-Ressource bzw. eines Bundles mit OperationOutcome-Ressourcen in eine Datei zu schreiben. Beispiel: `--output c:\temp\output.xml`. Als Ausgabeformate werden sowohl `xml` als auch `json` unterstützt. Die Struktur der Ausgabedateien ist in der [weiterführenden Dokumentation](docs/profiles/fsh/fsh-generated/resources) zu finden.    
+- `--output` - Angabe eines Dateipfades um das Validierungsergebnis in Form einer FHIR OperationOutcome-Ressource bzw. eines Bundles mit OperationOutcome-Ressourcen in eine Datei zu schreiben. Beispiel: `--output c:\temp\output.xml`. Als Ausgabeformate werden sowohl `xml` als auch `json` unterstützt. Die Struktur der Ausgabedateien ist in der [weiterführenden Dokumentation](docs/profiles/fsh/fsh-generated/resources) zu finden. 
+
+#### Erweiterte Logging-Ausgabe
+
+Um weitere Log-Ausgabe, z.B. von HAPI FHIR, zu bekommen, gibt es nun zwei Umgebungsvariablen, die konfiguriert werden können:
+
+- `FHIR_LOG_LEVEL`, um die Logging von HAPI FHIR Operationen zu steuern (default: `WARN`)
+- `ROOT_LOG_LEVEL`, um die Logging von der Anwendung selbst zu steuern (default: `INFO`)
 
 ### Java-Bibliothek
 

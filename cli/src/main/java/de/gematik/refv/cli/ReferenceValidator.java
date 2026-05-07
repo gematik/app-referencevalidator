@@ -47,7 +47,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -67,8 +66,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Category;
-import org.apache.log4j.LogManager;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.OperationOutcome;
@@ -303,14 +304,11 @@ public class ReferenceValidator implements Runnable {
   }
 
   private static void configureAllLoggersToDebug() {
-    org.apache.log4j.Logger logger4j = org.apache.log4j.Logger.getRootLogger();
-    logger4j.setLevel(org.apache.log4j.Level.toLevel("DEBUG"));
-    Enumeration<Category> loggers = LogManager.getCurrentLoggers();
-    while (loggers.hasMoreElements()) {
-      Category logger = loggers.nextElement();
-      logger4j = org.apache.log4j.Logger.getLogger(logger.getName());
-      logger4j.setLevel(org.apache.log4j.Level.toLevel("DEBUG"));
-    }
+    LoggerContext context = (LoggerContext) LogManager.getContext(false);
+    Configuration configuration = context.getConfiguration();
+    configuration.getRootLogger().setLevel(Level.DEBUG);
+    configuration.getLoggers().values().forEach(loggerConfig -> loggerConfig.setLevel(Level.DEBUG));
+    context.updateLoggers();
   }
 
   protected String buildOutputMessage(ValidationResult results) {

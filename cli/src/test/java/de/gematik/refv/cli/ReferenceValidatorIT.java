@@ -36,8 +36,9 @@ import java.util.stream.Stream;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.hl7.fhir.r4.model.Bundle;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -55,17 +56,25 @@ import org.junit.jupiter.params.provider.MethodSource;
 class ReferenceValidatorIT {
 
   TestAppender appender;
+  Logger rootLogger;
+  Logger refvLogger;
   IParser xmlParser = FhirContext.forR4().newXmlParser();
 
   @BeforeEach
   void beforeEach() {
     appender = new TestAppender();
-    Logger.getRootLogger().addAppender(appender);
+    appender.start();
+    rootLogger = (Logger) LogManager.getRootLogger();
+    refvLogger = (Logger) LogManager.getLogger("de.gematik.refv");
+    rootLogger.addAppender(appender);
+    refvLogger.addAppender(appender);
   }
 
   @AfterEach
   void afterEach() {
-    Logger.getRootLogger().removeAppender(appender);
+    rootLogger.removeAppender(appender);
+    refvLogger.removeAppender(appender);
+    appender.stop();
   }
 
   @Test
@@ -89,17 +98,18 @@ class ReferenceValidatorIT {
 
     boolean profileTakenIntoAccount =
         appender.getLogs().stream()
-            .anyMatch(e -> e.getMessage().toString().contains(profileToValidate));
+            .anyMatch(e -> e.getMessage().getFormattedMessage().contains(profileToValidate));
     Assertions.assertTrue(
         profileTakenIntoAccount, "Passed profile has not been taken into account while validation");
 
     boolean warningIssued =
-        appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("WARNING"))
+        appender.getLogs().stream()
+                .anyMatch(l -> l.getMessage().getFormattedMessage().contains("WARNING"))
             && appender.getLogs().stream()
                 .anyMatch(
                     l ->
                         l.getMessage()
-                            .toString()
+                            .getFormattedMessage()
                             .contains("REFV_WARN_PASSED_PROFILE_DIFFERS_FROM_META_PROFILE"));
     Assertions.assertTrue(warningIssued, "No warning issued about profile differences");
   }
@@ -113,9 +123,9 @@ class ReferenceValidatorIT {
 
     boolean isValid =
         appender.getLogs().stream()
-                .noneMatch(l -> l.getMessage().toString().contains("INFORMATION"))
+                .noneMatch(l -> l.getMessage().getFormattedMessage().contains("INFORMATION"))
             && appender.getLogs().stream()
-                .anyMatch(l -> l.getMessage().toString().contains("ERROR"));
+                .anyMatch(l -> l.getMessage().getFormattedMessage().contains("ERROR"));
     Assertions.assertTrue(
         isValid, "Information message found in output - only errors are allowed by default");
   }
@@ -128,7 +138,8 @@ class ReferenceValidatorIT {
     ReferenceValidator.main(args);
 
     boolean isValid =
-        appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("ERROR"));
+        appender.getLogs().stream()
+            .anyMatch(l -> l.getMessage().getFormattedMessage().contains("ERROR"));
     Assertions.assertTrue(isValid, "Errors have not been found in output but expected");
   }
 
@@ -140,7 +151,8 @@ class ReferenceValidatorIT {
     ReferenceValidator.main(args);
 
     boolean isValid =
-        appender.getLogs().stream().noneMatch(l -> l.getMessage().toString().contains("ERROR"));
+        appender.getLogs().stream()
+            .noneMatch(l -> l.getMessage().getFormattedMessage().contains("ERROR"));
     Assertions.assertTrue(isValid, "Errors have been found in output but none expected");
   }
 
@@ -168,8 +180,8 @@ class ReferenceValidatorIT {
         appender.getLogs().stream()
             .anyMatch(
                 l ->
-                    l.getMessage().toString().contains("Supported profiles:")
-                        && l.getMessage().toString().contains("FHIR-Package"));
+                    l.getMessage().getFormattedMessage().contains("Supported profiles:")
+                        && l.getMessage().getFormattedMessage().contains("FHIR-Package"));
     Assertions.assertTrue(isValid, "No information on supported profiles and FHIR-Packages found");
   }
 
@@ -179,7 +191,8 @@ class ReferenceValidatorIT {
     ReferenceValidator.main(new String[] {});
 
     boolean isValid =
-        appender.getLogs().stream().anyMatch(l -> l.getMessage().toString().contains("Usage"));
+        appender.getLogs().stream()
+            .anyMatch(l -> l.getMessage().getFormattedMessage().contains("Usage"));
     Assertions.assertTrue(isValid, "No information found on empty parameters");
   }
 
@@ -193,7 +206,11 @@ class ReferenceValidatorIT {
 
     boolean isValid =
         appender.getLogs().stream()
-            .anyMatch(l -> l.getMessage().toString().contains("unsupported. Supported modules:"));
+            .anyMatch(
+                l ->
+                    l.getMessage()
+                        .getFormattedMessage()
+                        .contains("unsupported. Supported modules:"));
     Assertions.assertTrue(isValid, "No information found on supported modules");
   }
 
@@ -209,7 +226,7 @@ class ReferenceValidatorIT {
             .anyMatch(
                 l ->
                     l.getMessage()
-                        .toString()
+                        .getFormattedMessage()
                         .equals(
                             "No file(s) for validation. You need specify at least one file or directory that contains resources for validation"));
     assertThat(isValid).isTrue();
@@ -229,9 +246,9 @@ class ReferenceValidatorIT {
         appender.getLogs().stream()
             .anyMatch(
                 l ->
-                    l.getMessage().toString().contains("Directory is empty!")
+                    l.getMessage().getFormattedMessage().contains("Directory is empty!")
                         && l.getMessage()
-                            .toString()
+                            .getFormattedMessage()
                             .contains("does not contain any resources for validation"));
     assertThat(isValid).isTrue();
   }
@@ -332,6 +349,7 @@ class ReferenceValidatorIT {
 
     assertThat(appender.getLogs().stream())
         .as("No errors found while profile filter doesn't match")
-        .anyMatch(e -> e.getMessage().toString().contains("REFV_PROFILE_FILTER_MISMATCH"));
+        .anyMatch(
+            e -> e.getMessage().getFormattedMessage().contains("REFV_PROFILE_FILTER_MISMATCH"));
   }
 }

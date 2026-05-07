@@ -26,15 +26,36 @@ package de.gematik.refv.cli;
 
 import de.gematik.refv.cli.support.TestAppender;
 import lombok.SneakyThrows;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ModuleSupportIT {
+
+  private static final Logger ROOT_LOGGER = (Logger) LogManager.getRootLogger();
+  private static final Logger REFV_LOGGER = (Logger) LogManager.getLogger("de.gematik.refv");
+  private static final TestAppender APPENDER = new TestAppender();
+
+  @BeforeAll
+  static void beforeAll() {
+    APPENDER.start();
+    ROOT_LOGGER.addAppender(APPENDER);
+    REFV_LOGGER.addAppender(APPENDER);
+  }
+
+  @AfterAll
+  static void afterAll() {
+    ROOT_LOGGER.removeAppender(APPENDER);
+    REFV_LOGGER.removeAppender(APPENDER);
+    APPENDER.stop();
+  }
 
   @SneakyThrows
   @ParameterizedTest
@@ -47,22 +68,22 @@ class ModuleSupportIT {
       })
   @Execution(ExecutionMode.CONCURRENT)
   void testValidCliInput(String input) {
-    TestAppender appender = getTestAppender();
+    int startIndex = APPENDER.size();
+    String invocationThreadName = Thread.currentThread().getName();
 
     String[] args = input.split(" ");
     ReferenceValidator.main(args);
 
     boolean isValid = false;
-    for (LoggingEvent event : appender.getLogs()) {
-      if (event.getMessage().toString().contains("Valid: true")) isValid = true;
+    for (LogEvent event : APPENDER.getLogsFrom(startIndex)) {
+      if (!invocationThreadName.equals(event.getThreadName())) {
+        continue;
+      }
+      if (event.getMessage().getFormattedMessage().contains("Valid: true")) {
+        isValid = true;
+        break;
+      }
     }
     Assertions.assertTrue(isValid);
-  }
-
-  private static TestAppender getTestAppender() {
-    Logger logger = Logger.getRootLogger();
-    TestAppender appender = new TestAppender();
-    logger.addAppender(appender);
-    return appender;
   }
 }

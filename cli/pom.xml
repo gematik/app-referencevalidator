@@ -3,16 +3,34 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>referencevalidator</artifactId>
         <groupId>de.gematik.refv</groupId>
-        <version>2.16.0</version>
+        <artifactId>referencevalidator-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../referencevalidator-parent/pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
+
     <properties>
         <integrationtest.folder>${basedir}/target/test-classes/pluginloader-integration-test</integrationtest.folder>
     </properties>
-    <modelVersion>4.0.0</modelVersion>
 
+    <groupId>de.gematik.refv</groupId>
     <artifactId>referencevalidator-cli</artifactId>
+    <packaging>jar</packaging>
+    <name>referencevalidator-cli</name>
+    <description>Command line application for validating FHIR resources with the reference validator</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.gematik.refv</groupId>
+                <artifactId>referencevalidator-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -69,7 +87,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>${version.exec-maven-plugin}</version>
                 <executions>
                     <execution>
                         <id>verify-plugin-support</id>
@@ -101,23 +118,18 @@
         <dependency>
             <groupId>de.gematik.refv</groupId>
             <artifactId>referencevalidator-lib</artifactId>
-            <version>${project.version}</version>
         </dependency>
-        <dependency>
+         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-reload4j</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -127,35 +139,20 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>sign-cli</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>${version.maven-gpg-plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <configuration>
-                                    <gpgArguments>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

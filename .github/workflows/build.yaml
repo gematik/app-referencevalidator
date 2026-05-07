@@ -1,0 +1,28 @@
+name: CI Build
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    permissions:
+      contents: read          # checkout
+      actions: read           # needed for upload‑artifact
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build with Maven
+        run: mvn clean install -DskipTests --no-transfer-progress

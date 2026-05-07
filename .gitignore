@@ -1,11 +1,12 @@
 .classpath
 .project
 target/
+pom.xml.*
 *.log
 .idea/
-!**/src/main/**/target/
-!**/src/test/**/target/
 *.iml
 jenkinsfile.*
 .githubignore
 tools
+.vscode
+!.github/workflows
