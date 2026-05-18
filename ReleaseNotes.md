@@ -2,6 +2,14 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.16.1 (2026-05)
+
+### changed
+- ERP module  (version update to 2.17):
+  - `DosageDgMP`: have been patched to produce errors on constraints violations (`FreeTextSingleDosageOnly`, `DosageStructuredOrFreeText`)
+  - `GEM-ERP-PR-MedicationDispense`: add Constraint `workflow-dosageExtensionOhneDosierung` 
+  - `KBV-PR-ERP-Prescription`: add Constraint `-erp-dosageExtensionOhneDosierung` 
+
 ## Release 2.16.0 (2026-04)
 
 ### changed
