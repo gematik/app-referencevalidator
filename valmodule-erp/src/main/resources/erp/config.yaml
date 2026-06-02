@@ -1,5 +1,5 @@
 id: "erp"
-version: "2.17"
+version: "2.18"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
@@ -534,7 +534,7 @@ dependencyLists:
       - severityLevelFrom: "error"
         severityLevelTo: "information"
         messageId: "BUNDLE_BUNDLE_ENTRY_MULTIPLE_PROFILES"
-    validFrom: "2025-07-01"
+    validFrom: "2026-07-01"
     validTill: "2026-09-30"
 
   #de.gematik.erezept-workflow.r4.1.6.1:
@@ -596,7 +596,7 @@ dependencyLists:
       - severityLevelFrom: "error"
         severityLevelTo: "information"
         messageId: "BUNDLE_BUNDLE_ENTRY_MULTIPLE_PROFILES"
-    validFrom: "2026-07-01"
+    validFrom: "2026-10-01"
 
 
   # https://simplifier.net/eRezeptAbgabedaten/~packages

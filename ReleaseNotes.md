@@ -2,6 +2,13 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.16.2 (2026-06)
+
+### changed
+- ERP module  (version update to 2.18):
+  - Correction of the validity period for `de.gematik.erezept-workflow.r4.1.5.2-07-2026` and `de.gematik.erezept-workflow.r4.1.6.2-10-2026`
+
+
 ## Release 2.16.1 (2026-05)
 
 ### changed
