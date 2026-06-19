@@ -1,0 +1,156 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "GEM-ERP-PR-MedicationDispense",
+  "url": "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_MedicationDispense",
+  "version": "1.6.4",
+  "name": "GEM_ERP_PR_MedicationDispense",
+  "title": "Dispensierung eines E-Rezepts",
+  "status": "active",
+  "date": "2026-06-16",
+  "description": "Verarbeitet Informationen über die Dispensierung eines E-Rezepts und die abgegebenen Medikamente.",
+  "fhirVersion": "4.0.1",
+  "kind": "resource",
+  "abstract": false,
+  "type": "MedicationDispense",
+  "baseDefinition": "https://gematik.de/fhir/epa-medication/StructureDefinition/epa-medication-dispense",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "MedicationDispense",
+        "path": "MedicationDispense",
+        "constraint": [
+          {
+            "key": "workflow-dosageExtensionBeiDosierung",
+            "severity": "error",
+            "human": "Wenn eine Dosierung angegeben wurde, muss der generierte Dosierungstext, sowie die Metainformationen zur Generierung angegeben werden.",
+            "expression": "dosageInstruction.exists() implies extension.where(url = 'http://hl7.org/fhir/5.0/StructureDefinition/extension-MedicationDispense.renderedDosageInstruction').exists() and extension.where(url = 'http://ig.fhir.de/igs/medication/StructureDefinition/GeneratedDosageInstructionsMeta').exists()",
+            "source": "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_MedicationDispense"
+          },
+          {
+            "key": "workflow-dosageExtensionOhneDosierung",
+            "severity": "error",
+            "human": "Wenn keine Dosierung angegeben wurde, darf auch kein generierter Dosierungstext, sowie die Metainformationen zur Generierung angegeben werden.",
+            "expression": "dosageInstruction.exists().not() implies extension.where(url = 'http://hl7.org/fhir/5.0/StructureDefinition/extension-MedicationDispense.renderedDosageInstruction').exists().not() and extension.where(url = 'http://ig.fhir.de/igs/medication/StructureDefinition/GeneratedDosageInstructionsMeta').exists().not()",
+            "source": "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_MedicationDispense"
+          }
+        ]
+      },
+      {
+        "id": "MedicationDispense.meta",
+        "path": "MedicationDispense.meta",
+        "min": 1
+      },
+      {
+        "id": "MedicationDispense.meta.profile",
+        "path": "MedicationDispense.meta.profile",
+        "slicing": {
+          "discriminator": [
+            {
+              "type": "value",
+              "path": "$this"
+            }
+          ],
+          "rules": "closed",
+          "description": "Slicing für meta profile",
+          "ordered": false
+        },
+        "min": 1,
+        "max": "1",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationDispense.meta.profile:workflowProfile",
+        "path": "MedicationDispense.meta.profile",
+        "sliceName": "workflowProfile",
+        "min": 1,
+        "max": "1",
+        "fixedCanonical": "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_MedicationDispense|1.6",
+        "mustSupport": true
+      },
+      {
+        "id": "MedicationDispense.identifier",
+        "path": "MedicationDispense.identifier",
+        "short": "E-Rezept-ID",
+        "min": 1
+      },
+      {
+        "id": "MedicationDispense.identifier:prescriptionID",
+        "path": "MedicationDispense.identifier",
+        "sliceName": "prescriptionID",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": [
+              "https://gematik.de/fhir/ti/StructureDefinition/e-prescription-id"
+            ]
+          }
+        ],
+        "patternIdentifier": {
+          "system": "https://gematik.de/fhir/erp/NamingSystem/GEM_ERP_NS_PrescriptionId"
+        }
+      },
+      {
+        "id": "MedicationDispense.status",
+        "path": "MedicationDispense.status",
+        "short": "completed",
+        "fixedCode": "completed"
+      },
+      {
+        "id": "MedicationDispense.medication[x]",
+        "path": "MedicationDispense.medication[x]",
+        "definition": "Die MedicationDispense verweist auf ein Medikament, das abgegeben wurde.",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_Medication"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "MedicationDispense.performer.actor.identifier",
+        "path": "MedicationDispense.performer.actor.identifier",
+        "min": 1,
+        "type": [
+          {
+            "code": "Identifier",
+            "profile": [
+              "http://fhir.de/StructureDefinition/identifier-telematik-id"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "MedicationDispense.whenPrepared",
+        "path": "MedicationDispense.whenPrepared",
+        "constraint": [
+          {
+            "key": "workflow-abgabeDatumsFormat",
+            "human": "Wert muss ein Datum in der Form: YYYY-MM-DD sein.",
+            "source": "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_MedicationDispense",
+            "severity": "error",
+            "expression": "toString().length()=10"
+          }
+        ],
+        "mustSupport": false
+      },
+      {
+        "id": "MedicationDispense.whenHandedOver",
+        "path": "MedicationDispense.whenHandedOver",
+        "constraint": [
+          {
+            "key": "workflow-abgabeDatumsFormat",
+            "human": "Wert muss ein Datum in der Form: YYYY-MM-DD sein.",
+            "source": "https://gematik.de/fhir/erp/StructureDefinition/GEM_ERP_PR_MedicationDispense",
+            "severity": "error",
+            "expression": "toString().length()=10"
+          }
+        ]
+      }
+    ]
+  }
+}

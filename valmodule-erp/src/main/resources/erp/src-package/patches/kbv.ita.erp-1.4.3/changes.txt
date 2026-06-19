@@ -1,0 +1,3 @@
+kbv.ita.erp-1.4.3.tgz:
+- KBV_PR_ERP_Prescription.json
+    - add Constraint "-erp-dosageExtensionOhneDosierung" (Wenn keine Dosierung angegeben wurde, darf auch kein generierter Dosierungstext, sowie die Metainformationen zur Generierung angegeben werden.)
