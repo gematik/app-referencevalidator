@@ -1,4 +1,4 @@
-kbv.ita.erp-1.0.3.tgz:
+de.fhir.medication-1.0.3.tgz:
 - StructureDefinition-DosageDgMP.json
     - syntactic change in constraint "FreeTextSingleDosageOnly" to activate evaluation of the error severity level
     - syntactic change in constraint "DosageStructuredOrFreeText" to activate evaluation of the error severity level

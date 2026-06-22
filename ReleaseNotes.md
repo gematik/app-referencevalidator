@@ -2,6 +2,14 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.16.4 (2026-06)
+
+### changed
+- ERP module:
+  - Update dependencies to the latest versions for the structured Dosage  (de.medication 1.0.7)
+    - added [de.gematik.erezept-workflow.r4#1.6.4](https://simplifier.net/packages/de.gematik.erezept-workflow.r4/1.6.4)
+    - added [kbv.ita.erp#1.4.3](https://simplifier.net/packages/kbv.ita.erp/1.4.3)
+
 ## Release 2.16.3 (2026-06)
 
 ### changed

@@ -1,0 +1,3 @@
+de.gematik.erezept-workflow.r4-1.6.4.tgz:
+- StructureDefinition-GEM-ERP-PR-MedicationDispense.json
+    - add Constraint "workflow-dosageExtensionOhneDosierung" (Wenn keine Dosierung angegeben wurde, darf auch kein generierter Dosierungstext, sowie die Metainformationen zur Generierung angegeben werden.)
