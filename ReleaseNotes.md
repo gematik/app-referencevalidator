@@ -2,6 +2,14 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.16.5 (2026-07)
+
+### changed
+- ERP module:
+  - added [kbv.ita.erp#1.4.4](https://simplifier.net/packages/kbv.ita.erp/1.4.4)
+    - Aufnahme des Constraints -erp-angabeDosierkennzeichenPflicht
+    - Aufnahme des Constraints -erp-angabeDosierkennzeichenBtMT-RezeptPflicht
+  
 ## Release 2.16.4 (2026-06)
 
 ### changed
