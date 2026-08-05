@@ -2,6 +2,17 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.16.6 (2026-08)
+
+### changed
+-- ERP module Patches (version update to 2.22):
+  - `GEM-ERP-PR-MedicationDispense`: 
+    - change Constraint `workflow-dosageExtensionOhneDosierung` -> without GeneratedDosageInstructionsMeta
+    - add Constraint `workflow-dosageExtensionMetaOhneDosierung` -> severity level warning
+  - `KBV-PR-ERP-Prescription`: 
+    - change Constraint `-erp-dosageExtensionOhneDosierung` -> without GeneratedDosageInstructionsMeta
+    - add Constraint `--erp-dosageExtensionMetaOhneDosierung` -> severity level warning
+ 
 ## Release 2.16.5 (2026-07)
 
 ### changed
