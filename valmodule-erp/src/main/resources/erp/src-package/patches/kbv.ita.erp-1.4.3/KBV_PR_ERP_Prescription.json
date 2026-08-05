@@ -53,13 +53,13 @@
                         "key": "-erp-dosageExtensionOhneDosierung",
                         "severity": "error",
                         "human": "Wenn keine Dosierung angegeben wurde, darf auch kein generierter Dosierungstext zur Generierung angegeben werden.",
-                        "expression": "dosageInstruction.exists().not() implies extension.where(url = 'http://hl7.org/fhir/5.0/StructureDefinition/extension-MedicationDispense.renderedDosageInstruction').exists().not()"
+                        "expression": "dosageInstruction.exists().not() implies extension.where(url = 'http://hl7.org/fhir/5.0/StructureDefinition/extension-MedicationRequest.renderedDosageInstruction').exists().not()"
                     },
                     {
                         "key": "-erp-dosageExtensionMetaOhneDosierung",
                         "severity": "warning",
                         "human": "Wenn keine Dosierung und kein generierter Dosierungstext angegeben wurde, sollte auch keine GeneratedDosageInstructionsMeta angegeben werden.",
-                        "expression": "(dosageInstruction.exists().not() and extension.where(url = 'http://hl7.org/fhir/5.0/StructureDefinition/extension-MedicationDispense.renderedDosageInstruction').exists().not()) implies extension.where(url = 'http://ig.fhir.de/igs/medication/StructureDefinition/GeneratedDosageInstructionsMeta').exists().not()"
+                        "expression": "(dosageInstruction.exists().not() and extension.where(url = 'http://hl7.org/fhir/5.0/StructureDefinition/extension-MedicationRequest.renderedDosageInstruction').exists().not()) implies extension.where(url = 'http://ig.fhir.de/igs/medication/StructureDefinition/GeneratedDosageInstructionsMeta').exists().not()"
                     }
                 ]
             },
