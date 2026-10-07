@@ -1,0 +1,13 @@
+{
+  "index-version" : 2,
+  "files" : [{
+    "filename" : "Profile-reisepassnummer.json",
+    "resourceType" : "StructureDefinition",
+    "id" : "identifier-reisepassnummer",
+    "url" : "http://fhir.de/StructureDefinition/identifier-reisepassnummer",
+    "version" : "1.4.0",
+    "kind" : "complex-type",
+    "type" : "Identifier",
+    "derivation" : "constraint"
+  }]
+}
