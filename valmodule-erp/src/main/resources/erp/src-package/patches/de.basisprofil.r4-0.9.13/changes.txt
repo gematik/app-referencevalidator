@@ -1,3 +1,0 @@
-de.basisprofil.r4-0.9.13:
-- in Extension.seitenlokalisation version: 0.9.12
-  - muss eigentlich version: 0.9.13

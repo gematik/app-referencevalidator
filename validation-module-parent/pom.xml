@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.gematik.refv</groupId>
+        <artifactId>referencevalidator</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>validation-module-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Validation Module Parent POM</name>
+    <description>Parent POM defining the build configuration for validation modules</description>
+    <url>https://github.com/gematik/app-referencevalidator</url>
+
+    <scm>
+        <url>https://github.com/gematik/app-referencevalidator</url>
+        <connection>scm:git:git://github.com/gematik/app-referencevalidator.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:gematik/app-referencevalidator.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/gematik/app-referencevalidator/issues</url>
+    </issueManagement>
+
+    <organization>
+        <name>gematik GmbH</name>
+        <url>https://www.gematik.de</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>gematik</name>
+            <email>referenzvalidator@gematik.de</email>
+            <url>https://gematik.github.io/</url>
+            <organization>gematik GmbH</organization>
+            <organizationUrl>https://www.gematik.de/</organizationUrl>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <!--suppress UnresolvedMavenProperty -->
+            <url>${releaseDeploymentRepository}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <!--suppress UnresolvedMavenProperty -->
+            <url>${snapshotDeploymentRepository}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.gematik.refv</groupId>
+                <artifactId>bom</artifactId>
+                <version>${project.parent.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/**</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>target/generated-resources</directory>
+                <includes>
+                    <include>package/**/*.tgz</include>
+                </includes>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${maven.exec.plugin.version}</version>
+                    <configuration>
+                        <blockSystemExit>true</blockSystemExit>
+                        <includeProjectDependencies>false</includeProjectDependencies>
+                        <includePluginDependencies>true</includePluginDependencies>
+                        <executableDependency>
+                            <groupId>de.gematik.refv</groupId>
+                            <artifactId>referencevalidator-cli</artifactId>
+                        </executableDependency>
+                        <mainClass>de.gematik.refv.cli.ReferenceValidator</mainClass>
+                    </configuration>
+                    <executions>
+                        <!-- Generates the validation module with the provided configuration -->
+                        <execution>
+                            <id>build-snapshot</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>java</goal>
+                            </goals>
+                            <configuration>
+                                <arguments>
+                                    <argument>generate-snapshot</argument>
+                                    <argument>--config=${project.basedir}/snapshot.config.yaml</argument>
+                                    <argument>
+                                        --module-config=${project.basedir}/src/main/resources/META-INF/config.yaml
+                                    </argument>
+                                    <argument>
+                                        --output-dir=${project.basedir}/target/generated-resources/package/
+                                    </argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <!-- Tests the generated JAR with FHIR resources -->
+                        <execution>
+                            <id>validate-module</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>java</goal>
+                            </goals>
+                            <configuration>
+                                <arguments>
+                                    <argument>validate</argument>
+                                    <argument>--config=${project.basedir}/validator.config.yaml</argument>
+                                    <argument>
+                                        src/test/resources/fhir/
+                                    </argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>de.gematik.refv</groupId>
+                            <artifactId>referencevalidator-cli</artifactId>
+                            <version>${project.parent.version}</version>
+                            <type>jar</type>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

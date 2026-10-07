@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gematik Reference Validator - Report</title>
+    <style>
+        :root {
+            --gematik-blue: #000E52;
+            --gematik-green: #00FF64;
+            --gematik-cyan: #4AFFFF;
+
+            --background: #F5F7FA;
+            --surface: #FFFFFF;
+            --border: #E5EAF0;
+            --text: #1E293B;
+            --muted: #64748B;
+
+            --fatal: #FF0000;
+            --error: #EE835F;
+            --warning: #EFEC00;
+            --info: #4AFFFF;
+            --success: #00FF64;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            font-family: "Helvetica", "Segoe UI", Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: var(--gematik-blue);
+            color: white;
+            padding: 40px 60px;
+            height: 140px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            min-height: 70px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .header img {
+            height: 70px;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--gematik-blue);
+        }
+
+        .metadata {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .meta-item {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid var(--border);
+        }
+
+        .meta-label {
+            color: var(--muted);
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .meta-value {
+            margin-top: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+        }
+
+        .summary-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .09);
+        }
+
+        .summary-card .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .summary-card .label {
+            color: var(--muted);
+        }
+
+        .summary-card.fatals {
+            border-top: 6px solid var(--fatal);
+        }
+
+        .summary-card.errors {
+            border-top: 6px solid var(--error);
+        }
+
+        .summary-card.warnings {
+            border-top: 6px solid var(--warning);
+        }
+
+        .summary-card.infos {
+            border-top: 6px solid var(--info);
+        }
+
+        .summary-card.total {
+            border-top: 6px solid var(--gematik-blue);
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            cursor: pointer;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: white;
+            border: 1px solid var(--border);
+            transition: .2s;
+        }
+
+        .filter-btn:hover {
+            background: #f8fafc;
+        }
+
+        .messages {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            background: white;
+            border-radius: 12px;
+            border-left: 6px solid;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+            overflow: hidden;
+        }
+
+        .message.fatal {
+            border-color: var(--fatal);
+        }
+
+        .message.error {
+            border-color: var(--error);
+        }
+
+        .message.warning {
+            border-color: var(--warning);
+        }
+
+        .message.information {
+            border-color: var(--info);
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+        }
+
+        .badge {
+            min-width: 110px;
+            text-align: center;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: .75rem;
+            font-weight: 700;
+        }
+
+        .badge.error {
+            background: rgba(238, 131, 95, .2);
+        }
+
+        .badge.warning {
+            background: rgba(239, 236, 0, .25);
+        }
+
+        .badge.info {
+            background: rgba(74, 255, 255, .25);
+        }
+
+        .message-id {
+            font-family: Consolas, monospace;
+            color: var(--gematik-blue);
+            font-weight: 600;
+            min-width: 140px;
+        }
+
+        .message-content {
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            color: var(--muted);
+            font-size: .9rem;
+        }
+
+        @media (max-width: 1000px) {
+
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .message-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 30px;
+            }
+
+        }
+
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1><img
+            src="data:image/png;base64,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"
+            alt="gematik GmbH"/>
+        Report - gematik Reference Validator
+    </h1>
+</header>
+
+<div class="container">
+    <h2 class="section-title">Report Information</h2>
+    <div class="metadata">
+        <div class="meta-item">
+            <div class="meta-label">FHIR Version</div>
+            <div class="meta-value">%FHIR_VERSION%</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="meta-label">Application Version</div>
+            <div class="meta-value">%APPLICATION_VERSION%</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="meta-label">Generated</div>
+            <div class="meta-value">%GENERATED%</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="meta-label">Execution Time</div>
+            <div class="meta-value">%EXECUTION_TIME%</div>
+        </div>
+
+    </div>
+
+    <h2 class="section-title">Summary</h2>
+
+    <div class="summary">
+        <div class="summary-card fatals">
+            <div class="number">%NUM_FATAL%</div>
+            <div class="label">Fatal</div>
+        </div>
+        <div class="summary-card errors">
+            <div class="number">%NUM_ERRORS%</div>
+            <div class="label">Errors</div>
+        </div>
+        <div class="summary-card warnings">
+            <div class="number">%NUM_WARNINGS%</div>
+            <div class="label">Warnings</div>
+        </div>
+        <div class="summary-card total">
+            <div class="number">%NUM_TOTAL%</div>
+            <div class="label">Total Messages</div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Validation Messages</h2>
+
+    <div class="toolbar">
+        <div class="search">
+            <label for="search">Search:</label><input
+                type="text"
+                id="search"
+                placeholder="Search by Message ID or Content..."
+        >
+        </div>
+        <div class="filters">
+            <button class="filter-btn" onclick="filterMessages('all')">All</button>
+            <button class="filter-btn" onclick="filterMessages('fatal')">Fatal</button>
+            <button class="filter-btn" onclick="filterMessages('error')">Errors</button>
+            <button class="filter-btn" onclick="filterMessages('warning')">Warnings</button>
+            <button class="filter-btn" onclick="filterMessages('information')">Information</button>
+        </div>
+
+    </div>
+
+    <div class="messages" id="messages">
+        <!-- Example rows -->
+        %MESSAGE_ROWS%
+    </div>
+    <div class="footer">
+        gematik Reference Validator - Report
+    </div>
+
+</div>
+
+<script>
+    function filterMessages(type) {
+        const messages = document.querySelectorAll('.message');
+        messages.forEach(msg => {
+            if (type === 'all') {
+                msg.style.display = '';
+                return;
+            }
+
+            msg.style.display =
+                msg.classList.contains(type)
+                    ? ''
+                    : 'none';
+        });
+    }
+
+    document
+        .getElementById('search')
+        .addEventListener('input', function () {
+            const value =
+                this.value.toLowerCase();
+
+            document
+                .querySelectorAll('.message')
+                .forEach(msg => {
+
+                    const text =
+                        msg.innerText.toLowerCase();
+
+                    msg.style.display =
+                        text.includes(value)
+                            ? ''
+                            : 'none';
+                });
+        });
+</script>
+</body>
+</html>

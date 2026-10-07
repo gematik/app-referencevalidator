@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.gematik.refv</groupId>
+        <artifactId>referencevalidator</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>validation-module-api</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Validation Module API</name>
+    <description>API for realizing and using a Validation Module</description>
+    <url>https://github.com/gematik/app-referencevalidator</url>
+
+    <scm>
+        <url>https://github.com/gematik/app-referencevalidator</url>
+        <connection>scm:git:git://github.com/gematik/app-referencevalidator.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:gematik/app-referencevalidator.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/gematik/app-referencevalidator/issues</url>
+    </issueManagement>
+
+    <organization>
+        <name>gematik GmbH</name>
+        <url>https://www.gematik.de</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>gematik</name>
+            <email>referenzvalidator@gematik.de</email>
+            <url>https://gematik.github.io/</url>
+            <organization>gematik GmbH</organization>
+            <organizationUrl>https://www.gematik.de/</organizationUrl>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <!--suppress UnresolvedMavenProperty -->
+            <url>${releaseDeploymentRepository}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <!--suppress UnresolvedMavenProperty -->
+            <url>${snapshotDeploymentRepository}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.gematik.refv</groupId>
+                <artifactId>bom</artifactId>
+                <version>${project.parent.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+        </dependency>
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
