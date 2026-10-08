@@ -26,7 +26,7 @@ package de.gematik.refv.lib.fhir_context.control;
 
 import de.gematik.refv.lib.exceptions.SnapshotGenerationException;
 import java.util.List;
-import org.hl7.fhir.r5.model.StructureDefinition;
+import org.hl7.fhir.model.core.StructureDefinition;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

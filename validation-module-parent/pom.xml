@@ -119,7 +119,7 @@
                                     <argument>generate-snapshot</argument>
                                     <argument>--config=${project.basedir}/snapshot.config.yaml</argument>
                                     <argument>
-                                        --module-config=${project.basedir}/src/main/resources/META-INF/config.yaml
+                                        --module-manifest=${project.basedir}/src/main/resources/META-INF/config.yaml
                                     </argument>
                                     <argument>
                                         --output-dir=${project.basedir}/target/generated-resources/package/

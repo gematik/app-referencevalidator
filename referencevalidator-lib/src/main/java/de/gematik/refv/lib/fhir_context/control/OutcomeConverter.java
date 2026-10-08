@@ -31,7 +31,7 @@ import de.gematik.refv.lib.validation.entity.ValidationResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.hl7.fhir.r5.model.OperationOutcome;
+import org.hl7.fhir.model.core.OperationOutcome;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.jspecify.annotations.NonNull;
 
@@ -53,22 +53,13 @@ final class OutcomeConverter {
     Objects.requireNonNull(operationOutcome, "OperationOutcome cannot be null");
     List<ResultMessage> outcomeMessages = new ArrayList<>();
     var issues =
-        operationOutcome.getIssue().stream().map(OutcomeConverter::fromOutcomeComponent).toList();
+        operationOutcome.getIssueList().stream()
+            .map(OutcomeConverter::fromOutcomeComponent)
+            .toList();
 
     if (!issues.isEmpty()) {
       outcomeMessages.addAll(issues);
-    }
-
-    var valMessages =
-        operationOutcome.getValidationMessages().stream()
-            .map(OutcomeConverter::fromValidationMessage)
-            .toList();
-
-    if (!valMessages.isEmpty()) {
-      outcomeMessages.addAll(valMessages);
-    }
-
-    if (outcomeMessages.isEmpty()) {
+    } else {
       outcomeMessages.add(
           ResultMessage.fromMessage(
               IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "Validation succeeded"));
@@ -77,16 +68,6 @@ final class OutcomeConverter {
     // sort by severity
     outcomeMessages.sort(ResultMessage.comparatorBySeverity());
     return new ValidationResult(outcomeMessages);
-  }
-
-  private static IssueSeverity toSeverity(
-      org.hl7.fhir.utilities.validation.ValidationMessage.IssueSeverity level) {
-    return switch (level) {
-      case INFORMATION, NULL -> IssueSeverity.INFORMATION;
-      case WARNING -> IssueSeverity.WARNING;
-      case ERROR -> IssueSeverity.ERROR;
-      case FATAL -> IssueSeverity.FATAL;
-    };
   }
 
   private static IssueSeverity toSeverity(OperationOutcome.IssueSeverity level) {
@@ -112,13 +93,5 @@ final class OutcomeConverter {
     }
     return ResultMessage.fromMessage(
         toSeverity(component.getSeverity()), messageId, component.getText());
-  }
-
-  private static @NonNull ResultMessage fromValidationMessage(
-      @NonNull ValidationMessage validationMessage) {
-    return ResultMessage.fromMessage(
-        toSeverity(validationMessage.getLevel()),
-        Objects.requireNonNullElse(validationMessage.getMessageId(), "UNDEFINED"),
-        validationMessage.getMessage());
   }
 }

@@ -26,12 +26,12 @@ package de.gematik.refv.cli.commands.boundary;
 
 import de.gematik.refv.cli.BaseCommand;
 import de.gematik.refv.cli.commands.VersionProvider;
+import de.gematik.refv.cli.commands.entity.ContextArguments;
+import de.gematik.refv.cli.commands.entity.ReportArguments;
+import de.gematik.refv.cli.commands.entity.TerminologyArguments;
+import de.gematik.refv.cli.commands.entity.ValidationArguments;
+import de.gematik.refv.cli.commands.entity.ValidationModuleArguments;
 import de.gematik.refv.cli.config.boundary.ConfigLoader;
-import de.gematik.refv.cli.config.boundary.ConfigLoader.ContextArguments;
-import de.gematik.refv.cli.config.boundary.ConfigLoader.ModuleArguments;
-import de.gematik.refv.cli.config.boundary.ConfigLoader.ReportArguments;
-import de.gematik.refv.cli.config.boundary.ConfigLoader.TerminologyArguments;
-import de.gematik.refv.cli.config.boundary.ConfigLoader.ValidationArguments;
 import de.gematik.refv.cli.config.entity.ValidationCliConfig;
 import de.gematik.refv.cli.report.boundary.ResultReporter;
 import de.gematik.refv.lib.exceptions.InitializationException;
@@ -60,11 +60,15 @@ import de.gematik.refv.lib.validation.entity.ValidationResult;
 import de.gematik.refv.lib.validation.entity.XmlFhirResource;
 import de.gematik.refv.lib.valmodule.boundary.ModuleLoader;
 import de.gematik.refv.lib.valmodule.entity.ValidationModule;
+import de.gematik.refv.valmodule.api.entity.MessageTransformation;
+import de.gematik.refv.valmodule.api.entity.SuppressionRule;
 import de.gematik.refv.valmodule.api.entity.ValidationModuleManifest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -230,7 +234,7 @@ public class FhirValidatorCommand extends BaseCommand {
               ? configLoader.loadValidationConfigFromPath(Path.of(configPath))
               : configLoader.fromValidationArguments(
                   new ValidationArguments(
-                      new ModuleArguments(modulesDir, moduleName),
+                      new ValidationModuleArguments(modulesDir, moduleName),
                       new ContextArguments(
                           fhirVersion,
                           locale,
@@ -430,10 +434,7 @@ public class FhirValidatorCommand extends BaseCommand {
     return ValidationInputCollector.collect(sources, limits);
   }
 
-  /**
-   * Merges the engine-level validation settings of the loaded module into the given context
-   * configuration.
-   */
+  /** Merges the validation settings of the loaded module into the given context configuration. */
   private @NonNull ContextConfiguration withModuleValidation(
       @NonNull ContextConfiguration base, @NonNull ValidationModuleIndex moduleIndex) {
     final var moduleManifest = moduleIndex.getValidationModuleConfiguration();
@@ -461,13 +462,17 @@ public class FhirValidatorCommand extends BaseCommand {
 
   static @NonNull ValidationOptions withValidationModuleOptions(
       @NonNull ValidationOptions base, @NonNull ValidationModuleManifest moduleManifest) {
+
+    List<SuppressionRule> suppressionRules = getSuppressionRules(base, moduleManifest);
+    List<MessageTransformation> transformations = getTransformations(base, moduleManifest);
+
     return new ValidationOptions(
         base.profileToValidate(),
         base.profileFilterRegex(),
         base.validationMessagesFilterStrategy(),
         base.profileValidityPeriodCheckStrategy(),
-        base.messageTransformations(),
-        base.suppressionRules(),
+        transformations,
+        suppressionRules,
         moduleManifest.ignoredCodeSystems(),
         moduleManifest.ignoredValueSets());
   }
@@ -540,5 +545,43 @@ public class FhirValidatorCommand extends BaseCommand {
                     ? LocalArchive.parse(s).coordinates()
                     : s)
         .toList();
+  }
+
+  private static @NonNull List<SuppressionRule> getSuppressionRules(
+      @NonNull ValidationOptions base, @NonNull ValidationModuleManifest moduleManifest) {
+    List<SuppressionRule> suppressionRules;
+    Collection<SuppressionRule> baseRules =
+        Objects.requireNonNullElse(base.suppressionRules(), Collections.emptyList());
+    if (Objects.nonNull(moduleManifest.globalSuppressionRules())) {
+      suppressionRules =
+          new ArrayList<>(baseRules.size() + moduleManifest.globalSuppressionRules().size());
+      suppressionRules.addAll(baseRules);
+      suppressionRules.addAll(moduleManifest.globalSuppressionRules());
+    } else {
+      suppressionRules = base.suppressionRules();
+    }
+    log.debug("Total Suppression Rules loaded: {}", suppressionRules.size());
+    return suppressionRules;
+  }
+
+  private static @NonNull List<MessageTransformation> getTransformations(
+      @NonNull ValidationOptions base, @NonNull ValidationModuleManifest moduleManifest) {
+    List<MessageTransformation> transformations;
+    Collection<MessageTransformation> baseTransformations =
+        Objects.requireNonNullElse(base.messageTransformations(), Collections.emptyList());
+    if (Objects.nonNull(moduleManifest.messageTransformations())) {
+      transformations =
+          new ArrayList<>(
+              baseTransformations.size() + moduleManifest.messageTransformations().size());
+      transformations.addAll(baseTransformations);
+      transformations.addAll(
+          moduleManifest.messageTransformations().values().stream()
+              .flatMap(Collection::stream)
+              .toList());
+    } else {
+      transformations = base.messageTransformations();
+    }
+    log.debug("Total Transformation Messages loaded: {}", transformations.size());
+    return transformations;
   }
 }

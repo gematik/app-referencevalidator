@@ -24,12 +24,20 @@
  */
 package de.gematik.refv.test.cli.config.boundary;
 
+import de.gematik.refv.cli.commands.entity.ContextArguments;
+import de.gematik.refv.cli.commands.entity.ReportArguments;
+import de.gematik.refv.cli.commands.entity.SnapshotGenerationModuleArguments;
+import de.gematik.refv.cli.commands.entity.SnapshotGeneratorArguments;
+import de.gematik.refv.cli.commands.entity.TerminologyArguments;
+import de.gematik.refv.cli.commands.entity.ValidationArguments;
+import de.gematik.refv.cli.commands.entity.ValidationModuleArguments;
 import de.gematik.refv.cli.config.boundary.ConfigLoader;
 import de.gematik.refv.cli.report.entity.ReportConfiguration;
 import de.gematik.refv.lib.exceptions.ConfigurationException;
 import de.gematik.refv.lib.exceptions.InitializationException;
 import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
 import de.gematik.refv.lib.validation.entity.ValidationOptions;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -103,19 +111,13 @@ class ConfigLoaderTest {
   @Test
   void expectLoadFromValidValidationCliArgumentsSuccessful() {
     final var arguments =
-        new ConfigLoader.ValidationArguments(
-            new ConfigLoader.ModuleArguments(Path.of("modules/"), "my-module"),
-            new ConfigLoader.ContextArguments(
-                "R4",
-                "en-GB",
-                null,
-                new ConfigLoader.TerminologyArguments(false, ""),
-                false,
-                false,
-                false),
+        new ValidationArguments(
+            new ValidationModuleArguments(Path.of("modules/"), "my-module"),
+            new ContextArguments(
+                "R4", "en-GB", null, new TerminologyArguments(false, ""), false, false, false),
             null,
             false,
-            new ConfigLoader.ReportArguments(Path.of("output/"), true));
+            new ReportArguments(Path.of("output/"), true));
     final var cliConfig =
         Assertions.assertDoesNotThrow(() -> configLoader.fromValidationArguments(arguments));
 
@@ -142,89 +144,65 @@ class ConfigLoaderTest {
     final Path modulesDirectory = Path.of("modules-directory/");
     final Path reportDirectory = Path.of("report/");
     final var invalidVersionArguments =
-        new ConfigLoader.ValidationArguments(
-            new ConfigLoader.ModuleArguments(modulesDirectory, "my-module"),
-            new ConfigLoader.ContextArguments(
-                "R6",
-                "de-DE",
-                null,
-                new ConfigLoader.TerminologyArguments(false, ""),
-                false,
-                true,
-                false),
+        new ValidationArguments(
+            new ValidationModuleArguments(modulesDirectory, "my-module"),
+            new ContextArguments(
+                "R6", "de-DE", null, new TerminologyArguments(false, ""), false, true, false),
             null,
             false,
-            new ConfigLoader.ReportArguments(reportDirectory, false));
+            new ReportArguments(reportDirectory, false));
     final var missingReportArguments =
-        new ConfigLoader.ValidationArguments(
-            new ConfigLoader.ModuleArguments(modulesDirectory, "my-module"),
-            new ConfigLoader.ContextArguments(
-                "R6",
-                "de-DE",
-                null,
-                new ConfigLoader.TerminologyArguments(false, ""),
-                false,
-                true,
-                false),
+        new ValidationArguments(
+            new ValidationModuleArguments(modulesDirectory, "my-module"),
+            new ContextArguments(
+                "R6", "de-DE", null, new TerminologyArguments(false, ""), false, true, false),
             null,
             false,
-            new ConfigLoader.ReportArguments(null, false));
+            new ReportArguments(null, false));
     final var validArguments =
-        new ConfigLoader.ValidationArguments(
-            new ConfigLoader.ModuleArguments(modulesDirectory, "my-module"),
-            new ConfigLoader.ContextArguments(
+        new ValidationArguments(
+            new ValidationModuleArguments(modulesDirectory, "my-module"),
+            new ContextArguments(
                 "R5",
                 "en-GB",
                 null,
-                new ConfigLoader.TerminologyArguments(true, "https://terminologien.bfarm.de"),
+                new TerminologyArguments(true, "https://terminologien.bfarm.de"),
                 false,
                 false,
                 false),
             "https://gematik.de/fhir/myprofile",
             false,
-            new ConfigLoader.ReportArguments(reportDirectory, false));
+            new ReportArguments(reportDirectory, false));
     final var noModuleDirectoryArguments =
-        new ConfigLoader.ValidationArguments(
-            new ConfigLoader.ModuleArguments(null, "my-module"),
-            new ConfigLoader.ContextArguments(
-                "R4",
-                "en-GB",
-                null,
-                new ConfigLoader.TerminologyArguments(false, ""),
-                false,
-                true,
-                false),
+        new ValidationArguments(
+            new ValidationModuleArguments(null, "my-module"),
+            new ContextArguments(
+                "R4", "en-GB", null, new TerminologyArguments(false, ""), false, true, false),
             null,
             false,
-            new ConfigLoader.ReportArguments(reportDirectory, false));
+            new ReportArguments(reportDirectory, false));
     final var noModuleNameArguments =
-        new ConfigLoader.ValidationArguments(
-            new ConfigLoader.ModuleArguments(modulesDirectory, null),
-            new ConfigLoader.ContextArguments(
-                "R4",
-                "en-GB",
-                null,
-                new ConfigLoader.TerminologyArguments(false, ""),
-                false,
-                true,
-                true),
+        new ValidationArguments(
+            new ValidationModuleArguments(modulesDirectory, null),
+            new ContextArguments(
+                "R4", "en-GB", null, new TerminologyArguments(false, ""), false, true, true),
             null,
             false,
-            new ConfigLoader.ReportArguments(reportDirectory, false));
+            new ReportArguments(reportDirectory, false));
     final var noModuleArguments =
-        new ConfigLoader.ValidationArguments(
-            new ConfigLoader.ModuleArguments(null, null),
-            new ConfigLoader.ContextArguments(
+        new ValidationArguments(
+            new ValidationModuleArguments(null, null),
+            new ContextArguments(
                 "R5",
                 "en-GB",
                 null,
-                new ConfigLoader.TerminologyArguments(true, "https://terminologien.bfarm.de"),
+                new TerminologyArguments(true, "https://terminologien.bfarm.de"),
                 false,
                 true,
                 true),
             "https://gematik.de/fhir/myprofile",
             false,
-            new ConfigLoader.ReportArguments(reportDirectory, false));
+            new ReportArguments(reportDirectory, false));
     // unsupported FhirVersion
     Assertions.assertThrows(
         IllegalArgumentException.class,
@@ -260,22 +238,21 @@ class ConfigLoaderTest {
     boolean shouldUseTerminologyServer = false;
     boolean shouldUseOfflineMode = false;
     final Path reportPath = Path.of("report/");
-    final Path modulePath = Path.of("src/test/resources/module/config.valid.yaml");
+    final Path moduleManifest = Path.of("src/test/resources/module/config.valid.yaml");
     final Path cachePath = Path.of("cache/");
     final var reportFormat = ReportConfiguration.Format.JSON;
     final var arguments =
-        new ConfigLoader.SnapshotGeneratorArguments(
-            modulePath,
-            new ConfigLoader.ContextArguments(
+        new SnapshotGeneratorArguments(
+            new ContextArguments(
                 fhirVersion,
                 locale,
                 cachePath,
-                new ConfigLoader.TerminologyArguments(
-                    shouldUseTerminologyServer, terminologyServer),
+                new TerminologyArguments(shouldUseTerminologyServer, terminologyServer),
                 true,
                 true,
                 shouldUseOfflineMode),
-            new ConfigLoader.ReportArguments(reportPath, true));
+            new SnapshotGenerationModuleArguments(moduleManifest, null, null),
+            new ReportArguments(reportPath, true));
     final var cliConfig =
         Assertions.assertDoesNotThrow(() -> configLoader.fromSnapshotGeneratorArguments(arguments));
 
@@ -289,23 +266,36 @@ class ConfigLoaderTest {
   @DisplayName("Unknown snapshot FHIR versions use R4 and missing report settings produce an error")
   @Test
   void expectLoadFromUnknownSnapshotVersionAndMissingReportSettings() {
+    // Test: Invalid manifest
     final var context =
-        new ConfigLoader.ContextArguments(
-            "R6", "de", null, new ConfigLoader.TerminologyArguments(false, ""), true, true, false);
-    final var report = new ConfigLoader.ReportArguments(Path.of("report/"), false);
-    final var modulePath = Path.of("module/config.yaml");
-    final var unknownVersionArguments =
-        new ConfigLoader.SnapshotGeneratorArguments(modulePath, context, report);
+        new ContextArguments(
+            "R6", "de", null, new TerminologyArguments(false, ""), true, true, false);
+    final var report = new ReportArguments(Path.of("report/"), false);
+    final var moduleManifest = Path.of("module/config.yaml");
+    final var moduleConfigInvalid =
+        new SnapshotGenerationModuleArguments(moduleManifest, null, null);
+    final var notExistingManifest =
+        new SnapshotGeneratorArguments(context, moduleConfigInvalid, report);
+    Assertions.assertThrows(
+        InitializationException.class,
+        () -> configLoader.fromSnapshotGeneratorArguments(notExistingManifest));
 
-    final var cliConfig = configLoader.fromSnapshotGeneratorArguments(unknownVersionArguments);
+    // Test: unknown FHIR Version -> R4
+    final var manifestFile =
+        Assertions.assertDoesNotThrow(() -> Files.createTempFile("manifest", ".yaml"));
+    final var moduleConfigValid = new SnapshotGenerationModuleArguments(manifestFile, null, null);
+    final var unknownFhirVersion =
+        new SnapshotGeneratorArguments(context, moduleConfigValid, report);
+    final var cliConfig = configLoader.fromSnapshotGeneratorArguments(unknownFhirVersion);
     Assertions.assertEquals(FhirRelease.asR4(), cliConfig.context().fhirRelease());
 
+    // Test: invalid Report config
     final var validContext =
-        new ConfigLoader.ContextArguments(
-            "R4", "de", null, new ConfigLoader.TerminologyArguments(false, ""), true, true, false);
+        new ContextArguments(
+            "R4", "de", null, new TerminologyArguments(false, ""), true, true, false);
     final var missingReportArguments =
-        new ConfigLoader.SnapshotGeneratorArguments(
-            modulePath, validContext, new ConfigLoader.ReportArguments(null, false));
+        new SnapshotGeneratorArguments(
+            validContext, moduleConfigValid, new ReportArguments(null, false));
     Assertions.assertThrows(
         NullPointerException.class,
         () -> configLoader.fromSnapshotGeneratorArguments(missingReportArguments));

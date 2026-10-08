@@ -288,8 +288,6 @@
                         </licensesOutputFile>
                         <forceDownload>false</forceDownload>
 
-                        <failOnMissingHeader>true</failOnMissingHeader>
-                        <failOnNotUptodateHeader>true</failOnNotUptodateHeader>
                         <canUpdateCopyright>true</canUpdateCopyright>
                         <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
 

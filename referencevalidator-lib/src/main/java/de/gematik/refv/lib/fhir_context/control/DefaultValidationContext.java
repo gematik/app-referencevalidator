@@ -40,9 +40,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import org.hl7.fhir.r5.elementmodel.Manager;
-import org.hl7.fhir.r5.model.OperationOutcome;
-import org.hl7.fhir.r5.model.StructureDefinition;
+import org.hl7.fhir.model.core.OperationOutcome;
+import org.hl7.fhir.model.core.StructureDefinition;
+import org.hl7.fhir.model.utilities.formats.FhirFormat;
 import org.hl7.fhir.utilities.i18n.I18nConstants;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.hl7.fhir.validation.ValidationEngine;
@@ -116,13 +116,13 @@ class DefaultValidationContext implements ValidationContext {
       if (fhirResource instanceof JsonFhirResource jsonFhirResource) {
         operationOutcome =
             this.validationEngine.validate(
-                Manager.FhirFormat.JSON,
+                FhirFormat.JSON,
                 jsonFhirResource.inputStream(),
                 profiles.stream().map(ProfileCanonical::value).toList());
       } else {
         operationOutcome =
             this.validationEngine.validate(
-                Manager.FhirFormat.XML,
+                FhirFormat.XML,
                 fhirResource.inputStream(),
                 profiles.stream().map(ProfileCanonical::value).toList());
       }
@@ -213,7 +213,7 @@ class DefaultValidationContext implements ValidationContext {
   private static OperationOutcome suppressExternalAllowedContent(
       OperationOutcome operationOutcome, ContextConfiguration contextConfiguration) {
     List<OperationOutcome.OperationOutcomeIssueComponent> outputComponents = new ArrayList<>();
-    for (var issue : operationOutcome.getIssue()) {
+    for (var issue : operationOutcome.getIssueList()) {
       // skip the issue containing the error
       if (shouldMessageBeIgnored(issue, contextConfiguration)) {
         continue;
@@ -222,7 +222,7 @@ class DefaultValidationContext implements ValidationContext {
       outputComponents.add(issue);
     }
 
-    return new OperationOutcome().setIssue(outputComponents);
+    return new OperationOutcome().setIssueList(outputComponents);
   }
 
   private static boolean shouldMessageBeIgnored(
@@ -249,7 +249,7 @@ class DefaultValidationContext implements ValidationContext {
             || I18nConstants.BUNDLE_ENTRY_URL_MATCHES_TYPE_ID.contains(messageId))) {
       return true;
     }
-    log.debug("Got Message Id {}", messageId);
+    log.debug("Got Message Id {} with level: {}", messageId, validationMessage.getLevel());
     return false;
   }
 }

@@ -56,10 +56,10 @@ class SnapshotGeneratorCommandIT {
   @TempDir Path tempDir;
 
   @BeforeEach
-  void beforeEach() {
+  void beforeEach() throws IOException {
     reportOutputHtml = tempDir.resolve("output.html");
     reportOutputJson = tempDir.resolve("output.json");
-    cachePath = tempDir.resolve("cache");
+    cachePath = Files.createTempDirectory("cache");
   }
 
   @DisplayName(
@@ -232,7 +232,7 @@ class SnapshotGeneratorCommandIT {
     // When the snapshot generation is executed with a matching package selection
     final int exitCode =
         executeCommand(
-            "--module-config",
+            "--module-manifest",
             moduleConfigPath.toString(),
             "--output-dir",
             outputDir.toString(),
@@ -249,7 +249,7 @@ class SnapshotGeneratorCommandIT {
   }
 
   private int executeCommand(String... args) {
-    final String[] baseArgs = {"--fhir-version", "R4", "--locale", "de"};
+    final String[] baseArgs = {"--fhir-version", "R4", "--locale", "de", "--debug"};
     final String[] allArgs = Arrays.copyOf(args, args.length + baseArgs.length);
     System.arraycopy(baseArgs, 0, allArgs, args.length, baseArgs.length);
     return new CommandLine(new SnapshotGeneratorCommand()).execute(allArgs);

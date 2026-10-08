@@ -43,6 +43,7 @@ import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -542,8 +543,8 @@ class PackageArchiveUtilsTest {
   }
 
   @Test
-  void decompressShouldRejectSymbolicLinkEntries() throws Exception {
-    var archive = createArchive("symbolic-link-entry.tgz", symbolicLink());
+  void decompressShouldRejectWindowsReservedDeviceNames() throws Exception {
+    var archive = createArchive("reserved-name.tgz", regularFile("package/CON.txt", "malicious"));
     var output = tempDir.resolve("output");
 
     var exception =
@@ -551,7 +552,37 @@ class PackageArchiveUtilsTest {
             IOException.class,
             () -> PackageArchiveUtils.decompress(archive.toString(), output.toFile()));
 
-    Assertions.assertTrue(exception.getMessage().contains("Symbolic links"));
+    Assertions.assertTrue(exception.getMessage().contains("reserved device name"));
+    Assertions.assertFalse(Files.exists(output));
+  }
+
+  @Test
+  void decompressShouldRejectWindowsIllegalCharacters() throws Exception {
+    var archive =
+        createArchive("illegal-chars.tgz", regularFile("package/file?.json", "malicious"));
+    var output = tempDir.resolve("output");
+
+    var exception =
+        Assertions.assertThrows(
+            IOException.class,
+            () -> PackageArchiveUtils.decompress(archive.toString(), output.toFile()));
+
+    Assertions.assertTrue(exception.getMessage().contains("illegal on Windows"));
+    Assertions.assertFalse(Files.exists(output));
+  }
+
+  @Test
+  void decompressShouldRejectTrailingDotsAndSpacesInSegments() throws Exception {
+    var archive =
+        createArchive("trailing-dot.tgz", regularFile("package/file.txt./nested.json", "x"));
+    var output = tempDir.resolve("output");
+
+    var exception =
+        Assertions.assertThrows(
+            IOException.class,
+            () -> PackageArchiveUtils.decompress(archive.toString(), output.toFile()));
+
+    Assertions.assertTrue(exception.getMessage().contains("unsafe path segment"));
     Assertions.assertFalse(Files.exists(output));
   }
 
@@ -784,12 +815,12 @@ class PackageArchiveUtilsTest {
   private void assumeSymlinkCanBeCreated(Path symbolicLink, Path target) {
     try {
       Files.createSymbolicLink(symbolicLink, target);
-      assertTrue(
-          Files.isSymbolicLink(symbolicLink), "The filesystem did not create the symbolic link");
     } catch (UnsupportedOperationException | IOException | SecurityException e) {
-      Assertions.fail(
-          "Symbolic links are not supported in this test environment: " + e.getMessage());
+      Assumptions.assumeTrue(
+          false, "Symbolic links are not supported in this test environment: " + e.getMessage());
     }
+    Assumptions.assumeTrue(
+        Files.isSymbolicLink(symbolicLink), "The filesystem did not create the symbolic link");
   }
 
   private record ArchiveSpecification(
