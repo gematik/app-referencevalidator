@@ -26,9 +26,8 @@ package de.gematik.refv.lib.fhir_context.control;
 
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
 import de.gematik.refv.lib.fhir_context.entity.MessageId;
-import org.hl7.fhir.r5.model.CodeableConcept;
-import org.hl7.fhir.r5.model.OperationOutcome;
-import org.hl7.fhir.utilities.validation.ValidationMessage;
+import org.hl7.fhir.model.core.CodeableConcept;
+import org.hl7.fhir.model.core.OperationOutcome;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +39,15 @@ class OutcomeConverterTest {
   void expectNullOutcomeThrows() {
     Assertions.assertThrows(
         NullPointerException.class, () -> OutcomeConverter.toValidationResult(null));
+  }
+
+  @DisplayName("Given an empty then NO_ERROR is returned")
+  @Test
+  void expectNoErrorOnEmptyOutcome() {
+    final var outcome = new OperationOutcome();
+    final var result = OutcomeConverter.toValidationResult(outcome);
+    Assertions.assertEquals(
+        MessageId.NO_ERROR.getCode(), result.messages().iterator().next().messageId());
   }
 
   @DisplayName(
@@ -87,16 +95,16 @@ class OutcomeConverterTest {
   void expectValidationMessagesMapped() {
     final var outcome = new OperationOutcome();
     final var vm =
-        new ValidationMessage()
-            .setLevel(ValidationMessage.IssueSeverity.ERROR)
-            .setMessageId("vm-1")
-            .setMessage("a validation message");
-    outcome.addValidationMessage(vm);
+        new OperationOutcome.OperationOutcomeIssueComponent()
+            .setSeverity(OperationOutcome.IssueSeverity.ERROR)
+            .setCode(OperationOutcome.IssueType.INVALID)
+            .setDiagnostics("a validation message");
+    outcome.addIssue(vm);
     final var result = OutcomeConverter.toValidationResult(outcome);
     Assertions.assertEquals(1, result.messages().size());
     final var first = result.messages().iterator().next();
     Assertions.assertEquals(IssueSeverity.ERROR, first.severity());
-    Assertions.assertEquals("vm-1", first.messageId());
+    Assertions.assertEquals(MessageId.INTERNAL_CONTEXT.getCode(), first.messageId());
     Assertions.assertEquals("a validation message", first.messageContent());
   }
 
@@ -105,12 +113,13 @@ class OutcomeConverterTest {
   void expectValidationMessageNullIdBecomesUndefined() {
     final var outcome = new OperationOutcome();
     final var vm =
-        new ValidationMessage()
-            .setLevel(ValidationMessage.IssueSeverity.WARNING)
-            .setMessage("warn");
-    outcome.addValidationMessage(vm);
+        new OperationOutcome.OperationOutcomeIssueComponent()
+            .setSeverity(OperationOutcome.IssueSeverity.WARNING)
+            .setDiagnostics("warn");
+    outcome.addIssue(vm);
     final var result = OutcomeConverter.toValidationResult(outcome);
-    Assertions.assertEquals("UNDEFINED", result.messages().iterator().next().messageId());
+    Assertions.assertEquals(
+        MessageId.INTERNAL_CONTEXT.getCode(), result.messages().iterator().next().messageId());
   }
 
   @DisplayName(
@@ -120,11 +129,11 @@ class OutcomeConverterTest {
     final var outcome = new OperationOutcome();
     issue(outcome, OperationOutcome.IssueSeverity.WARNING, "w-1", "a warning");
     final var vm =
-        new ValidationMessage()
-            .setLevel(ValidationMessage.IssueSeverity.FATAL)
-            .setMessageId("f-1")
-            .setMessage("a fatal");
-    outcome.addValidationMessage(vm);
+        new OperationOutcome.OperationOutcomeIssueComponent()
+            .setSeverity(OperationOutcome.IssueSeverity.FATAL)
+            .setCode(OperationOutcome.IssueType.INVALID)
+            .setDiagnostics("a fatal");
+    outcome.addIssue(vm);
     final var result = OutcomeConverter.toValidationResult(outcome);
     Assertions.assertEquals(2, result.messages().size());
     Assertions.assertEquals(IssueSeverity.FATAL, result.messages().iterator().next().severity());

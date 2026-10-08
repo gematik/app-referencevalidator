@@ -28,7 +28,7 @@ import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-import org.hl7.fhir.r5.model.Resource;
+import org.hl7.fhir.model.core.Resource;
 import org.hl7.fhir.validation.ValidatorUtils;
 import org.jspecify.annotations.NonNull;
 
@@ -48,7 +48,7 @@ final class ProfileResourceParser {
    */
   static Resource parseJsonToResource(@NonNull InputStream inputStream, @NonNull String fhirVersion)
       throws IOException {
-    final var loader = ValidatorUtils.loaderForVersion(Objects.requireNonNull(fhirVersion));
+    final var loader = ValidatorUtils.loaderForVersion(null, Objects.requireNonNull(fhirVersion));
     return loader.loadResource(Objects.requireNonNull(inputStream), true);
   }
 
@@ -63,7 +63,7 @@ final class ProfileResourceParser {
    */
   static Resource parseXmlToResource(@NonNull InputStream inputStream, @NonNull String fhirVersion)
       throws IOException {
-    final var loader = ValidatorUtils.loaderForVersion(Objects.requireNonNull(fhirVersion));
+    final var loader = ValidatorUtils.loaderForVersion(null, Objects.requireNonNull(fhirVersion));
     return loader.loadResource(Objects.requireNonNull(inputStream), false);
   }
 }

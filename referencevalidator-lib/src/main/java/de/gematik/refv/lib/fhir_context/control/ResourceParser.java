@@ -33,8 +33,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import org.hl7.fhir.convertors.factory.VersionConvertorFactory_40_50;
-import org.hl7.fhir.r5.model.Resource;
+import org.hl7.fhir.convertors.factory.VersionConvertorFactory_40_N;
+import org.hl7.fhir.model.ModelContext;
+import org.hl7.fhir.model.core.Resource;
+import org.hl7.fhir.model.core.formats.JsonParser;
+import org.hl7.fhir.model.utilities.formats.OutputStyle;
 import org.hl7.fhir.validation.ValidatorUtils;
 import org.jspecify.annotations.NonNull;
 
@@ -80,7 +83,7 @@ final class ResourceParser {
    */
   static Resource parseR4ResourceAsR5(String json) throws ParsingException {
     var resourceR4 = parseResourceR4(json);
-    return VersionConvertorFactory_40_50.convertResource(resourceR4);
+    return VersionConvertorFactory_40_N.convertResource(resourceR4);
   }
 
   /**
@@ -92,7 +95,7 @@ final class ResourceParser {
    */
   static Resource parseR4ResourceAsR5(byte[] json) throws ParsingException {
     var resourceR4 = parseResourceR4(json);
-    return VersionConvertorFactory_40_50.convertResource(resourceR4);
+    return VersionConvertorFactory_40_N.convertResource(resourceR4);
   }
 
   /**
@@ -114,9 +117,7 @@ final class ResourceParser {
    * @throws ParsingException in case of parsing errors
    */
   static Resource parseResourceR5(byte[] json) throws ParsingException {
-    var parser =
-        new org.hl7.fhir.r5.formats.JsonParser()
-            .setOutputStyle(org.hl7.fhir.r5.formats.IParser.OutputStyle.PRETTY);
+    var parser = new JsonParser(ModelContext.minimalContext()).setOutputStyle(OutputStyle.PRETTY);
     try {
       return parser.parse(json);
     } catch (Exception e) {
@@ -135,7 +136,9 @@ final class ResourceParser {
    */
   static Resource parseJsonToResource(@NonNull InputStream inputStream, @NonNull String fhirVersion)
       throws IOException {
-    final var loader = ValidatorUtils.loaderForVersion(Objects.requireNonNull(fhirVersion));
+    final var loader =
+        ValidatorUtils.loaderForVersion(
+            ModelContext.minimalContext(), Objects.requireNonNull(fhirVersion));
     return loader.loadResource(Objects.requireNonNull(inputStream), true);
   }
 
@@ -150,7 +153,9 @@ final class ResourceParser {
    */
   static Resource parseXmlToResource(@NonNull InputStream inputStream, @NonNull String fhirVersion)
       throws IOException {
-    final var loader = ValidatorUtils.loaderForVersion(Objects.requireNonNull(fhirVersion));
+    final var loader =
+        ValidatorUtils.loaderForVersion(
+            ModelContext.minimalContext(), Objects.requireNonNull(fhirVersion));
     return loader.loadResource(Objects.requireNonNull(inputStream), false);
   }
 

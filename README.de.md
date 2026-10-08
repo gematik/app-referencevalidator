@@ -89,6 +89,9 @@ Die Module werden in einem eigenen Repository gepflegt und können zur Laufzeit 
 Modul-JAR-Dateien im Dateisystem ab und übergeben Sie der CLI den Pfad zum Plugin-Verzeichnis sowie den Namen des
 gewünschten Moduls. Pro Anwendungsausführung kann jeweils nur ein Plugin geladen werden.
 
+Sehen Sie die [Module User Anleitung](./docs/user-guide/module-user-guide.md) für weitere Informationen zur Entwicklung
+eigener Validierungsmodule.
+
 **TODO:** Liste der verfügbaren Plugins ergänzen.
 
 > [!WARNING]

@@ -46,12 +46,13 @@ import java.time.ZoneId;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.hl7.fhir.r5.context.SimpleWorkerContext;
-import org.hl7.fhir.r5.fhirpath.FHIRPathEngine;
-import org.hl7.fhir.r5.model.BaseDateTimeType;
-import org.hl7.fhir.r5.model.Bundle;
-import org.hl7.fhir.r5.model.Parameters;
-import org.hl7.fhir.r5.model.Resource;
+import org.hl7.fhir.model.ModelContext;
+import org.hl7.fhir.model.core.BaseDateTimeType;
+import org.hl7.fhir.model.core.Bundle;
+import org.hl7.fhir.model.core.Parameters;
+import org.hl7.fhir.model.core.Resource;
+import org.hl7.fhir.services.fhirpath.FHIRPathEngine;
+import org.hl7.fhir.standalone.context.SimpleWorkerContext;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,7 +152,7 @@ public class DefaultProfileValidityExtractor implements ProfileValidityExtractor
   }
 
   private Optional<String> extractProfileFromBundle(Bundle bundle) {
-    for (var entry : bundle.getEntry()) {
+    for (var entry : bundle.getEntryList()) {
       if (entry.hasResource()) {
         return extractSingleProfileFromResource(entry.getResource());
       }
@@ -160,7 +161,7 @@ public class DefaultProfileValidityExtractor implements ProfileValidityExtractor
   }
 
   private Optional<String> extractProfileFromParameters(Parameters parameters) {
-    for (var entry : parameters.getParameter()) {
+    for (var entry : parameters.getParameterList()) {
       if (entry.hasResource()) {
         return extractSingleProfileFromResource(entry.getResource());
       }
@@ -333,7 +334,9 @@ public class DefaultProfileValidityExtractor implements ProfileValidityExtractor
   /** Creates a fresh {@link FHIRPathEngine} with a blank {@link SimpleWorkerContext}. */
   private FHIRPathEngine createFhirPathEngine() {
     try {
-      var context = new SimpleWorkerContext.SimpleWorkerContextBuilder().fromNothing();
+      var context =
+          new SimpleWorkerContext.SimpleWorkerContextBuilder(ModelContext.minimalContext())
+              .fromNothing();
       return new FHIRPathEngine(context);
     } catch (IOException e) {
       throw new InitializationException("Failed to create FHIRPathEngine", e);

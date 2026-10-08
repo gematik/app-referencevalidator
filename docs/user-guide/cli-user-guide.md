@@ -317,7 +317,7 @@ of value sets or validation of codes won't be performed.
   ```
 - **Generate snapshots from module:**
   ```bash
-  java -jar referencevalidator-cli.jar generate-snapshot --module-config ./my_modules_folder/META-INF/config.yaml  -o ./snapshots --report out.html
+  java -jar referencevalidator-cli.jar generate-snapshot --module-manifest ./my_modules_folder/META-INF/config.yaml  -o ./snapshots --report out.html
   ```
 
 **Options:**

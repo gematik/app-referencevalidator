@@ -22,25 +22,9 @@
  * by gematik, find details in the "Readme" file.
  * #L%
  */
-package de.gematik.refv.cli.config.entity;
+package de.gematik.refv.cli.commands.entity;
 
-import java.nio.file.Path;
-import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Configuration for Module, needed for generating the snapshots, starting from the given
- * configuration.
- *
- * @param manifestPath the path to the manifest YAML.
- * @param sourcePackagesPath the optional path to the directory containing source packages in TGZ
- *     format to process
- * @param patchesPath the optional path to the directory containing patches
- */
-public record SnapshotModuleConfiguration(
-    @NonNull Path manifestPath, @Nullable Path sourcePackagesPath, @Nullable Path patchesPath) {
-  public SnapshotModuleConfiguration {
-    Objects.requireNonNull(manifestPath, "The 'manifestPath' parameter is null");
-  }
-}
+/** CLI Arguments for the Terminology Server. */
+public record TerminologyArguments(boolean useServer, @Nullable String serverUrl) {}

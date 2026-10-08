@@ -36,10 +36,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
-import org.hl7.fhir.r5.context.Slf4JLoggingService;
-import org.hl7.fhir.r5.terminologies.utilities.TerminologyCache;
-import org.hl7.fhir.r5.utils.validation.constants.BestPracticeWarningLevel;
+import org.hl7.fhir.services.validation.constants.BestPracticeWarningLevel;
 import org.hl7.fhir.utilities.FhirPublication;
+import org.hl7.fhir.utilities.logging.Slf4JLoggingService;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
 import org.hl7.fhir.validation.ValidationEngine;
 import org.hl7.fhir.validation.service.model.InstanceValidatorParameters;
@@ -239,8 +238,7 @@ final class ValidationEngineFactory {
       Path terminologyCachePath)
       throws IOException, URISyntaxException {
     final var terminologyConfiguration = contextConfiguration.terminology();
-    TerminologyCache cache = new TerminologyCache(new Object(), terminologyCachePath.toString());
-    validationEngine.getContext().initTxCache(cache);
+    validationEngine.getContext().initTxCache(terminologyCachePath.toString());
     validationEngine.getContext().setCachingAllowed(true);
 
     // Never abort the whole validation because of terminology-server problems

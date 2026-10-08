@@ -90,6 +90,9 @@ Modules have their own Repository and they can be loaded at runtime, by storing 
 the CLI as arguments the path to the folder containing the plugins and the desired module name of the desired plugin.
 It is not possible to load multiple plugins at the same time within a single execution of the application.
 
+See the [Module User Guide](./docs/user-guide/module-user-guide.md) for more information about developing your own
+validation module.
+
 **TODO**: add list of plugins here
 
 > [!WARNING] The Validation Modules available

@@ -40,7 +40,10 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Pattern;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -78,6 +81,19 @@ final class PackageArchiveUtils {
   private static final int REGULAR_FILE_MODE = 0644;
 
   private static final int DIRECTORY_MODE = 0755;
+
+  /**
+   * Characters that are illegal in file names on Windows. Archives are shared across platforms, so
+   * these are rejected on every host OS to keep extraction portable.
+   */
+  private static final Pattern WINDOWS_ILLEGAL_CHARS = Pattern.compile("[<>:\"|?*\\p{Cntrl}]");
+
+  /** Device names reserved on Windows, with or without an extension (e.g. {@code CON.txt}). */
+  private static final Set<String> WINDOWS_RESERVED_NAMES =
+      Set.of(
+          "CON", "PRN", "AUX", "NUL",
+          "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+          "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9");
 
   private PackageArchiveUtils() {}
 
@@ -139,9 +155,7 @@ final class PackageArchiveUtils {
    */
   static void decompress(@NonNull String inputFileName, @NonNull File outputDirectory)
       throws IOException {
-
     Objects.requireNonNull(inputFileName, "The input filename must not be null");
-
     Objects.requireNonNull(outputDirectory, "The output directory must not be null");
 
     if (inputFileName.isBlank()) {
@@ -149,7 +163,6 @@ final class PackageArchiveUtils {
     }
 
     Path archive = Path.of(inputFileName).toAbsolutePath().normalize();
-
     Path extractionRoot = outputDirectory.toPath().toAbsolutePath().normalize();
 
     validateArchive(archive);
@@ -158,12 +171,9 @@ final class PackageArchiveUtils {
     log.debug("Decompressing {} to {}", archive, extractionRoot);
 
     boolean completed = false;
-
     try {
       extractArchive(archive, extractionRoot);
-
       completed = true;
-
       log.debug("Successfully decompressed {} to {}", archive, extractionRoot);
     } finally {
       if (!completed) {
@@ -303,31 +313,7 @@ final class PackageArchiveUtils {
           continue;
         }
 
-        long entrySize = entry.getSize();
-
-        if (entrySize < 0) {
-          throw new IOException("Archive entry has an invalid size: " + entry.getName());
-        }
-
-        if (entrySize > MAX_ENTRY_SIZE) {
-          throw new IOException(
-              "Archive entry exceeds the maximum permitted size of "
-                  + MAX_ENTRY_SIZE
-                  + " bytes: "
-                  + entry.getName());
-        }
-
-        /*
-         * Subtraction avoids a possible overflow from
-         * totalExtractedSize + entrySize.
-         */
-        if (totalExtractedSize > MAX_EXTRACTED_SIZE - entrySize) {
-          throw new IOException(
-              "Archive exceeds the maximum permitted extracted size of "
-                  + MAX_EXTRACTED_SIZE
-                  + " bytes: "
-                  + archive);
-        }
+        long entrySize = getEntrySize(archive, entry, totalExtractedSize);
 
         totalExtractedSize += entrySize;
         Path parent = destination.getParent();
@@ -342,17 +328,43 @@ final class PackageArchiveUtils {
     }
   }
 
+  private static long getEntrySize(@NonNull Path archive, TarArchiveEntry entry, long totalExtractedSize) throws IOException {
+    long entrySize = entry.getSize();
+
+    if (entrySize < 0) {
+      throw new IOException("Archive entry has an invalid size: " + entry.getName());
+    }
+
+    if (entrySize > MAX_ENTRY_SIZE) {
+      throw new IOException(
+          "Archive entry exceeds the maximum permitted size of "
+              + MAX_ENTRY_SIZE
+              + " bytes: "
+              + entry.getName());
+    }
+
+    /*
+     * Subtraction avoids a possible overflow from
+     * totalExtractedSize + entrySize.
+     */
+    if (totalExtractedSize > MAX_EXTRACTED_SIZE - entrySize) {
+      throw new IOException(
+          "Archive exceeds the maximum permitted extracted size of "
+              + MAX_EXTRACTED_SIZE
+              + " bytes: "
+              + archive);
+    }
+    return entrySize;
+  }
+
   private static void copyCurrentEntry(
       @NonNull TarArchiveInputStream tarInputStream, @NonNull Path destination, long expectedSize)
       throws IOException {
-
     if (Files.exists(destination, LinkOption.NOFOLLOW_LINKS)) {
-
       throw new IOException("Archive contains a duplicate or conflicting entry: " + destination);
     }
 
     long copied;
-
     /* CREATE_NEW prevents duplicate entries from silently overwriting an earlier extracted file. */
     try (OutputStream outputStream =
         new BufferedOutputStream(
@@ -436,6 +448,8 @@ final class PackageArchiveUtils {
       throw new IOException("Archive entry uses a drive-qualified path: " + entryName);
     }
 
+    validateEntryNamePortable(normalizedEntryName);
+
     Path destination = outputDirectory.resolve(normalizedEntryName).normalize();
 
     if (!destination.startsWith(outputDirectory)) {
@@ -443,6 +457,29 @@ final class PackageArchiveUtils {
     }
 
     return destination;
+  }
+
+  /**
+   * Rejects entry names that are illegal or dangerous on Windows, regardless of the host OS, so
+   * that archives created on one platform can be extracted on any other.
+   */
+  private static void validateEntryNamePortable(@NonNull String entryName) throws IOException {
+    for (String segment : entryName.split("/")) {
+      if (".".equals(segment) || "..".equals(segment)) {
+        throw new IOException("Archive entry escapes the extraction directory: " + entryName);
+      }
+      if (segment.isBlank() || segment.endsWith(".") || segment.endsWith(" ")) {
+        throw new IOException("Archive entry has an unsafe path segment: " + entryName);
+      }
+      if (WINDOWS_ILLEGAL_CHARS.matcher(segment).find()) {
+        throw new IOException(
+            "Archive entry contains characters illegal on Windows: " + entryName);
+      }
+      String base = segment.contains(".") ? segment.substring(0, segment.indexOf('.')) : segment;
+      if (WINDOWS_RESERVED_NAMES.contains(base.toUpperCase(Locale.ROOT))) {
+        throw new IOException("Archive entry uses a reserved device name: " + entryName);
+      }
+    }
   }
 
   private static boolean hasWindowsDrivePrefix(@NonNull String entryName) {
@@ -493,7 +530,11 @@ final class PackageArchiveUtils {
   }
 
   private static String archiveEntryName(@NonNull Path relativePath) {
-    return relativePath.toString().replace(File.separatorChar, '/');
+    List<String> elements = new ArrayList<>();
+    for (Path element : relativePath) {
+      elements.add(element.toString());
+    }
+    return String.join("/", elements);
   }
 
   private static void configureTarOutputStream(@NonNull TarArchiveOutputStream tarOutputStream) {
@@ -538,7 +579,6 @@ final class PackageArchiveUtils {
   }
 
   private static void validateArchive(@NonNull Path archive) throws IOException {
-
     if (Files.isSymbolicLink(archive)) {
       throw new IOException("Input archive must not be a symbolic link: " + archive);
     }
@@ -578,7 +618,6 @@ final class PackageArchiveUtils {
 
   private static Path getArchivePath(@NonNull Path sourceDirectory, @NonNull Path outputDirectory)
       throws IOException {
-
     final var fileName = sourceDirectory.getFileName();
     if (fileName == null || fileName.toString().isBlank()) {
       throw new IOException(
@@ -586,7 +625,6 @@ final class PackageArchiveUtils {
     }
 
     final var safeFileName = fileName.toString().replaceAll("[^a-zA-Z0-9._-]", "_");
-
     if (safeFileName.isBlank() || ".".equals(safeFileName) || "..".equals(safeFileName)) {
       throw new IOException(
           "Cannot create a safe archive name from source directory: " + sourceDirectory);
@@ -615,18 +653,14 @@ final class PackageArchiveUtils {
           "Atomic archive publication is not supported for {}. "
               + "Falling back to a regular replacement move.",
           finalArchive);
-
       Files.move(temporaryArchive, finalArchive, StandardCopyOption.REPLACE_EXISTING);
     }
   }
 
   private static void cleanupPartialExtraction(@NonNull Path extractionRoot) {
-
     if (!Files.exists(extractionRoot, LinkOption.NOFOLLOW_LINKS)) {
-
       return;
     }
-
     try {
       FileUtils.deleteDirectory(extractionRoot.toFile());
     } catch (IOException e) {

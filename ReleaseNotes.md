@@ -1,15 +1,14 @@
-<img alt="gematik GmbH" align="right" width="250"
-height="47" [src="docs/img/Gematik_Logo_Flag.png"](src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png")/> <br/>
+<img width="250" alt="gematik GmbH" src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png" />
 
 # Release Notes
 
-## Release 3.0.0-M1 (2026-09)
+## Release 3.0.0-M1 (2026-10)
 
 > [!IMPORTANT] Major Breaking Changes
 
 ### added
 
-- New Validation and Snapshot Generation commands, based on HL7 Core Library
+- New Validation and Snapshot Generation commands, based on HL7 Core Library v7
 - Bill-of-Material (bom) with centralized dependency management
 
 ### changed

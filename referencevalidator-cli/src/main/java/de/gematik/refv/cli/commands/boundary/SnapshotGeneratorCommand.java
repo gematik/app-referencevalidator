@@ -26,11 +26,12 @@ package de.gematik.refv.cli.commands.boundary;
 
 import de.gematik.refv.cli.BaseCommand;
 import de.gematik.refv.cli.commands.VersionProvider;
+import de.gematik.refv.cli.commands.entity.ContextArguments;
+import de.gematik.refv.cli.commands.entity.ReportArguments;
+import de.gematik.refv.cli.commands.entity.SnapshotGenerationModuleArguments;
+import de.gematik.refv.cli.commands.entity.SnapshotGeneratorArguments;
+import de.gematik.refv.cli.commands.entity.TerminologyArguments;
 import de.gematik.refv.cli.config.boundary.ConfigLoader;
-import de.gematik.refv.cli.config.boundary.ConfigLoader.ContextArguments;
-import de.gematik.refv.cli.config.boundary.ConfigLoader.ReportArguments;
-import de.gematik.refv.cli.config.boundary.ConfigLoader.SnapshotGeneratorArguments;
-import de.gematik.refv.cli.config.boundary.ConfigLoader.TerminologyArguments;
 import de.gematik.refv.cli.config.entity.SnapshotCliConfig;
 import de.gematik.refv.cli.config.entity.SnapshotModuleConfiguration;
 import de.gematik.refv.cli.report.boundary.ResultReporter;
@@ -103,7 +104,8 @@ public class SnapshotGeneratorCommand extends BaseCommand {
 
   @CommandLine.Option(
       names = {"-c", "--config"},
-      description = "Path to YAML configuration file",
+      description =
+          "Path to YAML configuration file to use as source for the generation of snapshots",
       required = false)
   private Path configFilePath;
 
@@ -116,11 +118,11 @@ public class SnapshotGeneratorCommand extends BaseCommand {
   private final Set<String> userPackageNames = Set.of();
 
   @CommandLine.Option(
-      names = {"--module-config"},
+      names = {"--module-manifest"},
       description =
-          "The Validation Module configuration to use as source for the generation of snapshots",
+          "The Validation Module Manifest YAML to use as source for the generation of snapshots",
       required = false)
-  private Path moduleConfig;
+  private Path moduleManifest;
 
   @CommandLine.Option(
       names = {"--patches-dir"},
@@ -185,7 +187,6 @@ public class SnapshotGeneratorCommand extends BaseCommand {
               ? configLoader.loadSnapshotConfigFromPath(configFilePath)
               : configLoader.fromSnapshotGeneratorArguments(
                   new SnapshotGeneratorArguments(
-                      moduleConfig,
                       new ContextArguments(
                           fhirVersion,
                           locale,
@@ -194,12 +195,11 @@ public class SnapshotGeneratorCommand extends BaseCommand {
                           true,
                           true,
                           !shouldRunInOfflineMode),
+                      new SnapshotGenerationModuleArguments(
+                          moduleManifest, sourcePackagePath, patchesDir),
                       new ReportArguments(reportFilePath, shouldUseJson)));
-      if (cliConfig == null) {
-        throw new InitializationException("Failed to load the User configuration");
-      }
 
-      log.debug("User configuration loaded successfully");
+      log.info("### User configuration loaded successfully");
 
       if (Files.notExists(outputDir)) {
         log.info("Creating output directory {}", outputDir);
@@ -273,7 +273,7 @@ public class SnapshotGeneratorCommand extends BaseCommand {
                       cliConfig.context().packageLoading().cachePath().resolve(packageName),
                       outputDir,
                       packageGroup.getValue()),
-                  new SnapshotGenerationOptions());
+                  new SnapshotGenerationOptions(cliConfig.module().patchesPath()));
           resultMap.put(packageName, result);
         }
       }

@@ -43,11 +43,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.hl7.fhir.r5.context.ContextUtilities;
-import org.hl7.fhir.r5.context.SimpleWorkerContext;
-import org.hl7.fhir.r5.formats.FormatUtilities;
-import org.hl7.fhir.r5.formats.IParser;
-import org.hl7.fhir.r5.model.StructureDefinition;
+import org.hl7.fhir.model.core.StructureDefinition;
+import org.hl7.fhir.model.core.formats.JsonParser;
+import org.hl7.fhir.standalone.context.ContextUtilities;
+import org.hl7.fhir.standalone.context.SimpleWorkerContext;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 import org.hl7.fhir.validation.ValidationEngine;
 import org.jspecify.annotations.NonNull;
@@ -261,8 +260,7 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
       throws IOException {
     List<StructureDefinition> processedDefinitions =
         context.fetchResourcesByType(StructureDefinition.class);
-    var jsonParser = FormatUtilities.makeParser("json");
-    jsonParser.setOutputStyle(IParser.OutputStyle.PRETTY);
+    final var jsonParser = new JsonParser(context.getModelContext());
     for (var sd : processedDefinitions) {
       if (Objects.isNull(sd.getUrl()) || !sd.getUrl().startsWith(profilePrefix)) {
         continue;

@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import org.hl7.fhir.r5.model.StructureDefinition;
+import org.hl7.fhir.model.core.StructureDefinition;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 import org.hl7.fhir.validation.ValidationEngine;
 import org.jspecify.annotations.NonNull;
@@ -97,7 +97,7 @@ final class ContextPackageLoader {
       try (var inputStream = new FileInputStream(currentResourceFilePath.toFile())) {
         final var parsedPackageResource =
             ResourceParser.parseR4ResourceAsR5(inputStream.readAllBytes());
-        if (parsedPackageResource instanceof org.hl7.fhir.r5.model.StructureDefinition sd) {
+        if (parsedPackageResource instanceof StructureDefinition sd) {
           structureDefinitionsFromPackage.put(sd, currentResourceFilePath);
         }
         // IMPORTANT: load resource in Context Cache

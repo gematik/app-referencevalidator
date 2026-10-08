@@ -73,7 +73,7 @@ class SnapshotGeneratorCommandTest {
     final int exitCode =
         new CommandLine(new SnapshotGeneratorCommand())
             .execute(
-                "--module-config",
+                "--module-manifest",
                 tempDir.resolve("missing.yaml").toString(),
                 "--output-dir",
                 tempDir.resolve("out").toString(),
