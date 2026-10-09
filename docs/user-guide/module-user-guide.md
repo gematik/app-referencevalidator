@@ -393,23 +393,19 @@ policy options.
 
 Patch files replace files inside an unpacked FHIR package before snapshot generation. The patch file
 must have the same basename as the package file it replaces, and it is copied to that package's
-`package/` directory. The patch directory is a root containing a `patches/` directory, then a
-directory named with the package coordinates (`name#version`). For example, for
-`dummy.ig#1.0.0`:
+`package/` directory. The configured patches directory directly contains a directory named with
+the package coordinates (`name#version`). For example, for `dummy.ig#1.0.0`:
 
 ```text
 src/main/resources/src-package/
 ├── dummy.ig-1.0.0.tgz
 └── patches/
-	└── patches/
-		└── dummy.ig#1.0.0/
-			└── StructureDefinition-DummyPatient.json
+  └── dummy.ig#1.0.0/
+    └── StructureDefinition-DummyPatient.json
 ```
 
-The nested `patches/patches/` is intentional in the current implementation: the configured patches
-root is `src-package/patches`, and the patch applier looks below that root for `patches/<name>#<version>/`.
-Use the exact package name and version. A patch replaces the package file with the same filename;
-it does not perform a line-based diff or merge.
+Configure `patchesPath` as `src-package/patches`. Use the exact package name and version. A patch
+replaces the package file with the same filename; it does not perform a line-based diff or merge.
 
 ## Use the module from the CLI
 

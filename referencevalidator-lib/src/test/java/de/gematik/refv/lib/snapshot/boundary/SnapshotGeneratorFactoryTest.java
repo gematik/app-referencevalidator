@@ -26,31 +26,61 @@ package de.gematik.refv.lib.snapshot.boundary;
 
 import de.gematik.refv.lib.exceptions.InitializationException;
 import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class SnapshotGeneratorFactoryTest {
 
-  @DisplayName(
-      "Given a valid configuration, when building a generator, then a generator is returned")
-  @Test
-  void expectFromConfigurationBuildsGenerator() {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("generatorCreationCases")
+  void generatorCreationFollowsConfigurationOutcome(
+      String requirementLabel, ContextConfiguration configuration, boolean expectFailure) {
+    if (expectFailure) {
+      Assertions.assertThrows(
+          InitializationException.class,
+          () -> SnapshotGeneratorFactory.fromConfiguration(configuration));
+      return;
+    }
 
-    try (var generator =
-        Assertions.assertDoesNotThrow(
-            () ->
-                SnapshotGeneratorFactory.fromConfiguration(
-                    ContextConfiguration.defaultConfiguration()))) {
+    try (var generator = SnapshotGeneratorFactory.fromConfiguration(configuration)) {
       Assertions.assertNotNull(generator);
     }
   }
 
-  @DisplayName(
-      "Given a null configuration, when building a generator, then an InitializationException is thrown")
+  @DisplayName("R1.12 — public snapshot boundaries do not expose concrete HL7 types")
   @Test
-  void expectFromConfigurationNullThrows() {
-    Assertions.assertThrows(
-        InitializationException.class, () -> SnapshotGeneratorFactory.fromConfiguration(null));
+  void boundarySignaturesDoNotExposeHl7Types() {
+    var boundaryMethods =
+        Stream.concat(
+            Arrays.stream(SnapshotGenerator.class.getMethods()),
+            Arrays.stream(SnapshotGeneratorFactory.class.getMethods()));
+
+    Assertions.assertTrue(
+        boundaryMethods
+            .flatMap(SnapshotGeneratorFactoryTest::signatureTypes)
+            .noneMatch(type -> type.getPackageName().startsWith("org.hl7.fhir")));
+  }
+
+  private static Stream<Class<?>> signatureTypes(Method method) {
+    return Stream.concat(
+        Stream.of(method.getReturnType()),
+        Stream.concat(
+            Arrays.stream(method.getParameterTypes()), Arrays.stream(method.getExceptionTypes())));
+  }
+
+  private static Stream<Arguments> generatorCreationCases() {
+    return Stream.of(
+        Arguments.of(
+            "R2.1 — supplied context configuration creates a generator",
+            ContextConfiguration.defaultConfiguration(),
+            false),
+        Arguments.of("R2.2 — initialization failure is reported", null, true));
   }
 }

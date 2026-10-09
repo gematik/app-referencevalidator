@@ -41,6 +41,7 @@ import de.gematik.refv.lib.snapshot.entity.SnapshotGenerationRequest;
 import de.gematik.refv.lib.snapshot.entity.SnapshotGenerationResult;
 import de.gematik.refv.lib.valmodule.boundary.ModuleLoader;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,8 +105,7 @@ class SnapshotGeneratorIT {
                             .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
   }
 
-  @DisplayName(
-      "Performs the Snapshot Generation for a local directory containing the Implementation Guide")
+  @DisplayName("R1.1 — generates a snapshot for a local Implementation Guide and its dependencies")
   @Test
   void testSnapshotGenerationWorksWithLocalDirectoryImplementationGuide() {
     // Given a FHIR Release
@@ -145,6 +145,7 @@ class SnapshotGeneratorIT {
                             .severity()
                             .getCode()
                             .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
+    Assertions.assertTrue(Files.isRegularFile(tempDir.resolve("minimal.example-1.0.0.tgz")));
   }
 
   @DisplayName("Performs the Snapshot Generation using a group of TGZ Archives")
@@ -190,13 +191,13 @@ class SnapshotGeneratorIT {
                             .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
   }
 
-  @DisplayName("Performs the Snapshot Generation using Remote package and patch")
+  @DisplayName("R1.7 — applies the matching package patch before snapshot generation")
   @Test
-  void testSnapshotGenerationWorksWithRemotePackageAndCustomPatch() {
+  void testSnapshotGenerationAppliesPackagePatch() {
     // Given a FHIR Release
     final var fhirRelease = FhirRelease.asR4();
-    // Given a remote IG
-    final var packagePath = Path.of("de.gematik.erezept-workflow.r4#1.6.4");
+    // Given a local IG with a matching package patch
+    final var packagePath = Path.of("src/test/resources/packages/minimal.example#1.0.0");
     // and When I generate a snapshot
     final var contextConfiguration =
         new ContextConfiguration(
@@ -216,7 +217,7 @@ class SnapshotGeneratorIT {
                 snapshotGenerator.generateSnapshots(
                     new SnapshotGenerationRequest(packagePath, tempDir),
                     new SnapshotGenerationOptions(
-                        Path.of("src/test/resources/packages/erezept/withpatch"))));
+                        Path.of("src/test/resources/packages/erezept/withpatch/patches"))));
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
@@ -232,6 +233,7 @@ class SnapshotGeneratorIT {
                             .severity()
                             .getCode()
                             .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
+    Assertions.assertTrue(Files.isRegularFile(tempDir.resolve("minimal.example-1.0.0.tgz")));
   }
 
   @DisplayName("Performs the Snapshot Generation using a patch that overrides packages.json")
@@ -260,7 +262,7 @@ class SnapshotGeneratorIT {
                 snapshotGenerator.generateSnapshots(
                     new SnapshotGenerationRequest(packagePath, tempDir),
                     new SnapshotGenerationOptions(
-                        Path.of("src/test/resources/packages/erezept/withpatch"))));
+                        Path.of("src/test/resources/packages/erezept/withpatch/patches"))));
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);

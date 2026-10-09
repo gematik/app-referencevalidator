@@ -45,6 +45,7 @@ public record SnapshotGenerationResult(@NonNull Collection<ResultMessage> messag
     if (messages.isEmpty()) {
       throw new IllegalStateException("No messages provided");
     }
+    messages = List.copyOf(messages);
   }
 
   @Override

@@ -43,6 +43,7 @@ public sealed class RefValException extends RuntimeException
         ProfilePatchException,
         SnapshotGenerationException,
         TerminologyServerException,
+        UnsupportedFileTypeException,
         UnsupportedProfileException,
         ValidationException {
 

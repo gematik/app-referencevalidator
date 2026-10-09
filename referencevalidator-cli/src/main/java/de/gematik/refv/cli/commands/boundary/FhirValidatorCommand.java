@@ -37,6 +37,7 @@ import de.gematik.refv.cli.report.boundary.ResultReporter;
 import de.gematik.refv.lib.exceptions.InitializationException;
 import de.gematik.refv.lib.exceptions.LoadModuleException;
 import de.gematik.refv.lib.exceptions.ParsingException;
+import de.gematik.refv.lib.exceptions.UnsupportedFileTypeException;
 import de.gematik.refv.lib.exceptions.ValidationException;
 import de.gematik.refv.lib.fhir_context.boundary.BatchValidationContextProvider;
 import de.gematik.refv.lib.fhir_context.boundary.ContextProvider;
@@ -340,7 +341,17 @@ public class FhirValidatorCommand extends BaseCommand {
       ValidationPackageSelector validationPackageSelector,
       BatchValidationContextProvider batchContexts)
       throws IOException, ValidationException {
-    final var resource = createResource(validationSource);
+    final FhirResource resource;
+    try {
+      resource = createResource(validationSource);
+    } catch (UnsupportedFileTypeException e) {
+      return new ValidationResult(
+          List.of(
+              ResultMessage.fromMessage(
+                  IssueSeverity.INFORMATION,
+                  MessageId.IO_ERROR.getCode(),
+                  e.getLocalizedMessage())));
+    }
     final var packagesToLoad = detectPackagesToLoad(cliConfig, validationPackageSelector, resource);
     final var validationRequest = createRequest(resource);
     try (var lease = batchContexts.acquire(packagesToLoad);
@@ -386,6 +397,15 @@ public class FhirValidatorCommand extends BaseCommand {
                     validator.validate(validationRequest, validationCliConfig.validationOptions());
                 return Map.entry(source.path().toString(), result);
               }
+            } catch (UnsupportedFileTypeException e) {
+              return Map.entry(
+                  source.path().toString(),
+                  new ValidationResult(
+                      List.of(
+                          ResultMessage.fromMessage(
+                              IssueSeverity.INFORMATION,
+                              MessageId.IO_ERROR.getCode(),
+                              e.getLocalizedMessage()))));
             } catch (InterruptedException e) {
               Thread.currentThread().interrupt();
               return validationError(source, e);
@@ -498,7 +518,8 @@ public class FhirValidatorCommand extends BaseCommand {
       return new XmlFhirResource(content);
     }
 
-    throw new ParsingException(filePath + " has an unsupported file type: " + contentType);
+    throw new UnsupportedFileTypeException(
+        filePath + " has an unsupported file type: " + contentType);
   }
 
   private void preloadCache(

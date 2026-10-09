@@ -33,6 +33,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import de.gematik.refv.lib.config_parser.boundary.JSONMapperProvider;
 import de.gematik.refv.lib.fhir_context.boundary.ContextProvider;
 import de.gematik.refv.lib.fhir_context.boundary.SnapshotGenerationContext;
 import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
@@ -41,6 +42,7 @@ import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
 import de.gematik.refv.lib.fhir_context.entity.MessageId;
 import de.gematik.refv.lib.fhir_context.entity.PackageDownloadConfiguration;
+import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
 import de.gematik.refv.lib.fhir_context.entity.TerminologyConfiguration;
 import de.gematik.refv.lib.fhir_context.entity.ValidationPolicyConfiguration;
 import de.gematik.refv.lib.package_resolver.boundary.PackageResolver;
@@ -55,6 +57,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
@@ -125,7 +128,7 @@ class DefaultPackageProcessorTest {
   }
 
   @DisplayName(
-      "Given a package without dependencies, when processing, then a result with messages is returned")
+      "R1.6 — successfully generated packages are archived in the supplied output directory")
   @Test
   void expectProcessPackageWithoutDependencies() throws Exception {
     final var pkg = writePackage();
@@ -142,6 +145,75 @@ class DefaultPackageProcessorTest {
 
     Assertions.assertNotNull(result);
     Assertions.assertFalse(result.messages().isEmpty());
+    Assertions.assertTrue(Files.isRegularFile(outputDir.resolve("my.pkg-1.0.0.tgz")));
+  }
+
+  @DisplayName("R1.2 — the complete dependency graph resolves before any snapshot generation")
+  @Test
+  void resolvesCompleteGraphBeforeStartingSnapshotGeneration() throws Exception {
+    Path packageCache = tempDir.resolve("package-cache");
+    Files.createDirectories(packageCache);
+    writePackage(packageCache, "first#1.0.0", Map.of());
+    var dependencies = new LinkedHashMap<String, String>();
+    dependencies.put("first", "1.0.0");
+    dependencies.put("missing", "1.0.0");
+    LocalDirectory root = writePackage("root#1.0.0", dependencies);
+    ProcessorResult processorResult = processPackages(List.of(resolved(root)), packageCache);
+
+    try (var processor = processorResult.processor()) {
+      var result =
+          processor.process(root.path(), processorResult.outputDirectory(), null, List.of());
+
+      Assertions.assertTrue(
+          result.messages().stream()
+              .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+      verify(processorResult.context(), never()).generateSnapshots(any(Path.class));
+    }
+  }
+
+  @DisplayName("R1.4 — the complete graph is generated dependency-first with dependency archives")
+  @Test
+  void resolvesTransitiveGraphBeforeGeneratingInDependencyOrder() throws Exception {
+    Path packageCache = tempDir.resolve("package-cache");
+    Files.createDirectories(packageCache);
+    LocalDirectory leaf = writePackage(packageCache, "leaf#1.0.0", Map.of());
+    LocalDirectory dependency =
+        writePackage(packageCache, "dependency#1.0.0", Map.of("leaf", "1.0.0"));
+    LocalDirectory root = writePackage("root#1.0.0", Map.of("dependency", "1.0.0"));
+    ProcessorResult processorResult = processPackages(List.of(resolved(root)), packageCache);
+    List<String> generatedCoordinates = new ArrayList<>();
+    List<String> rootDependencyCoordinates = new ArrayList<>();
+    try (var context = processorResult.context()) {
+      when(context.cloneContext(anyCollection()))
+          .thenAnswer(
+              invocation -> {
+                var dependencies = invocation.<List<ResolvedPackage>>getArgument(0);
+                rootDependencyCoordinates.clear();
+                rootDependencyCoordinates.addAll(
+                    dependencies.stream().map(pkg -> pkg.id().coordinates()).toList());
+                return processorResult.context();
+              });
+      when(context.generateSnapshots(any(Path.class)))
+          .thenAnswer(
+              invocation -> {
+                Path packagePath = invocation.getArgument(0);
+                generatedCoordinates.add(packageCoordinates(packagePath));
+                return SnapshotGenerationResult.forMessage(
+                    IssueSeverity.INFORMATION,
+                    MessageId.NO_ERROR.getCode(),
+                    "generation succeeded");
+              });
+    }
+
+    try (var processor = processorResult.processor()) {
+      processor.process(root.path(), processorResult.outputDirectory(), null, List.of());
+      Assertions.assertEquals(
+          List.of(leaf.id().coordinates(), dependency.id().coordinates(), root.id().coordinates()),
+          generatedCoordinates);
+      Assertions.assertEquals(
+          List.of(leaf.id().coordinates(), dependency.id().coordinates()),
+          rootDependencyCoordinates);
+    }
   }
 
   @DisplayName(
@@ -238,22 +310,124 @@ class DefaultPackageProcessorTest {
                 message -> message.messageContent().contains("Reused cached snapshot archive")));
   }
 
+  @DisplayName("R1.7 — changed matching patches trigger snapshot generation again")
+  @Test
+  void changedPackagePatchInvalidatesCachedSnapshot() throws Exception {
+    LocalDirectory pkg = writePackage("patched#1.0.0", Map.of());
+    Files.writeString(pkg.path().resolve("package/patched.txt"), "source");
+    Path patchesRoot = Files.createDirectories(tempDir.resolve("patches"));
+    Path packagePatchDirectory = Files.createDirectories(patchesRoot.resolve("patched#1.0.0"));
+    Path patchFile = packagePatchDirectory.resolve("patched.txt");
+    Files.writeString(patchFile, "first patch");
+    ProcessorResult processorResult = processPackages(List.of(resolved(pkg)));
+    List<String> observedPatches = new ArrayList<>();
+
+    try (var context = processorResult.context()) {
+      when(context.generateSnapshots(any(Path.class)))
+          .thenAnswer(
+              invocation -> {
+                Path packagePath = invocation.getArgument(0);
+                observedPatches.add(Files.readString(packagePath.resolve("package/patched.txt")));
+                return SnapshotGenerationResult.forMessage(
+                    IssueSeverity.INFORMATION,
+                    MessageId.NO_ERROR.getCode(),
+                    "generation succeeded");
+              });
+    }
+
+    try (var processor = processorResult.processor()) {
+      processor.process(pkg.path(), processorResult.outputDirectory(), patchesRoot, List.of());
+      Files.writeString(patchFile, "second patch");
+      processor.process(pkg.path(), processorResult.outputDirectory(), patchesRoot, List.of());
+      var unchangedPatchResult =
+          processor.process(pkg.path(), processorResult.outputDirectory(), patchesRoot, List.of());
+
+      Assertions.assertEquals(List.of("first patch", "second patch"), observedPatches);
+      Assertions.assertTrue(
+          unchangedPatchResult.messages().stream()
+              .anyMatch(
+                  message -> message.messageContent().contains("Reused cached snapshot archive")));
+    }
+  }
+
+  @DisplayName("Different package groups reuse an already generated shared dependency snapshot")
+  @Test
+  void differentPackageGroupsReuseSharedDependencySnapshots() throws Exception {
+    Path packageCache = tempDir.resolve("package-cache");
+    Files.createDirectories(packageCache);
+    LocalDirectory shared = writePackage(packageCache, "shared#1.0.0", Map.of());
+    LocalDirectory firstRoot = writePackage("group-a#1.0.0", Map.of("shared", "1.0.0"));
+    LocalDirectory secondRoot = writePackage("group-b#1.0.0", Map.of("shared", "1.0.0"));
+    ProcessorResult firstGroup = processPackages(List.of(resolved(firstRoot)), packageCache);
+    List<String> firstGroupGenerations = new ArrayList<>();
+    try (var context = firstGroup.context()) {
+      when(context.generateSnapshots(any(Path.class)))
+          .thenAnswer(
+              invocation -> {
+                firstGroupGenerations.add(packageCoordinates(invocation.getArgument(0)));
+                return SnapshotGenerationResult.forMessage(
+                    IssueSeverity.INFORMATION,
+                    MessageId.NO_ERROR.getCode(),
+                    "generation succeeded");
+              });
+    }
+
+    try (var processor = firstGroup.processor()) {
+      processor.process(firstRoot.path(), firstGroup.outputDirectory(), null, List.of());
+    }
+
+    ProcessorResult secondGroup = processPackages(List.of(resolved(secondRoot)), packageCache);
+    List<String> secondGroupGenerations = new ArrayList<>();
+    List<String> secondGroupDependencies = new ArrayList<>();
+    try (var context = secondGroup.context()) {
+      when(context.cloneContext(anyCollection()))
+          .thenAnswer(
+              invocation -> {
+                var dependencies = invocation.<List<ResolvedPackage>>getArgument(0);
+                secondGroupDependencies.addAll(
+                    dependencies.stream().map(pkg -> pkg.id().coordinates()).toList());
+                return context;
+              });
+      when(context.generateSnapshots(any(Path.class)))
+          .thenAnswer(
+              invocation -> {
+                secondGroupGenerations.add(packageCoordinates(invocation.getArgument(0)));
+                return SnapshotGenerationResult.forMessage(
+                    IssueSeverity.INFORMATION,
+                    MessageId.NO_ERROR.getCode(),
+                    "generation succeeded");
+              });
+    }
+
+    try (var processor = secondGroup.processor()) {
+      var result =
+          processor.process(secondRoot.path(), secondGroup.outputDirectory(), null, List.of());
+
+      Assertions.assertEquals(
+          List.of(shared.id().coordinates(), firstRoot.id().coordinates()), firstGroupGenerations);
+      Assertions.assertEquals(List.of(secondRoot.id().coordinates()), secondGroupGenerations);
+      Assertions.assertEquals(List.of(shared.id().coordinates()), secondGroupDependencies);
+      Assertions.assertTrue(
+          hasMessage(result, "Reused cached snapshot archive for " + shared.id().coordinates()));
+    }
+  }
+
   @DisplayName("Given an unselected root package, when processing, then it reports no match")
   @Test
   void reportsNoMatchingRequestedRoot() throws Exception {
     LocalDirectory root = writePackage("root#1.0.0", Map.of());
-    ProcessorResult harness = processPackages(List.of(resolved(root)));
+    ProcessorResult processorResult = processPackages(List.of(resolved(root)));
+    try (var processor = processorResult.processor()) {
+      var result =
+          processor.process(
+              root.path(), processorResult.outputDirectory(), null, List.of("other#1.0.0"));
 
-    var result =
-        harness
-            .processor()
-            .process(root.path(), harness.outputDirectory(), null, List.of("other#1.0.0"));
-
-    Assertions.assertTrue(hasMessage(result, "None of the resolved packages matched"));
-    verify(harness.context(), never()).cloneContext(anyCollection());
+      Assertions.assertTrue(hasMessage(result, "None of the resolved packages matched"));
+      verify(processorResult.context(), never()).cloneContext(anyCollection());
+    }
   }
 
-  @DisplayName("Given a cyclic dependency graph, when processing, then it reports the cycle")
+  @DisplayName("R1.3 — a cyclic dependency graph fails before generation")
   @Test
   void reportsDependencyCycle() throws Exception {
     Path packageCache = tempDir.resolve("package-cache");
@@ -263,20 +437,34 @@ class DefaultPackageProcessorTest {
     writePackage(packageCache, "root#1.0.0", Map.of());
     ProcessorResult processorResult = processPackages(List.of(resolved(root)), packageCache);
 
-    var result =
-        processorResult
-            .processor()
-            .process(root.path(), processorResult.outputDirectory(), null, List.of());
+    try (var processor = processorResult.processor()) {
+      var result =
+          processor.process(root.path(), processorResult.outputDirectory(), null, List.of());
 
-    Assertions.assertTrue(
-        hasMessage(
-            result,
-            "Cyclic package dependency detected: root#1.0.0 -> dependency#1.0.0 -> root#1.0.0"));
-    verify(processorResult.context(), never()).generateSnapshots(any(Path.class));
+      Assertions.assertTrue(
+          hasMessage(
+              result,
+              "Cyclic package dependency detected: root#1.0.0 -> dependency#1.0.0 -> root#1.0.0"));
+      verify(processorResult.context(), never()).generateSnapshots(any(Path.class));
+    }
+
+    LocalDirectory unresolvedRoot =
+        writePackage("unresolved-root#1.0.0", Map.of("missing", "1.0.0"));
+    ProcessorResult unresolvedGraph =
+        processPackages(List.of(resolved(unresolvedRoot)), packageCache);
+    try (var processor = unresolvedGraph.processor()) {
+      var unresolvedResult =
+          processor.process(
+              unresolvedRoot.path(), unresolvedGraph.outputDirectory(), null, List.of());
+
+      Assertions.assertTrue(
+          unresolvedResult.messages().stream()
+              .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+      verify(unresolvedGraph.context(), never()).generateSnapshots(any(Path.class));
+    }
   }
 
-  @DisplayName(
-      "Given roots sharing a dependency, when processed together, then the dependency is generated once")
+  @DisplayName("R1.5 — a repeated package coordinate is generated once per request")
   @Test
   void processesSharedDependencyOncePerInvocation() throws Exception {
     Path packageCache = tempDir.resolve("package-cache");
@@ -285,16 +473,95 @@ class DefaultPackageProcessorTest {
     LocalDirectory secondRoot = writePackage("second#1.0.0", Map.of("shared", "1.0.0"));
     writePackage(packageCache, "shared#1.0.0", Map.of());
     ProcessorResult processorResult =
-        processPackages(List.of(resolved(firstRoot), resolved(secondRoot)), packageCache);
+        processPackages(
+            List.of(resolved(firstRoot), resolved(secondRoot), resolved(firstRoot)), packageCache);
 
-    var result =
-        processorResult
-            .processor()
-            .process(firstRoot.path(), processorResult.outputDirectory(), null, List.of());
+    try (var processor = processorResult.processor()) {
+      var result =
+          processor.process(firstRoot.path(), processorResult.outputDirectory(), null, List.of());
 
-    Assertions.assertFalse(
-        result.messages().stream().anyMatch(message -> message.severity() == IssueSeverity.ERROR));
-    verify(processorResult.context(), times(3)).generateSnapshots(any(Path.class));
+      Assertions.assertFalse(
+          result.messages().stream()
+              .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+      verify(processorResult.context(), times(3)).generateSnapshots(any(Path.class));
+    }
+  }
+
+  @DisplayName("R1.8 — a failed dependency blocks dependents but not unrelated packages")
+  @Test
+  void dependencyFailureDoesNotBlockUnrelatedRoot() throws Exception {
+    Path packageCache = tempDir.resolve("package-cache");
+    Files.createDirectories(packageCache);
+    LocalDirectory dependency = writePackage(packageCache, "dependency#1.0.0", Map.of());
+    LocalDirectory dependent = writePackage("dependent#1.0.0", Map.of("dependency", "1.0.0"));
+    LocalDirectory unrelated = writePackage("unrelated#1.0.0", Map.of());
+    ProcessorResult processorResult =
+        processPackages(List.of(resolved(dependent), resolved(unrelated)), packageCache);
+    List<String> generatedPackages = new ArrayList<>();
+    try (var context = processorResult.context()) {
+      when(context.generateSnapshots(any(Path.class)))
+          .thenAnswer(
+              invocation -> {
+                Path packagePath = invocation.getArgument(0);
+                String coordinates = packageCoordinates(packagePath);
+                generatedPackages.add(coordinates);
+                return coordinates.equals(dependency.id().coordinates())
+                    ? SnapshotGenerationResult.forMessage(
+                        IssueSeverity.ERROR,
+                        MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
+                        "dependency generation failed")
+                    : SnapshotGenerationResult.forMessage(
+                        IssueSeverity.INFORMATION,
+                        MessageId.NO_ERROR.getCode(),
+                        "generation succeeded");
+              });
+    }
+
+    try (var processor = processorResult.processor()) {
+      var result =
+          processor.process(dependent.path(), processorResult.outputDirectory(), null, List.of());
+      Assertions.assertTrue(generatedPackages.contains(dependency.id().coordinates()));
+      Assertions.assertTrue(generatedPackages.contains(unrelated.id().coordinates()));
+      Assertions.assertFalse(generatedPackages.contains(dependent.id().coordinates()));
+      Assertions.assertTrue(
+          result.messages().stream()
+              .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+    }
+  }
+
+  @DisplayName("R1.9 — ERROR and FATAL generation messages fail the request and retain outcomes")
+  @Test
+  void errorAndFatalGenerationMessagesFailRequestWithPackageOutcomes() throws Exception {
+    LocalDirectory root = writePackage("root#1.0.0", Map.of());
+    ProcessorResult processorResult = processPackages(List.of(resolved(root)));
+    try (var context = processorResult.context()) {
+      when(context.generateSnapshots(any(Path.class)))
+          .thenReturn(
+              new SnapshotGenerationResult(
+                  List.of(
+                      ResultMessage.fromMessage(
+                          IssueSeverity.ERROR,
+                          MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
+                          "ERROR outcome for root#1.0.0"),
+                      ResultMessage.fromMessage(
+                          IssueSeverity.FATAL,
+                          MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
+                          "FATAL outcome for root#1.0.0"))));
+      try (var processor = processorResult.processor()) {
+        var result =
+            processor.process(root.path(), processorResult.outputDirectory(), null, List.of());
+
+        Assertions.assertTrue(
+            result.messages().stream()
+                .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+        Assertions.assertTrue(
+            result.messages().stream()
+                .anyMatch(message -> message.severity() == IssueSeverity.FATAL));
+        Assertions.assertTrue(
+            result.messages().stream()
+                .anyMatch(message -> message.messageContent().contains("root#1.0.0")));
+      }
+    }
   }
 
   @DisplayName("Given snapshot generation errors, when processing, then no archive is published")
@@ -309,17 +576,16 @@ class DefaultPackageProcessorTest {
                   IssueSeverity.ERROR,
                   MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
                   "synthetic generation failure"));
+      try (var processor = processorResult.processor()) {
+        var result =
+            processor.process(root.path(), processorResult.outputDirectory(), null, List.of());
 
-      var result =
-          processorResult
-              .processor()
-              .process(root.path(), processorResult.outputDirectory(), null, List.of());
-
-      Assertions.assertTrue(
-          result.messages().stream()
-              .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
-      try (var outputFiles = Files.list(processorResult.outputDirectory())) {
-        Assertions.assertTrue(outputFiles.findAny().isEmpty());
+        Assertions.assertTrue(
+            result.messages().stream()
+                .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+        try (var outputFiles = Files.list(processorResult.outputDirectory())) {
+          Assertions.assertTrue(outputFiles.findAny().isEmpty());
+        }
       }
     }
   }
@@ -329,14 +595,15 @@ class DefaultPackageProcessorTest {
   void rejectsBlankRequestedCoordinates() throws Exception {
     LocalDirectory root = writePackage("root#1.0.0", Map.of());
     ProcessorResult processorResult = processPackages(List.of(resolved(root)));
-    var processor = processorResult.processor();
-    var sourcePath = root.path();
-    var outputDirectory = processorResult.outputDirectory();
-    var requestedCoordinates = List.of(" ");
+    try (var processor = processorResult.processor()) {
+      var sourcePath = root.path();
+      var outputDirectory = processorResult.outputDirectory();
+      var requestedCoordinates = List.of(" ");
 
-    Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> processor.process(sourcePath, outputDirectory, null, requestedCoordinates));
+      Assertions.assertThrows(
+          IllegalArgumentException.class,
+          () -> processor.process(sourcePath, outputDirectory, null, requestedCoordinates));
+    }
   }
 
   @DisplayName(
@@ -459,6 +726,16 @@ class DefaultPackageProcessorTest {
         + "\",\"dependencies\":{"
         + dependencyJson
         + "}}";
+  }
+
+  private String packageCoordinates(Path packagePath) throws IOException {
+    var packageJson =
+        JSONMapperProvider.getMapper()
+            .readTree(
+                packagePath
+                    .resolve(PackageDependencyExtractor.PACKAGE_JSON_RELATIVE_PATH)
+                    .toFile());
+    return packageJson.get("name").asText() + "#" + packageJson.get("version").asText();
   }
 
   private ContextConfiguration contextConfiguration() {

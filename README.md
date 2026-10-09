@@ -95,9 +95,10 @@ validation module.
 
 **TODO**: add list of plugins here
 
-> [!WARNING] The Validation Modules available
-> at [this repository](https://github.com/gematik/app-referencevalidator-plugins/releases) aren't incompatible with the
-> version 3.0 of the Validator, due to internal format changes and snapshot generation process.
+> [!WARNING]
+> The Validation Modules available
+at [this repository](https://github.com/gematik/app-referencevalidator-plugins/releases) aren't incompatible with the
+version 3.0 of the Validator, due to internal format changes and snapshot generation process.
 
 ## Getting started
 

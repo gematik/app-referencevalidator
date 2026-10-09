@@ -88,8 +88,7 @@ class DefaultSnapshotGeneratorTest {
         () -> new DefaultSnapshotGenerator((ContextConfiguration) null));
   }
 
-  @DisplayName(
-      "Given a non-existing source path, when generating, then a SnapshotGeneration Error is returned")
+  @DisplayName("R1.10 — an invalid source path returns an error result")
   @Test
   void expectNonExistingSourceThrows() {
     final var request =

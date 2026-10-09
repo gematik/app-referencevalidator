@@ -126,7 +126,7 @@ public class SnapshotGeneratorCommand extends BaseCommand {
 
   @CommandLine.Option(
       names = {"--patches-dir"},
-      description = "Path to directory containing patches for dependencies",
+      description = "Directory directly containing package-coordinate patch folders",
       required = false)
   private Path patchesDir;
 
