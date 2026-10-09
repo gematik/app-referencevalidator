@@ -51,21 +51,20 @@ class PatchApplierTest {
   void expectPatchFileCopied() throws Exception {
     // Given a patches directory with a patch for my.pkg#1.0.0
     final var patchesRoot = Files.createDirectories(tempDir.resolve("patches"));
-    final var packagePatchDir =
-        Files.createDirectories(patchesRoot.resolve("patches/my.pkg#1.0.0"));
-    Files.writeString(packagePatchDir.resolve("fix.json"), "{\"patched\":true}");
+    final var packagePatchDir = Files.createDirectories(patchesRoot.resolve("my.pkg#1.0.0"));
+    Files.writeString(packagePatchDir.resolve("fix.json"), "patched");
 
     // And a working directory with a package folder
     final var workDir = Files.createDirectory(tempDir.resolve("work"));
     final var packageWorkDir = Files.createDirectory(workDir.resolve("my.pkg#1.0.0"));
     final var packageContentDir = Files.createDirectory(packageWorkDir.resolve("package"));
-    Files.writeString(packageContentDir.resolve("fix.json"), "{\"patched\":true}");
+    Files.writeString(packageContentDir.resolve("fix.json"), "original");
 
     // When applying patches
     final var pkg = new LocalDirectory(new PackageId("my.pkg", "1.0.0"), packageWorkDir);
     PatchApplier.applyForPackage(pkg, pkg.path(), patchesRoot);
 
-    // Then the patch file is copied
-    Assertions.assertTrue(Files.exists(packageWorkDir.resolve("package/fix.json")));
+    // Then the matching patch replaces the package file.
+    Assertions.assertEquals("patched", Files.readString(packageContentDir.resolve("fix.json")));
   }
 }

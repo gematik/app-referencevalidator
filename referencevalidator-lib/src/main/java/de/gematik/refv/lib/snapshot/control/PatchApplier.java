@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 class PatchApplier {
   private static final Logger log = LoggerFactory.getLogger(PatchApplier.class);
   private static final String PACKAGE_FOLDER_NAME = "package";
-  private static final String PATCHES_FOLDER_NAME = "patches";
 
   private PatchApplier() {}
 
@@ -50,7 +49,7 @@ class PatchApplier {
    *
    * @param fhirPackage the FHIR Package to modify
    * @param packageDir the directory containing the package itself
-   * @param patchDir the root directory containing patches
+   * @param patchDir the directory directly containing package-coordinate patch folders
    */
   static void applyForPackage(
       @NonNull PackageCategory fhirPackage, @NonNull Path packageDir, @NonNull Path patchDir) {
@@ -63,7 +62,7 @@ class PatchApplier {
    * @param packageName the name of the FHIR Package
    * @param packageVersion the version of the FHIR Package
    * @param packageDir the directory containing the package itself
-   * @param patchDir the root directory containing patches
+   * @param patchDir the directory directly containing package-coordinate patch folders
    */
   static void applyForPackage(
       @NonNull String packageName,
@@ -72,10 +71,7 @@ class PatchApplier {
       @NonNull Path patchDir) {
     final Path packagePatchDir =
         Objects.requireNonNull(patchDir, "The source patch directory cannot be null")
-            .resolve(
-                Path.of(
-                    PATCHES_FOLDER_NAME,
-                    packageName + PackageId.PACKAGE_SEPARATOR + packageVersion));
+            .resolve(Path.of(packageName + PackageId.PACKAGE_SEPARATOR + packageVersion));
 
     if (!Files.exists(packagePatchDir)) {
       log.debug("Package directory {} not detected, skipping", packagePatchDir);
@@ -112,7 +108,10 @@ class PatchApplier {
   }
 
   private static void applyPatch(Path file, Path packageDir, AtomicInteger numPatchesApplied) {
-    Path target = packageDir.resolve(PACKAGE_FOLDER_NAME).resolve(file.getFileName());
+    final Path target = packageDir.resolve(PACKAGE_FOLDER_NAME).resolve(file.getFileName());
+    if (Files.notExists(target)) {
+      log.warn("Destination file {} does not exist, possible mismatch", target);
+    }
     try {
       Files.copy(file, target, StandardCopyOption.REPLACE_EXISTING);
       numPatchesApplied.getAndIncrement();

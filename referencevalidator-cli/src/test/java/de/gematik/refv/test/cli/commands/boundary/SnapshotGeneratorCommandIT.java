@@ -105,8 +105,7 @@ class SnapshotGeneratorCommandIT {
     // Given a minimal FHIR package and a patch for its profile
     final Path sourceDir = writeSourcePackage();
     final Path patchesDir = Files.createDirectories(tempDir.resolve("patches-input"));
-    final Path packagePatchesDir =
-        Files.createDirectories(patchesDir.resolve(Path.of("patches", PACKAGE_COORDINATES)));
+    final Path packagePatchesDir = Files.createDirectories(patchesDir.resolve(PACKAGE_COORDINATES));
     Files.writeString(
         packagePatchesDir.resolve(PROFILE_FILE_NAME), structureDefinition("Patched Title Marker"));
     final Path outputDir = tempDir.resolve("out-patched");

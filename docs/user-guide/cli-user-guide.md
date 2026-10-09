@@ -333,7 +333,7 @@ of value sets or validation of codes won't be performed.
 | `--packages <list>`                           | `-p`  | A comma-separated list of specific package names to process. If omitted, all            |
 | dependencies in the source are processed.     |       |
 | `--modules-config <path>`                     | -     | Path to the YAML configuration file for a validation module                             |
-| `--patches-dir <path>`                        | -     | Path to a directory containing patches for dependencies.                                |
+| `--patches-dir <path>`                        | -     | Directory directly containing `<name#version>` folders with dependency patches.         |
 | `--cache-dir <path>`                          | -     | Path to a directory containing cached dependencies for the snapshot generation.         |
 | `--fhir-version <version>`                    | `-f`  | Specifies the FHIR version (e.g., `R4`, `R5`). Defaults to `R4`.                        |
 | `--use-terminology-server`                    | -     | Enables the use of a terminology server for expanding ValueSets.                        |

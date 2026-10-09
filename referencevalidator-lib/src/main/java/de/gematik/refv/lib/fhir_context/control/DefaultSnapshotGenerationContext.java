@@ -40,9 +40,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.hl7.fhir.model.core.ElementDefinition;
 import org.hl7.fhir.model.core.StructureDefinition;
 import org.hl7.fhir.model.core.formats.JsonParser;
 import org.hl7.fhir.standalone.context.ContextUtilities;
@@ -119,9 +122,10 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
   @Override
   public @NonNull SnapshotGenerationResult generateSnapshots(@NonNull Path packageSource)
       throws SnapshotGenerationException {
+    NpmPackage npmPackage = null;
     try {
       // Load package resources manually because dependency workspaces may be temporary.
-      final var npmPackage = NpmPackage.fromFolder(packageSource.toString(), false);
+      npmPackage = NpmPackage.fromFolder(packageSource.toString(), false);
       final var structureDefinitionsFromPackage =
           ContextPackageLoader.extractAndLoadResourcesInContext(validationEngine, npmPackage);
       if (structureDefinitionsFromPackage.isEmpty()) {
@@ -135,19 +139,13 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
                 ResultMessage.fromMessage(
                     IssueSeverity.WARNING, MessageId.NO_ERROR.getCode(), message)));
       }
-      // Get the profile Prefix, so we can identify all the resources that are related to the
-      // current package
-      final String profilePrefix =
-          ContextPackageLoader.extractProfilePrefixFromStructureDefinition(
-              structureDefinitionsFromPackage.keySet());
-      log.info("Parsed Prefix: {}", profilePrefix);
 
       // generate snapshots
       generateSnapshots(validationEngine.getContext(), structureDefinitionsFromPackage.keySet());
       // Retrieve the StructureDefinitions with Snapshot and write them to folder (overwrite
       // existing)
       storeStructureDefinitionSnapshots(
-          validationEngine.getContext(), profilePrefix, structureDefinitionsFromPackage);
+          validationEngine.getContext(), structureDefinitionsFromPackage);
 
       return new SnapshotGenerationResult(
           List.of(
@@ -158,13 +156,19 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
                       .formatted(npmPackage.name(), npmPackage.version()))));
 
     } catch (Exception e) {
-      log.error("Failed to generate snapshots: " + e.getLocalizedMessage(), e);
+      log.error("Failed to generate snapshots: {}", e.getLocalizedMessage(), e);
+      final String message;
+      if (Objects.nonNull(npmPackage)) {
+        message =
+            "Failed to generate snapshots for %s#%s"
+                .formatted(npmPackage.name(), npmPackage.version());
+      } else {
+        message = "Failed to generate snapshots for " + packageSource;
+      }
       return new SnapshotGenerationResult(
           List.of(
               ResultMessage.fromMessage(
-                  IssueSeverity.ERROR,
-                  MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
-                  "Failed to generate snapshots for " + packageSource)));
+                  IssueSeverity.ERROR, MessageId.SNAPSHOT_GENERATION_ERROR.getCode(), message)));
     }
   }
 
@@ -232,7 +236,11 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
 
     try {
       for (var sdFromPackage : structureDefinitions) {
-        log.debug("Processing {}", sdFromPackage.getUrl());
+        log.debug(
+            "Processing {}|{} object={}",
+            sdFromPackage.getUrl(),
+            sdFromPackage.getVersion(),
+            System.identityHashCode(sdFromPackage));
         generateSnapshotIfNeeded(contextUtilities, workerContext, sdFromPackage);
       }
     } catch (Exception e) {
@@ -244,28 +252,78 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
       ContextUtilities contextUtilities,
       SimpleWorkerContext workerContext,
       StructureDefinition structureDefinition) {
+    if (structureDefinition.hasDifferential()) {
+      assertUniqueElementIds(
+          structureDefinition,
+          structureDefinition.getDifferential().getElementList(),
+          "differential");
+    }
     boolean hasSnapshot =
         structureDefinition.hasSnapshot() && structureDefinition.getSnapshot().hasElement();
     if (structureDefinition.hasBaseDefinition() && !hasSnapshot) {
-      log.debug("Generating Snapshot for {}", structureDefinition.getUrl());
+      log.debug(
+          "Generating snapshot for {}|{} object={}",
+          structureDefinition.getUrl(),
+          structureDefinition.getVersion(),
+          System.identityHashCode(structureDefinition));
       contextUtilities.generateSnapshot(structureDefinition);
+    }
+    if (structureDefinition.hasSnapshot()) {
+      assertUniqueElementIds(
+          structureDefinition, structureDefinition.getSnapshot().getElementList(), "snapshot");
     }
     workerContext.cacheResource(structureDefinition);
   }
 
+  static void assertUniqueElementIds(
+      StructureDefinition structureDefinition,
+      List<ElementDefinition> elements,
+      String representation) {
+    var counts =
+        elements.stream()
+            .filter(ElementDefinition::hasId)
+            .collect(
+                Collectors.groupingBy(
+                    ElementDefinition::getId, LinkedHashMap::new, Collectors.counting()));
+    var duplicateIds =
+        counts.entrySet().stream()
+            .filter(entry -> entry.getValue() > 1)
+            .map(Map.Entry::getKey)
+            .toList();
+    if (duplicateIds.isEmpty()) {
+      return;
+    }
+
+    var duplicateElements =
+        elements.stream()
+            .filter(element -> duplicateIds.contains(element.getId()))
+            .map(
+                element ->
+                    "id="
+                        + element.getId()
+                        + ", path="
+                        + element.getPath()
+                        + ", slice="
+                        + element.getSliceName())
+            .toList();
+    throw new SnapshotGenerationException(
+        "Duplicate element IDs in "
+            + representation
+            + " for "
+            + structureDefinition.getUrl()
+            + "|"
+            + structureDefinition.getVersion()
+            + ": "
+            + duplicateElements);
+  }
+
   void storeStructureDefinitionSnapshots(
       @NonNull SimpleWorkerContext context,
-      String profilePrefix,
       Map<StructureDefinition, Path> structureDefinitionsFromPackage)
       throws IOException {
-    List<StructureDefinition> processedDefinitions =
-        context.fetchResourcesByType(StructureDefinition.class);
     final var jsonParser = new JsonParser(context.getModelContext());
-    for (var sd : processedDefinitions) {
-      if (Objects.isNull(sd.getUrl()) || !sd.getUrl().startsWith(profilePrefix)) {
-        continue;
-      }
-
+    for (var entry : structureDefinitionsFromPackage.entrySet()) {
+      var sd = entry.getKey();
       // Check that StructureDefinition has a snapshot now
       if (sd.hasSnapshot() && sd.getSnapshot().hasElement()) {
         log.debug("StructureDefinition '{}' has been generated correctly", sd.getName());
@@ -273,16 +331,8 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
         log.warn("StructureDefinition '{}' does not contain a snapshot", sd.getName());
       }
 
-      // track only these.
-      for (var sdFromPackage : structureDefinitionsFromPackage.entrySet()) {
-        if (sdFromPackage.getKey().getUrl().contentEquals(sd.getUrl())) {
-          Files.write(
-              sdFromPackage.getValue(),
-              jsonParser.composeBytes(sd),
-              StandardOpenOption.TRUNCATE_EXISTING);
-          break;
-        }
-      }
+      Files.write(
+          entry.getValue(), jsonParser.composeBytes(sd), StandardOpenOption.TRUNCATE_EXISTING);
     }
   }
 }

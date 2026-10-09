@@ -166,13 +166,14 @@ public final class DefaultPackageResolver implements PackageResolver {
       }
       if (resolution.packages().size() == 1) {
         var resolved = resolution.packages().getFirst();
-        if (log.isDebugEnabled()) {
+        String resolvedCoordinates = resolved.id().coordinates();
+        if (isNewerPatchVersion(requested, resolvedCoordinates)) {
           log.debug(
-              "No exact coordinate match for {}. Using the only resolved package {}",
+              "No exact coordinate match for {}. Using compatible cached package {}",
               requested,
-              resolved.id().coordinates());
+              resolvedCoordinates);
+          return new LocalDirectory(resolved.id(), resolved.packagePath());
         }
-        return new LocalDirectory(resolved.id(), resolved.packagePath());
       }
 
       final var candidates =
@@ -180,7 +181,10 @@ public final class DefaultPackageResolver implements PackageResolver {
               .map(candidate -> candidate.id().coordinates())
               .collect(Collectors.joining(", "));
       throw new SnapshotGenerationException(
-          "Dependency " + requested + " resolved ambiguously to " + candidates);
+          "Dependency "
+              + requested
+              + " did not resolve to an exact matching package; candidates: "
+              + candidates);
     } catch (Exception e) {
       throw new SnapshotGenerationException(
           "Failed to resolve dependency " + requested + ": " + e.getLocalizedMessage(), e);
@@ -379,5 +383,28 @@ public final class DefaultPackageResolver implements PackageResolver {
     }
 
     return requestedVersion.length == candidateVersion.length;
+  }
+
+  private static boolean isNewerPatchVersion(@NonNull String requested, @NonNull String candidate) {
+    String[] requestedParts = requested.trim().split(PackageId.PACKAGE_SEPARATOR, 2);
+    String[] candidateParts = candidate.trim().split(PackageId.PACKAGE_SEPARATOR, 2);
+    if (requestedParts.length != 2
+        || candidateParts.length != 2
+        || !requestedParts[0].equalsIgnoreCase(candidateParts[0])) {
+      return false;
+    }
+
+    String requestedVersion = requestedParts[1];
+    String candidateVersion = candidateParts[1];
+    if (!requestedVersion.matches("\\d+\\.\\d+\\.\\d+")
+        || !candidateVersion.matches("\\d+\\.\\d+\\.\\d+")) {
+      return false;
+    }
+
+    String[] requestedNumbers = requestedVersion.split("\\.");
+    String[] candidateNumbers = candidateVersion.split("\\.");
+    return requestedNumbers[0].equals(candidateNumbers[0])
+        && requestedNumbers[1].equals(candidateNumbers[1])
+        && SemanticVersion.compare(candidateVersion, requestedVersion) > 0;
   }
 }

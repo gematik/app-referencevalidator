@@ -91,9 +91,8 @@ final class PackageArchiveUtils {
   /** Device names reserved on Windows, with or without an extension (e.g. {@code CON.txt}). */
   private static final Set<String> WINDOWS_RESERVED_NAMES =
       Set.of(
-          "CON", "PRN", "AUX", "NUL",
-          "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
-          "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9");
+          "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7",
+          "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9");
 
   private PackageArchiveUtils() {}
 
@@ -328,7 +327,8 @@ final class PackageArchiveUtils {
     }
   }
 
-  private static long getEntrySize(@NonNull Path archive, TarArchiveEntry entry, long totalExtractedSize) throws IOException {
+  private static long getEntrySize(
+      @NonNull Path archive, TarArchiveEntry entry, long totalExtractedSize) throws IOException {
     long entrySize = entry.getSize();
 
     if (entrySize < 0) {
@@ -472,8 +472,7 @@ final class PackageArchiveUtils {
         throw new IOException("Archive entry has an unsafe path segment: " + entryName);
       }
       if (WINDOWS_ILLEGAL_CHARS.matcher(segment).find()) {
-        throw new IOException(
-            "Archive entry contains characters illegal on Windows: " + entryName);
+        throw new IOException("Archive entry contains characters illegal on Windows: " + entryName);
       }
       String base = segment.contains(".") ? segment.substring(0, segment.indexOf('.')) : segment;
       if (WINDOWS_RESERVED_NAMES.contains(base.toUpperCase(Locale.ROOT))) {

@@ -25,8 +25,10 @@
 package de.gematik.refv.lib.package_resolver.boundary;
 
 import de.gematik.refv.lib.exceptions.PackageLoadFailedException;
+import de.gematik.refv.lib.exceptions.SnapshotGenerationException;
 import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
 import de.gematik.refv.lib.fhir_context.entity.PackageDownloadConfiguration;
+import de.gematik.refv.lib.package_resolver.entity.LocalDirectory;
 import de.gematik.refv.lib.package_resolver.entity.PackageCategory;
 import de.gematik.refv.lib.package_resolver.entity.PackageId;
 import de.gematik.refv.lib.package_resolver.entity.PackageResolutionRequest;
@@ -146,6 +148,21 @@ class PackageResolverRequirementsTest {
     PackageCategory matchingPackage = resolver.getMatchingPackage(coordinate);
 
     Assertions.assertEquals(PackageId.parse(CORE_COORDINATES), matchingPackage.id());
+  }
+
+  @Test
+  @DisplayName("An unavailable exact package version is not replaced by a cached sibling version")
+  void exactPackageVersionDoesNotFallBackToCachedSibling() {
+    var resolver = resolver();
+    var actualPackage = PackageId.parse("minimal.example#1.0.0");
+    resolver.resolveRequest(
+        new PackageResolutionRequest(
+            List.of(new LocalDirectory(actualPackage, MINIMAL_PACKAGE_DIRECTORY))),
+        PackageResolver.TransitiveResolution.IGNORE);
+
+    Assertions.assertThrows(
+        SnapshotGenerationException.class,
+        () -> resolver.getMatchingPackage("minimal.example#1.0.1"));
   }
 
   /// Requirement `R5.1`

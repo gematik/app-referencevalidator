@@ -26,6 +26,7 @@ package de.gematik.refv.lib.snapshot.entity;
 
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
 import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -68,5 +69,19 @@ class SnapshotGenerationResultTest {
         new SnapshotGenerationResult(
             List.of(ResultMessage.fromMessage(IssueSeverity.ERROR, "E-1", "boom")));
     Assertions.assertTrue(result.toString().contains("boom"));
+  }
+
+  @DisplayName("R1.11 — result contents cannot be mutated through constructor input or accessor")
+  @Test
+  void resultMessagesAreDefensivelyCopied() {
+    var message = ResultMessage.fromMessage(IssueSeverity.INFORMATION, "I-1", "done");
+    var source = new ArrayList<>(List.of(message));
+    var result = new SnapshotGenerationResult(source);
+    var resultMessages = result.messages();
+
+    source.clear();
+
+    Assertions.assertEquals(1, result.messages().size());
+    Assertions.assertThrows(UnsupportedOperationException.class, resultMessages::clear);
   }
 }
