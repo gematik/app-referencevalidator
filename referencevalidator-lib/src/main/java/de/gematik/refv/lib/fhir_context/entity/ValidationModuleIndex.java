@@ -236,23 +236,23 @@ public final class ValidationModuleIndex {
   // ---------------------------------------------
 
   /**
-   * Returns the family whose canonical base prefix ({@code canonicalBase + "/"}) the profile URL
-   * starts with, if any. Nested canonical bases are not supported, so at most one family can match.
+   * Returns the family declaring the exact profile name under its canonical base, if any. When the
+   * profile is not explicitly declared, falls back to the first matching canonical base.
    */
-  private Optional<ProfileFamily> matchingFamily(@NonNull String profileUrl) {
+  Optional<ProfileFamily> matchingFamily(@NonNull String profileUrl) {
+    ProfileFamily prefixFallback = null;
     for (var family : familiesByPrefix) {
       if (profileUrl.startsWith(family.prefix())) {
-        if (Objects.nonNull(family.profileFamily().profiles())) {
-          for (var profileEntry : family.profileFamily().profiles().keySet()) {
-            if (profileUrl.contains(profileEntry)) {
-              return Optional.of(family.profileFamily());
-            }
-          }
+        if (prefixFallback == null) {
+          prefixFallback = family.profileFamily();
         }
-        return Optional.of(family.profileFamily());
+        final String profileName = profileUrl.substring(family.prefix().length());
+        if (family.profileFamily().profiles().containsKey(profileName)) {
+          return Optional.of(family.profileFamily());
+        }
       }
     }
-    return Optional.empty();
+    return Optional.ofNullable(prefixFallback);
   }
 
   /**

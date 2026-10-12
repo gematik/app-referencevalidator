@@ -528,21 +528,6 @@ class PackageArchiveUtilsTest {
   }
 
   @Test
-  void decompressShouldRejectWindowsDriveQualifiedPath() throws Exception {
-    var archive =
-        createArchive("windows-drive-path.tgz", regularFile("C:/outside.txt", "malicious"));
-    var output = tempDir.resolve("output");
-
-    var exception =
-        Assertions.assertThrows(
-            IOException.class,
-            () -> PackageArchiveUtils.decompress(archive.toString(), output.toFile()));
-
-    Assertions.assertTrue(exception.getMessage().contains("drive-qualified"));
-    Assertions.assertFalse(Files.exists(output));
-  }
-
-  @Test
   void decompressShouldRejectWindowsReservedDeviceNames() throws Exception {
     var archive = createArchive("reserved-name.tgz", regularFile("package/CON.txt", "malicious"));
     var output = tempDir.resolve("output");

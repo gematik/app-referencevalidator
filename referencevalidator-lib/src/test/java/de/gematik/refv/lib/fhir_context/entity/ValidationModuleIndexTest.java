@@ -355,6 +355,39 @@ class ValidationModuleIndexTest {
   }
 
   @DisplayName(
+      "Given sibling profiles with a shared name prefix, when matching a profile, then only its exact declaration matches")
+  @Test
+  void expectExactProfileNameMatchBeforePrefixFallback() {
+    final var period =
+        new ProfileVersion(
+            List.of(new PackageGroupReference("g1", LocalDate.of(2025, 1, 1), null)));
+    final var medicationDispense =
+        new ProfileFamily(
+            BASE,
+            "1.6",
+            Map.of("1.6", period),
+            Map.of("GEM_ERP_PR_MedicationDispense", new ProfileDefinition(null, null)));
+    final var medicationDispenseDiga =
+        new ProfileFamily(
+            BASE,
+            "1.6",
+            Map.of("1.6", period),
+            Map.of("GEM_ERP_PR_MedicationDispense_DiGA", new ProfileDefinition(null, null)));
+    final var index =
+        indexFor(
+            config(
+                Map.of("g1", new PackageGroup(List.of("a-1.0.tgz"), null)),
+                Map.of("diga", medicationDispenseDiga, "dispense", medicationDispense)));
+
+    Assertions.assertEquals(
+        medicationDispense,
+        index.matchingFamily(BASE + "/GEM_ERP_PR_MedicationDispense").orElseThrow());
+    Assertions.assertEquals(
+        medicationDispenseDiga,
+        index.matchingFamily(BASE + "/GEM_ERP_PR_MedicationDispense_DiGA").orElseThrow());
+  }
+
+  @DisplayName(
       "Given a family without a default version, when resolving a versionless canonical, then an empty result is returned")
   @Test
   void expectVersionlessCanonicalEmptyWithoutDefaultVersion() {
