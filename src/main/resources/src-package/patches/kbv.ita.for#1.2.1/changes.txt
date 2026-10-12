@@ -1,0 +1,41 @@
+kbv.ita.for-1.2.1.tgz:
+- in KBV_PR_FOR_Organization.json 
+	- constraint "-for-laengeIK" on "Organization.identifier:Institutionskennzeichen.value"
+	CHANGE--> "expression": "matches('^[0-9]{9}$')" to "matches('^[0-9]{9,9}$')"
+
+	- constraint "-for-laengeBSNR" on "Organization.identifier:Betriebsstaettennummer.value"
+	CHANGE--> "expression": "matches('^[0-9]{9}$')" to "matches('^[0-9]{9,9}$')"
+
+	- constraint "-for-laengeKZVA" on "Organization.identifier:KZV-Abrechnungsnummer.value"
+	CHANGE--> "expression": "matches('^[0-9]{9}$')" to "matches('^[0-9]{9,9}$')"
+
+	- unified slicing block definitions
+        Organization.address:Strassenanschrift.line.extension:Strasse.valuevalueString
+        Organization.address:Strassenanschrift.line.extension:Hausnummer.valuevalueString
+        Organization.address:Strassenanschrift.line.extension:Adresszusatz.valuevalueString
+
+- in KBV_PR_FOR_Practitioner.json
+    - syntactic change in constraints "-for-laengeLANR" and "-for-laengeZANR" to activate evaluation of the error severity level
+
+    - unified slicing block definitions
+        Practitioner.name:name.family.extension:namenszusatz.valuevalueString
+        Practitioner.name:name.family.extension:nachname.valuevalueString
+        Practitioner.name:name.family.extension:vorsatzwort.valuevalueString
+        Practitioner.name:name.prefix.extension:prefix-qualifier.valuevalueCode
+
+- in KBV_PR_FOR_Patient.json
+    - syntactic change in constraint "-for-laengeVersichertenId" to activate evaluation of the error severity level
+
+    - unified slicing block definitions
+        Patient.name:name.family.extension:namenszusatz.valuevalueString
+        Patient.name:name.family.extension:nachname.valuevalueString
+        Patient.name:name.family.extension:vorsatzwort.valuevalueString
+        Patient.name:name.prefix.extension:prefix-qualifier.valuevalueCode
+        Patient.birthDate.extension:data-absent-reason.valuevalueCode
+        Patient.address:Strassenanschrift.line.extension:Strasse.valuevalueString
+        Patient.address:Strassenanschrift.line.extension:Hausnummer.valuevalueString
+        Patient.address:Strassenanschrift.line.extension:Adresszusatz.valuevalueString
+        Patient.address:Postfach.line.extension:Postfach.valuevalueString
+
+- in KBV_PR_FOR_Coverage.json
+    - syntactic change in constraint "-for-laengeIK" to activate evaluation of the error severity level

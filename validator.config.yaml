@@ -1,0 +1,38 @@
+---
+context:
+  fhirRelease: "R4"
+  locale: "de"
+  displayBehavior:
+    displayWarnings: "ENABLED"
+    displayMessagesFromReferences: "ENABLED"
+    displayMessageIds: "ENABLED"
+    displayInvariantsInMessage: "ENABLED"
+    displayHintAboutNonMustSupport: "DISABLED"
+    displayExtensibleBindingsWarnings: "DISABLED"
+    displayBestPracticeMessageLevel: "SHOW_WARNINGS"
+  packageLoading:
+    remoteDownloadPolicy: "DISALLOWED"
+    cachePath: "target/cache-validator-fhir-packages/"
+  terminology:
+    remoteLoadingPolicy: "DISALLOWED"
+  validationPolicy:
+    validationLevelPolicy: "SHOW_WARNINGS_AND_ERRORS"
+    unknownCodeSystemsPolicy: "ALLOWED"
+    exampleCodeSystemsUsagePolicy: "DISALLOWED"
+    exampleUrlsUsagePolicy: "ALLOWED"
+    exampleRestReferencesPolicy: "ALLOWED"
+    recursiveModePolicy: "DISALLOWED"
+    anyExtensionPolicy: "DISALLOWED"
+module:
+  directory: "./target"
+  name: "eau"
+validationOptions:
+  profileToValidate: null
+  profileFilterRegex: null
+  validationMessagesFilterStrategy: "KEEP_ALL"
+  profileValidityPeriodCheckStrategy: "VALIDATE"
+  messageTransformations: []
+  suppressionRules: []
+report:
+  filePath: "target/validation-report.html"
+  format: "HTML"

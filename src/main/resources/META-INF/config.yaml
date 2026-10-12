@@ -1,0 +1,71 @@
+configSpecVersion: '3.0'
+name: eau
+author: 'gematik GmbH'
+description: "Reference Validator Module for the specification 'Informationstechnische Systeme in Krankenhäusern (ISIK)'"
+version: '3.0'
+specUrl: "https://simplifier.net/packages/de.gematik.isik"
+errorOnUnknownProfile: true
+anyExtensionsAllowed: false
+
+ignoredCodeSystems:
+  - "http://fhir.de/CodeSystem/dimdi/icd-10-gm"
+  - "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+
+ignoredValueSets:
+
+globalSuppressionRules:
+
+messageTransformations:
+  ignore_terminology_server_errors:
+    - severityLevelFrom: "error"
+      severityLevelTo: "information"
+      messageLocationRegex: ".*"
+      messageId: "Error_validating_code_running_without_terminology_services"
+
+  ignore_match_multiple_slices:
+    - severityLevelFrom: "error"
+      severityLevelTo: "information"
+      messageLocationRegex: ".*IEEE11073.*"
+      messageId: "Validation_VAL_Profile_MatchMultiple"
+
+packageGroups:
+  kbv.ita.eau.1.2.1:
+    packages:
+      - "kbv.ita.eau-1.2.1.tgz"
+      - "gematik.kbv.eau.sfhir.cs.vs-1.2.0.tgz"
+      - "kbv.ita.for-1.2.1.tgz"
+      - "kbv.basis-1.7.0.tgz"
+      - "de.basisprofil.r4-1.5.2.tgz"
+      - "hl7.terminology.r4-7.1.0.tgz"
+    messageTransformations: [ "ignore_terminology_server_errors", "ignore_match_multiple_slices" ]
+
+profileFamilies:
+  kbv_ita_eau-1.2.1:
+    canonicalBase: "https://fhir.kbv.de/StructureDefinition"
+    defaultVersion: "1.2"
+    versions:
+      "1.2":
+        groups:
+          - packageGroupName: kbv.ita.eau.1.2.1
+            validFrom: "2026-01-27"
+    profiles:
+      KBV_PR_EAU_Bundle:
+        validityDateSourceByVersion:
+          "1.2": "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_EAU_Composition')).date"
+      KBV_PR_EAU_Composition:
+        validityDateSourceByVersion:
+          "1.2": "date"
+      KBV_PR_EAU_Condition_AU: {}
+      KBV_PR_EAU_Condition_ICD: {}
+      KBV_PR_EAU_Condition_Text: {}
+      KBV_PR_EAU_ServiceRequest_steps: {}
+      KBV_PR_EAU_Storno: {}
+      KBV_PR_EAU_Storno_Bundle:
+        validityDateSourceByVersion:
+          "1.2": "Bundle.entry.resource.where(meta.profile.contains('KBV_PR_EAU_Storno_Composition')).date"
+      KBV_PR_EAU_Storno_Composition:
+        validityDateSourceByVersion:
+          "1.2": "date"
+      KBV_PR_EAU_health_insurance_Practitioner: {}
+
+

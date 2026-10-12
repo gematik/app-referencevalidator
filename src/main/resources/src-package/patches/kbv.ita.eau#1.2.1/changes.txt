@@ -1,0 +1,3 @@
+kbv.ita.eau-1.2.1.tgz:
+  - KBV_PR_EAU_Condition_AU.json:
+    - Correction of slices, removing redefinitions and duplicated IDs.

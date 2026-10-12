@@ -1,0 +1,34 @@
+---
+context:
+  fhirRelease: "R4"
+  locale: "de"
+  displayBehavior:
+    displayWarnings: "ENABLED"
+    displayMessagesFromReferences: "ENABLED"
+    displayMessageIds: "ENABLED"
+    displayInvariantsInMessage: "ENABLED"
+    displayHintAboutNonMustSupport: "DISABLED"
+    displayExtensibleBindingsWarnings: "DISABLED"
+    displayBestPracticeMessageLevel: "SHOW_WARNINGS"
+  packageLoading:
+    remoteDownloadPolicy: "ALLOWED"
+    cachePath: "target/cache-snapshot-fhir-packages/"
+  terminology:
+    remoteLoadingPolicy: "ALLOWED"
+    serverUri: "https://tx.fhir.org"
+    cachePath: "target/cache-refv-tx/"
+  validationPolicy:
+    validationLevelPolicy: "SHOW_WARNINGS_AND_ERRORS"
+    unknownCodeSystemsPolicy: "ALLOWED"
+    exampleCodeSystemsUsagePolicy: "DISALLOWED"
+    exampleUrlsUsagePolicy: "DISALLOWED"
+    exampleRestReferencesPolicy: "DISALLOWED"
+    recursiveModePolicy: "DISALLOWED"
+    anyExtensionPolicy: "ALLOWED"
+module:
+  manifestPath: "src/main/resources/META-INF/config.yaml"
+  sourcePackagesPath: "./src/main/resources/src-package"
+  patchesPath: "./src/main/resources/src-package/patches"
+report:
+  filePath: "target/snapshot-report.html"
+  format: "HTML"

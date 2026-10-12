@@ -1,1 +1,0 @@
-Die Patient-Resource hat keine Profil-Angabe. Das gesamte Bundle ist daher invalide
