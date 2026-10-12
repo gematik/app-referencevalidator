@@ -40,12 +40,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import org.hl7.fhir.model.core.ElementDefinition;
 import org.hl7.fhir.model.core.StructureDefinition;
 import org.hl7.fhir.model.core.formats.JsonParser;
 import org.hl7.fhir.standalone.context.ContextUtilities;
@@ -252,12 +249,6 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
       ContextUtilities contextUtilities,
       SimpleWorkerContext workerContext,
       StructureDefinition structureDefinition) {
-    if (structureDefinition.hasDifferential()) {
-      assertUniqueElementIds(
-          structureDefinition,
-          structureDefinition.getDifferential().getElementList(),
-          "differential");
-    }
     boolean hasSnapshot =
         structureDefinition.hasSnapshot() && structureDefinition.getSnapshot().hasElement();
     if (structureDefinition.hasBaseDefinition() && !hasSnapshot) {
@@ -268,53 +259,7 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
           System.identityHashCode(structureDefinition));
       contextUtilities.generateSnapshot(structureDefinition);
     }
-    if (structureDefinition.hasSnapshot()) {
-      assertUniqueElementIds(
-          structureDefinition, structureDefinition.getSnapshot().getElementList(), "snapshot");
-    }
     workerContext.cacheResource(structureDefinition);
-  }
-
-  static void assertUniqueElementIds(
-      StructureDefinition structureDefinition,
-      List<ElementDefinition> elements,
-      String representation) {
-    var counts =
-        elements.stream()
-            .filter(ElementDefinition::hasId)
-            .collect(
-                Collectors.groupingBy(
-                    ElementDefinition::getId, LinkedHashMap::new, Collectors.counting()));
-    var duplicateIds =
-        counts.entrySet().stream()
-            .filter(entry -> entry.getValue() > 1)
-            .map(Map.Entry::getKey)
-            .toList();
-    if (duplicateIds.isEmpty()) {
-      return;
-    }
-
-    var duplicateElements =
-        elements.stream()
-            .filter(element -> duplicateIds.contains(element.getId()))
-            .map(
-                element ->
-                    "id="
-                        + element.getId()
-                        + ", path="
-                        + element.getPath()
-                        + ", slice="
-                        + element.getSliceName())
-            .toList();
-    throw new SnapshotGenerationException(
-        "Duplicate element IDs in "
-            + representation
-            + " for "
-            + structureDefinition.getUrl()
-            + "|"
-            + structureDefinition.getVersion()
-            + ": "
-            + duplicateElements);
   }
 
   void storeStructureDefinitionSnapshots(

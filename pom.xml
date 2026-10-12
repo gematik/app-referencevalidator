@@ -97,7 +97,7 @@
         <maven.site.plugin.version>3.22.0</maven.site.plugin.version>
         <maven.sonar.plugin.version>5.8.0.7211</maven.sonar.plugin.version>
         <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
-        <maven.spotless.plugin.version>3.10.3</maven.spotless.plugin.version>
+        <maven.spotless.plugin.version>3.10.4</maven.spotless.plugin.version>
         <maven.surefire.plugin.version>3.6.0</maven.surefire.plugin.version>
 
         <!-- defaults for local runs (no limits) -->
