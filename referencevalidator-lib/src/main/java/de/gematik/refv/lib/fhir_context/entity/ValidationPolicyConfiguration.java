@@ -84,9 +84,14 @@ public record ValidationPolicyConfiguration(
   }
 
   /**
-   * Policy that defines if the validation should be executed recursively for all the entities in a
-   * FHIR Resource. If {@link RecursiveModePolicy#ALLOWED} is selected, it may increase time and
-   * memory consumption.
+   * Policy that enables additional validation of Bundle entry resources and Parameters resource
+   * parameters, including nested parts and nested Bundles or Parameters. Each child is validated
+   * against its own meta.profile declarations, or core FHIR structures when none are declared, in
+   * the same context. Automatic full validation of these embedded resources is replaced by type
+   * checks and the explicit child validation pass. The parent's structural and slice checks remain
+   * enabled, including profile-based slice discriminators; contained resources remain part of their
+   * owning resource's validation. If {@link RecursiveModePolicy#ALLOWED} is selected, it may
+   * increase time and memory consumption.
    */
   public enum RecursiveModePolicy {
     ALLOWED,
