@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
+import org.hl7.fhir.model.utilities.formats.FhirFormat;
 import org.hl7.fhir.services.validation.constants.BestPracticeWarningLevel;
 import org.hl7.fhir.utilities.FhirPublication;
 import org.hl7.fhir.utilities.logging.Slf4JLoggingService;
@@ -213,7 +214,19 @@ final class ValidationEngineFactory {
     // There is no way to set up the custom package path with the builder
     // so the setting must be applied on the engine directly.
     configurePackageDownloadSettings(validationEngine, contextConfiguration);
+    configureRecursiveChildValidation(validationEngine, contextConfiguration.validationPolicy());
     return validationEngine;
+  }
+
+  static void configureRecursiveChildValidation(
+      ValidationEngine validationEngine, ValidationPolicyConfiguration validationPolicy)
+      throws IOException {
+    if (validationPolicy.recursiveModePolicy()
+        == ValidationPolicyConfiguration.RecursiveModePolicy.ALLOWED) {
+      // the Format can be everything but "SHC", which triggers the download of external IGs.
+      var delegate = validationEngine.getValidator(FhirFormat.JSON).getPolicyAdvisor();
+      validationEngine.setPolicyAdvisor(new RecursiveChildValidationPolicyAdvisor(delegate));
+    }
   }
 
   private static void configurePackageDownloadSettings(

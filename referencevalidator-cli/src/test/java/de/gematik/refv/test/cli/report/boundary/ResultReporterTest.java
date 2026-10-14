@@ -134,20 +134,20 @@ class ResultReporterTest {
         IllegalArgumentException.class,
         () -> resultReporter.writeJsonReport(emptyResults, reportPath));
     // bad Path - apparently this works on windows, storing it in the current drive
-    if(!System.getProperty("os.name").toLowerCase().startsWith("win")) {
+    if (!System.getProperty("os.name").toLowerCase().startsWith("win")) {
       final Map<String, ContextResult> validationResultMap =
-              Map.of(
-                      "File1.json",
-                      createValidSingleResult(
-                              IssueSeverity.INFORMATION,
-                              "unknown code",
-                              "Code is not known, skipping",
-                              "code.coding.code"));
+          Map.of(
+              "File1.json",
+              createValidSingleResult(
+                  IssueSeverity.INFORMATION,
+                  "unknown code",
+                  "Code is not known, skipping",
+                  "code.coding.code"));
 
       final var notExistingReport = Path.of("/this/does/not/exist/report.json");
       Assertions.assertThrows(
-              AccessDeniedException.class,
-              () -> resultReporter.writeJsonReport(validationResultMap, notExistingReport));
+          AccessDeniedException.class,
+          () -> resultReporter.writeJsonReport(validationResultMap, notExistingReport));
     }
   }
 

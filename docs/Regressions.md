@@ -33,10 +33,16 @@ in your configuration file, like:
 validationOptions:
   validationMessagesFilterStrategy: "KEEP_ALL"
   profileValidityPeriodCheckStrategy: "VALIDATE"
-  messageTransformations: 
-    -  severityLevelFrom: "error"
-       severityLevelTo: "information"
-       locatorString: "http://hl7.org/fhir/encounter-status#finished"
-       messageId: "Unknown_Code_in_Version"
+  messageTransformations:
+    - severityLevelFrom: "error"
+      severityLevelTo: "information"
+      locatorString: "http://hl7.org/fhir/encounter-status#finished"
+      messageId: "Unknown_Code_in_Version"
 ...
 ```
+
+## R5 - Validation of children
+
+By default, the HL7 Validator does not check the validity of the elements in a `Bundle` or `Parameters` resource.
+The Reference Validator through the Configuration Option `recursiveModePolicy` can enable recursive validation of these
+elements.

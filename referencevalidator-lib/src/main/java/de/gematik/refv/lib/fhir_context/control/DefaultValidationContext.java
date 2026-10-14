@@ -36,13 +36,20 @@ import de.gematik.refv.lib.validation.entity.FhirResource;
 import de.gematik.refv.lib.validation.entity.JsonFhirResource;
 import de.gematik.refv.lib.validation.entity.ProfileCanonical;
 import de.gematik.refv.lib.validation.entity.ValidationResult;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import org.hl7.fhir.model.core.OperationOutcome;
 import org.hl7.fhir.model.core.StructureDefinition;
+import org.hl7.fhir.model.utilities.EOperationOutcome;
 import org.hl7.fhir.model.utilities.formats.FhirFormat;
+import org.hl7.fhir.model.utilities.formats.OutputStyle;
+import org.hl7.fhir.services.elementmodel.Manager;
 import org.hl7.fhir.utilities.i18n.I18nConstants;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.hl7.fhir.validation.ValidationEngine;
@@ -115,16 +122,20 @@ class DefaultValidationContext implements ValidationContext {
       final OperationOutcome operationOutcome;
       if (fhirResource instanceof JsonFhirResource jsonFhirResource) {
         operationOutcome =
-            this.validationEngine.validate(
+            validateInEngine(
                 FhirFormat.JSON,
                 jsonFhirResource.inputStream(),
                 profiles.stream().map(ProfileCanonical::value).toList());
       } else {
         operationOutcome =
-            this.validationEngine.validate(
+            validateInEngine(
                 FhirFormat.XML,
                 fhirResource.inputStream(),
                 profiles.stream().map(ProfileCanonical::value).toList());
+      }
+      if (contextConfiguration.validationPolicy().recursiveModePolicy()
+          == ValidationPolicyConfiguration.RecursiveModePolicy.ALLOWED) {
+        validateEmbeddedResources(fhirResource, operationOutcome);
       }
       // BUG HL7: the resources are still searched, even if the configuration is disabled
       final var fixedOutcome =
@@ -132,6 +143,49 @@ class DefaultValidationContext implements ValidationContext {
       return OutcomeConverter.toValidationResult(fixedOutcome);
     } catch (Exception e) {
       throw new ValidationException(e.getLocalizedMessage(), e);
+    }
+  }
+
+  private OperationOutcome validateInEngine(
+      FhirFormat format, InputStream input, List<String> profiles)
+      throws IOException, EOperationOutcome {
+    try (input) {
+      return contextConfiguration.validationPolicy().recursiveModePolicy()
+              == ValidationPolicyConfiguration.RecursiveModePolicy.ALLOWED
+          ? RecursiveResourceValidation.validate(validationEngine, format, input, profiles)
+          : validationEngine.validate(format, input, profiles);
+    }
+  }
+
+  private void validateEmbeddedResources(FhirResource resource, OperationOutcome outcome)
+      throws IOException, EOperationOutcome {
+    var format = resource instanceof JsonFhirResource ? FhirFormat.JSON : FhirFormat.XML;
+    try (var input = resource.inputStream()) {
+      var root = Manager.parseSingle(validationEngine.getContext(), input, format);
+      for (var child : EmbeddedResourceExtractor.extract(root)) {
+        var profiles = child.profiles();
+        assertProfilesAreLoadedInContext(profiles);
+        var content = new ByteArrayOutputStream();
+        Manager.compose(
+            validationEngine.getContext(),
+            child.resource(),
+            content,
+            FhirFormat.JSON,
+            OutputStyle.NORMAL,
+            null);
+        try (var childInput = new ByteArrayInputStream(content.toByteArray())) {
+          var childOutcome =
+              validateInEngine(
+                  FhirFormat.JSON,
+                  childInput,
+                  profiles.stream().map(ProfileCanonical::value).toList());
+          for (var issue : childOutcome.getIssueList()) {
+            // OutcomeConverter exposes the issue text, not its expression/location fields.
+            issue.getDetails().setText(child.path() + ": " + issue.getText());
+            outcome.getIssueList().add(issue);
+          }
+        }
+      }
     }
   }
 
@@ -160,7 +214,7 @@ class DefaultValidationContext implements ValidationContext {
    */
   private void assertProfilesAreLoadedInContext(Collection<ProfileCanonical> profiles) {
     boolean areProfilesLoaded =
-        // The loaded profile check uses the same canonical/version pair as profile resolution.
+        // HL7 uses null, not an empty string, to resolve an unversioned canonical.
         profiles.stream()
             .allMatch(
                 profile ->
@@ -169,7 +223,7 @@ class DefaultValidationContext implements ValidationContext {
                         .hasResourceVersion(
                             StructureDefinition.class,
                             profile.canonical().toString(),
-                            profile.version()));
+                            profile.version().isBlank() ? null : profile.version()));
 
     if (!areProfilesLoaded) {
       log.error("FHIR profiles were not loaded: {}", profiles);
