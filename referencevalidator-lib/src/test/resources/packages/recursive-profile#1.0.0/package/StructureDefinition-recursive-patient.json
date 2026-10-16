@@ -1,0 +1,27 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "recursive-patient",
+  "url": "http://example.org/StructureDefinition/recursive-patient",
+  "version": "1.0.0",
+  "name": "RecursivePatient",
+  "status": "active",
+  "fhirVersion": "4.0.1",
+  "kind": "resource",
+  "abstract": false,
+  "type": "Patient",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Patient",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Patient",
+        "path": "Patient"
+      },
+      {
+        "id": "Patient.active",
+        "path": "Patient.active",
+        "fixedBoolean": true
+      }
+    ]
+  }
+}

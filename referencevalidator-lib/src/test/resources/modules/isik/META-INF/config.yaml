@@ -1,0 +1,57 @@
+configSpecVersion: '3.0'
+name: isik
+author: 'gematik GmbH'
+description: "Reference Validator Module for the specification 'Informationstechnische Systeme in Krankenhäusern (ISIK)'"
+version: '3.0'
+specUrl: "https://simplifier.net/packages/de.gematik.isik"
+errorOnUnknownProfile: true
+anyExtensionsAllowed: true
+
+ignoredCodeSystems:
+  - "http://loinc.org"
+  - "http://snomed.info/sct"
+  - "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+  - "http://fhir.de/CodeSystem/bfarm/atc"
+  - "http://fhir.de/CodeSystem/bfarm/ops"
+  - "http://dvmd.de/fhir/CodeSystem/kdl"
+  - "urn:iso:std:iso:11073:10101"
+
+ignoredValueSets:
+  - "https://gematik.de/fhir/isik/ValueSet/ProzedurenCodesSCT"
+  - "https://gematik.de/fhir/isik/ValueSet/DiagnosesSCT"
+  - "https://gematik.de/fhir/isik/ValueSet/ProzedurenKategorieSCT"
+  - "https://gematik.de/fhir/isik/ValueSet/ISiKTerminPriority"
+  - "http://fhir.de/ValueSet/bfarm/ops" # Das Code System ist als FHIR nicht vorhanden
+  - "https://gematik.de/fhir/isik/ValueSet/SctRouteOfAdministration"
+  - "http://dvmd.de/fhir/ValueSet/kdl"
+
+globalSuppressionRules:
+
+messageTransformations:
+  meta_profile_slice_to_error:
+    - severityLevelFrom: "error"
+      severityLevelTo: "information"
+      locatorString: "urn:ihe:iti:xds:2017:mimeTypeSufficient"
+      messageId: "Terminology_TX_Confirm_4a"
+    - severityLevelFrom: "error"
+      severityLevelTo: "information"
+      locatorString: "urn:ihe:iti:xds:2017:mimeTypeSufficient"
+      messageId: "Terminology_TX_NoValid_12"
+    - severityLevelFrom: "error"
+      severityLevelTo: "information"
+      locatorString: "urn:ihe:iti:xds:2017:mimeTypeSufficient"
+      messageId: "Terminology_PassThrough_TX_Message"
+
+packageGroups:
+  isik.stufe.5:
+    packages:
+      - "de.gematik.isik#5.1.3"
+    messageTransformations: [ "meta_profile_slice_to_error" ]
+
+profileFamilies:
+  stufe-5:
+    canonicalBase: "https://gematik.de/fhir/isik/StructureDefinition"
+    versions:
+      "5.0.0":
+        groups:
+          - packageGroupName: isik.stufe.5

@@ -1,0 +1,26 @@
+configSpecVersion: '3.0'
+name: test
+author: 'gematik GmbH'
+description: 'Test Validation Module'
+version: '3.0'
+errorOnUnknownProfile: true
+anyExtensionsAllowed: false
+
+ignoredCodeSystems: [ ]
+ignoredValueSets: [ ]
+globalSuppressionRules: [ ]
+
+messageTransformations: { }
+packageGroups:
+  # --- KBV eRP (https://update.kbv.de/ita-update/DigitaleMuster/ERP) ---------
+  test.1.0.0:
+    packages:
+      - "de.basisprofil.r4#1.6.0"
+
+profileFamilies:
+  test:
+    canonicalBase: "http://example.com/myTest/StructureDefinition"
+    versions:
+      "1.0.0":
+        groups:
+          - packageGroupName: test.1.0.0

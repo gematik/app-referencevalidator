@@ -1,0 +1,35 @@
+---
+context:
+  fhirRelease: "R4"
+  locale: "de"
+  displayBehavior:
+    displayWarnings: "DISABLED"
+    displayMessagesFromReferences: "DISABLED"
+    displayMessageIds: "DISABLED"
+    displayInvariantsInMessage: "DISABLED"
+    displayHintAboutNonMustSupport: "DISABLED"
+    displayExtensibleBindingsWarnings: "DISABLED"
+    displayBestPracticeMessageLevel: "IGNORE"
+  packageLoading:
+    remoteDownloadPolicy: "DISALLOWED"
+    cachePath: "~/.fhir/dependencies"
+  terminology:
+    remoteLoadingPolicy: "ALLOWED"
+    serverUri: "https://tx.fhir.org"
+    cachePath: "./refv-tx"
+  validationPolicy:
+    validationLevelPolicy: "SHOW_WARNINGS_AND_ERRORS"
+    unknownCodeSystemsPolicy: "DISALLOWED"
+    exampleCodeSystemsUsagePolicy: "DISALLOWED"
+    exampleUrlsUsagePolicy: "ALLOWED"
+    exampleRestReferencesPolicy: "ALLOWED"
+    recursiveModePolicy: "DISALLOWED"
+module:
+  directory: "modules/"
+  name: "erp"
+validationOptions:
+  validationMessagesFilterStrategy: "KEEP_ERRORS_ONLY"
+  profileValidityPeriodCheckStrategy: "VALIDATE"
+report:
+  filePath: "output/report.json"
+  format: "JSON"

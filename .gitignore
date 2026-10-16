@@ -6,6 +6,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 *.iml
+*.xml.versionsBackup
 jenkinsfile.*
 .githubignore
 tools
