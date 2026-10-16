@@ -32,9 +32,7 @@ import org.hl7.fhir.services.validation.IValidationPolicyAdvisor;
 import org.hl7.fhir.services.validation.constants.ContainedReferenceValidationPolicy;
 import org.hl7.fhir.validation.instance.advisor.RulesDrivenPolicyAdvisor;
 
-/**
- * Customizes the Rules for checking recursively the children elements of a FHIR Resource.
- */
+/** Customizes the Rules for checking recursively the children elements of a FHIR Resource. */
 final class RecursiveChildValidationPolicyAdvisor extends RulesDrivenPolicyAdvisor {
   RecursiveChildValidationPolicyAdvisor(IValidationPolicyAdvisor delegate) {
     super(delegate);

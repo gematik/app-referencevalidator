@@ -34,6 +34,7 @@
 ///
 /// ## Boundary
 ///
+/// - `create-context-provider` — create a provider for configured FHIR contexts (R1).
 /// - `create-validation-context` — create a validation context from configuration (R1).
 /// - `create-validation-context-with-packages` — create a validation context with packages (R1).
 /// - `clone-validation-context` — clone a validation context (R4).
@@ -46,8 +47,13 @@
 /// - `validate-resource` — validate a resource against supplied profiles (R2).
 /// - `generate-snapshots` — generate snapshots for a package directory (R3).
 /// - `report-package-cache-path` — return the configured package cache path (R5).
+/// - `close-context` — release a context's ownership of temporary terminology-cache resources (R1).
 /// - `open-batch-validation-context-provider` — open a batch-scoped provider for isolated contexts
 ///   backed by reusable package-set templates (R6).
+/// - `acquire-package-set-lease` — retain a package-set template for a batch resource (R6).
+/// - `create-isolated-validation-context` — obtain an isolated context from a package-set lease (R6).
+/// - `release-package-set-lease` — release a lease's ownership of its retained template (R6).
+/// - `close-batch-validation-context-provider` — release templates after active leases end (R6).
 ///
 /// Context operations use the library's resource, profile, package-resolution, and result types.
 /// Concrete HL7 validation-engine types are not exposed in context operation signatures.
@@ -63,6 +69,8 @@
 ///   validation.
 /// - R1.3 When a context is created with resolved packages, the FHIR Context shall make those
 ///   packages available to its validation or snapshot-generation operations.
+/// - R1.4 When a context is closed, the FHIR Context shall release its ownership of temporary
+///   terminology-cache resources and shall remove them only after all sharing contexts are closed.
 ///
 /// ### R2 — Resource validation
 ///
@@ -72,6 +80,9 @@
 ///   the resource against the core FHIR structures for its configured release.
 /// - R2.3 If a supplied profile is not available in the validation context, then the FHIR Context
 ///   shall report a validation failure.
+/// - R2.4 If a resource includes other resources and the RecursiveModePolicy is enabled, then the
+///   FHIR Context shall validate the embedded resources against their own profiles declared in the
+///   `meta.profile` field.
 ///
 /// ### R3 — Snapshot generation
 ///
@@ -98,7 +109,6 @@
 /// - R6.1 When a batch requests a package set, the FHIR Context shall reuse its initialized
 ///   template while that package set remains retained by the batch provider.
 /// - R6.2 When a resource requests a context from a package-set lease, the FHIR Context shall
-/// return
 ///   an isolated clone and shall not expose the reusable template for validation.
 /// - R6.3 When a batch provider is closed, the FHIR Context shall release its retained templates
 ///   after active leases have been released.
@@ -108,6 +118,8 @@
 /// - `ContextConfiguration` selects a FHIR release, locale, message display behavior, package
 ///   loading policy, terminology settings, and validation policies.
 /// - `FhirRelease` identifies the supported FHIR release; R4 and R5 are the supported releases.
+/// - `R4Version` identifies the supported FHIR R4 release and its core package set.
+/// - `R5Version` identifies the supported FHIR R5 release and its core package set.
 /// - `DisplayBehaviorConfiguration` defines which validation messages and hints are displayed.
 /// - `PackageDownloadConfiguration` defines whether remote package retrieval is allowed and where
 ///   package files are cached.

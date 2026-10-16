@@ -332,7 +332,13 @@ public class SnapshotGeneratorCommand extends BaseCommand {
           .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().packages()));
 
     } catch (Exception e) {
-      throw new InitializationException("Failed to load configuration", e);
+      final var reason = e.getLocalizedMessage();
+      throw new InitializationException(
+          "Failed to load configuration '%s': %s"
+              .formatted(
+                  snapshotConfiguration.manifestPath(),
+                  reason == null || reason.isBlank() ? e.getClass().getSimpleName() : reason),
+          e);
     }
   }
 }

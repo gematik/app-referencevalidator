@@ -24,24 +24,66 @@
  */
 package de.gematik.refv.lib.snapshot.boundary;
 
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import de.gematik.refv.lib.fhir_context.boundary.ContextProvider;
+import de.gematik.refv.lib.fhir_context.boundary.SnapshotGenerationContext;
 import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
+import de.gematik.refv.lib.package_resolver.control.DefaultPackageResolver;
+import de.gematik.refv.lib.package_resolver.entity.PackageResolution;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class SnapshotGeneratorLifecycleRequirementsTest {
 
+  @TempDir Path tempDir;
+
   @ParameterizedTest(name = "{0}")
   @MethodSource("closeCases")
-  void closingGeneratorFollowsLifecycleRequirement(String requirementLabel, int closeCount) {
-    try (var generator =
-        SnapshotGeneratorFactory.fromConfiguration(ContextConfiguration.defaultConfiguration())) {
-      Assertions.assertDoesNotThrow(generator::close);
-      if (closeCount > 1) {
+  void closingGeneratorFollowsLifecycleRequirement(String requirementLabel, int closeCount)
+      throws Exception {
+    var configuration = ContextConfiguration.defaultConfiguration();
+    var corePackages = new PackageResolution(List.of());
+    var contextProvider = mock(ContextProvider.class);
+    var context = mock(SnapshotGenerationContext.class);
+    var ownedResource = Files.createDirectory(tempDir.resolve("owned-resource"));
+    when(context.cachePath()).thenReturn(tempDir.resolve("package-cache"));
+    when(contextProvider.snapshotGenerationContext(configuration, corePackages))
+        .thenReturn(context);
+    doAnswer(_ -> Files.deleteIfExists(ownedResource)).when(context).close();
+
+    try (var providers = mockStatic(ContextProvider.class);
+        var _ =
+            mockConstruction(
+                DefaultPackageResolver.class,
+                (resolver, _) ->
+                    when(resolver.loadCore(configuration.fhirRelease()))
+                        .thenReturn(corePackages))) {
+      providers.when(ContextProvider::defaultProvider).thenReturn(contextProvider);
+      try (var generator = SnapshotGeneratorFactory.fromConfiguration(configuration)) {
+        Assertions.assertTrue(Files.isDirectory(ownedResource));
         Assertions.assertDoesNotThrow(generator::close);
+        Assertions.assertFalse(Files.exists(ownedResource));
+        verify(context).close();
+        if (closeCount > 1) {
+          Assertions.assertDoesNotThrow(generator::close);
+          Assertions.assertFalse(Files.exists(ownedResource));
+          verify(context).close();
+        }
       }
+      verify(context).close();
     }
   }
 

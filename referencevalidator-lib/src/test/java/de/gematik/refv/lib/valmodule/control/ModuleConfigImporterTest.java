@@ -27,28 +27,67 @@ package de.gematik.refv.lib.valmodule.control;
 import de.gematik.refv.lib.config_parser.boundary.YAMLMapperProvider;
 import de.gematik.refv.lib.valmodule.boundary.ModuleConfigImporter;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@SuppressWarnings("DataFlowIssue")
 class ModuleConfigImporterTest {
 
   private final ModuleConfigImporter importer =
       new ModuleConfigImporter(YAMLMapperProvider.getMapper());
 
-  @DisplayName("Given a null stream, when importing, then an empty result is returned")
-  @Test
-  void expectNullStreamReturnsEmpty() throws Exception {
-    Assertions.assertTrue(importer.importFromStream(null).isEmpty());
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("importCases")
+  void importsManifests(String requirement) throws Exception {
+    switch (requirement) {
+      case "R3.1" -> {
+        var result = importer.importFromStream(source(validManifest())).orElseThrow();
+        Assertions.assertEquals("erp", result.name());
+        Assertions.assertEquals("1.0", result.version());
+      }
+      case "R3.2" -> Assertions.assertTrue(importer.importFromStream(null).isEmpty());
+      case "R3.3" -> {
+        for (var invalid :
+            Stream.of(
+                    "",
+                    "null",
+                    "name: [invalid",
+                    validManifest() + "unknownField: true\n",
+                    validManifest().replace("version: \"1.0\"", "version: [invalid]"))
+                .toList()) {
+          var invalidSource = source(invalid);
+          var failure =
+              Assertions.assertThrows(
+                  IOException.class, () -> importer.importFromStream(invalidSource));
+          Assertions.assertFalse(failure.getMessage().isBlank());
+        }
+        var unknownSource = source(validManifest() + "unknownField: true\n");
+        var unknownField =
+            Assertions.assertThrows(
+                IOException.class, () -> importer.importFromStream(unknownSource));
+        Assertions.assertTrue(unknownField.getMessage().contains("unknownField"));
+      }
+      case "R3.4" ->
+          Assertions.assertThrows(NullPointerException.class, () -> new ModuleConfigImporter(null));
+      default -> Assertions.fail("Unexpected requirement " + requirement);
+    }
   }
 
-  @DisplayName("Given a valid YAML stream, when importing, then the configuration is parsed")
-  @Test
-  void expectValidYamlParsed() throws Exception {
-    final String yaml =
-        """
-        configSpecVersion: "4.0"
+  static Stream<String> importCases() {
+    return Stream.of("R3.1", "R3.2", "R3.3", "R3.4");
+  }
+
+  static ByteArrayInputStream source(String yaml) {
+    return new ByteArrayInputStream(yaml.getBytes(StandardCharsets.UTF_8));
+  }
+
+  static String validManifest() {
+    return """
+        configSpecVersion: "3.0"
         name: "erp"
         version: "1.0"
         author: "gematik"
@@ -68,17 +107,5 @@ class ModuleConfigImporterTest {
                  groups:
                    - packageGroupName: mypkg
         """;
-    final var result =
-        importer.importFromStream(new ByteArrayInputStream(yaml.getBytes(StandardCharsets.UTF_8)));
-    Assertions.assertTrue(result.isPresent());
-    Assertions.assertEquals("erp", result.get().name());
-    Assertions.assertEquals("1.0", result.get().version());
-  }
-
-  @DisplayName("Given an invalid YAML stream, when importing, then an exception is thrown")
-  @Test
-  void expectInvalidYamlThrows() {
-    final var invalid = new ByteArrayInputStream("{{{ not yaml".getBytes(StandardCharsets.UTF_8));
-    Assertions.assertThrows(Exception.class, () -> importer.importFromStream(invalid));
   }
 }

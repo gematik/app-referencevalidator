@@ -33,49 +33,29 @@ import java.nio.file.Path;
 import java.util.Optional;
 import org.jspecify.annotations.NonNull;
 
-/**
- * Interface, defining the method for returning the Validation Module meta information. Generally, a
- * Validation Module should declare a YAML file at the path defined in {@link #MANIFEST_PATH}, a
- * definition specified at {@link #MODULE_DEFINITION_PATH}.
- */
+/// Module loading returns metadata only. Package import belongs to Package Resolver.
 public interface ModuleLoader {
   String MANIFEST_PATH = "META-INF/config.yaml";
   String PACKAGE_PATH = "package/";
   String MODULE_DEFINITION_PATH =
       "META-INF/services/" + FhirValidationModule.class.getCanonicalName();
 
-  /**
-   * Attempts to load a {@link ValidationModule} instance for validation, which corresponds to the
-   * name of the module being searched (e.g. {@code erezept, isik}).
-   *
-   * @param directory the directory where the validation modules are stored
-   * @param name the preferred validation module to be used for validation
-   * @return an optional {@link ValidationModule} instance
-   * @throws LoadModuleException in case of errors while loading the module
-   */
+  /// Returns the first valid JAR whose manifest name matches case-insensitively, or an empty result
+  /// when no match exists. Invalid candidates are skipped with diagnostics. An invalid or
+  /// unreadable directory is a loading failure, not an absent module.
   default @NonNull Optional<ValidationModule> forValidation(
       @NonNull Path directory, @NonNull String name) throws LoadModuleException {
-    throw new LoadModuleException("Not implemented");
+    throw new LoadModuleException("This loader does not support validation-module search");
   }
 
-  /**
-   * Attempts to load a {@link ValidationModule} instance for snapshot generation, given the path to
-   * the module where a YAML Manifest is stored.
-   *
-   * @param modulePath the path to the module containing a valid manifest.
-   * @return an optional {@link ValidationModule} instance
-   * @throws LoadModuleException in case of errors while loading the module
-   */
+  /// Reads `META-INF/config.yaml` below a module root, not a direct manifest-file path. A missing
+  /// or invalid manifest is a loading failure. The returned module retains the supplied root.
   default @NonNull Optional<ValidationModule> forSnapshotGeneration(@NonNull Path modulePath)
       throws LoadModuleException {
-    throw new LoadModuleException("Not implemented");
+    throw new LoadModuleException("This loader does not support snapshot-module loading");
   }
 
-  /**
-   * Creates a Loader for importing the information from JAR files.
-   *
-   * @return a {@link ModuleLoader} implementation for accessing the JAR files
-   */
+  /// The default loader supports validation JAR search, not snapshot-module loading.
   static ModuleLoader defaultLoader() {
     return new JarValidationModuleLoader(YAMLMapperProvider.getMapper());
   }

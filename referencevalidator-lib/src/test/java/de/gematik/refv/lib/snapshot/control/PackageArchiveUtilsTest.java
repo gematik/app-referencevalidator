@@ -788,11 +788,6 @@ class PackageArchiveUtilsTest {
     return new ArchiveSpecification(name, TarConstants.LF_DIR, EMPTY_CONTENT, null);
   }
 
-  private ArchiveSpecification symbolicLink() {
-    return new ArchiveSpecification(
-        "link", TarConstants.LF_SYMLINK, EMPTY_CONTENT, "../../outside.txt");
-  }
-
   private ArchiveSpecification hardLink() {
     return new ArchiveSpecification("hard-link", TarConstants.LF_LINK, EMPTY_CONTENT, "target.txt");
   }

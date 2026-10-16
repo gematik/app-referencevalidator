@@ -42,7 +42,6 @@ import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
 import de.gematik.refv.lib.fhir_context.entity.MessageId;
 import de.gematik.refv.lib.fhir_context.entity.PackageDownloadConfiguration;
-import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
 import de.gematik.refv.lib.fhir_context.entity.TerminologyConfiguration;
 import de.gematik.refv.lib.fhir_context.entity.ValidationPolicyConfiguration;
 import de.gematik.refv.lib.package_resolver.boundary.PackageResolver;
@@ -65,6 +64,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 /**
  * Covers the process() flow of {@link DefaultPackageProcessor} using a local package and FHIR
@@ -494,9 +495,11 @@ class DefaultPackageProcessorTest {
     Files.createDirectories(packageCache);
     LocalDirectory dependency = writePackage(packageCache, "dependency#1.0.0", Map.of());
     LocalDirectory dependent = writePackage("dependent#1.0.0", Map.of("dependency", "1.0.0"));
+    LocalDirectory successful = writePackage("successful#1.0.0", Map.of());
     LocalDirectory unrelated = writePackage("unrelated#1.0.0", Map.of());
     ProcessorResult processorResult =
-        processPackages(List.of(resolved(dependent), resolved(unrelated)), packageCache);
+        processPackages(
+            List.of(resolved(successful), resolved(dependent), resolved(unrelated)), packageCache);
     List<String> generatedPackages = new ArrayList<>();
     try (var context = processorResult.context()) {
       when(context.generateSnapshots(any(Path.class)))
@@ -520,46 +523,50 @@ class DefaultPackageProcessorTest {
     try (var processor = processorResult.processor()) {
       var result =
           processor.process(dependent.path(), processorResult.outputDirectory(), null, List.of());
+      Assertions.assertTrue(
+          generatedPackages.indexOf(successful.id().coordinates())
+              < generatedPackages.indexOf(dependency.id().coordinates()));
       Assertions.assertTrue(generatedPackages.contains(dependency.id().coordinates()));
       Assertions.assertTrue(generatedPackages.contains(unrelated.id().coordinates()));
       Assertions.assertFalse(generatedPackages.contains(dependent.id().coordinates()));
+      Assertions.assertTrue(
+          Files.isRegularFile(processorResult.outputDirectory().resolve("successful-1.0.0.tgz")));
+      Assertions.assertTrue(
+          Files.isRegularFile(processorResult.outputDirectory().resolve("unrelated-1.0.0.tgz")));
+      Assertions.assertFalse(
+          Files.exists(processorResult.outputDirectory().resolve("dependency-1.0.0.tgz")));
+      Assertions.assertFalse(
+          Files.exists(processorResult.outputDirectory().resolve("dependent-1.0.0.tgz")));
       Assertions.assertTrue(
           result.messages().stream()
               .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
     }
   }
 
-  @DisplayName("R1.9 — ERROR and FATAL generation messages fail the request and retain outcomes")
-  @Test
-  void errorAndFatalGenerationMessagesFailRequestWithPackageOutcomes() throws Exception {
+  @ParameterizedTest(name = "R1.9 — {0} generation messages fail the request and retain outcomes")
+  @EnumSource(
+      value = IssueSeverity.class,
+      names = {"ERROR", "FATAL"})
+  void errorAndFatalGenerationMessagesFailRequestWithPackageOutcomes(IssueSeverity severity)
+      throws Exception {
     LocalDirectory root = writePackage("root#1.0.0", Map.of());
     ProcessorResult processorResult = processPackages(List.of(resolved(root)));
+    var outcome =
+        SnapshotGenerationResult.forMessage(
+            severity,
+            MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
+            severity + " outcome for root#1.0.0");
     try (var context = processorResult.context()) {
-      when(context.generateSnapshots(any(Path.class)))
-          .thenReturn(
-              new SnapshotGenerationResult(
-                  List.of(
-                      ResultMessage.fromMessage(
-                          IssueSeverity.ERROR,
-                          MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
-                          "ERROR outcome for root#1.0.0"),
-                      ResultMessage.fromMessage(
-                          IssueSeverity.FATAL,
-                          MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
-                          "FATAL outcome for root#1.0.0"))));
+      when(context.generateSnapshots(any(Path.class))).thenReturn(outcome);
       try (var processor = processorResult.processor()) {
         var result =
             processor.process(root.path(), processorResult.outputDirectory(), null, List.of());
 
         Assertions.assertTrue(
-            result.messages().stream()
-                .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
-        Assertions.assertTrue(
-            result.messages().stream()
-                .anyMatch(message -> message.severity() == IssueSeverity.FATAL));
-        Assertions.assertTrue(
-            result.messages().stream()
-                .anyMatch(message -> message.messageContent().contains("root#1.0.0")));
+            result.messages().stream().anyMatch(message -> message.severity() == severity));
+        Assertions.assertTrue(result.messages().containsAll(outcome.messages()));
+        Assertions.assertFalse(
+            Files.exists(processorResult.outputDirectory().resolve("root-1.0.0.tgz")));
       }
     }
   }

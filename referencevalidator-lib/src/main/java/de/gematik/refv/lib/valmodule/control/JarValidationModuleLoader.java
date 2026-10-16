@@ -64,7 +64,7 @@ public final class JarValidationModuleLoader implements ModuleLoader {
   public @NonNull Optional<ValidationModule> forValidation(
       @NonNull Path directory, @NonNull String name) throws LoadModuleException {
     Objects.requireNonNull(directory, "The directory of modules must not be null");
-    Objects.requireNonNull(directory, "The name of the module must not be null");
+    Objects.requireNonNull(name, "The name of the module must not be null");
     if (!Files.exists(directory) || !Files.isDirectory(directory)) {
       throw new LoadModuleException(
           "The path '"
@@ -74,7 +74,8 @@ public final class JarValidationModuleLoader implements ModuleLoader {
 
     try (Stream<Path> jars = Files.list(directory)) {
       final var foundJarPaths =
-          jars.filter(p -> p.toString().toLowerCase(Locale.ROOT).endsWith(MODULE_EXTENSION))
+          jars.filter(Files::isRegularFile)
+              .filter(p -> p.toString().toLowerCase(Locale.ROOT).endsWith(MODULE_EXTENSION))
               .toList();
 
       for (var jarPath : foundJarPaths) {
@@ -85,7 +86,7 @@ public final class JarValidationModuleLoader implements ModuleLoader {
           return validationModule;
         }
       }
-      throw new LoadModuleException("Could not find a matching module matching the name: " + name);
+      return Optional.empty();
     } catch (IOException e) {
       throw new LoadModuleException("Failed to look for the module " + name, e);
     }
@@ -99,7 +100,11 @@ public final class JarValidationModuleLoader implements ModuleLoader {
     try (final URLClassLoader classLoader = createForJar(jarPath)) {
       if (Objects.isNull(classLoader.findResource(MODULE_DEFINITION_PATH))) {
         throw new LoadModuleException(
-            String.format("The module %s does not contain a manifest", jarPath));
+            "The module %s does not contain an SPI service registration".formatted(jarPath));
+      }
+      if (Objects.isNull(classLoader.findResource(MANIFEST_PATH))) {
+        throw new LoadModuleException(
+            "The module %s does not contain a manifest".formatted(jarPath));
       }
 
       // Read module configuration descriptor from JAR
@@ -132,18 +137,10 @@ public final class JarValidationModuleLoader implements ModuleLoader {
     return new URLClassLoader(new URL[] {jarUrl}, parent);
   }
 
-  /**
-   * Reads the YAML Configuration from the given JAR's ClassLoader. Expects the configuration to be
-   * located at the fixed path defined by CONFIGURATION_PATH. If the configuration file is not
-   * found, returns null.
-   *
-   * @param classLoader the {@link URLClassLoader} for the current class
-   * @return an optional found {@link ValidationModuleManifest} instance, or nothing
-   * @throws IOException in case of I/O errors
-   */
   private @NonNull Optional<ValidationModuleManifest> readConfiguration(
       @NonNull URLClassLoader classLoader) throws IOException {
-    try (final InputStream is = classLoader.getResourceAsStream(MANIFEST_PATH)) {
+    // Parent-first resource lookup could otherwise import a different module's manifest.
+    try (final InputStream is = classLoader.findResource(MANIFEST_PATH).openStream()) {
       return moduleConfigImporter.importFromStream(is);
     }
   }
