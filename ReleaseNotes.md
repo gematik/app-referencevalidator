@@ -15,7 +15,6 @@
 
 - Upgrade Project to use Java 25
 - Project Structure
-
 ### removed
 
 - Validation Plugins from the core project

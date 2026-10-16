@@ -24,8 +24,8 @@
  */
 package de.gematik.refv.lib.validation.control;
 
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import de.gematik.refv.lib.exceptions.InitializationException;
-import de.gematik.refv.lib.exceptions.InvalidDateFormatException;
 import de.gematik.refv.lib.exceptions.MissingProfileDefinitionException;
 import de.gematik.refv.lib.exceptions.ParsingException;
 import de.gematik.refv.lib.exceptions.ProfileMismatchException;
@@ -251,7 +251,8 @@ public class DefaultProfileValidityExtractor implements ProfileValidityExtractor
   /**
    * Scans a {@link Resource} for a given FHIR Expression to extract a LocalDate field.
    *
-   * <p>If no TimeZone is detected, the Europe/Berlin one will be implicitly applied
+   * <p>Timezone-bearing values are converted to Europe/Berlin; values without a timezone retain
+   * their calendar date.
    *
    * @param resource a valid parsed FHIR resource
    * @param expression a FHIR expression to be used for extracting the LocalDate field.
@@ -264,41 +265,34 @@ public class DefaultProfileValidityExtractor implements ProfileValidityExtractor
           "Invalid arguments provided for the evaluation of date validity");
     }
     try {
-      // Each virtual thread has its own FHIRPathEngine bound via ScopedValue
-      // which means, no shared mutable state, no synchronization needed.
       var foundPaths = fhirPathEngine.evaluate(resource, expression);
-      if (foundPaths == null || foundPaths.isEmpty()) {
+      if (foundPaths == null || foundPaths.size() != 1) {
         return Optional.empty();
       }
 
-      if (foundPaths.size() > 1) {
-        throw new InvalidDateFormatException(
-            String.format(
-                "Multiple values for validityDate found using expression: '%s'", foundPaths));
+      if (!(foundPaths.getFirst() instanceof BaseDateTimeType creationDate)) {
+        return Optional.empty();
       }
 
-      var first = foundPaths.getFirst();
-      if (first instanceof BaseDateTimeType creationDate) {
-        if (creationDate.getValue() == null) {
-          throw new InvalidDateFormatException(
-              "Could not parse validityDate: " + creationDate.asStringValue());
-        }
+      if (creationDate.getPrecision() == TemporalPrecisionEnum.YEAR
+          || creationDate.getPrecision() == TemporalPrecisionEnum.MONTH
+          || creationDate.getValue() == null) {
+        return Optional.empty();
+      }
 
-        // Not timezone information supplied --> assume Europe/Berlin
-        if (creationDate.getTimeZone() == null) {
-          return Optional.of(
-              LocalDate.of(
-                  creationDate.getYear(), creationDate.getMonth() + 1, creationDate.getDay()));
-        }
-
-        // TimeZone information supplied
+      if (creationDate.getTimeZone() == null) {
         return Optional.of(
-            LocalDate.ofInstant(creationDate.getValue().toInstant(), ZoneId.of("Europe/Berlin")));
+            LocalDate.of(
+                creationDate.getYear(), creationDate.getMonth() + 1, creationDate.getDay()));
       }
 
-      throw new InvalidDateFormatException("No valid result found using path " + expression);
+      return Optional.of(
+          LocalDate.ofInstant(creationDate.getValue().toInstant(), ZoneId.of("Europe/Berlin")));
     } catch (Exception e) {
-      log.warn("FHIRPath evaluation failed for expression: {}", expression, e);
+      log.debug(
+          "Could not extract a usable validity date using expression '{}', continuing without a date",
+          expression,
+          e);
       return Optional.empty();
     }
   }

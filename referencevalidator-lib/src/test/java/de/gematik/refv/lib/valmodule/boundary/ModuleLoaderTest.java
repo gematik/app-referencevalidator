@@ -37,11 +37,12 @@ class ModuleLoaderTest {
 
   @TempDir Path modulesDir;
 
-  @DisplayName(
-      "Given the factory, when creating a loader, then a JarValidationModuleLoader is returned")
+  @DisplayName("R4.1 — the default loader supports validation-module search")
   @Test
   void expectFactoryCreatesJarLoader() {
     Assertions.assertInstanceOf(JarValidationModuleLoader.class, ModuleLoader.defaultLoader());
+    Assertions.assertTrue(
+        ModuleLoader.defaultLoader().forValidation(modulesDir, "missing").isEmpty());
   }
 
   @DisplayName(
@@ -54,12 +55,11 @@ class ModuleLoaderTest {
   }
 
   @DisplayName(
-      "Given a directory without a matching module, when loading, then a LoadModuleException is thrown")
+      "Given a directory without a matching module, when loading, then an empty result is returned")
   @Test
-  void expectNoMatchingModuleThrows() {
+  void expectNoMatchingModuleReturnsEmpty() {
     final var loader = ModuleLoader.defaultLoader();
-    Assertions.assertThrows(
-        LoadModuleException.class, () -> loader.forValidation(modulesDir, "erp"));
+    Assertions.assertTrue(loader.forValidation(modulesDir, "erp").isEmpty());
   }
 
   @DisplayName("Given a null directory, when loading, then a NullPointerException is thrown")
@@ -78,12 +78,11 @@ class ModuleLoaderTest {
   }
 
   @DisplayName(
-      "Given a valid module configuration, when loading a missing module, then a LoadModuleException is thrown")
+      "Given a nested directory, when loading a missing module, then an empty result is returned")
   @Test
   void expectLoadByModuleConfigurationDelegates() throws Exception {
     Files.createDirectory(modulesDir.resolve("sub"));
     final var loader = ModuleLoader.defaultLoader();
-    Assertions.assertThrows(
-        LoadModuleException.class, () -> loader.forValidation(modulesDir, "erp"));
+    Assertions.assertTrue(loader.forValidation(modulesDir, "erp").isEmpty());
   }
 }

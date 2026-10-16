@@ -53,6 +53,7 @@ public class DefaultValidator implements Validator {
       @NonNull ContextConfiguration contextConfiguration,
       @NonNull Collection<String> packagesToLoad) {
     Objects.requireNonNull(contextConfiguration, "The FHIR Context configuration must be defined");
+    Objects.requireNonNull(packagesToLoad, "The packages to load must be defined");
     this.fhirContext =
         ContextProvider.defaultProvider().validationContext(contextConfiguration, packagesToLoad);
     this.ownsContext = true;

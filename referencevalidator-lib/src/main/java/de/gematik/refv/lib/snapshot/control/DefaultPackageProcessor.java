@@ -83,6 +83,7 @@ final class DefaultPackageProcessor implements AutoCloseable {
   private final PackageResolver packageResolver;
   private final SnapshotArchiveCache archiveCache;
   private final String cacheNamespace;
+  private boolean closed;
 
   DefaultPackageProcessor(
       @NonNull SnapshotGenerationContext fhirContext, @NonNull PackageResolver packageResolver) {
@@ -773,6 +774,10 @@ final class DefaultPackageProcessor implements AutoCloseable {
 
   @Override
   public synchronized void close() {
+    if (closed) {
+      return;
+    }
+    closed = true;
     try {
       fhirContext.close();
     } catch (Exception e) {

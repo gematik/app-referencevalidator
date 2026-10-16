@@ -1,4 +1,18 @@
-![gematik GmbH](../img/Gematik_Logo_Flag.png)
+![gematik GmbH](https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png)
+
+# Konzept des gematik Referenzvalidators
+
+**Dokumentationsstand: 16.10.2026 · Bezugsstand: 3.0.0-SNAPSHOT**
+
+Dieses Konzept beschreibt fachliche Zielsetzung, Nutzungsszenarien, Governance und wesentliche technische Eigenschaften. Grundlage der Aktualisierung sind die [arc42-Architekturdokumentation](../arc42/arc42.md), die Anleitungen für [CLI](../user-guide/cli-user-guide.md), [Java-Bibliothek](../user-guide/library-user-guide.md) und [Modulentwicklung](../user-guide/module-user-guide.md), die [Migrationshinweise von 2.17.0 zu 3.0.0](../Regressions.md) sowie die [Release Notes](../../ReleaseNotes.md). Der beschriebene Entwicklungsstand bedeutet keine fachliche Freigabe einer bestimmten Validator-/Modulkombination.
+
+Die bestehenden Anforderungsnummern bleiben zur Nachverfolgbarkeit erhalten. Es wird unterschieden zwischen:
+
+* **Fachlichen Anforderungen:** Bedarf der TI-Anwendungen, nicht automatisch eine implementierte oder für jedes Modul nachgewiesene Eigenschaft.
+* **Aktuellem technischem Verhalten:** Eigenschaften des oben genannten Entwicklungsstands mit den in Architektur und Anleitungen beschriebenen Grenzen.
+* **Historischen E-Rezept-Regeln:** Die bisherigen Tabellen zur Validierungskonfiguration und Ergebnisinterpretation bleiben als fachlicher Bestand erhalten. HAPI-spezifisches Verhalten und Ausnahmen sind keine unverändert übernommenen Standardregeln der Version 3.0.
+
+Wesentliche Änderungen sind Java 25, der Wechsel von HAPI zum HL7 Core Validator, unabhängig ausgelieferte Modul-JARs, Snapshot-Generierung sowie begrenzte Eingaben und parallele Validierung. Frühere Aussagen über ausschließlich flüchtige Datenverarbeitung, ausnahmslos netzwerkfreien Betrieb, 512 MB Mindestheap oder einmaliges Laden aller Pakete für die gesamte Prozesslaufzeit gelten nicht mehr.
 
 Einführung und Zielsetzung
 ==========================
@@ -18,9 +32,11 @@ Begriffsdefinition
 Der **gematik** **Referenzvalidator** ist ein Softwarewerkzeug, das die im Rahmen von TI-Anwendung verarbeiteten FHIR-Ressourcen auf ihre "technische Verarbeitbarkeit" hin überprüft. Der Begriff der "technischen Verarbeitbarkeit" kann sich je nach TI-Anwendung unterscheiden, mindestens liegen aber folgende Voraussetzungen zugrunde:
 
 *   Die FHIR-Ressourcen sind konform zu den referenzierten Profilen bzw. Profilversionen
-*   Die referenzierten Profile bzw. Profilversionen sind zum Zeitpunkt der Erstellung der Ressource gültig und wurden nicht durch neuere Profile bzw. Profilversionen abgelöst.
+*   Die referenzierten Profile bzw. Profilversionen sind gemäß den für die TI-Anwendung festgelegten Zeiträumen zum Erstellungszeitpunkt der Ressource gültig. Eine neuere Veröffentlichung macht eine ältere Version nicht automatisch ungültig.
 
-Die wichtigsten Verarbeitungskomponenten des Referenzvalidators werden **Prüfmodule** sein. Diese kapseln alle Daten, die für die Validierung von FHIR-Instanzen im Rahmen einer TI-Anwendung erforderlich sind (verwendete Profile, Profilversionen, Pakete, Konfiguration der zugrundeliegenden Validierungsbibliothek etc.).
+**Prüfmodule** bzw. **Validierungsmodule** kapseln anwendungsspezifische Profile, Profilversionen, Paketgruppen, Gültigkeitszeiträume und Ergebnisregeln. Ab Version 3.0 sind sie getrennt veröffentlichte JAR-Dateien, keine eingebauten Bestandteile der CLI. Ohne Modul können FHIR-Core-Ressourcen geprüft werden; Bibliotheksnutzer können eigene FHIR-Pakete bereitstellen. Unterstützt werden JSON und XML sowie die FHIR-Releases R4 (Standard) und R5.
+
+Ein technisches Ergebnis ist **Valid**, wenn nach Anwendung der konfigurierten Meldungsregeln und Filter keine ERROR- oder FATAL-Meldungen verbleiben. Dies belegt weder klinische Richtigkeit noch vollständige Terminologieprüfung. Die fachlich geforderte Gültigkeitsprüfung setzt ein geeignetes Modul, die richtigen Pakete und passende Laufzeitrichtlinien voraus; fehlende Datumsangaben können einen Rückfall auf eine Paketgruppe ohne Enddatum auslösen.
 
 Nutzungsszenarien E-Rezept-Prüfmodul
 ====================================
@@ -28,7 +44,7 @@ Nutzungsszenarien E-Rezept-Prüfmodul
 Entwicklungsunterstützung
 -------------------------
 
-Ein Primärsystemhersteller-Hersteller möchte bereits während der Implementierung des E-Rezept-Moduls die Validität von seinen zu Testzwecken erzeugten VO-Datensätzen überprüfen. Zu diesem Zweck verwendet er den Referenzvalidator als Stand-alone-Konsolenanwendung und prüft die aus seinem System erzeugten Dateien auf Korrektheit.
+Ein Primärsystemhersteller möchte während der Implementierung des E-Rezept-Moduls die Validität seiner zu Testzwecken erzeugten VO-Datensätze überprüfen. Er verwendet die Stand-alone-Konsolenanwendung mit einem separat bereitgestellten, kompatiblen E-Rezept-Modul. Der Befehl `validate` verarbeitet einzelne Dateien oder Verzeichnisse und erzeugt eine Konsolenzusammenfassung sowie einen HTML- oder JSON-Bericht.
 
 Schiedsrichter-Szenario
 -----------------------
@@ -43,7 +59,7 @@ Im Rahmen der Bestätigungsverfahren der gematik können sich die Primärsysteme
 Echtzeitvalidierung von FHIR-Datensätzen
 ----------------------------------------------------------------
 
-Ein Apothekenrechenzentrum muss wissen, ob ein E-Rezept den technischen Verarbeitungsanforderungen entspricht, um entscheiden zu können, ob das Rezept zur Weiterverarbeitung / Weiterleitung an Krankenkassen-Annahmestellen angenommen, abgewiesen oder korrigiert werden soll. Für diesen Zweck wird der Referenzvalidator in eine bestehende Anwendung als Bibliothek oder als externe Anwendung mit Standard Ein-Ausgabe-Schnittstelle integriert. Die zu validierenden FHIR-Instanzen werden an den Referenzvalidator weitergereicht und die Ergebnisse der Validierung von der Anwendung automatisiert ausgewertet.
+Ein Apothekenrechenzentrum muss wissen, ob ein E-Rezept den technischen Verarbeitungsanforderungen entspricht, um über Annahme, Abweisung oder Korrektur zur Weiterverarbeitung zu entscheiden. Es integriert den Referenzvalidator als Java-Bibliothek oder als externen CLI-Prozess. Die Bibliothek nimmt JSON-/XML-Inhalte oder Dateipfade entgegen und liefert strukturierte Ergebnisse bzw. kategorisierte Fehler. Die CLI verwendet Ressourcendateien, Konfiguration, Prozess-Exitcode und Berichte; eine allgemeine Streaming-Schnittstelle über die Standardeingabe wird hier nicht zugesichert. Die einbettende Anwendung verantwortet Parallelisierung und Ressourcenfreigabe ihrer Bibliotheksaufrufe.
 
 > **Warning**
 > Der Betrieb des Referenzvalidators in bestehenden Anwendungen oder Anwendungslandschaften obliegt der Verantwortung der Nutzer. Die gematik trifft angemessene Maßnahmen, um die Sicherheit und Performance des Referenzvalidators zu gewährleisten. Sie übernimmt aber keine Verantwortung für etwaige Schäden, die durch die Integration des Referenzvalidators in Produktionssysteme entstehen (siehe auch Haftungsausschuss der [Apache 2.0-Lizenz](https://www.apache.org/licenses/LICENSE-2.0). Insbesondere müssen die Sicherheitsaspekte des Gesamtsystems unter Einbeziehung der technischen und organisatorischen Rahmenbedingungen der jeweiligen Betriebsumgebung durch die Nutzer selbst bewertet werden. Des Weiteren hängen die Performance-Eigenschaften des Validators stark von der jeweiligen Betriebsumgebung ab.
@@ -54,10 +70,15 @@ Weitere Nutzungsszenarien
 Weiterentwicklung der Profile
 -----------------------------
 
-Eine standardisierende Organisation entwickelt ihre FHIR-basierte Spezifikation, einschließlich Profildefinitionen, kontinuierlich weiter. Zur Prüfung der Validität der neuen Profile und der neuen Beispieldatensätze, werden für diese unabhängige temporäre Validierungsmodule ([Plugins](https://github.com/gematik/app-referencevalidator-plugins)) gebaut. Diese können zur Validierung der neuen Beispieldatensätze gegen die neuen Profile verwendet werden. Abwärtskompatibilität mit den alten Profilen kann durch die Validierung mithilfe der bereits veröffentlichten Module bzw. Plugins überprüft werden.
+Eine standardisierende Organisation entwickelt ihre FHIR-basierte Spezifikation einschließlich Profildefinitionen kontinuierlich weiter. Sie erstellt unabhängige Validierungsmodule auf Basis des [Modul-Templates](https://github.com/gematik/app-referencevalidator-module-template). Der Modulbau erzeugt Paket-Snapshots, berücksichtigt bei Bedarf dokumentierte Patches und prüft positive Beispielinstanzen gegen das gebaute JAR. Abwärtskompatibilität wird mit repräsentativen älteren und aktuellen Instanzen anhand festgehaltener Validator-/Modulkombinationen überprüft.
+
+> **Warning**
+> Die im bisherigen [Plugin-Repository](https://github.com/gematik/app-referencevalidator-plugins/releases) verfügbaren Module sind laut README wegen Formatänderungen und des neuen Snapshot-Prozesses nicht mit Version 3.0 kompatibel. Ein Modul muss für die eingesetzte Validatorversion bereitgestellt und getestet werden; gleicher Name oder ladbares Manifest allein belegen keine Kompatibilität.
 
 E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
 ========================================================================
+
+Die folgenden Anforderungen beschreiben den fachlichen Bedarf. Die Vorgabe, rückwirkend die höchste Patch-Version von Abhängigkeiten einzusetzen, ist keine automatische Laufzeitfunktion: Freigegebene Module müssen die vorgesehenen Versionen in ihren Paketgruppen festlegen. Für reproduzierbare Entscheidungen sind die tatsächlich geprüften Artefakte aufzubewahren.
 
 <table class="wrapped confluenceTable" style="letter-spacing: 0.0px;">
     <colgroup>
@@ -143,7 +164,7 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
         <td class="confluenceTd" colspan="1">
             <div class="content-wrapper"><p>3.1.1 Der Referenzvalidator muss als Open Source bereitgestellt werden.
                 </p>
-                <p>3.1.2. Der Referenzvalidator muss als Java 11-Bibliothek und als Konsolenanwendung bereitgestellt
+                <p>3.1.2. Der Referenzvalidator muss als Java 25-Bibliothek und als Konsolenanwendung bereitgestellt
                     werden, damit die Integration in andere Anwendungen möglich wird.</p> 
                 <p>3.1.3. Der Referenzvalidator kann als Startparameter einen regulären Ausdruck übergeben bekommen, um die in den Instanzen referenzierten Profile dagegen prüfen zu können. Damit soll im Kontext der Verarbeitung von TA7-Dateien die Möglichkeit geschaffen werden, die extrahierten base64-Daten auf ihren "Typ" zu prüfen (Verordnung, Quittung, Abgabedaten etc.)</p>
             </div>
@@ -152,18 +173,33 @@ E-Rezept: Nutzung- und Stakeholderanforderungen an den Referenzvalidator
     </tbody>
 </table>
 
-Die mit <b>*</b> gekennzeichneten Anforderungen sind noch nicht umgesetzt. 
+Die mit <b>*</b> gekennzeichnete Anforderung 1.3.3 (externer Referenzzeitpunkt) ist weiterhin kein hier dokumentierter Startparameter. Weitere Einordnungen zum aktuellen Stand:
+
+| Anforderung | Einordnung für Version 3.0 |
+| --- | --- |
+| 1.2.1, 1.3.1, 2.1.2 | Fachliche Inhalte und zeitliche Abdeckung hängen vom separat bereitgestellten Modul ab. Es gibt keine automatische Versorgung mit allen bisherigen oder künftigen E-Rezept-Paketen. |
+| 1.2.4 | Ein explizites Prüfprofil ist möglich. Die Modul-Paketauswahl extrahiert trotzdem zuerst das Ressourcenprofil; ein Override ersetzt dort keine fehlende Profilangabe. |
+| 1.3.2 | Datumsquelle und Zeiträume stehen im Modulmanifest; Auswahl und Rückfallverhalten werden unten beschrieben. |
+| 1.3.4 | Core-Validierung ohne Modul benötigt kein modulunterstütztes Profil. Sie ist vom profilabhängigen Modul-Auswahlverfahren zu unterscheiden. |
+| 1.3.5 | JSON und XML werden unterstützt; „standardmäßig nur XML“ beschreibt nicht das aktuelle Verhalten. |
+| 1.3.6 | Das Abschalten der Zeitraumprüfung erzwingt keine Paketgruppe für ein Datum außerhalb aller Zeiträume. |
+| 3.1.2 | Java 25 ersetzt die frühere Basis Java 11. |
+| 3.1.3 | Der Profil-RegEx wirkt bei Modul-Paketauswahl auf das extrahierte Profil vor einem Profil-Override, nicht als allgemeiner Ergebnisfilter. |
 
 > **Warning**
-> Sämtliche Startparameter des Referenzvalidators dienen nur zur Unterstützung der Qualitätssicherungsszenarien. Für das [Schiedsrichter-Szenario](#e-rezept-technische-verarbeitbarkeit-schiedsrichter-rolle-und-problemlösungsverfahren) dürfen keine Startparameter verwendet werden, da sie sonst das Verhalten und die Ausgaben des Referenzvalidators verfälschen.  
+> Für das [Schiedsrichter-Szenario](#e-rezept-technische-verarbeitbarkeit-schiedsrichter-rolle-und-problemlösungsverfahren) ist die für das Verfahren festgelegte Kombination aus Validator, Modul, Paketen und Konfiguration zu verwenden. Technisch erforderliche Modul- und Dateiauswahl sind nicht untersagt. Ergebnisverändernde QA-Overrides, zusätzliche Unterdrückungen oder abgeschaltete Zeitraumprüfungen dürfen nicht eigenmächtig vom vereinbarten Prüfverhalten abweichen.
 
 Anzuwendende Validierungskonfiguration
 -----------------------------------------------------------------
 
+**Fachlicher E-Rezept-Bestand, keine Liste aktueller Engine-Defaults.** Die Tabelle hält die bisher dokumentierten Vorgaben und Abweichungen fest. Ihre Übernahme in ein 3.0-Modul ist anhand von Manifest, Kontextkonfiguration und Regressionstests zu prüfen. Die neue Engine kann insbesondere nicht auflösbare Bundle-Referenzen als ERROR, unbekannte CodeSystems dagegen nur als WARNING melden; siehe [Migrationshinweise](../Regressions.md).
+
+`ignoredCodeSystems` und `ignoredValueSets` beeinflussen im aktuellen Ergebnisworkflow die Schwere passender Meldungen. Sie beweisen weder eine erfolgreiche Terminologieprüfung noch, dass die Engine die Prüfung vollständig ausgelassen hat. Offlinebetrieb erlaubt Prüfungen lokal vorhandener Terminologien, garantiert aber keine vollständige Abdeckung externer Terminologien.
+
 <table id="validation-configuration">
 <tr>
 <th>Konfigurationselement</th>
-<th>Wert</th>
+<th>Fachlich dokumentierter Wert (Altstand)</th>
 <th>Anmerkung</th>
 </tr>
 <tr>
@@ -212,7 +248,7 @@ Anzuwendende Validierungskonfiguration
 <td>nein</td>
 <td>Der Fehler tritt auf, falls die in einem Bundle verwendeten Referenzen sich nach dem <a href="https://hl7.org/fhir/R4B/bundle.html#references">Algorithmus aus der FHIR-Spezifikation</a> nicht auflösen lassen. 
 
-Diese Regel führt zu keinem Fehler, damit die Kompatibilität zu ABDA Referenzvalidator und der aktuellen Implementierung vom E-Rezept-Fachdienst erhalten bleibt. Allerdings kann das Ignorieren von nicht auflösbaren Querreferenzen in Bundles dazu führen, dass bestimmte Fehlsituationen vom Validator nicht erkannt bleiben, bspw. wenn das Ziel einer lokalen Referenz im Bundle nicht auftaucht oder ihr Typ mit den targetType-Vorgaben nicht übereinstimmt. Das Risiko von solchen Fehlsituationen wird allerdings durch die Profil-Contraints in den aktuellen Profilen deutlich minimiert.</td>
+Die frühere Regel vermied Fehler zur Angleichung an den ABDA Referenzvalidator und den damaligen E-Rezept-Fachdienst. Das Ignorieren solcher Referenzen kann fehlende Referenzziele oder unpassende Zieltypen verdecken. In Version 3.0 können nicht auflösbare oder unpassende Bundle-Referenzen als ERROR erscheinen (Migration R3); die frühere Wertung „nein“ ist keine aktuelle Engine-Garantie.</td>
 </tr>
 <tr>
 <td>Ressourcen in document-Bundles, die aus der Composition heraus über Referenzen nicht erreichbar sind und keine anderen Bundle-Ressourcen referenzieren, führen zu Fehlern</td>
@@ -228,29 +264,32 @@ Diese Regel führt zu keinem Fehler, damit die Kompatibilität zu ABDA Referenzv
 <tr>
 <td>Ressourcen in document-Bundles, die aus der Composition heraus über Referenzen nicht erreichbar sind aber andere Bundle-Ressourcen referenzieren, führen zu Fehlern</td>
 <td>nein</td>
-<td>Das Verhalten wird derzeit durch die Verarbeitungslogik des HL7 FHIR-Validators bedingt und widerspricht leider der <a href="https://www.hl7.org/fhir/R4/documents.html#content">FHIR Standard-Vorgabe</a>:
+<td>Das früher beobachtete Verhalten widersprach der <a href="https://www.hl7.org/fhir/R4/documents.html#content">FHIR Standard-Vorgabe</a>:
 "The document bundle SHALL include only:
 <ol>
 <li>The Composition resource, and any resources directly or indirectly (e.g. recursively) referenced from it</li>
 <li>A Binary resource containing a stylesheet (as described below)</li>
 <li>Provenance Resources that have a target of Composition or another resource included in the document."</li></ol> 
-Das Vorhandensein von solchen Ressourcen resultiert in einer Warnung. In den kommenden Modulreleases kann dieses Verhalten korrigiert werden.</td>
+Solche Ressourcen führten im damaligen Stand nur zu einer Warnung. Die Wertung muss für die eingesetzte Engine-/Modulversion erneut geprüft werden.</td>
 </tr>
 <tr>
 <td>Werte bestehend nur aus "Leerzeichen" führen zu Fehlern</td>
 <td>nein</td>
-<td>Das Verhalten wird derzeit durch die Verarbeitungslogik des HL7 FHIR-Validators bedingt und widerspricht leider der <a href="https://hl7.org/fhir/R4/xml.html#2.6.1">FHIR Standard-Vorgabe</a> ("Attributes cannot be empty. Either they are absent, or they are present with at least one character of non-whitespace content"). Werte bestehend aus nur "Leerzeichen" führen derzeit zu Warnungen. In den kommenden Modulreleases kann dieses Verhalten korrigiert werden.</td>
+<td>Das früher beobachtete Verhalten widersprach der <a href="https://hl7.org/fhir/R4/xml.html#2.6.1">FHIR Standard-Vorgabe</a> ("Attributes cannot be empty. Either they are absent, or they are present with at least one character of non-whitespace content"). Werte nur aus Leerzeichen führten damals zu Warnungen. Die aktuelle Wertung ist versionsbezogen zu testen.</td>
 </tr>
 <tr>
 <td>Werte, die mit "Leerzeichen" starten oder enden, führen zu Fehlern</td>
 <td>nein</td>
-<td>Das Verhalten widerspricht zwar keiner MUSS-Anforderung (die <a href="https://hl7.org/fhir/R4/xml.html#2.6.1">FHIR Standard-Vorgabe</a> lautet: "Implementers SHOULD trim leading and trailing whitespace before writing and SHOULD trim leading and trailing whitespace when reading attribute values (for XML schema conformance)"), verkompliziert allerdings die Datenverarbeitung auf der Seite der empfangenden Systeme. Werte, die mit "Leerzeichen" starten oder enden, führen derzeit zu Warnungen. In den kommenden Modulreleases kann dieses Verhalten korrigiert werden.</td>
+<td>Die <a href="https://hl7.org/fhir/R4/xml.html#2.6.1">FHIR Standard-Vorgabe</a> lautet: "Implementers SHOULD trim leading and trailing whitespace before writing and SHOULD trim leading and trailing whitespace when reading attribute values (for XML schema conformance)". Führende oder abschließende Leerzeichen können die Verarbeitung erschweren und führten im früheren Stand zu Warnungen. Die aktuelle Wertung ist versionsbezogen zu testen.</td>
 </tr>
 
 </table>
 
 Anzuwendende Ergebnis-Interpretationsregeln
 -----------------------------------------------------------------
+
+Die folgenden **historischen, paketgebundenen HAPI-Ausnahmen** bleiben zur fachlichen Nachverfolgbarkeit erhalten. Sie sind keine automatisch aktiven 3.0-Regeln. Modulherausgeber müssen prüfen, ob der jeweilige Fehler noch auftritt, Meldungs-ID und Text unverändert sind und eine eng begrenzte Transformation weiterhin gerechtfertigt ist. Ein Enginewechsel kann Ausnahmen überflüssig oder bisherige Matcher unwirksam machen.
+
 <table id="result-interpretation">
 <tr>
 <th>Package</th>
@@ -277,12 +316,15 @@ Anzuwendende Ergebnis-Interpretationsregeln
 <li>MessageId: BUNDLE_BUNDLE_ENTRY_MULTIPLE_PROFILES. Diagnostics enthält: 2 profiles found for contained resource. More than one is not supported at this time. (Type Medication: https://gematik.de/fhir/epa-medication/StructureDefinition/epa-medication-pharmaceutical-product, https://gematik.de/fhir/epa-medication/StructureDefinition/epa-medication-pzn-ingredient)</li>
 </ul>
 </td>
-<td>Im Profil existiert ein Constraint auf die Profile der contained-Ressourcen, wobei 2 Profile erlaubt werden (epa-medication-pzn-ingredient oder epa-medication-pharmaceutical-product). Die aktuell eingesetzte HAPI-Version unterstützt allerdings nur Überprüfung gegen 1 Profil. Mit den zukünftigen Versionen von HAPI wird diese Interpretationsregel entfallen</td>
+<td>Im Profil werden zwei alternative Profile für contained-Ressourcen erlaubt. Die Ausnahme kompensierte eine Beschränkung der damals eingesetzten HAPI-Version. Ihre Notwendigkeit und ihr Matcher sind für Version 3.0 erneut zu prüfen; aus dem Enginewechsel allein folgt keine bestätigte Behebung.</td>
 </tr>
 </table>
 
 Profil-Elemente zur Bestimmung des Instanz-Erstellungszeitpunktes
 -----------------------------------------------------------------
+
+Die Tabelle beschreibt fachliche Datumsquellen, keine fest in der Engine codierte Zuordnung. Das Modul hinterlegt passende FHIRPath-Ausdrücke in `validityDateSource` bzw. `validityDateSourceByVersion`. Profilnamen und Ausdrücke müssen zur konkreten Profilversion passen; eine Expression für ein Bundle muss beispielsweise die entsprechende enthaltene Ressource erreichen.
+
 <table id="creation-date-elements">
     <tr>
         <th>Profil</th>
@@ -412,7 +454,7 @@ Weitere Nutzung- und Stakeholderanforderungen an den Referenzvalidator
             1.2. Der Spezifikation-Ersteller muss erkennen können, ob die eingegebenen Beispielinstanzen zu dem übergebenen FHIR-package entsprechend der Validierungskonfiguration konform sind.
         </td>
         <td>
-            1.1.1 Ein vom Referenzvalidator unabhängiges Werkzeug muss ein FHIR-package, Validierungskonfiguration sowie Beispielinstanzen akzeptieren und auf deren Basis ein neues Validierungsmodul (Plugin) erstellen können.<br/>
+            1.1.1 Ein eigenständiger Modulbau muss FHIR-Packages, Validierungskonfiguration sowie Beispielinstanzen akzeptieren und daraus ein Validierungsmodul erstellen können. Version 3.0 verwendet ein separates Template-Projekt mit verwaltetem Modul-Parent und der CLI für Snapshot-Generierung und Verifikation.<br/>
             1.2.1 Der Referenzvalidator muss die unabhängig erstellten Plugins zur Validierung von Instanzen hinzuziehen können. Für die CLI-Variante des Referenzvalidators muss dafür ein spezieller Ablageort für die Plugins definiert werden, von wo aus der Referenzvalidator die letzteren automatisch lädt. Für die Java-Bibliothek-Variante muss die Angabe des Plugins über die API möglich sein
         </td>
     </tr>
@@ -457,13 +499,13 @@ Referenzvalidator: Infrastrukturelle Anforderungen
                             <li class="auto-cursor-target">Eine zu validierende FHIR-Ressource aus dem Kontext einer
                                 TI-Anwendung
                             </li>
-                            <li class="auto-cursor-target">Ein zu verwendendes internes Prüfmodul (E-Rezept, eAU etc.) oder ein Plugin</li>
-                            <li>Modul-spezifische Eingabeparameter (z.B. Referenzzeitpunkt für die Prüfung der Profilversionsgültigkeit)</li>
+                            <li class="auto-cursor-target">Ein separat bereitgestelltes Validierungsmodul für anwendungsspezifische Prüfung oder reine FHIR-Core-Validierung ohne Modul</li>
+                            <li>Modulbezogene Konfiguration; ein externer Referenzzeitpunkt gemäß Anforderung 1.3.3 ist weiterhin nicht als aktueller Startparameter dokumentiert</li>
                             <li>Modul-unabhängige Konfigurationseinstellungen (z.B. für detaillierte Protokollausgaben)
                             </li>
                         </ol>
                     </li>
-                    <li>1.1.2 Der Referenzvalidator muss Prüfmodule für unterschiedliche TI-Anwendungen intern verwalten. Ein
+                    <li>1.1.2 Der Referenzvalidator muss separat bereitgestellte Prüfmodule für unterschiedliche TI-Anwendungen laden können. Ein
                         Prüfmodul besteht dabei aus
                         <ol>
                             <li>Profilen, Profilversionen, Paketen und Gültigkeitsräumen, die für eine Validierung
@@ -484,43 +526,120 @@ Referenzvalidator: Infrastrukturelle Anforderungen
     </tbody>
 </table>
 
-Die mit <b>*</b> gekennzeichneten Anforderungen sind noch nicht umgesetzt.
+Anforderung 1.1.3 beschreibt den fachlich gewünschten Informationsumfang, keine Zusage eines einzelnen CLI-Befehls für sämtliche Modul-, Profil- und Paketinformationen. Verfügbare Befehle und Diagnoseoptionen stehen in der [CLI-Anleitung](../user-guide/cli-user-guide.md). Anders als im früheren Anforderungsbild schreibt die CLI Berichte auf Datenträger; Bibliotheksoptionen behalten standardmäßig alle Meldungen. Diagnoseumfang, Engine-Meldungsrichtlinien und Ergebnisfilter sind getrennt zu konfigurieren.
 
 Architekturskizze
 =================
-(Stand zum 9.6.2023)
 
-Der Referenzvalidator verwaltet TI-anwendungsspezifische Prüfmodule, die bei Aktivierung zur Validierung der übergebenen Ressource hinzugezogen werden. Die Prüfmodule enthalten Pakete, Gültigkeitszeiträume der verwendeten Profile/Profilversionen sowie FHIR-Paket-spezifische Interpretationsregeln der Ausgaben der zugrundeliegenden Validierungsbibliothek. Als Validierungsbibliothek kommt der [HAPI FHIR Validator](https://github.com/hapifhir/hapi-fhir) zum Einsatz (die Major-Version 6 zum Zeitpunkt 9.6.2023).
+Technische Grundlage und Bausteine
+---------------------------------
 
-![Referenzvalidator Architektur](../img/architecture.png)
+Der **HL7 Core Validator** übernimmt Konformitätsprüfungen und Snapshot-Operationen. Die BOM legt `org.hl7.fhir.validation` im beschriebenen Stand auf **7.0.1** fest. Version 3.0 ersetzt damit die bisherige HAPI-Validierungsengine. Verbleibende HAPI-bezogene Modellhilfen oder Abhängigkeiten sind keine zweite Engine. Die Laufzeit benötigt **Java 25**; für den Bau wird Maven 3.9 oder neuer verwendet.
 
-Um die Valid/Invalid-Entscheidung zu treffen, wertet der Referenzvalidator die HAPI-Ausgaben aus und wendet eventuell definierte Interpretationsregeln aus. Sollten im Ergebnis noch ERROR- oder FATAL-Ausgaben enthalten sein, führt es zur Invalid-Wertung, ansonsten wird die Instanz als Valid gewertet.
+| Baustein | Verantwortung |
+| --- | --- |
+| `referencevalidator-cli` | `validate`, `generate-snapshot`, `configuration`; Eingaben, Konfiguration, Ablaufsteuerung, begrenzte Parallelisierung und Berichte. |
+| `referencevalidator-lib` | Öffentliche Schnittstellen, Modelle und Implementierungen für Konfiguration, FHIR-Kontexte, Paketauflösung, Validierung, Snapshots und Modulladen. Boundary-, Control- und Entity-Pakete liegen innerhalb eines Artefakts. |
+| `validation-module-api` | Manifestmodell und SPI-Vertrag für externe Validierungsmodule. |
+| `validation-module-parent` und `bom` | Verwalteter Modulbau und abgestimmte Abhängigkeitsversionen; keine deploybaren Validierungsmodule. |
+| `report-aggregate` | Aggregation der JaCoCo-Testabdeckung. |
+| `performance-benchmarks` | Optionales JMH-Modul, aktiviert über das Profil `jmh`. |
 
-Der Prozess zur Erstellung von Plugins ist im folgenden Diagramm dargestellt ([Quelle](https://www.ina.gematik.de/fileadmin/Dokumente/Referenzvalidator-1.0final.pdf)):
+Die aktuellen [Baustein-](../arc42/05-building-block-view.md) und [Laufzeitsichten](../arc42/06-runtime-view.md) beschreiben die Verantwortungsgrenzen. Die folgende Übersicht ersetzt die früheren HAPI-Diagramme:
 
-![Erstellung und Nutzung von Plugins](../img/plugin-creation-and-usage-overview.drawio.svg)
+![Referenzvalidator Architektur](../arc42/diagrams/referencevalidator-architecture.drawio.png)
 
-Das Werkzeug zum Erstellen von Plugins sowie die bereits veröffentlichten Plugins finden sich unter [https://github.com/gematik/app-referencevalidator-plugins](https://github.com/gematik/app-referencevalidator-plugins).
+Validierung und Paketauswahl
+----------------------------
+
+1. Die CLI liest ihre Konfiguration, lädt gegebenenfalls das Modul und sammelt Dateien innerhalb der Eingabegrenzen. Core-Definitionen und Modularchive werden über den Paketresolver verfügbar gemacht.
+2. Für die **Modul-Paketauswahl** wird genau ein oberstes `meta.profile` erwartet; mehrere Einträge führen zu einem Extraktionsfehler. Fehlt bei Bundle oder Parameters das oberste Profil, wird nur die erste ressourcenhaltige Entry bzw. der erste ressourcenhaltige Parameter betrachtet und dessen erstes Profil verwendet. Dies ist keine vollständige rekursive Prüfung.
+3. Ein Profil-RegEx wirkt auf das extrahierte Profil, danach greift gegebenenfalls ein Profil-Override. Ein versionloser Canonical verwendet die deklarierte `defaultVersion`. Nicht einzeln deklarierte Profil-URLs können über das Canonical-Basispräfix einer Familie aufgelöst werden.
+4. Die FHIRPath-Datumsquelle wird ausgewertet; eine versionsspezifische Quelle hat Vorrang. Werte mit Zeitzone werden auf das Kalenderdatum in Europe/Berlin umgerechnet; Werte ohne Zeitzone behalten ihr Kalenderdatum. `validFrom` und `validTill` gelten inklusive. Bei Überlappung gewinnt der erste passende Eintrag in Deklarationsreihenfolge.
+5. Ohne nutzbares Datum wird der einzige Zeitraum ohne `validTill` verwendet. Auswertungsfehler, mehrere Ergebnisse, Nicht-Datumswerte sowie unbrauchbare oder nur jahres-/monatsgenaue Werte führen ebenfalls zu diesem Rückfall. Ein leerer Locator bleibt ein Konfigurations-/Extraktionsfehler. Sind alle Zeiträume geschlossen, liefert die aktuelle Auswahl keine Modulpakete; fehlender Profilinhalt kann erst später einen Fehler auslösen. Dies ist eine [bekannte Grenze](../arc42/11-risks-and-technical-debt.md), keine erfolgreiche Gültigkeitsprüfung.
+6. Ein nutzbares Datum außerhalb aller Zeiträume löst bei aktivierter Zeitraumprüfung `ProfileOutsideValidityPeriodException` aus. Ohne diese Prüfung wird für das Datum keine Modulpaketgruppe ausgewählt; eine passende Gruppe wird nicht erzwungen.
+7. Jede Ressource wird mit eigenem Validator und Kontextklon geprüft. Nach den Meldungsregeln werden Ergebnisse berichtet. Ohne verbleibende ERROR-/FATAL-Meldungen ist das verarbeitete Ergebnis Valid. Initialisierungs-, Konfigurations- oder Auflösungsfehler sind davon getrennte Fehlerfälle.
+
+Direkte Core-Validierung und Bibliotheksaufrufe mit selbst bereitgestellten Paketen unterliegen nicht automatisch dieser Modulauswahl. Ein Manifest zu laden importiert weder Archive noch konfiguriert es einen Validator. Bibliotheksnutzer müssen Laden, Archivimport, Auswahl, Kontextaufbau und Übernahme der Modulrichtlinien ausdrücklich zusammensetzen; siehe [Bibliotheksanleitung](../user-guide/library-user-guide.md).
+
+Ergebnisregeln und Konfiguration
+--------------------------------
+
+Die Validierungsfähigkeit verarbeitet die übergebenen Optionen in dieser Reihenfolge:
+
+1. Meldungen entfernen, die einer Unterdrückungsregel entsprechen.
+2. Die erste passende Schweregradtransformation in Deklarationsreihenfolge anwenden.
+3. Verbleibende Meldungen mit ignorierten CodeSystem-/ValueSet-Canonicals auf INFORMATION herabstufen.
+4. Den angeforderten Schweregradfilter anwenden. Ohne verbleibende Meldungen wird eine informative Kein-Fehler-Meldung zurückgegeben.
+
+Die Bibliotheksstandardoptionen behalten alle Meldungen, aktivieren die Zeitraumprüfung und enthalten keine Overrides oder zusätzlichen Meldungsregeln. Die CLI setzt für Modulvalidierung effektive Optionen zusammen. **Bekannte Einschränkung:** Sie fügt derzeit alle Transformationslisten des Manifests hinzu, statt sie auf die ausgewählte Paketgruppe einzugrenzen. Der Modulindex aggregiert seinerseits Transformationsnamen aller Gruppen einer Profilversion. Regeln dürfen deshalb nicht ungeprüft als ausschließlich datumsgruppenspezifisch angesehen werden; siehe [arc42, Kapitel 8](../arc42/08-cross-cutting-concepts.md) und [Kapitel 11](../arc42/11-risks-and-technical-debt.md).
+
+Validierungs-CLI-Konfiguration, Snapshot-CLI-Konfiguration und Modulmanifest sind verschiedene YAML-Formate. Unbekannte Felder werden zurückgewiesen. Bei `--config` gilt die Datei anstelle der entsprechenden Kontext-/Modul-Flags, nicht als Zusammenführung mit ihnen. Relative Pfade beziehen sich auf das Prozessarbeitsverzeichnis. `--json` wählt JSON-Berichte, andernfalls wird HTML geschrieben; die YAML-Formatangabe allein entscheidet dies nicht. `--debug` aktiviert allgemeine Debug-Protokollierung, `--additional-debug` zusätzlich HL7-Protokollierung; `--verbose` erweitert die ausgegebenen Validierungsmeldungen.
+
+Module und Snapshot-Generierung
+--------------------------------
+
+Ab Version 3.0 werden `erp`, `eau` und das experimentelle `erpta7` nicht mehr mit der CLI ausgeliefert. Ein externes Modul-JAR enthält `META-INF/config.yaml` mit Manifestformat `configSpecVersion: "3.0"` und vorbereitete `package/*.tgz`-Archive. Es beschreibt Profilfamilien, Versionen, Paketgruppen und Zeiträume, Terminologieausnahmen und Meldungsregeln.
+
+Die CLI untersucht JARs direkt in `--modules-folder` und wählt mit `--module-name` den ersten gültigen Treffer anhand des Manifestnamens ohne Beachtung der Groß-/Kleinschreibung. Der Loader verlangt Manifest und SPI-Registrierung im Kandidaten-JAR selbst, führt aber keine Provider über `ServiceLoader` aus und importiert keine Pakete. Ein gültiges Verzeichnis ohne Treffer liefert ein leeres Ladeergebnis; die CLI meldet eine ausdrücklich angeforderte, aber fehlende Modulauswahl weiterhin als Fehler. Ungültige Verzeichnisse sind Ladefehler. Es gibt keine automatische Auswahl der höchsten Version, ausgehandelte Engine-Kompatibilität oder zugesicherten Hot-Reload. Pro Modulname soll nur die beabsichtigte Version im Verzeichnis liegen.
+
+Modulherausgeber verwenden das externe [Template](https://github.com/gematik/app-referencevalidator-module-template) und einen zur CLI passenden `validation-module-parent`:
+
+1. Manifest, Paketquellen bzw. Registry-Koordinaten, optionale Patches und positive Testressourcen definieren. Providerklasse und Service-Registrierung gehören zum Aufbau, auch wenn der Loader die Provider nicht ausführt.
+2. Die verwalteten Exec-Ausführungen im Kindprojekt aktivieren. In `generate-resources` werden Abhängigkeiten aufgelöst, Patches angewendet und Snapshot-Archive erzeugt.
+3. Manifest, Provider und generierte Archive in ein JAR packen. Quellarchive und Patches sind Bau-Eingaben, keine separat ausgelieferten Quellressourcen.
+4. In `verify` positive JSON-/XML-Beispiele gegen das gebaute JAR prüfen. Die empfohlene Konfiguration deaktiviert Downloads und Terminologieserverzugriff. Ein nicht erfolgreicher CLI-Exitcode lässt den verwalteten Maven-Schritt fehlschlagen. `mvn package` allein führt diese Verifikation nicht aus.
+5. Snapshot- und Validierungsberichte prüfen; erwartete Fehler, Zeitraumgrenzen und Meldungsregeln mit Assertion-Tests abdecken. Das JAR mit Profilumfang, geprüfter Validatorversion und Einschränkungen veröffentlichen.
+
+Die Snapshot-Generierung löst den vollständigen Abhängigkeitsgraphen vor Beginn auf und weist fehlende Abhängigkeiten oder Zyklen zurück. Sie verarbeitet Pakete abhängigkeitsgerecht, erzeugt jedes Paket höchstens einmal pro Auftrag und veröffentlicht Archive erst nach erfolgreicher Kompression. Fehler blockieren abhängige, nicht unabhängige Pakete. Snapshots vervollständigen nicht automatisch die offline verfügbare Terminologie. Die [Modulentwicklungsanleitung](../user-guide/module-user-guide.md) beschreibt Aufbau und Freigabe im Detail.
 
 Performancebetrachtungen
 ------------------
 
-Die Performance-Eigenschaften vom Referenzvalidator werden weitgehend durch den eingesetzten [HAPI FHIR Validator](https://github.com/hapifhir/hapi-fhir) bestimmt. So sind für die Validierung von [KBV-Beispielen für E-Verordnungen](https://simplifier.net/eRezept/~resources?category=Example&fhirVersion=R4&sortBy=RankScore_desc) mindestens 512MB RAM erforderlich. Folgende Optimierungen wurden umgesetzt, um die Antwortzeiten und den Speicherverbrauch des Referenzvalidators zu minimieren:
-* Die FHIR-Packages wurden als Snapshots eingebunden, sodass die Erstellung der Snapshots beim Start des Validators oder bei der Erstvalidierung entfällt
-* Alle FHIR-Packages werden genau einmal in den Speicher geladen - unabhängig davon, welche Profildefinitionen und wie oft während der Validierung benötigt werden
-* Der Referenzvalidator ist in der aktuellen Version multithreading-fähig, sodass Validierung von größerer Anzahl der Instanzen parallel erfolgen kann
+Antwortzeiten und Speicherbedarf hängen von Engine, Paketgruppen, Ressourcen, Terminologiezugriff, Cachezustand und Betriebsumgebung ab. Es gibt **keinen verifizierten Mindestheap** oder allgemeine Durchsatzgarantie. Die frühere Angabe von 512 MB ist keine aktuelle Dimensionierungsempfehlung.
+
+Modul-Snapshots verlagern Vorbereitung in den Modulbau. Die CLI hält für einen Validierungsaufruf einen begrenzten Cache initialisierter Paketgruppen-Kontextvorlagen. Vorlagen dienen nur als Klonquelle; jede Ressource erhält einen eigenen Kontextklon und Validator. Die Kapazität entspricht höchstens der konfigurierten Anzahl gleichzeitiger Validierungen; aktive Leases schützen Vorlagen vor Verdrängung. Am Ende des Aufrufs werden die Vorlagen freigegeben. Ein prozessweit einmaliges Laden aller Pakete wird nicht zugesichert.
+
+Mehrdatei-Validierung nutzt virtuelle Threads mit begrenztem Fenster laufender Aufgaben. Ressourcendaten werden erst in der jeweiligen Aufgabe größenbegrenzt gelesen. Die Eingabesammlung weist symbolische Links, nicht reguläre Dateien und überschrittene Grenzen zurück.
+
+| Grenze | Standard | Harte Obergrenze |
+| --- | --- | --- |
+| Eingabedateien | 1.000 | 10.000 |
+| Größe pro Datei | 50 MiB | 100 MiB |
+| Gesamtgröße | 500 MiB | 1 GiB |
+| Verzeichnistiefe | 32 | 64 |
+| Gleichzeitig laufende Validierungen | 5 | 32 |
+
+Diese Grenzen steuern angenommene Arbeit, nicht den maximalen Heapbedarf. HL7-Klone teilen ausgewählte interne Abhängigkeiten; Ergebnisparität und parallele Isolation sind versionsbezogen nachzuweisen. Das optionale [JMH-Benchmarkmodul](../../performance-benchmarks/README.md) vergleicht Kontextneuaufbau mit batchweiser Vorlagennutzung. Synthetische Messungen ersetzen keine Messungen mit realen Paketgruppen, Prozessspeicher und vollständigem CLI-Ablauf.
 
 > **Warning**
-> Es liegen keine Erfahrungswerte bzgl. der Validierung von größeren (bis 1GB) FHIR-Ressourcen vor. Bei nicht akzeptablen Antwortzeiten bzw. beim überhöhten Speicherverbrauch wird daher empfohlen, größere Dateien zu splitten und in kleineren Stücken ggf. parallelisiert zu validieren.
+> Eine einzelne FHIR-Datei mit 1 GB liegt außerhalb der CLI-Grenzen. Eine Aufteilung ist nur sinnvoll, wenn eigenständig valide Ressourcen entstehen und Bundle-Zusammenhänge sowie notwendige Referenzen erhalten bleiben. Grenzwerte und Parallelität sind innerhalb der harten Obergrenzen anhand der Betriebsumgebung zu dimensionieren.
 
 Sicherheitsbetrachtungen
 ------------------
 
-Im Rahmen der Schiedsrichter-Rolle verarbeitet der Referenzvalidator höchstvertrauliche Gesundheitsdaten. Dabei benötigt er für die Validierung lediglich den lesenden Zugriff auf eine Kopie der Daten. Es werden keine Daten gespeichert und keine Daten an andere Systeme gesendet. Die Konsolenversion des Referenzvalidators schreibt auch keine Protokolle, sondern gibt die Validierungsergebnisse und Zwischenschritte direkt in die Standardausgabe aus. Die eigentliche Validierung erfolgt vollständig im Hauptspeicher, dessen Bereitstellung und Verwaltung die auf dem Zielsystem installierte Java Virtual Machine (JVM) übernimmt. Je nach Konfiguration des Garbage Collectors verschwinden die verarbeiteten Daten kurze Zeit nach der Ergebnisausgabe aus dem Hauptspeicher, spätestens mit der Beendigung der Konsolenanwendung.  
+Der Referenzvalidator kann höchstvertrauliche Gesundheitsdaten verarbeiten. Lesender Zugriff auf Eingaberessourcen bedeutet **keine Zusicherung ohne Speicherung oder Netzwerkkommunikation**. HTML-/JSON-Berichte und Protokolle können Ressourceninhalte oder identifizierende Angaben enthalten. Caches, Snapshot-Ausgaben und temporäre Terminologieverzeichnisse benötigen Schreibzugriff und Aufbewahrungsregeln. Eine zeitnahe oder sichere Löschung aus dem JVM-Speicher durch den Garbage Collector wird nicht zugesichert.
+
+| Bereich | Verhalten und Betreiberverantwortung |
+| --- | --- |
+| Paketdownloads bei `validate` | Standardmäßig deaktiviert; `--online-mode` erlaubt Downloads. Offlinebetrieb benötigt verfügbare lokale Pakete. Standardcache: `~/.fhir/packages`. |
+| Paketdownloads bei `generate-snapshot` | Standardmäßig erlaubt; `--offline-mode` deaktiviert sie. Der persistente Cache `~/.fhir/snapshot-packages` einschließlich generierter Archive bleibt erhalten. |
+| Terminologieserver | Unabhängig von Paketdownloads konfiguriert. Aktivierter Zugriff kann prüfungsrelevante Inhalte an den Server übermitteln; Serverauswahl, Netzfreigaben und Datenschutz sind betrieblich zu bewerten. |
+| Temporärer Terminologiecache | Bibliothekseigene Caches werden nach Schließen des letzten mitnutzenden Kontexts entfernt. Explizite Cachepfade bleiben aufruferverwaltet und werden nicht automatisch gelöscht. |
+| Berichte und Protokolle | Konsolenausgaben und HTML-/JSON-Dateien sind vertraulich zu behandeln. Pfade, Berechtigungen, Umleitungen, Aufbewahrung und Löschung sind festzulegen. Die Bibliothek nutzt SLF4J, die CLI Log4j2. |
+
+Netzwerkfreier Betrieb verlangt deaktivierte Remote-Paketauflösung **und** deaktivierten Terminologieserverzugriff. Offlinebetrieb verhindert keine Prüfung lokal verfügbarer Codes; erfolgreiche Validierung garantiert keine vollständige Terminologieabdeckung.
+
+Bei Bibliotheksintegration sind Validatoren, Kontexte, Batch-Provider/Leases und Snapshot-Generatoren gemäß ihren Besitzverhältnissen zu schließen. Aus Konfiguration erzeugte Validatoren schließen ihren Kontext; Validatoren um einen vorhandenen Kontext lassen diesen offen. Ein Ressourcenkontext wird vor seiner Lease geschlossen. Persistente Caches, Modul-JARs und Berichte bleiben betreiberverwaltet.
+
+Die Archivverarbeitung weist unter anderem absolute Pfade, Pfadtraversierung, Links, doppelte bzw. widersprüchliche Einträge und überschrittene Größen-/Anzahlgrenzen zurück. Diese Schutzmaßnahmen ersetzen keine abgesicherte Betriebsumgebung.
 
 Die Betriebsumgebung des Referenzvalidators ist für die Vertraulichkeit der Daten entscheidend. Für den sicheren Betrieb ist es erforderlich, die Übertragungswege der zu validierenden Daten zum Referenzvalidator sicher zu gestalten und vom unberechtigten Zugriff zu schützen. Die Vertraulichkeit, Integrität und Authentizität der zu validierenden Daten auf dem Weg zum Validator müssen durch den Betreiber durch geeignete technische und/oder organisatorische Maßnahmen sichergestellt werden. Das Gleiche gilt auch für die Entgegennahme bzw. Umleitung der Ausgaben des Referenzvalidators aus der Standardausgabe. Beim Betrieb des Validators neben Drittanwendungen muss die Authentizität und Integrität der Referenzvalidator-Anwendung (der JAR-Datei) sichergestellt werden. Unter anderem sollen die State-of-the-Art-Maßnahmen zum Schutz der Zielumgebung vor unberechtigtem Zugriff bzw. Kompromittierung ergriffen werden.   
 
-Bei tiefer Integration des Referenzvalidators in eine Java-Anwendung ist darauf zu achten, dass alle Abhängigkeiten des Referenzvalidators in exakt vorgegebenen Versionen zur Verfügung gestellt werden, da sonst die Korrektheit der Validierungsergebnisse (und im extremen Fall die Vertraulichkeit der Daten) nicht gewährleistet werden kann. Bei Speicherung der Protokolle und Validierungsergebnisse ist darauf zu achten, dass diese vertraulich behandelt werden, da dort im unwahrscheinlichen Fall vertrauliche Teile der FHIR-Ressource auftauchen können (bspw. falsch formatierte Geburtsdatum-Angaben).  
+Bei Einbettung sind die durch die BOM abgestimmten Abhängigkeitsversionen zu verwenden. Dies reduziert Versionsabweichungen, ist aber allein keine Korrektheits- oder Vertraulichkeitsgarantie. Authentizität und Integrität der separat ausgelieferten Modul-JARs müssen ebenso wie die der Validator-JARs sichergestellt werden.
+
+> **Warning**
+> Laut README ist der Referenzvalidator nicht für die Prüfung von KIM-Payloads in Produktivumgebungen vorgesehen. Betriebssicherheit und Datenschutz des Gesamtsystems bleiben Verantwortung des Betreibers.
 
 Entwicklungsprozess
 ===================
@@ -528,16 +647,16 @@ Entwicklungsprozess
 Anforderungsanalyse
 -------------------
 
-Für die (Weiter-)Entwicklung eines neuen Prüfmoduls werden die Anforderungen und entsprechende Nutzungsszenarien aus der Sicht der jeweiligen TI-Anwendung ermittelt (siehe Beispiel oben für das Prüfmodul E-Rezept). Die an dem Prozess beteiligten Akteure werden in die Ermittlung- und Entscheidungsprozesse eingebunden, insbesondere rund um die Festlegungen der zu verwendenden Profile, Profilversionen, Gültigkeitszeiträume, Pakete und Regeln zur Interpretation von HAPI-Ausgaben. 
+Für die (Weiter-)Entwicklung eines Prüfmoduls werden Anforderungen und Nutzungsszenarien der jeweiligen TI-Anwendung ermittelt. Die beteiligten Akteure werden in Entscheidungen zu Profilen, Versionen, Gültigkeitszeiträumen, Paketen und Engine-Meldungsregeln eingebunden. Terminologieausnahmen und ihre Auswirkungen auf die Prüfabdeckung sind ausdrücklich festzuhalten.
 
 Zu den Anforderungen gehört auch ein Satz an Testressourcen, die vom Referenzvalidator als gültig bzw. als nicht gültig validiert werden sollen.
 
 Design & Implementierung
 ------------------------
 
-Die Implementierung vom Referenzvalidator sowie dem entsprechenden Prüfmodul findet anhand der identifizierten Anforderungen und mit fachlicher Unterstützung der in dem betroffenen Prozess beteiligten Akteure statt.
+Die Implementierung erfolgt anhand der identifizierten Anforderungen mit fachlicher Unterstützung der beteiligten Akteure. Produkt und Modul sind getrennte Entwicklungs- und Releaseeinheiten. Modulherausgeber verantworten Manifest, Pakete, Zeitregeln, Patches, Meldungsregeln, Beispiele und Einschränkungen; die Validatorentwicklung verantwortet Engineintegration, Bibliothek, CLI, API, BOM und Modul-Parent.
 
-Signifikante architekturelle Änderungen, die die Ausgaben oder die Performance von Prüfmodulen beeinflussen können, werden mit den beteiligten Akteuren (z.B. Umstieg auf eine neue Major-Version von HAPI) abgestimmt.
+Signifikante Änderungen an Architektur, Engine, Paketauswahl, Kontextklonierung oder Ergebnisregeln, die Ausgaben oder Performance beeinflussen können, werden mit den beteiligten Akteuren abgestimmt.
 
 Test
 ----
@@ -545,12 +664,24 @@ Die Prüfmodule des Referenzvalidators werden anhand der identifizierten Testdat
 
 Im Rahmen der Weiterentwicklung kommen auch Testfälle aus Eskalationsfällen und bekannten aufgetretenen Fehlern in die Testfalldatenbasis hinzu. Testfälle können auch über GitHub jederzeit beigetragen werden.
 
+Zusätzliche Prüfschwerpunkte für Version 3.0:
+
+* Positive Beispiele gegen das **gebaute Modul-JAR** ohne Paketdownloads und Terminologieserverzugriff prüfen; Snapshot- und Validierungsbericht gemeinsam auswerten. Erwartet invalide Fälle benötigen eigene Assertion-Tests statt Ablage im positiven Testverzeichnis.
+* Zeitraumgrenzen, fehlende/ungültige Datumswerte, Profil-Overrides, Defaultversionen und JSON-/XML-Verhalten prüfen. Transformationen und Unterdrückungen mit beabsichtigten Treffern und ähnlich aussehenden Nichttreffern testen.
+* Ältere und aktuelle Instanzen bei Validator- oder Modulwechsel erneut auswerten. Die [Migrationsfälle R1–R5](../Regressions.md) betreffen nichtkonforme FHIRPath-Stringliterale mit doppelten Anführungszeichen, unbekannte CodeSystems, Bundle-Referenzen, unversionierte Terminologien und Kindressourcen.
+* Für erforderliche Prüfungen eingebetteter Ressourcen `recursiveModePolicy` aktivieren und testen. Dies ist unabhängig von rekursiver Dateisuche und der ersten Kindressource zur Modulauswahl.
+* Bei Engine-/Klonpfadänderungen Ergebnisparität, parallele Isolation und reale Implementation-Guide-Pakete prüfen. JUnit, ArchUnit, JaCoCo, Spotless und Buildprüfungen unterstützen die Qualitätssicherung, ersetzen aber keine fachliche Freigabe.
+
+Diese Dokumentaktualisierung behauptet keinen neuen erfolgreichen Test- oder Benchmarklauf. Bekannte technische Grenzen bleiben in [arc42, Kapitel 11](../arc42/11-risks-and-technical-debt.md) dokumentiert.
+
 Veröffentlichung
 ----------------
 
-Die Validierungsmodule des Referenzvalidators werden unabhängig voneinander nach dem Schema MAJOR.MINOR versioniert, um deren Entwicklungsstand zu kommunizieren. Die MINOR-Version wird inkrementiert, falls neue Profile oder neue ValueSets in das Validierungsmodul integriert werden, ohne dass sich das Validierungsverhalten bei älteren Profilen oder älteren FHIR-Instanzen ändert (z.B. Ergänzung des E-Rezept-Validierungsmoduls um neue E-Rezept-Profile). Falls sich das Validierungsverhalten bei älteren Instanzen aufgrund von bspw. signifikanten Änderungen an der HAPI-Engine ändert (sog. Breaking Change), dann wird die MAJOR-Version des Validierungsmoduls inkrementiert. 
+Das bisherige fachliche Schema **MAJOR.MINOR** für unabhängig versionierte Module bleibt eine Governance-Konvention: Neue Profile oder ValueSets ohne Verhaltensänderung für ältere Instanzen erhöhen MINOR; Verhaltensänderungen bei älteren Instanzen erfordern MAJOR. Technisch ist Manifest-`version` eine vom Herausgeber festgelegte Zeichenfolge; der Loader erzwingt die Konvention nicht. Modulrelease, FHIR-Paket-/Profilversionen und Manifestformat `configSpecVersion` sind getrennte Identitäten.
 
-Der Referenzvalidator wird samt aller Validierungsmodule bereitgestellt und wird als Produkt nach [SemVer](https://semver.org/lang/de/) versioniert. Die Änderungen an den Prüfmodulen sowie an dem Referenzvalidator als Produkt werden explizit kommuniziert. 
+Der Referenzvalidator wird nach [SemVer](https://semver.org/lang/de/) versioniert und als CLI sowie Maven-Artefakte **ohne anwendungsspezifische Module** veröffentlicht. Modulherausgeber veröffentlichen ihre JARs separat mit geprüfter Validator-/Modulkombination, Profilumfang, Terminologieausnahmen und Einschränkungen. Änderungen werden explizit kommuniziert. Ein neues Template aktualisiert bestehende Modulprojekte nicht automatisch; konkrete kompatible Parent-/CLI-/API-/BOM-Versionen sind auszuwählen und zu testen.
+
+Ein unabhängiges Modulrelease ist nicht automatisch enginekompatibel. Betreiber übernehmen neue Versionen erst nach Regressionstests; automatische Laufzeitupdates sind nicht vorgesehen. Für reproduzierbare Entscheidungen und Rollback sind exakte JARs, effektive Konfiguration und Pakete samt Herkunft gemäß geltenden Aufbewahrungsregeln zu erhalten. Ein späterer Neubau aus veränderlichen Registries ersetzt die geprüften Artefakte nicht.
 
 Die Prozess-Anforderungen aus den jeweiligen TI-Anwendungen (z.B. [E-Rezept](#e-rezept-anforderungen-an-den-entwicklungsprozess)) müssen beachtet werden. So wird für eine neue Version des Prüfmoduls E-Rezept eine Integrationstestphase eingeplant, bevor die neue Version die alte in ihrer Rolle des [Schiedsrichters](#e-rezept-technische-verarbeitbarkeit-schiedsrichter-rolle-und-problemlösungsverfahren) ablösen kann.
 
@@ -563,11 +694,11 @@ Change-Management / Problemlösung
 1.  Veröffentlichung von neuen Profildefinitionen, die in einem oder mehreren Prüfmodulen verwendet werden.
 2.  Entdeckte Fehler im Referenzvalidator bzw. in einem Prüfmodul, die z.B. zu falschen Ausgaben führen (false-positive und false-negative).
 3.  Neue Anforderungen, die sich aus alten oder neuen Nutzungsszenarien ergeben (Schnittstelle des Referenzvalidators, Konfigurierbarkeit etc.)
-4.  Interne Optimierungen (Technologieaktualisierungen einschließlich Upgrades vom intern verwendeten HAPI-Validator, Verbesserungen mit Hinsicht auf Performance oder Wartbarkeit)
+4.  Interne Optimierungen (Technologieaktualisierungen einschließlich Upgrades des HL7 Core Validators, Verbesserungen hinsichtlich Performance oder Wartbarkeit)
 
 Änderungswünsche, Anmerkungen und Problem-Meldungen können über die [GitHub-Seite des Projektes](https://github.com/gematik/app-referencevalidator) bzw. der dort angegebenen Kontaktmöglichkeiten eingereicht werden.
 
-Die Standardisierungsorganisationen informieren die gematik über anstehende Veröffentlichungen von neuen Profilen oder für die Validierung relevanten Ressourcen. Neue Profile werden spätestens 3 Monate vor ihrer verpflichtenden Einführung durch die gematik in das jeweilige Prüfmodul integriert und ein neues Release des Referenzvalidators (bzw. perspektivisch des Prüfmoduls) wird erstellt. Dabei wird der Entwicklungsprozess durchlaufen. 
+Die Standardisierungsorganisationen informieren die gematik über anstehende Veröffentlichungen. Die fachliche Prozessanforderung bleibt, neue Profile spätestens drei Monate vor ihrer verpflichtenden Einführung im jeweiligen Modul zum Testen bereitzustellen. Im aktuellen Modell wird dazu ein Modulrelease erstellt; ein Produktrelease ist nur bei notwendigen Validatoränderungen erforderlich. Herausgeber, Kompatibilitätsprüfung und Integrationstestphase sind abzustimmen. Die Frist ist keine automatisch überwachte Laufzeitgarantie.
 
 Die entdeckten und gemeldeten Fehler werden mit dem jeweiligen Steuergremium bewertet und das korrekte Verhalten wird spezifiziert. Es wird entschieden, ob z.B. Korrektur des Prüfmoduls und/oder des Profils erforderlich ist. Dabei wird der Entwicklungsprozess erneut durchlaufen.
 
@@ -578,7 +709,9 @@ Im Rahmen von E-Rezept spielen die Begriffe der "technischen Verarbeitbarkeit" /
 1. sie konform zu einem im Kontext von E-Rezept eingesetzten FHIR-Profil ist und
 2. das referenzierte FHIR-Profil zum Erstellungszeitpunkt der Ressource gültig war
 
-Insbesondere in automatisierten Verfahren bedarf es einer einheitlichen Umsetzung der oberen Prüfregeln, damit eine und dieselbe FHIR-Ressource von Sendern und Empfängern nicht unterschiedlich bewertet bzw. als Folge abgewiesen wird. Während die endgültige Bewertung bzgl. der FHIR-Standard- und Profil-Konformität weiterhin nur ein Mensch treffen kann, ist es vor allem *für automatisierte Prozesse* erforderlich die Entscheidung an ein autoritatives Werkzeug - hier das Prüfmodul E-Rezept des Referenzvalidators - zu delegieren. Das Werkzeug spielt somit für automatisierte Prozesse die Rolle des "Schiedsrichters", d.h. seine Bewertungen über die Validität der FHIR-Ressourcen sind im Kontext von E-Rezept für automatisierte Systeme verbindlich. So darf bspw. kein Datensatz aus dem Grund der technischen Nicht-Verarbeitbarkeit abgewiesen werden, falls der "Schiedsrichter" den Datensatz als valide bewertet hat. Da es aber davon auszugehen ist, dass ein Softwarewerkzeug nie fehlerfrei ist und sich die Anforderungen mit der Zeit ändern, wird ein Problemlösungsverfahren definiert, mit dem die Bewertungen des "Schiedsrichters" in Zukunft korrigiert werden können.
+Automatisierte Verfahren benötigen eine einheitliche Umsetzung dieser Regeln. Die Schiedsrichter-Rolle bezieht sich auf das für das Verfahren festgelegte E-Rezept-Modul zusammen mit der vereinbarten Validatorversion und Konfiguration. Die verbindliche Verwendung in Abrechnungsprozessen richtet sich nach der [Technischen Anlage 7, Anhang 2, zur Arzneimittelabrechnungsvereinbarung nach § 300 Absatz 3 SGB V](https://www.gkv-datenaustausch.de/leistungserbringer/apotheken/apotheken.jsp). Installation der Version 3.0 oder eines neuen Modul-JARs allein begründet keine fachliche Freigabe oder Ablösung einer bisherigen Schiedsrichterversion. Für andere Module ist laut README keine solche Verbindlichkeit festgelegt.
+
+Normative Grundlage bleiben die Spezifikationen; im Zweifelsfall muss ein Mensch die Konformität bewerten. Ein Valid-Ergebnis nach Unterdrückungen oder Herabstufungen beweist nicht, dass sämtliche Prüfungen erfolgreich durchgeführt wurden. Abweichungen und Einschränkungen müssen im geregelten Problemlösungsverfahren bewertet werden.
 
 Falls es Hinweise gibt, dass die Bewertung des Schiedsrichters für bestimmte FHIR-Ressourcen oder sogar Ressourcenklassen fehlerhaft ist, dann soll wie folgt vorgegangen werden:
 
@@ -616,9 +749,9 @@ Neben E-Rezept-Prüfmodul unterstützt der Referenzvalidator noch weitere Anwend
 HL7 FHIR Validator
 --------------
 
-Der [HL7 FHIR-Validator](https://confluence.hl7.org/display/FHIR/Using+the+FHIR+Validator) bzw. der darauf aufbauende [HAPI-Validator](https://hapifhir.io/hapi-fhir/docs/validation/instance_validator.html) gilt als Referenzimplementierung für Konformitätsprüfungen von FHIR-Ressourcen. Der gematik Referenzvalidator verwendet den HAPI-Validator intern als Bibliothek mit einer festgelegten Startkonfiguration und verwaltet darüber hinaus die für eine TI-Anwendung relevanten Profile, Profilversionen, Pakete, Gültigkeitszeiträume und Paket-spezifische Interpretationen der HAPI-Ausgaben. Die Tiefe und der Umfang der FHIR-Konformitätsprüfung sowie die Performance sind daher auf die entsprechenden Fähigkeiten des verwendeten HAPI-Validators beschränkt. Die Ergebnisse der HAPI-Validierung können im Referenzvalidator nur beschränkt beeinflusst werden.
+Der [HL7 FHIR-Validator](https://confluence.hl7.org/display/FHIR/Using+the+FHIR+Validator) liefert die zugrundeliegenden Konformitätsprüfungen. Ab Version 3.0 verwendet der gematik Referenzvalidator dessen HL7 Core Validation Library direkt statt der früheren HAPI-Validierungsengine. Darüber liegen Modul-Paketauswahl, Zeiträume, Kontext-/Terminologierichtlinien, Meldungsregeln und Berichte. Prüftiefe und Laufzeit hängen weiterhin von Engine und verfügbaren Paketen ab. Identische Ergebnisse zu einer separat konfigurierten HL7-CLI werden nicht pauschal zugesichert.
 
 E-Rezept-Fachdienstvalidator
 --------------
 
-Der E-Rezept-Fachdienst enthält ebenfalls eine Validierungskomponente, mit der Verordnung- und Abgabedatensätzen validiert werden können. Da HAPI/Java als Technologie mit der Sicherheitsarchitektur des Fachdienstes inkompatibel ist, wird der gematik Referenzvalidator im Fachdienst nicht zum Einsatz kommen. Der gematik Referenzvalidator dient allerdings auch für den Fachdienst als Referenz und Schiedsrichter, sodass Ergebnisse der Validierung im Fachdienst mit denen vom Referenzvalidator kontinuierlich angeglichen werden.
+Der E-Rezept-Fachdienst enthält eine eigene Validierungskomponente für Verordnungs- und Abgabedatensätze. Der gematik Referenzvalidator ist eine eigenständige Java-Bibliothek bzw. CLI, kein automatisch eingebauter Bestandteil des Fachdienstes. Ergebnisse sind mit repräsentativen konformen und nicht konformen Ressourcen zu vergleichen und Abweichungen über das zuständige Verfahren zu bewerten. Der Enginewechsel begründet weder eine Integration in den Fachdienst noch eine nachgewiesene Ergebnisgleichheit.

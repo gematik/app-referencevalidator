@@ -33,9 +33,7 @@ import java.util.Optional;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Centralizes the import of a Validation Module's YAML Configuration and the import of dependencies
- */
+/** Imports module metadata only. Package dependencies are handled by Package Resolver. */
 public final class ModuleConfigImporter {
   private final YAMLMapper yamlMapper;
 
@@ -63,6 +61,10 @@ public final class ModuleConfigImporter {
       return Optional.empty();
     }
 
-    return Optional.of(yamlMapper.readValue(inputStream, ValidationModuleManifest.class));
+    var manifest = yamlMapper.readValue(inputStream, ValidationModuleManifest.class);
+    if (Objects.isNull(manifest)) {
+      throw new IOException("The module manifest must contain a configuration, not a null value");
+    }
+    return Optional.of(manifest);
   }
 }

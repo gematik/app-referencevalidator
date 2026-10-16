@@ -27,9 +27,8 @@ package de.gematik.refv.lib.fhir_context.control;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
 import de.gematik.refv.lib.validation.entity.ProfileCanonical;
+import java.util.List;
 import org.hl7.fhir.model.core.ElementDefinition;
 import org.hl7.fhir.model.core.StructureDefinition;
 import org.hl7.fhir.services.elementmodel.Element;

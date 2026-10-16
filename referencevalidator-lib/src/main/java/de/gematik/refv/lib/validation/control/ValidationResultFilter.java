@@ -66,7 +66,7 @@ final class ValidationResultFilter {
 
     if (validationMessagesFilterStrategy
         == ValidationOptions.ValidationMessagesFilterStrategy.KEEP_ALL) {
-      return new ValidationResult(processedMessages);
+      return resultOrNoError(processedMessages);
     }
 
     if (validationMessagesFilterStrategy
@@ -79,7 +79,7 @@ final class ValidationResultFilter {
                           || m.severity() == IssueSeverity.FATAL
                           || m.severity() == IssueSeverity.WARNING)
               .toList();
-      return new ValidationResult(filteredMessages);
+      return resultOrNoError(filteredMessages);
     }
 
     if (validationMessagesFilterStrategy
@@ -90,13 +90,16 @@ final class ValidationResultFilter {
                   m -> m.severity() == IssueSeverity.ERROR || m.severity() == IssueSeverity.FATAL)
               .toList();
 
-      if (filteredMessages.isEmpty()) {
-        return ValidationResult.forMessage(
-            IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "No Validation Errors found");
-      }
-      return new ValidationResult(filteredMessages);
+      return resultOrNoError(filteredMessages);
     }
 
     throw new ValidationException("Filter " + validationMessagesFilterStrategy + " is unsupported");
+  }
+
+  static ValidationResult resultOrNoError(Collection<ResultMessage> messages) {
+    return messages.isEmpty()
+        ? ValidationResult.forMessage(
+            IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "No Validation Errors found")
+        : new ValidationResult(messages);
   }
 }

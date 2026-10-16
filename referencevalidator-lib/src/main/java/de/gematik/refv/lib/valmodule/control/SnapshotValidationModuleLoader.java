@@ -70,7 +70,8 @@ public final class SnapshotValidationModuleLoader implements ModuleLoader {
 
       return Optional.of(new ValidationModule(moduleConfig.get(), modulePath));
     } catch (IOException e) {
-      throw new LoadModuleException("Failed to read manifest from file", e);
+      throw new LoadModuleException(
+          "Failed to read manifest '%s': %s".formatted(manifestPath, e.getLocalizedMessage()), e);
     }
   }
 }

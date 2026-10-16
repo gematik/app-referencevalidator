@@ -78,38 +78,33 @@ class JarValidationModuleLoaderTest {
   }
 
   @DisplayName(
-      "Given a JAR without a config, when loading, then it is skipped and a LoadModuleException is thrown")
+      "Given a JAR without a manifest, when loading, then it is skipped and no match is returned")
   @Test
   void expectJarWithoutConfigIsSkipped() throws Exception {
     writeJar("no-config.jar", null, true);
-    Assertions.assertThrows(
-        LoadModuleException.class, () -> loader.forValidation(modulesDir, "erp"));
+    Assertions.assertTrue(loader.forValidation(modulesDir, "erp").isEmpty());
   }
 
   @DisplayName(
-      "Given a JAR without a manifest, when loading, then it is skipped and a LoadModuleException is thrown")
+      "Given a JAR without SPI registration, when loading, then it is skipped and no match is returned")
   @Test
-  void expectJarWithoutManifestIsSkipped() throws Exception {
+  void expectJarWithoutRegistrationIsSkipped() throws Exception {
     writeJar("no-manifest.jar", configFor("erp"), false);
-    Assertions.assertThrows(
-        LoadModuleException.class, () -> loader.forValidation(modulesDir, "erp"));
+    Assertions.assertTrue(loader.forValidation(modulesDir, "erp").isEmpty());
   }
 
   @DisplayName("Given a directory with a non-JAR file, when loading, then it is ignored")
   @Test
   void expectNonJarFilesIgnored() throws Exception {
     Files.writeString(modulesDir.resolve("readme.txt"), "not a jar");
-    Assertions.assertThrows(
-        LoadModuleException.class, () -> loader.forValidation(modulesDir, "erp"));
+    Assertions.assertTrue(loader.forValidation(modulesDir, "erp").isEmpty());
   }
 
-  @DisplayName(
-      "Given a corrupt JAR, when loading, then it is skipped and a LoadModuleException is thrown")
+  @DisplayName("Given a corrupt JAR, when loading, then it is skipped and no match is returned")
   @Test
   void expectCorruptJarIsSkipped() throws Exception {
     Files.writeString(modulesDir.resolve("corrupt.jar"), "not a real jar content");
-    Assertions.assertThrows(
-        LoadModuleException.class, () -> loader.forValidation(modulesDir, "erp"));
+    Assertions.assertTrue(loader.forValidation(modulesDir, "erp").isEmpty());
   }
 
   @DisplayName(

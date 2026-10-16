@@ -35,13 +35,14 @@ import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.hl7.fhir.validation.ValidationEngine;
 import org.hl7.fhir.validation.ValidatorUtils;
 
-/** Helper that runs the {@link RecursiveInstanceValidator} and validates Resources with children elements recursively. */
+/**
+ * Helper that runs the {@link RecursiveInstanceValidator} and validates Resources with children
+ * elements recursively.
+ */
 final class RecursiveResourceValidation extends ValidatorUtils {
   private RecursiveResourceValidation() {}
 
-  /**
-   * Validates a Resource and its children elements recursively.
-   */
+  /** Validates a Resource and its children elements recursively. */
   static OperationOutcome validate(
       ValidationEngine engine, FhirFormat format, InputStream input, List<String> profiles)
       throws IOException, EOperationOutcome {
