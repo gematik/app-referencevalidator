@@ -287,13 +287,21 @@ class ProfileSelectionRequirementsTest {
     var packages = List.of("example#1.0.0", "dependency#2.0.0");
     switch (requirement) {
       case "R5.1" -> {
-        when(index.getPackagesForDate(PROFILE, "1.0", date)).thenReturn(packages);
+        when(index.getPackageGroupForDate(PROFILE, "1.0", date))
+            .thenReturn(
+                Optional.of(
+                    new ValidationModuleIndex.PackageGroupSelection(
+                        "group", packages, List.of(), List.of())));
         assertEquals(packages, selector.getPackagesForResource(resource, release, options));
-        verify(index).getPackagesForDate(PROFILE, "1.0", date);
-        verify(index, never()).getFallbackPackages(anyString(), anyString());
+        verify(index).getPackageGroupForDate(PROFILE, "1.0", date);
+        verify(index, never()).getFallbackPackageGroup(anyString(), anyString());
       }
       case "R5.2" -> {
-        when(index.getFallbackPackages(PROFILE, "1.0")).thenReturn(packages);
+        when(index.getFallbackPackageGroup(PROFILE, "1.0"))
+            .thenReturn(
+                Optional.of(
+                    new ValidationModuleIndex.PackageGroupSelection(
+                        "group", packages, List.of(), List.of())));
         for (var expression :
             List.of("Patient.birthDate", "???", "(@2025-01-01 | @2025-01-02)", "'not a date'")) {
           when(index.getValidityDateSource(PROFILE, "1.0")).thenReturn(Optional.of(expression));
@@ -304,8 +312,8 @@ class ProfileSelectionRequirementsTest {
           }
         }
         assertEquals(packages, selector.getPackagesForResource(patient(""), release, options));
-        verify(index, atLeastOnce()).getFallbackPackages(PROFILE, "1.0");
-        verify(index, never()).getPackagesForDate(anyString(), anyString(), any());
+        verify(index, atLeastOnce()).getFallbackPackageGroup(PROFILE, "1.0");
+        verify(index, never()).getPackageGroupForDate(anyString(), anyString(), any());
       }
       case "R5.3" ->
           assertThrows(
@@ -334,8 +342,8 @@ class ProfileSelectionRequirementsTest {
                     ParsingException.class,
                     () -> selector.getPackagesForResource(missing, release, options))
                 .getCause());
-        verify(index, never()).getPackagesForDate(anyString(), anyString(), any());
-        verify(index, never()).getFallbackPackages(anyString(), anyString());
+        verify(index, never()).getPackageGroupForDate(anyString(), anyString(), any());
+        verify(index, never()).getFallbackPackageGroup(anyString(), anyString());
       }
       default -> fail("Unexpected requirement " + requirement);
     }

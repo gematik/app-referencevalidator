@@ -237,9 +237,11 @@ the command line.
 This command validates one or more FHIR resource files against specific profiles or modules.
 
 > [!NOTE]
-> The `validate` command by default runs in offline mode, which means that no external connection will be attempted
-against a remote FHIR package server or a remote Terminology server. Running in offline mode means that no active
-validation of codes is possible.
+> By default, validation disables remote package downloads and remote terminology-server loading. These are separate
+> policies: codes can still be checked using terminology available in loaded local packages, while unavailable external
+> terminology cannot be verified. This setting is not a guarantee of zero network access during startup: core and
+> cross-version bootstrap loading can occur before the application package-download policy takes effect. Use deployment-
+> level network restrictions when zero network access is required.
 
 The supported formats for the FHIR Resources to be validated are `JSON` and `XML`.
 
@@ -296,10 +298,10 @@ its own resolved package set.
 This command generates snapshots from FHIR profiles or a collection of dependencies.
 
 > [!NOTE]
-> The `generate-snapshot` command **requires** access to internet, since it needs to fetch external dependencies and
-reach for a remote Terminology server during the generation of snapshots. Although an offline generation of snapshots is
-possible, it requires an already configured cache with all the available packages downloaded, but an internal expansion
-of value sets or validation of codes won't be performed.
+> Internet access is not inherently required. Remote dependency downloads are enabled unless `--offline-mode` is set;
+> offline generation requires the source packages and dependencies to be available locally or in the configured cache.
+> Terminology-server use is configured separately. Available local terminology may support expansion, but snapshot
+> generation does not establish complete validation of external terminology.
 
 **Common usages:**
 
@@ -332,7 +334,7 @@ of value sets or validation of codes won't be performed.
 | `--config <path>`                             | `-c`  | Path to the YAML configuration file.                                                    |
 | `--packages <list>`                           | `-p`  | A comma-separated list of specific package names to process. If omitted, all            |
 | dependencies in the source are processed.     |       |
-| `--modules-config <path>`                     | -     | Path to the YAML configuration file for a validation module                             |
+| `--module-manifest <path>`                    | -     | Path to the validation module manifest YAML used for package selection.                |
 | `--patches-dir <path>`                        | -     | Directory directly containing `<name#version>` folders with dependency patches.         |
 | `--cache-dir <path>`                          | -     | Path to a directory containing cached dependencies for the snapshot generation.         |
 | `--fhir-version <version>`                    | `-f`  | Specifies the FHIR version (e.g., `R4`, `R5`). Defaults to `R4`.                        |

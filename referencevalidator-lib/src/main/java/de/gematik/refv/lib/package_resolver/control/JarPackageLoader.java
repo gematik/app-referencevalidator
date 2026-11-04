@@ -30,15 +30,13 @@ import de.gematik.refv.lib.package_resolver.entity.LocalArchive;
 import de.gematik.refv.lib.package_resolver.entity.PackageCategory;
 import de.gematik.refv.lib.package_resolver.entity.PackageId;
 import de.gematik.refv.lib.valmodule.boundary.ModuleLoader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.jar.JarFile;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -47,10 +45,20 @@ import org.slf4j.LoggerFactory;
 /** Loads Core Packages from the embedded reference validator library or modules */
 public final class JarPackageLoader {
   private static final Logger log = LoggerFactory.getLogger(JarPackageLoader.class);
+  private final Path temporaryDirectory;
+
+  public JarPackageLoader() {
+    this(Path.of(System.getProperty("java.io.tmpdir")));
+  }
+
+  JarPackageLoader(Path temporaryDirectory) {
+    this.temporaryDirectory = Objects.requireNonNull(temporaryDirectory, "temporaryDirectory");
+  }
 
   @NonNull List<PackageCategory> importCorePackagesFromRelease(@NonNull FhirRelease fhirRelease)
       throws PackageLoadFailedException {
     List<PackageCategory> fhirPackages = new ArrayList<>();
+    var imported = false;
     try {
       for (var packageEntry : fhirRelease.packages()) {
         final String packageEntryFileName =
@@ -62,17 +70,23 @@ public final class JarPackageLoader {
         }
       }
       log.debug("Extracted FHIR Packages: {}", fhirPackages.size());
+      imported = true;
       return fhirPackages;
     } catch (Exception e) {
       log.error(e.getLocalizedMessage());
       log.debug(e.getLocalizedMessage(), e);
       throw new PackageLoadFailedException("Failed to get Packages Information from Module");
+    } finally {
+      if (!imported) {
+        cleanupTemporaryFiles(fhirPackages);
+      }
     }
   }
 
   @NonNull List<PackageCategory> importPackagesFromModule(@NonNull Path modulePath)
       throws PackageLoadFailedException {
     List<PackageCategory> fhirPackages = new ArrayList<>();
+    var imported = false;
     try (JarFile jar = new JarFile(modulePath.toFile())) {
       final var packageEntries =
           jar.stream()
@@ -92,28 +106,51 @@ public final class JarPackageLoader {
         }
       }
 
+      imported = true;
       return fhirPackages;
     } catch (Exception e) {
       throw new PackageLoadFailedException("Failed to load all the module packages in cache", e);
+    } finally {
+      if (!imported) {
+        cleanupTemporaryFiles(fhirPackages);
+      }
     }
   }
 
-  private static @NonNull LocalArchive importArchive(InputStream is, String packageEntryFileName)
+  private @NonNull LocalArchive importArchive(InputStream is, String packageEntryFileName)
       throws IOException {
     if (Objects.isNull(is)) {
       throw new PackageLoadFailedException("Failed to import " + packageEntryFileName);
     }
-    File tempFile = File.createTempFile(String.valueOf(UUID.randomUUID()), ".tmp");
-    tempFile.deleteOnExit();
-    try (FileOutputStream out = new FileOutputStream(tempFile)) {
-      // copy stream
-      byte[] buffer = new byte[1024];
-      int bytesRead;
-      while ((bytesRead = is.read(buffer)) != -1) {
-        out.write(buffer, 0, bytesRead);
+    final var tempFile = Files.createTempFile(temporaryDirectory, "refv-", ".tmp");
+    var imported = false;
+    try {
+      try (var out = Files.newOutputStream(tempFile)) {
+        is.transferTo(out);
+      }
+      final var archive = new LocalArchive(LocalArchive.parse(packageEntryFileName), tempFile);
+      imported = true;
+      return archive;
+    } finally {
+      if (!imported) {
+        cleanupTemporaryFile(tempFile);
       }
     }
+  }
 
-    return new LocalArchive(LocalArchive.parse(packageEntryFileName), tempFile.toPath());
+  private static void cleanupTemporaryFiles(List<PackageCategory> packages) {
+    packages.stream()
+        .filter(LocalArchive.class::isInstance)
+        .map(LocalArchive.class::cast)
+        .map(LocalArchive::path)
+        .forEach(JarPackageLoader::cleanupTemporaryFile);
+  }
+
+  private static void cleanupTemporaryFile(Path path) {
+    try {
+      Files.deleteIfExists(path);
+    } catch (IOException e) {
+      log.debug("Failed to delete temporary archive {}", path, e);
+    }
   }
 }

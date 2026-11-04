@@ -91,18 +91,7 @@ class SnapshotGeneratorIT {
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
-    Assertions.assertTrue(
-        result.messages().stream()
-            .noneMatch(
-                resultMessage ->
-                    resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.ERROR.getCode())
-                        || resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
+    assertSuccessful(result);
   }
 
   @DisplayName("R1.1 — generates a snapshot for a local Implementation Guide and its dependencies")
@@ -133,18 +122,7 @@ class SnapshotGeneratorIT {
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
-    Assertions.assertTrue(
-        result.messages().stream()
-            .noneMatch(
-                resultMessage ->
-                    resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.ERROR.getCode())
-                        || resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
+    assertSuccessful(result);
     Assertions.assertTrue(Files.isRegularFile(tempDir.resolve("minimal.example-1.0.0.tgz")));
   }
 
@@ -177,18 +155,7 @@ class SnapshotGeneratorIT {
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
-    Assertions.assertTrue(
-        result.messages().stream()
-            .noneMatch(
-                resultMessage ->
-                    resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.ERROR.getCode())
-                        || resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
+    assertSuccessful(result);
   }
 
   @DisplayName("R1.7 — applies the matching package patch before snapshot generation")
@@ -221,18 +188,7 @@ class SnapshotGeneratorIT {
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
-    Assertions.assertTrue(
-        result.messages().stream()
-            .noneMatch(
-                resultMessage ->
-                    resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.ERROR.getCode())
-                        || resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
+    assertSuccessful(result);
     Assertions.assertTrue(Files.isRegularFile(tempDir.resolve("minimal.example-1.0.0.tgz")));
   }
 
@@ -266,18 +222,7 @@ class SnapshotGeneratorIT {
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
-    Assertions.assertTrue(
-        result.messages().stream()
-            .noneMatch(
-                resultMessage ->
-                    resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.ERROR.getCode())
-                        || resultMessage
-                            .severity()
-                            .getCode()
-                            .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
+    assertSuccessful(result);
   }
 
   @DisplayName("Performs the Snapshot Generation using the Configuration as specified in a Module")
@@ -345,19 +290,18 @@ class SnapshotGeneratorIT {
     Assertions.assertFalse(resultMap.isEmpty());
     for (var result : resultMap.values()) {
       ResultPrinter.printMessages(result);
-      Assertions.assertTrue(
-          result.messages().stream()
-              .noneMatch(
-                  resultMessage ->
-                      resultMessage
-                              .severity()
-                              .getCode()
-                              .equalsIgnoreCase(IssueSeverity.ERROR.getCode())
-                          || resultMessage
-                              .severity()
-                              .getCode()
-                              .equalsIgnoreCase(IssueSeverity.FATAL.getCode())));
+      assertSuccessful(result);
     }
+  }
+
+  private void assertSuccessful(SnapshotGenerationResult result) {
+    Assertions.assertTrue(
+        result.messages().stream()
+            .noneMatch(
+                message ->
+                    message.severity() == IssueSeverity.ERROR
+                        || message.severity() == IssueSeverity.FATAL),
+        () -> result.messages().toString());
   }
 
   private SnapshotGenerator createSnapshotGenerator(ContextConfiguration configuration) {

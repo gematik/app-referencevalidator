@@ -36,8 +36,6 @@ import de.gematik.refv.lib.validation.entity.FhirResource;
 import de.gematik.refv.lib.validation.entity.JsonFhirResource;
 import de.gematik.refv.lib.validation.entity.ProfileCanonical;
 import de.gematik.refv.lib.validation.entity.ValidationResult;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -48,8 +46,6 @@ import org.hl7.fhir.model.core.OperationOutcome;
 import org.hl7.fhir.model.core.StructureDefinition;
 import org.hl7.fhir.model.utilities.EOperationOutcome;
 import org.hl7.fhir.model.utilities.formats.FhirFormat;
-import org.hl7.fhir.model.utilities.formats.OutputStyle;
-import org.hl7.fhir.services.elementmodel.Manager;
 import org.hl7.fhir.utilities.i18n.I18nConstants;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.hl7.fhir.validation.ValidationEngine;
@@ -119,6 +115,10 @@ class DefaultValidationContext implements ValidationContext {
     try {
       // Check that profiles are loaded in context
       assertProfilesAreLoadedInContext(profiles);
+      if (contextConfiguration.validationPolicy().recursiveModePolicy()
+          == ValidationPolicyConfiguration.RecursiveModePolicy.ALLOWED) {
+        assertEmbeddedProfilesAreLoaded(fhirResource);
+      }
       final OperationOutcome operationOutcome;
       if (fhirResource instanceof JsonFhirResource jsonFhirResource) {
         operationOutcome =
@@ -132,10 +132,6 @@ class DefaultValidationContext implements ValidationContext {
                 FhirFormat.XML,
                 fhirResource.inputStream(),
                 profiles.stream().map(ProfileCanonical::value).toList());
-      }
-      if (contextConfiguration.validationPolicy().recursiveModePolicy()
-          == ValidationPolicyConfiguration.RecursiveModePolicy.ALLOWED) {
-        validateEmbeddedResources(fhirResource, operationOutcome);
       }
       // BUG HL7: the resources are still searched, even if the configuration is disabled
       final var fixedOutcome =
@@ -157,34 +153,14 @@ class DefaultValidationContext implements ValidationContext {
     }
   }
 
-  private void validateEmbeddedResources(FhirResource resource, OperationOutcome outcome)
-      throws IOException, EOperationOutcome {
+  private void assertEmbeddedProfilesAreLoaded(FhirResource resource) throws IOException {
     var format = resource instanceof JsonFhirResource ? FhirFormat.JSON : FhirFormat.XML;
     try (var input = resource.inputStream()) {
-      var root = Manager.parseSingle(validationEngine.getContext(), input, format);
+      var root =
+          org.hl7.fhir.services.elementmodel.Manager.parseSingle(
+              validationEngine.getContext(), input, format);
       for (var child : EmbeddedResourceExtractor.extract(root)) {
-        var profiles = child.profiles();
-        assertProfilesAreLoadedInContext(profiles);
-        var content = new ByteArrayOutputStream();
-        Manager.compose(
-            validationEngine.getContext(),
-            child.resource(),
-            content,
-            FhirFormat.JSON,
-            OutputStyle.NORMAL,
-            null);
-        try (var childInput = new ByteArrayInputStream(content.toByteArray())) {
-          var childOutcome =
-              validateInEngine(
-                  FhirFormat.JSON,
-                  childInput,
-                  profiles.stream().map(ProfileCanonical::value).toList());
-          for (var issue : childOutcome.getIssueList()) {
-            // OutcomeConverter exposes the issue text, not its expression/location fields.
-            issue.getDetails().setText(child.path() + ": " + issue.getText());
-            outcome.getIssueList().add(issue);
-          }
-        }
+        assertProfilesAreLoadedInContext(child.profiles());
       }
     }
   }

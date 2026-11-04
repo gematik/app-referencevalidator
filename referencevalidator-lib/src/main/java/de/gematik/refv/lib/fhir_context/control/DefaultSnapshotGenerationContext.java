@@ -32,6 +32,7 @@ import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
 import de.gematik.refv.lib.fhir_context.entity.MessageId;
 import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
+import de.gematik.refv.lib.package_resolver.entity.PackageId;
 import de.gematik.refv.lib.package_resolver.entity.PackageResolution;
 import de.gematik.refv.lib.package_resolver.entity.ResolvedPackage;
 import de.gematik.refv.lib.snapshot.entity.SnapshotGenerationResult;
@@ -40,11 +41,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.hl7.fhir.model.core.StructureDefinition;
-import org.hl7.fhir.model.core.formats.JsonParser;
 import org.hl7.fhir.standalone.context.ContextUtilities;
 import org.hl7.fhir.standalone.context.SimpleWorkerContext;
 import org.hl7.fhir.utilities.npm.NpmPackage;
@@ -56,45 +57,58 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is responsible for initializing the FHIR Context used for snapshot generation.
  * Internally it holds a {@link ValidationEngine} instance, which is the core of the HL7 Validation
- * Library. The ValidationEngine manages internally dependencies and resources, so they can be used
- * directly. The clone of an existing ValidationEngine is not deep, instead it attempts to reusing
- * previously loaded dependencies, so the initialization is sped up.
+ * Library. Non-conflicting clones reuse loaded dependencies. Package replacements rebuild the
+ * execution context to avoid retaining resources from the original package contribution.
  */
 class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
   private static final Logger log = LoggerFactory.getLogger(DefaultSnapshotGenerationContext.class);
   private final ContextConfiguration contextConfiguration;
   private final ValidationEngine validationEngine;
   private final ManagedTemporaryDirectory terminologyCacheLease;
+  private final List<ResolvedPackage> loadedPackages;
 
   public DefaultSnapshotGenerationContext(@NonNull ContextConfiguration contextConfiguration)
       throws InitializationException {
-    this.contextConfiguration = contextConfiguration;
-    try {
-      final var engineSession = ValidationEngineFactory.createNewCoreEngine(contextConfiguration);
-      this.validationEngine = engineSession.engine();
-      this.terminologyCacheLease =
-          engineSession.managedTerminologyCachePath() == null
-              ? null
-              : ManagedTemporaryDirectory.owned(engineSession.managedTerminologyCachePath());
-    } catch (Exception e) {
-      close();
-      throw new InitializationException(e.getLocalizedMessage(), e);
-    }
+    this(contextConfiguration, List.of(), List.of());
   }
 
   public DefaultSnapshotGenerationContext(
       @NonNull ContextConfiguration contextConfiguration, @NonNull PackageResolution packagesToLoad)
       throws InitializationException {
-    Objects.requireNonNull(packagesToLoad, "The list of packages to load set must be supplied");
+    this(contextConfiguration, packagesToLoad.packages(), List.of());
+  }
+
+  private DefaultSnapshotGenerationContext(
+      ContextConfiguration contextConfiguration,
+      Collection<ResolvedPackage> inherited,
+      Collection<ResolvedPackage> generated) {
     this.contextConfiguration = contextConfiguration;
+    this.loadedPackages = mergePackages(inherited, generated);
     try {
-      final var engineSession = ValidationEngineFactory.createNewCoreEngine(contextConfiguration);
+      var coreCoordinates = contextConfiguration.fhirRelease().corePackageId();
+      var generatedCore =
+          generated.stream()
+              .filter(pkg -> pkg.id().coordinates().equals(coreCoordinates))
+              .findFirst();
+      final var engineSession =
+          generatedCore.isPresent()
+              ? ValidationEngineFactory.createNewCoreEngine(
+                  contextConfiguration, generatedCore.orElseThrow().packagePath())
+              : ValidationEngineFactory.createNewCoreEngine(contextConfiguration);
       this.validationEngine = engineSession.engine();
       this.terminologyCacheLease =
           engineSession.managedTerminologyCachePath() == null
               ? null
               : ManagedTemporaryDirectory.owned(engineSession.managedTerminologyCachePath());
-      ContextPackageLoader.loadPackagesInContext(this.validationEngine, packagesToLoad.packages());
+      var replacementIds = generated.stream().map(ResolvedPackage::id).toList();
+      ContextPackageLoader.loadPackagesInContext(
+          this.validationEngine,
+          inherited.stream().filter(pkg -> !replacementIds.contains(pkg.id())).toList());
+      ContextPackageLoader.loadGeneratedPackagesInContext(
+          this.validationEngine,
+          generated.stream()
+              .filter(pkg -> !pkg.id().coordinates().equals(coreCoordinates))
+              .toList());
     } catch (Exception e) {
       close();
       throw new InitializationException(e.getLocalizedMessage(), e);
@@ -123,6 +137,7 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
     try {
       // Load package resources manually because dependency workspaces may be temporary.
       npmPackage = NpmPackage.fromFolder(packageSource.toString(), false);
+      rebuildPackageIndexes(npmPackage, packageSource);
       final var structureDefinitionsFromPackage =
           ContextPackageLoader.extractAndLoadResourcesInContext(validationEngine, npmPackage);
       if (structureDefinitionsFromPackage.isEmpty()) {
@@ -142,7 +157,12 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
       // Retrieve the StructureDefinitions with Snapshot and write them to folder (overwrite
       // existing)
       storeStructureDefinitionSnapshots(
-          validationEngine.getContext(), structureDefinitionsFromPackage);
+          structureDefinitionsFromPackage,
+          FhirRelease.ofVersion(
+              Objects.requireNonNullElse(
+                  npmPackage.fhirVersion(),
+                  contextConfiguration.fhirRelease().corePackageVersion())));
+      rebuildPackageIndexes(npmPackage, packageSource);
 
       return new SnapshotGenerationResult(
           List.of(
@@ -165,15 +185,42 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
       return new SnapshotGenerationResult(
           List.of(
               ResultMessage.fromMessage(
-                  IssueSeverity.ERROR, MessageId.SNAPSHOT_GENERATION_ERROR.getCode(), message)));
+                  IssueSeverity.ERROR,
+                  MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
+                  message + ": " + e.getMessage())));
     }
+  }
+
+  static void rebuildPackageIndexes(NpmPackage npmPackage, Path packageSource) throws IOException {
+    for (var folder : npmPackage.getFolders().values()) {
+      folder.getTypes().clear();
+    }
+    npmPackage.buildIndexes(packageSource.toString());
   }
 
   @Override
   public @NonNull SnapshotGenerationContext cloneContext(
       @NonNull Collection<ResolvedPackage> resolvedPackages) {
     log.debug("Cloning an existing Context and loading custom dependencies");
+    if (resolvedPackages.stream()
+        .anyMatch(
+            pkg -> validationEngine.getContext().hasPackage(pkg.id().name(), pkg.id().version()))) {
+      return new DefaultSnapshotGenerationContext(
+          contextConfiguration, loadedPackages, resolvedPackages);
+    }
     return new DefaultSnapshotGenerationContext(this, resolvedPackages);
+  }
+
+  private static List<ResolvedPackage> mergePackages(
+      Collection<ResolvedPackage> inherited, Collection<ResolvedPackage> generated) {
+    var merged = new LinkedHashMap<PackageId, ResolvedPackage>();
+    for (var pkg : inherited) {
+      merged.put(pkg.id(), pkg);
+    }
+    for (var pkg : generated) {
+      merged.put(pkg.id(), pkg);
+    }
+    return List.copyOf(merged.values());
   }
 
   @Override
@@ -198,6 +245,7 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
       throws InitializationException {
     Objects.requireNonNull(other, "A valid context must be supplied");
     Objects.requireNonNull(packages, "A list of packages must be supplied");
+    this.loadedPackages = mergePackages(other.loadedPackages, packages);
     try {
       this.contextConfiguration = other.contextConfiguration;
       this.validationEngine = new ValidationEngine(other.validationEngine);
@@ -263,10 +311,8 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
   }
 
   void storeStructureDefinitionSnapshots(
-      @NonNull SimpleWorkerContext context,
-      Map<StructureDefinition, Path> structureDefinitionsFromPackage)
+      Map<StructureDefinition, Path> structureDefinitionsFromPackage, FhirRelease release)
       throws IOException {
-    final var jsonParser = new JsonParser(context.getModelContext());
     for (var entry : structureDefinitionsFromPackage.entrySet()) {
       var sd = entry.getKey();
       // Check that StructureDefinition has a snapshot now
@@ -277,7 +323,9 @@ class DefaultSnapshotGenerationContext implements SnapshotGenerationContext {
       }
 
       Files.write(
-          entry.getValue(), jsonParser.composeBytes(sd), StandardOpenOption.TRUNCATE_EXISTING);
+          entry.getValue(),
+          ResourceParser.composeForRelease(sd, release),
+          StandardOpenOption.TRUNCATE_EXISTING);
     }
   }
 }

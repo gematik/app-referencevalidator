@@ -137,16 +137,26 @@ sequenceDiagram
     CLI ->> Factory: create generator from context configuration
     Factory -->> CLI: SnapshotGenerator
     CLI ->> Generator: generateSnapshots(request, options)
-    Generator ->> Processor: process packages and dependencies
-    Processor ->> Resolver: resolve local or remote package dependencies
-    Resolver -->> Processor: resolved package set
-    opt patches directory configured
-        Processor ->> Processor: apply package patches
+    Generator ->> Processor: process selected roots
+    Processor ->> Resolver: resolve explicitly supplied roots (source-only)
+    Resolver -->> Processor: root package sources
+    loop each newly discovered package
+      Processor ->> Processor: stage package and apply matching patches
+      Processor ->> Processor: read dependencies from staged manifest
+      Processor ->> Resolver: resolve direct dependencies
+      Resolver -->> Processor: dependency package source
     end
-    Processor ->> Context: generate snapshots in package context
-    Context -->> Processor: SnapshotGenerationResult
-    Processor ->> Archive: stream package to temporary .tgz
-    Archive -->> Processor: publish completed archive
+    Processor ->> Processor: Kahn-sort complete graph; reject cycles
+    loop dependency-first package
+      Processor ->> Context: generate snapshots with completed dependency closure
+      Context -->> Processor: SnapshotGenerationResult
+      alt no ERROR or FATAL findings
+        Processor ->> Archive: stream package to temporary .tgz
+        Archive -->> Processor: publish completed archive
+      else generation errors
+        Processor -->> Processor: fail package and block dependents
+      end
+    end
     Processor -->> Generator: per-package results
     Generator -->> CLI: aggregate result
     CLI ->> Reporter: render and write report
@@ -156,27 +166,46 @@ sequenceDiagram
 **Key runtime properties**
 
 * **Dependency preflight:** resolve the full transitive graph for selected roots before generating
-  any snapshots. A cycle or unavailable dependency returns an error without starting generation.
-  The processor generates dependencies before dependents and provides their archived snapshots to
-  downstream packages. Each package coordinate is generated and archived at most once per request.
+  any snapshots. Import only explicit roots initially, stage and patch each reachable package once,
+  then read dependencies from the patched manifests. Kahn's algorithm rejects cycles, including
+  self-dependencies, before generation starts; unresolved dependencies stop preflight. Source-content
+  conflicts are rejected when the same coordinate is encountered at different paths with differing
+  directory content. This is not a universal source-provenance or cache-substitution guarantee. The
+  processor generates dependencies before dependents and provides their transitive archived snapshots
+  to downstream packages. Each concrete coordinate is generated and archived at most once per request.
+  Cache hits reuse a materialized archive, but do not preserve the original generation diagnostics.
 * **Package-group isolation:** in module mode, package groups remain distinct and the CLI creates a
-  fresh `SnapshotGenerator` for each selected manifest package group.
-* **Streaming and archive safety:** `PackageArchiveUtils` streams entry bytes, sorts entry paths,
-  normalizes TAR metadata, rejects traversal and link entries, and enforces extraction limits.
-  Archives are written to a temporary file and published only after compression succeeds.
+  fresh `SnapshotGenerator` and one multi-root request for each selected manifest package group.
+* **Generated-package precedence:** when generated dependencies collide with packages already loaded
+  in a snapshot template, rebuild the execution context without those original package contributions.
+  A generated package matching the configured FHIR core initializes the new engine directly from its
+  extracted directory, using HL7's local-file package selector. It is not compared against a separately
+  loaded default core. Other unavoidable built-in packages cannot be unloaded safely: identical
+  incoming resources may be reused, but conflicting content causes an explicit initialization failure.
+  Package resources are loaded with their declared release's converter, and generated definitions are
+  serialized back to that release before archiving.
+* **Streaming and archive safety:** `PackageArchiveUtils` sorts entry paths, normalizes TAR metadata,
+  rejects unsafe archive entries, and enforces extraction limits when its `decompress` path is used
+  (100,000 entries, 512 MiB per entry, 2 GiB total). Its compression path writes to a temporary file
+  and publishes only after compression succeeds. These bounds do not cover original archives ingested
+  through HL7's package manager or embedded module archives copied by `JarPackageLoader`.
 * **Generated-archive reuse:** `SnapshotArchiveCache` can reuse a previously generated archive based
   on package content, dependency archives, and cache namespace. This is a file-backed cache, not a
   Caffeine cache.
 * **Failure handling:** failed extraction removes partial output. Failed compression does not
-  publish a partial final archive. A generation failure blocks dependent packages while unrelated
-  packages continue and successful archives remain available. Any ERROR or FATAL outcome makes the
-  aggregate result unsuccessful. A completed call alone does not demonstrate successful generation.
+  publish a partial final archive. A generation result containing ERROR or FATAL findings prevents
+  that package from being archived; warnings alone do not. A generation failure blocks dependent
+  packages while unrelated packages continue. The aggregate verdict reflects reported findings and
+  processing failures, not complete FHIR conformance. Cache-hit diagnostics are replaced by a cache
+  message, so a completed call or reused artifact is not a full semantic verification.
 * **Context work:** the FHIR Context generates missing snapshots for StructureDefinitions with a
   base definition and writes them back into the working package directory. A package without
   StructureDefinitions produces a warning that generation was skipped. The Snapshot capability
   owns working-copy preparation and archiving, not the engine context.
 * **Cleanup:** close the generator after processing. Closure releases its owned contexts and is
   idempotent. Persistent package and generated-archive caches are not removed by closing it.
+  Prepared working copies and materialized dependency archives remain available until the request
+  finishes, after execution contexts have closed, and are then removed on success or failure.
 
 ## 6.4 Configuration command
 

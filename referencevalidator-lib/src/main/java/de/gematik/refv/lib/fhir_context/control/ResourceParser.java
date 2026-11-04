@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import org.hl7.fhir.convertors.factory.VersionConvertorFactory_40_N;
+import org.hl7.fhir.convertors.factory.VersionConvertorFactory_50_N;
 import org.hl7.fhir.model.ModelContext;
 import org.hl7.fhir.model.core.Resource;
 import org.hl7.fhir.model.core.formats.JsonParser;
@@ -157,6 +158,17 @@ final class ResourceParser {
         ValidatorUtils.loaderForVersion(
             ModelContext.minimalContext(), Objects.requireNonNull(fhirVersion));
     return loader.loadResource(Objects.requireNonNull(inputStream), false);
+  }
+
+  static byte[] composeForRelease(Resource resource, FhirRelease release) throws IOException {
+    return switch (release) {
+      case R4Version _ ->
+          new org.hl7.fhir.r4.formats.JsonParser()
+              .composeBytes(VersionConvertorFactory_40_N.convertResource(resource));
+      case R5Version _ ->
+          new org.hl7.fhir.r5.formats.JsonParser()
+              .composeBytes(VersionConvertorFactory_50_N.convertResource(resource));
+    };
   }
 
   static Resource parseAndConvert(byte[] content, FhirRelease version) {

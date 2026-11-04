@@ -69,10 +69,10 @@ public interface PackageResolver {
       throws PackageLoadFailedException;
 
   /**
-   * Resolves the requested packages and all transitive dependencies, if requested.
+   * Resolves all supplied roots and their transitive dependencies as one graph.
    *
-   * <p>The result contains a list of all the packages, in the same order as the dependencies are
-   * discovered.
+   * <p>Each concrete package coordinate is returned once in dependency-first order, regardless of
+   * whether a root is supplied as a coordinate, directory, or archive.
    *
    * @param packagesToResolve a collection of Packages (path to local directory or archive, remote
    *     coordinates)
@@ -98,6 +98,10 @@ public interface PackageResolver {
    *     directory does not contain any package)
    */
   @NonNull PackageResolution resolvePath(@NonNull Path inputPath) throws PackageLoadFailedException;
+
+  /// Imports only explicit sources, leaving dependency traversal to the caller.
+  @NonNull PackageResolution resolveSources(@NonNull Path inputPath)
+      throws PackageLoadFailedException;
 
   /**
    * Tries to find a matching package, given its coordinates.

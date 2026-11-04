@@ -74,11 +74,17 @@ public final class DefaultPackageResolver implements PackageResolver {
    */
   public DefaultPackageResolver(
       @NonNull PackageDownloadConfiguration packageDownloadConfiguration) {
+    this(packageDownloadConfiguration, new JarPackageLoader());
+  }
+
+  DefaultPackageResolver(
+      @NonNull PackageDownloadConfiguration packageDownloadConfiguration,
+      @NonNull JarPackageLoader corePackageLoader) {
     Objects.requireNonNull(
         packageDownloadConfiguration, "The context configuration cannot be null");
 
     this.packageSource = new FilesystemPackageSourceProvider(packageDownloadConfiguration);
-    this.corePackageLoader = new JarPackageLoader();
+    this.corePackageLoader = Objects.requireNonNull(corePackageLoader, "corePackageLoader");
   }
 
   @Override
@@ -108,10 +114,9 @@ public final class DefaultPackageResolver implements PackageResolver {
   }
 
   /**
-   * Resolves the requested packages and all transitive dependencies, if requested.
+   * Resolves all supplied roots and their transitive dependencies as one graph.
    *
-   * <p>The result contains a list of all the packages, in the same order as the dependencies are
-   * discovered.
+   * <p>Each concrete package coordinate is returned once in dependency-first order.
    *
    * @param packagesToResolve a collection of Packages (path to local directory or archive, remote
    *     coordinates)
@@ -122,18 +127,39 @@ public final class DefaultPackageResolver implements PackageResolver {
   public @NonNull PackageResolution resolveList(@NonNull Collection<String> packagesToResolve)
       throws PackageLoadFailedException {
     Objects.requireNonNull(packagesToResolve, "The list of packages to resolve cannot be null");
-    List<ResolvedPackage> resolvedPackages = new ArrayList<>();
-    for (var packageEntry : packagesToResolve) {
-      final var resolved = resolveFromPath(Path.of(packageEntry));
-      resolvedPackages.addAll(resolved.packages());
+    if (packagesToResolve.isEmpty()) {
+      return new PackageResolution(List.of());
     }
-    return new PackageResolution(resolvedPackages);
+    List<PackageCategory> requirements = new ArrayList<>();
+    for (var packageEntry : packagesToResolve) {
+      requirements.addAll(discoverSources(Path.of(packageEntry)).requirements());
+    }
+    return resolveRequest(new PackageResolutionRequest(requirements), TransitiveResolution.ALLOWED);
   }
 
   @Override
   public @NonNull PackageResolution resolvePath(@NonNull Path inputPath)
       throws PackageLoadFailedException {
-    return resolveFromPath(inputPath);
+    var sources = discoverSources(inputPath);
+    var transitiveResolution =
+        sources.requirements().stream().anyMatch(source -> !(source instanceof LocalArchive))
+            ? TransitiveResolution.ALLOWED
+            : TransitiveResolution.IGNORE;
+    return resolveRequest(sources, transitiveResolution);
+  }
+
+  @Override
+  public @NonNull PackageResolution resolveSources(@NonNull Path inputPath)
+      throws PackageLoadFailedException {
+    var sources =
+        discoverSources(inputPath).requirements().stream()
+            .map(
+                source ->
+                    source instanceof LocalDirectory(PackageId id, Path path)
+                        ? new ResolvedPackage(id, path, List.of())
+                        : packageSource.loadPackage(source))
+            .toList();
+    return new PackageResolution(sources);
   }
 
   @Override
@@ -196,38 +222,44 @@ public final class DefaultPackageResolver implements PackageResolver {
       throws PackageLoadFailedException {
     Objects.requireNonNull(fhirRelease, "The FHIR Release cannot be null");
     final String fhirAlias = fhirRelease.alias();
-    // avoid performing the operation twice
-    if (cachedResolved.containsKey(fhirAlias)) {
-      return cachedResolved.get(fhirAlias);
-    }
-    final var packagesList = corePackageLoader.importCorePackagesFromRelease(fhirRelease);
-    final var resolved =
-        resolveRequest(new PackageResolutionRequest(packagesList), TransitiveResolution.IGNORE);
-    cachedResolved.put(fhirAlias, resolved);
-    cleanupTemporaryFiles(packagesList);
-    return resolved;
+    return cachedResolved.computeIfAbsent(
+        fhirAlias,
+        _ -> {
+          final var packagesList = corePackageLoader.importCorePackagesFromRelease(fhirRelease);
+          try {
+            return resolveRequest(
+                new PackageResolutionRequest(packagesList), TransitiveResolution.IGNORE);
+          } finally {
+            cleanupTemporaryFiles(packagesList);
+          }
+        });
   }
 
   @Override
   public void loadModulePackages(@NonNull Path modulePath) {
     Objects.requireNonNull(modulePath, "The module path cannot be null");
-    final var packagesList = corePackageLoader.importPackagesFromModule(modulePath);
-    // skip performing twice the operation
-    if (!cachedResolved.containsKey(modulePath.toString())) {
-      final var resolved =
-          resolveRequest(new PackageResolutionRequest(packagesList), TransitiveResolution.IGNORE);
-      cachedResolved.put(modulePath.toString(), resolved);
-      cleanupTemporaryFiles(packagesList);
-    }
+    cachedResolved.computeIfAbsent(
+        modulePath.toString(),
+        _ -> {
+          final var packagesList = corePackageLoader.importPackagesFromModule(modulePath);
+          try {
+            return resolveRequest(
+                new PackageResolutionRequest(packagesList), TransitiveResolution.IGNORE);
+          } finally {
+            cleanupTemporaryFiles(packagesList);
+          }
+        });
   }
 
   private PackageResolution resolveTransitively(PackageResolutionRequest request) {
     log.debug("Resolving packages transitively");
     var all = new LinkedHashMap<PackageId, ResolvedPackage>();
+    var resolvedRequirements = new LinkedHashMap<PackageId, ResolvedPackage>();
     var pending = new ArrayDeque<ResolvedPackage>();
     var graph = new DependencyGraph();
     for (var requirement : request.requirements()) {
       final var resolved = packageSource.loadPackage(requirement);
+      resolvedRequirements.putIfAbsent(requirement.id(), resolved);
       addToProcessingQueue(resolved, all, pending);
       graph.addNode(resolved.id());
     }
@@ -236,7 +268,9 @@ public final class DefaultPackageResolver implements PackageResolver {
       for (var transitive : dependency.dependencies()) {
         var resolved = all.get(transitive);
         if (resolved == null) {
-          resolved = packageSource.loadPackage(new RemotePackage(transitive));
+          resolved =
+              resolvedRequirements.computeIfAbsent(
+                  transitive, id -> packageSource.loadPackage(new RemotePackage(id)));
           addToProcessingQueue(resolved, all, pending);
         }
         graph.addDependency(resolved.id(), dependency.id());
@@ -281,7 +315,7 @@ public final class DefaultPackageResolver implements PackageResolver {
    * @return the resolved, explicit set of {@link ResolvedPackage} instances (possibly empty, if a
    *     directory does not contain any package)
    */
-  private @NonNull PackageResolution resolveFromPath(@NonNull Path inputPath) {
+  private @NonNull PackageResolutionRequest discoverSources(@NonNull Path inputPath) {
     Objects.requireNonNull(inputPath, "The path cannot be null");
     final var pathAsFile = inputPath.toFile();
     final var pathFileName = pathAsFile.getName();
@@ -289,9 +323,8 @@ public final class DefaultPackageResolver implements PackageResolver {
       if (pathFileName.contains(PackageId.PACKAGE_SEPARATOR)
           && !pathFileName.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)) {
         log.debug("Detected remote package coordinate format");
-        return resolveRequest(
-            PackageResolutionRequest.of(new RemotePackage(PackageId.parse(inputPath.toString()))),
-            PackageResolver.TransitiveResolution.ALLOWED);
+        return PackageResolutionRequest.of(
+            new RemotePackage(PackageId.parse(inputPath.toString())));
       }
       throw new IllegalArgumentException("The given path does not exist: " + inputPath);
     }
@@ -301,29 +334,30 @@ public final class DefaultPackageResolver implements PackageResolver {
         log.debug("Detected Directory Source for {}", pathAsFile);
         final var fhirPackage =
             new LocalDirectory(PackageId.parse(pathAsFile.getName()), inputPath);
-        return resolveRequest(
-            PackageResolutionRequest.of(fhirPackage), PackageResolver.TransitiveResolution.ALLOWED);
+        return PackageResolutionRequest.of(fhirPackage);
       } else {
         log.debug("Extracting all the archives from Directory {}", pathAsFile);
-        return resolveRequest(
-            resolveDirectory(pathAsFile), PackageResolver.TransitiveResolution.IGNORE);
+        return resolveDirectory(pathAsFile);
       }
     }
 
     if (inputPath.getFileName().toString().endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)) {
       log.debug("Detected TGZ Package for {}", pathAsFile);
       final var fhirPackage = LocalArchive.parse(pathAsFile.getName(), inputPath);
-      return resolveRequest(
-          PackageResolutionRequest.of(fhirPackage), PackageResolver.TransitiveResolution.IGNORE);
+      return PackageResolutionRequest.of(fhirPackage);
     }
 
     log.warn("Could not detect package(s) from the given input {}", inputPath);
-    return new PackageResolution(List.of());
+    return PackageResolutionRequest.of();
   }
 
   private @NonNull PackageResolutionRequest resolveDirectory(@NonNull File directory) {
     final File[] tgzFiles =
-        directory.listFiles((_, name) -> name.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION));
+        directory.listFiles(
+            file ->
+                (file.isFile() && file.getName().endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION))
+                    || (file.isDirectory()
+                        && file.getName().contains(PackageId.PACKAGE_SEPARATOR)));
 
     if (tgzFiles == null || tgzFiles.length == 0) {
       return PackageResolutionRequest.of();
@@ -331,7 +365,13 @@ public final class DefaultPackageResolver implements PackageResolver {
 
     final var packageList =
         Arrays.stream(tgzFiles)
-            .map(file -> (PackageCategory) LocalArchive.parse(file.getName(), file.toPath()))
+            .sorted(java.util.Comparator.comparing(File::getName))
+            .map(
+                file ->
+                    file.isDirectory()
+                        ? (PackageCategory)
+                            new LocalDirectory(PackageId.parse(file.getName()), file.toPath())
+                        : LocalArchive.parse(file.getName(), file.toPath()))
             .toList();
     log.debug("Found {} dependencies in directory {}", packageList.size(), directory);
     return new PackageResolutionRequest(packageList);

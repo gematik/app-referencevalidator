@@ -80,7 +80,9 @@ public final class ValidationModuleIndex {
       @NonNull String packageGroup,
       @NonNull LocalDate validFrom,
       @Nullable LocalDate validTill,
-      @NonNull List<String> packages) {
+      @NonNull List<String> packages,
+      @NonNull List<String> messageTransformationIds,
+      @NonNull List<MessageTransformation> messageTransformations) {
 
     public boolean isOpenEnded() {
       return validTill == null;
@@ -88,6 +90,20 @@ public final class ValidationModuleIndex {
 
     public boolean contains(@NonNull LocalDate date) {
       return !date.isBefore(validFrom) && (validTill == null || !date.isAfter(validTill));
+    }
+  }
+
+  /** Packages and policies belonging to the selected validity-period group. */
+  public record PackageGroupSelection(
+      @NonNull String packageGroup,
+      @NonNull List<String> packages,
+      @NonNull List<String> messageTransformationIds,
+      @NonNull List<MessageTransformation> messageTransformations) {
+    public PackageGroupSelection {
+      Objects.requireNonNull(packageGroup, "packageGroup");
+      packages = List.copyOf(packages);
+      messageTransformationIds = List.copyOf(messageTransformationIds);
+      messageTransformations = List.copyOf(messageTransformations);
     }
   }
 
@@ -211,13 +227,34 @@ public final class ValidationModuleIndex {
   public List<String> getPackagesForDate(
       @NonNull String profileUrl, @Nullable String version, @NonNull LocalDate referenceDate) {
 
-    return findProfileVersion(profileUrl, version)
-        .flatMap(resolved -> resolved.periodFor(referenceDate))
-        .map(ResolvedPeriod::packages)
+    return getPackageGroupForDate(profileUrl, version, referenceDate)
+        .map(PackageGroupSelection::packages)
         .orElse(List.of());
   }
 
-  /** Aggregated message transformations of all package groups bound to the profile version. */
+  /** Returns the package group and its transformations for the first period containing the date. */
+  public Optional<PackageGroupSelection> getPackageGroupForDate(
+      @NonNull String profileUrl, @Nullable String version, @NonNull LocalDate referenceDate) {
+    return findProfileVersion(profileUrl, version)
+        .flatMap(resolved -> resolved.periodFor(referenceDate))
+        .map(ValidationModuleIndex::selectionOf);
+  }
+
+  /** Returns the package group and its transformations used when no reference date is available. */
+  public Optional<PackageGroupSelection> getFallbackPackageGroup(
+      @NonNull String profileUrl, @Nullable String version) {
+    return findProfileVersion(profileUrl, version)
+        .flatMap(ResolvedVersion::fallbackPeriod)
+        .map(ValidationModuleIndex::selectionOf);
+  }
+
+  /**
+   * Aggregated message transformations of all package groups bound to the profile version.
+   *
+   * @deprecated This union ignores the selected validity period. Use the group-selection methods
+   *     before applying transformations to a resource.
+   */
+  @Deprecated(forRemoval = false)
   public List<MessageTransformation> getMessageTransformations(
       @NonNull String profileUrl, @Nullable String version) {
     return findProfileVersion(profileUrl, version)
@@ -403,7 +440,9 @@ public final class ValidationModuleIndex {
                         period.packageGroupName(),
                         period.validFrom(),
                         period.validTill(),
-                        packagesOf(configuration, period.packageGroupName())))
+                        packagesOf(configuration, period.packageGroupName()),
+                        transformationIdsOf(configuration, period.packageGroupName()),
+                        transformationsOf(configuration, period.packageGroupName())))
             .toList();
 
     final ResolvedPeriod openEnded =
@@ -424,6 +463,28 @@ public final class ValidationModuleIndex {
     }
     final PackageGroup group = configuration.packageGroups().get(groupName);
     return group.packages();
+  }
+
+  private static PackageGroupSelection selectionOf(ResolvedPeriod period) {
+    return new PackageGroupSelection(
+        period.packageGroup(),
+        period.packages(),
+        period.messageTransformationIds(),
+        period.messageTransformations());
+  }
+
+  private static List<String> transformationIdsOf(
+      @NonNull ValidationModuleManifest configuration, @NonNull String groupName) {
+    return configuration.packageGroups().get(groupName).messageTransformations();
+  }
+
+  private static List<MessageTransformation> transformationsOf(
+      @NonNull ValidationModuleManifest configuration, @NonNull String groupName) {
+    final var group = configuration.packageGroups().get(groupName);
+    return group.messageTransformations().stream()
+        .flatMap(
+            name -> configuration.messageTransformations().getOrDefault(name, List.of()).stream())
+        .toList();
   }
 
   /**

@@ -16,7 +16,7 @@ Use JDK 25 or later. Add the library to a Maven project:
 </dependency>
 ```
 
-Replace `${version.referencevalidator}` with the version used by your application. Keep the transitive dependency versions supplied by the library, especially HAPI FHIR dependencies; overriding them can change validation behavior.
+Replace `${version.referencevalidator}` with the version used by your application. The validation engine is HL7 Core, not the HAPI validation engine, but the current R4 model/converter dependency path includes HAPI artifacts and application code directly uses a HAPI API. Do not exclude or replace those artifacts blindly; doing so may break R4/R5 conversion. If your policy prohibits HAPI APIs or artifacts, the current dependency path does not satisfy that constraint. Treat it as an unresolved release/compliance gate pending a supplier-supported compatible dependency path and verification of the effective dependency inventory. Avoid overriding transitive versions without compatibility testing.
 
 The following imports are used in the validation examples:
 

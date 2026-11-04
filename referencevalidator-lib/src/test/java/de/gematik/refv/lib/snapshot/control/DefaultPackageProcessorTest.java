@@ -66,6 +66,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Covers the process() flow of {@link DefaultPackageProcessor} using a local package and FHIR
@@ -442,10 +443,7 @@ class DefaultPackageProcessorTest {
       var result =
           processor.process(root.path(), processorResult.outputDirectory(), null, List.of());
 
-      Assertions.assertTrue(
-          hasMessage(
-              result,
-              "Cyclic package dependency detected: root#1.0.0 -> dependency#1.0.0 -> root#1.0.0"));
+      Assertions.assertTrue(hasMessage(result, "Cyclic package dependency detected"));
       verify(processorResult.context(), never()).generateSnapshots(any(Path.class));
     }
 
@@ -652,6 +650,156 @@ class DefaultPackageProcessorTest {
         Files.isRegularFile(outputDirectory.resolve("hl7.fhir.r4.core-4.0.1.tgz")));
   }
 
+  @Test
+  void preparesPatchedDependenciesOnceBeforeAnyGeneration() throws Exception {
+    var packageCache = Files.createDirectories(tempDir.resolve("package-cache"));
+    var leaf = writePackage(packageCache, "leaf#1.0.0", Map.of());
+    var root = writePackage("root#1.0.0", Map.of("unavailable", "1.0.0"));
+    var patches = Files.createDirectories(tempDir.resolve("patches/root#1.0.0"));
+    var patch = patches.resolve("package.json");
+    Files.writeString(patch, packageJson(root.id(), Map.of("leaf", "1.0.0")));
+    var context = mock(SnapshotGenerationContext.class);
+    when(context.cachePath()).thenReturn(packageCache);
+    when(context.cloneContext(anyCollection())).thenReturn(context);
+    var generated = new ArrayList<String>();
+    var workingDirectories = new ArrayList<Path>();
+    when(context.generateSnapshots(any(Path.class)))
+        .thenAnswer(
+            invocation -> {
+              Path path = invocation.getArgument(0);
+              var coordinates = packageCoordinates(path);
+              workingDirectories.add(path);
+              generated.add(coordinates);
+              if (coordinates.equals(leaf.id().coordinates())) {
+                Files.writeString(patch, packageJson(root.id(), Map.of("late-change", "1.0.0")));
+              } else {
+                Assertions.assertEquals(
+                    "1.0.0",
+                    JSONMapperProvider.getMapper()
+                        .readTree(path.resolve("package/package.json").toFile())
+                        .path("dependencies")
+                        .path("leaf")
+                        .asText());
+              }
+              return SnapshotGenerationResult.forMessage(
+                  IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generated");
+            });
+    var resolver =
+        PackageResolverFactory.withConfiguration(
+            contextConfiguration(packageCache).packageLoading());
+    try (var processor = new DefaultPackageProcessor(context, resolver)) {
+      var result =
+          processor.process(root.path(), tempDir.resolve("output"), patches.getParent(), List.of());
+      Assertions.assertFalse(
+          result.messages().stream()
+              .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+    }
+    Assertions.assertEquals(List.of("leaf#1.0.0", "root#1.0.0"), generated);
+    Assertions.assertTrue(workingDirectories.stream().noneMatch(Files::exists));
+    Assertions.assertTrue(
+        Files.readString(root.path().resolve("package/package.json")).contains("unavailable"));
+  }
+
+  @Test
+  void diamondUsesGeneratedArchivesOnceAndKeepsUnrelatedPackagesOutOfContexts() throws Exception {
+    var cache = Files.createDirectories(tempDir.resolve("package-cache"));
+    var shared = writePackage(cache, "shared#1.0.0", Map.of());
+    Files.writeString(shared.path().resolve("package/marker.txt"), "original");
+    writePackage(cache, "left#1.0.0", Map.of("shared", "1.0.0"));
+    writePackage(cache, "right#1.0.0", Map.of("shared", "1.0.0"));
+    var root = writePackage("root#1.0.0", Map.of("left", "1.0.0", "right", "1.0.0"));
+    var unrelated = writePackage("unrelated#1.0.0", Map.of());
+    var setup =
+        processPackages(List.of(resolved(root), resolved(unrelated), resolved(root)), cache);
+    var generated = new ArrayList<String>();
+    var contextPackages = new ArrayList<ResolvedPackage>();
+    var dependencyPaths = new ArrayList<Path>();
+    when(setup.context().cloneContext(anyCollection()))
+        .thenAnswer(
+            invocation -> {
+              contextPackages.clear();
+              contextPackages.addAll(invocation.<List<ResolvedPackage>>getArgument(0));
+              return setup.context();
+            });
+    when(setup.context().generateSnapshots(any(Path.class)))
+        .thenAnswer(
+            invocation -> {
+              Path path = invocation.getArgument(0);
+              var coordinates = packageCoordinates(path);
+              generated.add(coordinates);
+              var ids = contextPackages.stream().map(pkg -> pkg.id().coordinates()).toList();
+              Assertions.assertFalse(ids.contains("unrelated#1.0.0"));
+              for (var dependency : contextPackages) {
+                dependencyPaths.add(dependency.packagePath());
+                if (dependency.id().name().equals("shared")) {
+                  Assertions.assertEquals(
+                      "generated",
+                      Files.readString(dependency.packagePath().resolve("package/marker.txt")));
+                }
+              }
+              if (coordinates.equals("root#1.0.0")) {
+                Assertions.assertEquals(3, ids.size());
+                Assertions.assertEquals("shared#1.0.0", ids.getFirst());
+              }
+              if (coordinates.equals("shared#1.0.0")) {
+                Files.writeString(path.resolve("package/marker.txt"), "generated");
+              }
+              return SnapshotGenerationResult.forMessage(
+                  IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generated");
+            });
+    try (var processor = setup.processor()) {
+      var result = processor.process(root.path(), setup.outputDirectory(), null, List.of());
+      Assertions.assertFalse(
+          result.messages().stream()
+              .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+      Assertions.assertEquals(5, generated.size());
+      Assertions.assertEquals(5L, generated.stream().distinct().count());
+      Assertions.assertTrue(generated.indexOf("shared#1.0.0") < generated.indexOf("left#1.0.0"));
+      Assertions.assertTrue(generated.indexOf("shared#1.0.0") < generated.indexOf("right#1.0.0"));
+      Assertions.assertTrue(generated.indexOf("left#1.0.0") < generated.indexOf("root#1.0.0"));
+      Assertions.assertTrue(generated.indexOf("right#1.0.0") < generated.indexOf("root#1.0.0"));
+      Assertions.assertTrue(dependencyPaths.stream().noneMatch(Files::exists));
+      var cached = processor.process(root.path(), setup.outputDirectory(), null, List.of());
+      Assertions.assertFalse(
+          cached.messages().stream()
+              .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+      Assertions.assertEquals(5, generated.size());
+    }
+    Assertions.assertEquals(
+        "original", Files.readString(shared.path().resolve("package/marker.txt")));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"self", "identity", "conflict"})
+  void invalidPreparedGraphsFailBeforeGeneration(String scenario) throws Exception {
+    var root =
+        writePackage("root#1.0.0", scenario.equals("self") ? Map.of("root", "1.0.0") : Map.of());
+    var roots = new ArrayList<>(List.of(resolved(root)));
+    Path patches = null;
+    if (scenario.equals("identity")) {
+      patches = Files.createDirectories(tempDir.resolve("patches/root#1.0.0"));
+      Files.writeString(
+          patches.resolve("package.json"), packageJson(new PackageId("other", "1.0.0"), Map.of()));
+      patches = patches.getParent();
+    }
+    if (scenario.equals("conflict")) {
+      var conflicting = writePackage(tempDir.resolve("other-source"), "root#1.0.0", Map.of());
+      Files.writeString(conflicting.path().resolve("package/different.txt"), "conflict");
+      roots.add(resolved(conflicting));
+    }
+    var setup = processPackages(roots);
+    try (var processor = setup.processor()) {
+      var result = processor.process(root.path(), setup.outputDirectory(), patches, List.of());
+      Assertions.assertTrue(
+          result.messages().stream()
+              .anyMatch(message -> message.severity() == IssueSeverity.ERROR));
+      verify(setup.context(), never()).generateSnapshots(any(Path.class));
+      try (var files = Files.list(setup.outputDirectory())) {
+        Assertions.assertEquals(0, files.count());
+      }
+    }
+  }
+
   private ProcessorResult processPackages(List<ResolvedPackage> roots) throws IOException {
     return processPackages(roots, tempDir.resolve("package-cache"));
   }
@@ -671,7 +819,7 @@ class DefaultPackageProcessorTest {
                 IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generation succeeded"));
 
     PackageResolver resolver = mock(PackageResolver.class);
-    when(resolver.resolvePath(any(Path.class))).thenReturn(new PackageResolution(roots));
+    when(resolver.resolveSources(any(Path.class))).thenReturn(new PackageResolution(roots));
     when(resolver.getMatchingPackage(anyString()))
         .thenAnswer(
             invocation -> {

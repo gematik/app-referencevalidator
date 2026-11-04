@@ -64,8 +64,6 @@ Under validation contract R4.2, evaluation errors, multiple values, non-date val
 dates produce profile validity without a date. Year-only and year-month values are not precise
 enough for period selection and follow this fallback too. Package selection then uses the
 open-ended period, if available. A blank locator remains a profile-extraction failure under R4.5.
-The correction and its verification status are tracked in
-[chapter 11](11-risks-and-technical-debt.md).
 
 ## 4.4 Fail-fast configuration
 
@@ -91,5 +89,10 @@ policies. It cannot be inferred from successful module loading. Module publisher
 profile defects through upstream updates or documented build-time patches, pin terminology
 versions where needed, and use narrowly scoped message policies only with an explicit rationale.
 Recursive validation of embedded resources is configured in the FHIR Context, independently of
-CLI directory traversal and module package selection.
+CLI directory traversal and module package selection. When enabled for Bundle or Parameters, the
+HL7 validator's native `CHECK_VALID` traversal validates embedded resources in their owning
+reference context, including their declared `meta.profile` values (or core profiles when absent).
+When a child's declared profile matches a parent-allowed profile alternative, that choice is used
+instead of evaluating unrelated alternatives. Parent structural and slicing constraints still
+apply, and sibling-reference resolution remains in scope.
 

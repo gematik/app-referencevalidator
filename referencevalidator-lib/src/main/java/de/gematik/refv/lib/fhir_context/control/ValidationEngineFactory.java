@@ -69,6 +69,22 @@ final class ValidationEngineFactory {
   @SuppressWarnings("java:S5443")
   static EngineSession createNewCoreEngine(@NonNull ContextConfiguration contextConfiguration)
       throws RefValException {
+    return createCoreEngine(
+        contextConfiguration, contextConfiguration.fhirRelease().corePackageId());
+  }
+
+  static EngineSession createNewCoreEngine(
+      @NonNull ContextConfiguration contextConfiguration, @NonNull Path generatedCorePackage)
+      throws RefValException {
+    return createCoreEngine(contextConfiguration, localCoreSource(generatedCorePackage));
+  }
+
+  static String localCoreSource(Path generatedCorePackage) {
+    return ".#file:" + generatedCorePackage.toAbsolutePath().normalize();
+  }
+
+  private static EngineSession createCoreEngine(
+      ContextConfiguration contextConfiguration, String coreSource) {
     Objects.requireNonNull(contextConfiguration, "The context configuration must not be null");
     final var fhirRelease = contextConfiguration.fhirRelease().alias();
     log.info("Creating a new FHIR Engine for Version {}", fhirRelease);
@@ -80,13 +96,13 @@ final class ValidationEngineFactory {
         terminologyCachePath = managedTerminologyCachePath;
       }
       return new EngineSession(
-          buildValidationEngine(contextConfiguration, terminologyCachePath),
+          buildValidationEngine(contextConfiguration, terminologyCachePath, coreSource),
           managedTerminologyCachePath);
     } catch (Exception e) {
       if (managedTerminologyCachePath != null) {
         ManagedTemporaryDirectory.owned(managedTerminologyCachePath).close();
       }
-      throw new InitializationException("Failed to create a new engine", e);
+      throw new InitializationException("Failed to create a new engine: " + e.getMessage(), e);
     }
   }
 
@@ -150,7 +166,9 @@ final class ValidationEngineFactory {
   }
 
   private static @NonNull ValidationEngine buildValidationEngine(
-      @NonNull ContextConfiguration contextConfiguration, Path terminologyCachePath)
+      @NonNull ContextConfiguration contextConfiguration,
+      Path terminologyCachePath,
+      String coreSource)
       throws IOException, URISyntaxException {
     final var instanceValidatorParameters = buildInstanceValidationParameters(contextConfiguration);
     log.debug("Initializing a new ValidationEngine with core definitions");
@@ -164,10 +182,7 @@ final class ValidationEngineFactory {
             .withUserAgent("gematik/refvalidator")
             .withThoVersion(null)
             .withExtensionsVersion(null)
-            .fromSource(
-                contextConfiguration.fhirRelease().corePackageName()
-                    + "#"
-                    + contextConfiguration.fhirRelease().corePackageVersion());
+            .fromSource(coreSource);
 
     return configureValidationEngine(validationEngine, contextConfiguration, terminologyCachePath);
   }
