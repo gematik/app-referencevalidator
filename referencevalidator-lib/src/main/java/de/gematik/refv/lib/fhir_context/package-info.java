@@ -80,9 +80,13 @@
 ///   the resource against the core FHIR structures for its configured release.
 /// - R2.3 If a supplied profile is not available in the validation context, then the FHIR Context
 ///   shall report a validation failure.
-/// - R2.4 If a resource includes other resources and the RecursiveModePolicy is enabled, then the
-///   FHIR Context shall validate the embedded resources against their own profiles declared in the
-///   `meta.profile` field.
+/// - R2.4 If a Bundle or Parameters resource includes embedded resources and the
+///   RecursiveModePolicy is enabled, then the FHIR Context shall validate each embedded resource
+///   through the HL7 validator's native traversal, against its declared `meta.profile` values or
+///   its core profile when none are declared. When a declared profile matches a parent-allowed
+///   profile alternative, that alternative shall be selected instead of evaluating unrelated
+///   alternatives. Parent structural constraints and slicing shall remain enforced, and validation
+///   shall retain the owning Bundle or Parameters context for reference resolution.
 ///
 /// ### R3 — Snapshot generation
 ///

@@ -37,9 +37,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.hl7.fhir.model.core.CanonicalResource;
+import org.hl7.fhir.model.core.Resource;
 import org.hl7.fhir.model.core.StructureDefinition;
+import org.hl7.fhir.model.core.VersionResolutionRules;
+import org.hl7.fhir.standalone.context.SimpleWorkerContext;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 import org.hl7.fhir.validation.ValidationEngine;
+import org.hl7.fhir.validation.ValidatorUtils;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +68,11 @@ final class ContextPackageLoader {
         return;
       }
       log.debug("Loading Package {}#{} in FHIR Context", pkgId, pkgVersion);
-      validationEngine.getContext().loadFromPackage(npmPackage, null, false);
+      var loader =
+          ValidatorUtils.loaderForVersion(
+              validationEngine.getContext().getModelContext(),
+              Objects.requireNonNullElse(npmPackage.fhirVersion(), validationEngine.getVersion()));
+      validationEngine.getContext().loadFromPackage(npmPackage, loader, false);
     } catch (IOException _) {
       throw new InitializationException("Failed to load package " + fhirPackage.id().coordinates());
     }
@@ -82,6 +91,54 @@ final class ContextPackageLoader {
     log.debug("Preparing FHIR Context with loaded dependencies");
   }
 
+  static void loadGeneratedPackagesInContext(
+      ValidationEngine engine, Collection<ResolvedPackage> packages) throws IOException {
+    for (var generated : packages) {
+      if (!engine.getContext().hasPackage(generated.id().name(), generated.id().version())) {
+        loadPackageInContext(engine, generated);
+        continue;
+      }
+      verifyGeneratedPackageMatchesLoadedResources(engine, generated);
+    }
+  }
+
+  private static void verifyGeneratedPackageMatchesLoadedResources(
+      ValidationEngine engine, ResolvedPackage generated) throws IOException {
+    var npm = loadAsNpmPackage(engine, generated);
+    for (var name : npm.listResources(SimpleWorkerContext.defaultTypesToLoad())) {
+      verifyGeneratedResourceMatchesLoadedResource(engine, generated, npm, name);
+    }
+  }
+
+  private static void verifyGeneratedResourceMatchesLoadedResource(
+      ValidationEngine engine, ResolvedPackage generated, NpmPackage npm, String name)
+      throws IOException {
+    try (var input = npm.loadResource(name)) {
+      var resource =
+          ResourceParser.parseJsonToResource(
+              input, Objects.requireNonNullElse(npm.fhirVersion(), engine.getVersion()));
+      if (!(resource instanceof CanonicalResource canonical) || !canonical.hasUrl()) {
+        throw new InitializationException(
+            "Cannot verify preloaded generated package " + generated.id().coordinates());
+      }
+      var url = canonical.getUrl();
+      if (canonical.hasVersion()) {
+        url += "|" + canonical.getVersion();
+      }
+      var existing =
+          engine
+              .getContext()
+              .fetchResource(Resource.class, url, VersionResolutionRules.defaultRule());
+      if (existing == null || !existing.equalsDeep(canonical)) {
+        throw new InitializationException(
+            "Generated package "
+                + generated.id().coordinates()
+                + " conflicts with an engine built-in resource: "
+                + url);
+      }
+    }
+  }
+
   static @NonNull Map<StructureDefinition, Path> extractAndLoadResourcesInContext(
       @NonNull ValidationEngine validationEngine, @NonNull NpmPackage npmPackage)
       throws IOException {
@@ -96,7 +153,10 @@ final class ContextPackageLoader {
       }
       try (var inputStream = new FileInputStream(currentResourceFilePath.toFile())) {
         final var parsedPackageResource =
-            ResourceParser.parseR4ResourceAsR5(inputStream.readAllBytes());
+            ResourceParser.parseJsonToResource(
+                inputStream,
+                Objects.requireNonNullElse(
+                    npmPackage.fhirVersion(), validationEngine.getVersion()));
         if (parsedPackageResource instanceof StructureDefinition sd) {
           structureDefinitionsFromPackage.put(sd, currentResourceFilePath);
         }

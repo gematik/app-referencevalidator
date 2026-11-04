@@ -51,8 +51,8 @@ final class RecursiveChildValidationPolicyAdvisor extends RulesDrivenPolicyAdvis
       String url) {
     if (containingResourceType == Element.SpecialElement.BUNDLE_ENTRY
         || containingResourceType == Element.SpecialElement.PARAMETER) {
-      // Full validation is performed separately using the child's own meta.profile declarations.
-      return ContainedReferenceValidationPolicy.CHECK_TYPE;
+      // Let HL7 validate the resource and its meta profiles within the owning context.
+      return ContainedReferenceValidationPolicy.CHECK_VALID;
     }
     return super.policyForContained(
         validator,

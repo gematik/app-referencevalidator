@@ -87,11 +87,11 @@ public record ValidationPolicyConfiguration(
    * Policy that enables additional validation of Bundle entry resources and Parameters resource
    * parameters, including nested parts and nested Bundles or Parameters. Each child is validated
    * against its own meta.profile declarations, or core FHIR structures when none are declared, in
-   * the same context. Automatic full validation of these embedded resources is replaced by type
-   * checks and the explicit child validation pass. The parent's structural and slice checks remain
-   * enabled, including profile-based slice discriminators; contained resources remain part of their
-   * owning resource's validation. If {@link RecursiveModePolicy#ALLOWED} is selected, it may
-   * increase time and memory consumption.
+   * the same traversal and owning Bundle or Parameters scope. When a child meta.profile matches one
+   * or more parent-allowed profile alternatives, those matching alternatives are selected rather
+   * than validating unrelated choices. Parent structural constraints and slice checks remain
+   * enabled. Contained resources remain part of their owning resource's validation. If {@link
+   * RecursiveModePolicy#ALLOWED} is selected, it may increase time and memory consumption.
    */
   public enum RecursiveModePolicy {
     ALLOWED,

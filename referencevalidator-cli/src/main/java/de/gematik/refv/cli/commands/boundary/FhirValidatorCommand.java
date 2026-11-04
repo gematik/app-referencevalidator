@@ -352,13 +352,18 @@ public class FhirValidatorCommand extends BaseCommand {
                   MessageId.IO_ERROR.getCode(),
                   e.getLocalizedMessage())));
     }
-    final var packagesToLoad = detectPackagesToLoad(cliConfig, validationPackageSelector, resource);
+    final var packageSelection =
+        detectPackagesToLoad(cliConfig, validationPackageSelector, resource);
+    logSelectedTransformations(validationSource.path(), packageSelection);
     final var validationRequest = createRequest(resource);
-    try (var lease = batchContexts.acquire(packagesToLoad);
+    try (var lease = batchContexts.acquire(packageSelection.packages());
         var context = lease.newIsolatedContext()) {
       final var validator = ValidatorFactory.withValidationContext(context);
       log.info("Starting the validation of {}", validationSource.path());
-      return validator.validate(validationRequest, cliConfig.validationOptions());
+      return validator.validate(
+          validationRequest,
+          withPackageGroupTransformations(
+              cliConfig.validationOptions(), packageSelection.messageTransformations()));
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new ValidationException(e.getLocalizedMessage(), e);
@@ -386,15 +391,20 @@ public class FhirValidatorCommand extends BaseCommand {
           () -> {
             try {
               final var resource = createResource(source);
-              final var packagesToLoad =
+              final var packageSelection =
                   detectPackagesToLoad(validationCliConfig, validationPackageSelector, resource);
+              logSelectedTransformations(source.path(), packageSelection);
               final ValidationRequest validationRequest = createRequest(resource);
-              try (var lease = batchContexts.acquire(packagesToLoad);
+              try (var lease = batchContexts.acquire(packageSelection.packages());
                   var context = lease.newIsolatedContext()) {
                 final var validator = ValidatorFactory.withValidationContext(context);
                 log.info("Validating '{}'", source.path());
                 final var result =
-                    validator.validate(validationRequest, validationCliConfig.validationOptions());
+                    validator.validate(
+                        validationRequest,
+                        withPackageGroupTransformations(
+                            validationCliConfig.validationOptions(),
+                            packageSelection.messageTransformations()));
                 return Map.entry(source.path().toString(), result);
               }
             } catch (UnsupportedFileTypeException e) {
@@ -484,17 +494,35 @@ public class FhirValidatorCommand extends BaseCommand {
       @NonNull ValidationOptions base, @NonNull ValidationModuleManifest moduleManifest) {
 
     List<SuppressionRule> suppressionRules = getSuppressionRules(base, moduleManifest);
-    List<MessageTransformation> transformations = getTransformations(base, moduleManifest);
 
     return new ValidationOptions(
         base.profileToValidate(),
         base.profileFilterRegex(),
         base.validationMessagesFilterStrategy(),
         base.profileValidityPeriodCheckStrategy(),
-        transformations,
+        base.messageTransformations(),
         suppressionRules,
         moduleManifest.ignoredCodeSystems(),
         moduleManifest.ignoredValueSets());
+  }
+
+  static ValidationOptions withPackageGroupTransformations(
+      @NonNull ValidationOptions base,
+      @NonNull Collection<MessageTransformation> selectedGroupTransformations) {
+    if (selectedGroupTransformations.isEmpty()) {
+      return base;
+    }
+    final var transformations = new ArrayList<>(base.messageTransformations());
+    transformations.addAll(selectedGroupTransformations);
+    return new ValidationOptions(
+        base.profileToValidate(),
+        base.profileFilterRegex(),
+        base.validationMessagesFilterStrategy(),
+        base.profileValidityPeriodCheckStrategy(),
+        transformations,
+        base.suppressionRules(),
+        base.ignoredCodeSystems(),
+        base.ignoredValueSets());
   }
 
   private @NonNull ValidationRequest createRequest(@NonNull FhirResource fhirResource) {
@@ -538,7 +566,7 @@ public class FhirValidatorCommand extends BaseCommand {
     }
   }
 
-  private @NonNull List<String> detectPackagesToLoad(
+  private @NonNull ResourcePackageSelection detectPackagesToLoad(
       @NonNull ValidationCliConfig cliConfig,
       @NonNull ValidationPackageSelector validationPackageSelector,
       @NonNull FhirResource resource) {
@@ -549,23 +577,45 @@ public class FhirValidatorCommand extends BaseCommand {
     // do not parse the resource profile, attempt to test directly against a package
     if (Objects.nonNull(implementationGuideToUse)) {
       packagesToLoad.add(implementationGuideToUse);
-      return packagesToLoad;
+      return new ResourcePackageSelection(packagesToLoad, Optional.empty(), List.of(), List.of());
     }
 
+    Optional<String> selectedPackageGroup = Optional.empty();
+    List<String> selectedTransformationIds = List.of();
+    List<MessageTransformation> selectedGroupTransformations = List.of();
     if (Objects.nonNull(cliConfig.module())) {
-      packagesToLoad.addAll(
-          validationPackageSelector.getPackagesForResource(
-              resource, cliConfig.context().fhirRelease(), cliConfig.validationOptions()));
+      final var selection =
+          validationPackageSelector.selectForResource(
+              resource, cliConfig.context().fhirRelease(), cliConfig.validationOptions());
+      packagesToLoad.addAll(selection.packages());
+      selectedPackageGroup = selection.packageGroup();
+      selectedTransformationIds = selection.messageTransformationIds();
+      selectedGroupTransformations = selection.messageTransformations();
     }
     // Translate all the tgz coordinate packages into remote ones (they are already in cache)
-    return packagesToLoad.stream()
-        .map(
-            s ->
-                s.contains(LocalArchive.PACKAGE_SEPARATOR)
-                        && s.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)
-                    ? LocalArchive.parse(s).coordinates()
-                    : s)
-        .toList();
+    return new ResourcePackageSelection(
+        packagesToLoad.stream()
+            .map(
+                s ->
+                    s.contains(LocalArchive.PACKAGE_SEPARATOR)
+                            && s.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)
+                        ? LocalArchive.parse(s).coordinates()
+                        : s)
+            .toList(),
+        selectedPackageGroup,
+        selectedTransformationIds,
+        selectedGroupTransformations);
+  }
+
+  private void logSelectedTransformations(
+      Path resourcePath, ResourcePackageSelection packageSelection) {
+    if (!packageSelection.messageTransformationIds().isEmpty()) {
+      log.info(
+          "Selected message transformation IDs {} from package group '{}' for {}",
+          packageSelection.messageTransformationIds(),
+          packageSelection.packageGroup().orElse("unspecified"),
+          resourcePath);
+    }
   }
 
   private static @NonNull List<SuppressionRule> getSuppressionRules(
@@ -585,24 +635,16 @@ public class FhirValidatorCommand extends BaseCommand {
     return suppressionRules;
   }
 
-  private static @NonNull List<MessageTransformation> getTransformations(
-      @NonNull ValidationOptions base, @NonNull ValidationModuleManifest moduleManifest) {
-    List<MessageTransformation> transformations;
-    Collection<MessageTransformation> baseTransformations =
-        Objects.requireNonNullElse(base.messageTransformations(), Collections.emptyList());
-    if (Objects.nonNull(moduleManifest.messageTransformations())) {
-      transformations =
-          new ArrayList<>(
-              baseTransformations.size() + moduleManifest.messageTransformations().size());
-      transformations.addAll(baseTransformations);
-      transformations.addAll(
-          moduleManifest.messageTransformations().values().stream()
-              .flatMap(Collection::stream)
-              .toList());
-    } else {
-      transformations = base.messageTransformations();
+  private record ResourcePackageSelection(
+      List<String> packages,
+      Optional<String> packageGroup,
+      List<String> messageTransformationIds,
+      List<MessageTransformation> messageTransformations) {
+    private ResourcePackageSelection {
+      Objects.requireNonNull(packageGroup, "packageGroup");
+      packages = List.copyOf(packages);
+      messageTransformationIds = List.copyOf(messageTransformationIds);
+      messageTransformations = List.copyOf(messageTransformations);
     }
-    log.debug("Total Transformation Messages loaded: {}", transformations.size());
-    return transformations;
   }
 }

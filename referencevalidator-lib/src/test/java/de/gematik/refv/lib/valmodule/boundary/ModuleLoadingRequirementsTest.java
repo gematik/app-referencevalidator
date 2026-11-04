@@ -230,8 +230,7 @@ class ModuleLoadingRequirementsTest {
     var previousLevel = logger.getLevel();
     logger.setLevel(Level.WARN);
     logger.addAppender(appender);
-    try (var _ =
-        mockStatic(Files.class, directoryListing(modules, corrupt, invalid, valid))) {
+    try (var _ = mockStatic(Files.class, directoryListing(modules, corrupt, invalid, valid))) {
       assertEquals(valid, loader.forValidation(modules, "example").orElseThrow().modulePath());
       assertTrue(diagnostics.stream().anyMatch(message -> identifiesFailure(message, corrupt)));
       assertTrue(diagnostics.stream().anyMatch(message -> identifiesFailure(message, invalid)));

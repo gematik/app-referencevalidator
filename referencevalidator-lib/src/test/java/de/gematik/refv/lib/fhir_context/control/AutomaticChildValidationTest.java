@@ -55,7 +55,7 @@ class AutomaticChildValidationTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"Bundle", "Parameters"})
-  void recursiveModeUsesChildMetaProfilesInsteadOfParentAlternatives(String type) throws Exception {
+  void recursiveModeKeepsParentAlternativesAndChecksChildMetaProfile(String type) throws Exception {
     var packages = packages();
     var resource = resource(type, LOOSE_PROFILE);
     var profiles = List.of(parentProfile(type));
@@ -67,7 +67,7 @@ class AutomaticChildValidationTest {
     try (var source = context(RecursiveModePolicy.ALLOWED, packages);
         var clone = source.cloneContext(List.of())) {
       var messages = clone.validate(resource, profiles).messages();
-      assertFalse(
+      assertTrue(
           messages.stream().anyMatch(AutomaticChildValidationTest::isError), messages::toString);
     }
   }
@@ -83,7 +83,15 @@ class AutomaticChildValidationTest {
       var errors = messages.stream().filter(AutomaticChildValidationTest::isError).toList();
       assertFalse(errors.isEmpty(), messages::toString);
       assertTrue(
-          errors.stream().allMatch(message -> message.messageContent().startsWith(childPath)),
+          errors.stream().anyMatch(message -> message.messageContent().startsWith(childPath)),
+          messages::toString);
+      assertTrue(
+          errors.stream().anyMatch(message -> message.messageContent().contains("fixed to 'true'")),
+          messages::toString);
+      assertFalse(
+          errors.stream()
+              .anyMatch(
+                  message -> message.messageContent().contains("Patient.gender: minimum required")),
           messages::toString);
     }
   }

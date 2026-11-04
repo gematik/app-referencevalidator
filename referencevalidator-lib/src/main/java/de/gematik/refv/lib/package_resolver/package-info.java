@@ -34,6 +34,8 @@
 /// - `resolve-request` — resolves requested package sources, optionally including transitive
 ///   dependencies.
 /// - `resolve-list` — resolves a collection of package coordinates or filesystem paths.
+/// - `resolve-sources` — imports explicit sources without following dependencies; local directories
+///   retain their supplied paths so callers can stage and patch their current content.
 /// - `resolve-path` — resolves a remote coordinate, local package directory, archive, or archive
 ///   directory supplied as a path.
 /// - `match-package` — returns one resolved package matching a package coordinate.
@@ -61,7 +63,9 @@
 /// ### R2 — Resolve package lists
 ///
 /// - R2.1 When a list of package coordinates or filesystem paths is supplied, the Package Resolver
-///   shall resolve each entry and return the resulting packages in input order.
+///   shall resolve all roots and their transitive dependencies as one graph and return each
+///   concrete package coordinate once in Kahn dependency-first order, including roots supplied as
+///   archives.
 ///
 /// ### R3 — Resolve a path
 ///
@@ -70,8 +74,8 @@
 /// - R3.2 When a path identifies a coordinate-named local package directory, the Package Resolver
 ///   shall resolve that package and its transitive dependencies.
 /// - R3.3 When a path identifies a directory without a package coordinate in its name, the Package
-///   Resolver shall resolve the `.tgz` archives directly contained in that directory without
-///   traversing their dependencies.
+///   Resolver shall discover the `.tgz` archives and coordinate-named package directories directly
+///   contained in it. Source-only resolution shall not traverse their dependencies.
 /// - R3.4 When a non-existing path has the form `name#version`, the Package Resolver shall treat it
 ///   as a remote package coordinate and resolve its transitive dependencies.
 ///

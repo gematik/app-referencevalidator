@@ -69,6 +69,11 @@ final class PackageDependencyExtractor {
       if (Objects.isNull(packageJson) || packageJson.isNull()) {
         throw new ParsingException("Failed to parse the package.json file");
       }
+      var declaredId =
+          new PackageId(packageJson.path("name").asText(), packageJson.path("version").asText());
+      if (!declaredId.equals(fhirPackage.id())) {
+        throw new ParsingException("Package identity changed for " + coordinates);
+      }
 
       final List<String> dependencies = new ArrayList<>();
 
@@ -102,11 +107,7 @@ final class PackageDependencyExtractor {
         log.warn("Ignoring blank dependency declared by {}", ownerCoordinates);
       } else {
         String trimmed = dependency.trim();
-        if (PackageUtils.sameCoordinates(trimmed, ownerCoordinates)) {
-          log.info("Ignoring direct self-dependency {} declared by {}", trimmed, ownerCoordinates);
-        } else {
-          unique.putIfAbsent(PackageUtils.coordinateKey(trimmed), trimmed);
-        }
+        unique.putIfAbsent(PackageUtils.coordinateKey(trimmed), trimmed);
       }
     }
     return unique;

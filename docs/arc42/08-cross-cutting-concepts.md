@@ -56,11 +56,12 @@ The Validation capability applies policies supplied in `ValidationOptions` in th
 
 Default options retain all messages, enable validity-period checking, and supply no override,
 filter, suppression, transformations, or ignored terminology. Module rules must be carried into
-the effective options by the orchestrating caller. The CLI performs this composition for module
-validation, but currently appends every manifest transformation list to the base transformations.
-It does not restrict them to the selected package group. Separately, `ValidationModuleIndex`
-aggregates distinct transformation names from all groups bound to a profile version in declaration
-order, not only from the date-selected group. This difference in scope is recorded as TD3 in
+the effective options by the orchestrating caller. The CLI composes caller-supplied transformations
+with only those referenced by the package group selected for each resource's profile/version/date;
+it logs the selected manifest transformation IDs with the resource path. Global suppression rules
+and ignored terminology remain module-wide. The deprecated `ValidationModuleIndex` aggregate
+transformation accessor ignores the selected period and must not be used to construct per-resource
+validation options. Other transformation and suppression policies remain subject to risk R8 in
 [chapter 11](11-risks-and-technical-debt.md).
 
 These policies can change the final valid/invalid outcome without changing the underlying engine.
@@ -92,9 +93,11 @@ release owned resources and support repeated close without additional effects.
 
 ## 8.7 Security
 
-* Archive extraction rejects absolute paths, traversal, links, duplicate/conflicting entries, and
-  unsupported entry types. It also caps entry count and extracted sizes and removes partial content
-  after failure.
+* `PackageArchiveUtils.decompress` rejects unsafe paths, links, duplicate/conflicting entries, and
+  unsupported entry types; it caps extraction at 100,000 entries, 512 MiB per entry, and 2 GiB total,
+  and removes partial output after failure. These controls apply only where that utility is used.
+  Original local/remote packages imported through HL7's package manager and embedded module archives
+  copied by `JarPackageLoader` do not yet have equivalent byte, entry-count, or aggregate limits.
 * Validation inputs reject symbolic links and non-regular files, and enforce configurable count,
   per-file size, aggregate-size, and directory-depth bounds (each with a hard ceiling).
 * Inputs are read from their supplied paths. Package caches, temporary files, and HTML/JSON reports
@@ -125,7 +128,7 @@ labels are regression identifiers, not library package requirement IDs.
 | R2 — Unknown CodeSystems     | An unresolved CodeSystem can produce a WARNING rather than an ERROR. An otherwise clean result may therefore remain valid.                                                                    | Test expected outcomes with the chosen terminology policy. Do not interpret absence of ERROR/FATAL as evidence that all codes were verified.                                                                                                                        |
 | R3 — Bundle references       | References unavailable or unmatched in the Bundle can be reported as ERROR.                                                                                                                   | Include resolvable reference content where required and test reference behavior. Offline validation is not a mechanism for retrieving external resources.                                                                                                           |
 | R4 — Unversioned terminology | The migration notes report CodeSystem/ValueSet resolution against the latest FHIR release, identified there as R5, when no version is declared. This can introduce cross-version code errors. | Prefer explicit terminology versions. If an accepted limitation requires a transformation, scope it to the specific message and content, as in the regression example. Do not describe this as a general guarantee that every unversioned canonical resolves to R5. |
-| R5 — Child validation        | Default engine behavior does not validate Bundle/Parameters children against all their own declared profiles.                                                                                 | Enable `context.validationPolicy.recursiveModePolicy` when those checks are required and test both JSON and XML. This is separate from directory recursion and package-selection profile extraction.                                                                |
+| R5 — Child validation        | Recursive validation is policy-dependent. With recursive mode enabled, HL7's native `CHECK_VALID` traversal validates Bundle/Parameters children against their declared `meta.profile` values, or their core profiles when none are declared. | Enable `context.validationPolicy.recursiveModePolicy` when required. A declared child profile selects matching parent-allowed alternatives; unrelated alternatives are not evaluated as competing child profiles. Parent structural constraints and slices remain enforced. The native traversal retains the owning Bundle/Parameters reference scope, including sibling resolution. Cover relative, absolute, and `urn:uuid` references in JSON/XML, plus nested resources. This is separate from directory recursion and package-selection profile extraction. |
 
 Offline operation disables remote retrieval, not every terminology check. Checks can use locally
 available CodeSystems and ValueSets. Snapshot generation does not make unavailable external

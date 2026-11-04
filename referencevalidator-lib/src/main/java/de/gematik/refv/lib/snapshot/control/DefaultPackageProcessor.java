@@ -30,7 +30,9 @@ import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
 import de.gematik.refv.lib.fhir_context.entity.MessageId;
 import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
 import de.gematik.refv.lib.package_resolver.boundary.PackageResolver;
+import de.gematik.refv.lib.package_resolver.entity.DependencyGraph;
 import de.gematik.refv.lib.package_resolver.entity.LocalDirectory;
+import de.gematik.refv.lib.package_resolver.entity.PackageId;
 import de.gematik.refv.lib.package_resolver.entity.ResolvedPackage;
 import de.gematik.refv.lib.snapshot.entity.SnapshotGenerationResult;
 import java.io.IOException;
@@ -46,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -72,9 +73,8 @@ import org.slf4j.LoggerFactory;
 final class DefaultPackageProcessor implements AutoCloseable {
   private static final Logger log = LoggerFactory.getLogger(DefaultPackageProcessor.class);
 
-  private static final String DEFAULT_CACHE_NAMESPACE = "snapshot-generation-v3";
+  private static final String DEFAULT_CACHE_NAMESPACE = "snapshot-generation-v5";
   private static final String SNAPSHOT_TEMP_PREFIX = "snapshot-gen-";
-  private static final String ARCHIVE_TEMP_PREFIX = "snapshot-archive-";
   private static final String DEPENDENCIES_DIRECTORY = "deps";
   private static final int HASH_BUFFER_SIZE = 64 * 1024;
 
@@ -125,8 +125,11 @@ final class DefaultPackageProcessor implements AutoCloseable {
     var requestedPackages = normalizeRequestedPackages(packagesToProcess);
 
     try {
+      if (closed) {
+        throw new SnapshotGenerationException("The snapshot generator is closed");
+      }
       validateInput(packagePath, outputDir, patchesDir);
-      var resolution = packageResolver.resolvePath(packagePath);
+      var resolution = packageResolver.resolveSources(packagePath);
 
       if (resolution.packages().isEmpty()) {
         return errorResult(
@@ -153,12 +156,13 @@ final class DefaultPackageProcessor implements AutoCloseable {
                 "None of the resolved packages matched the requested package coordinates"));
       }
 
-      var inspectedPackages = new LinkedHashSet<String>();
-      for (LocalDirectory root : selectedRoots) {
-        resolveDependencyGraph(root, patchesDir, session, new ArrayDeque<>(), inspectedPackages);
+      for (var source : resolution.packages()) {
+        registerSource(new LocalDirectory(source.id(), source.packagePath()), session);
       }
-      for (LocalDirectory root : selectedRoots) {
-        processRootPackage(root, outputDir, patchesDir, session, root.id().coordinates());
+      session.workDirectory = Files.createTempDirectory(SNAPSHOT_TEMP_PREFIX);
+      prepareDependencyGraph(selectedRoots, patchesDir, session);
+      for (PackageId packageId : session.graph.dependencyFirstOrder()) {
+        processPreparedPackage(session.preparedPackages.get(packageId), outputDir, session);
       }
 
       if (session.results.isEmpty()) {
@@ -176,174 +180,138 @@ final class DefaultPackageProcessor implements AutoCloseable {
       session.results.put(
           processingFailureKey(packagePath), errorResult(packagePath.toString(), e));
       return aggregate(session.results);
+    } finally {
+      cleanupTempFolder(session.workDirectory);
     }
   }
 
-  private void resolveDependencyGraph(
-      LocalDirectory pkg,
-      @Nullable Path patchesDir,
-      ProcessingSession session,
-      Deque<String> dependencyStack,
-      Set<String> inspectedPackages) {
-    String coordinates = pkg.id().coordinates();
-    String key = PackageUtils.coordinateKey(coordinates);
-    if (inspectedPackages.contains(key)) {
-      return;
+  private void prepareDependencyGraph(
+      List<LocalDirectory> roots, @Nullable Path patchesDir, ProcessingSession session)
+      throws IOException {
+    var pending = new ArrayDeque<LocalDirectory>();
+    for (var root : roots) {
+      pending.add(registerSource(root, session));
     }
-    detectPreviousSnapshotFailure(session, dependencyStack, key, coordinates);
-    dependencyStack.addLast(coordinates);
-    Path workDir = null;
-    try {
-      workDir = Files.createTempDirectory(SNAPSHOT_TEMP_PREFIX);
-      LocalDirectory workingPackage = copyPackageToWorkingDirectory(pkg, workDir);
+    while (!pending.isEmpty()) {
+      var source = pending.removeFirst();
+      if (session.preparedPackages.containsKey(source.id())) {
+        continue;
+      }
+      var workingPackage =
+          copyPackageToWorkingDirectory(source, session.workDirectory.resolve("sources"));
       applyPatches(workingPackage, patchesDir);
+      session.preparedPackages.put(source.id(), workingPackage);
+      session.graph.addNode(source.id());
       var dependencies =
           packageDependencyExtractor.uniqueDependencies(
-              packageDependencyExtractor.fromPackage(workingPackage), coordinates);
+              packageDependencyExtractor.fromPackage(workingPackage), source.id().coordinates());
+      var resolvedIds = new LinkedHashSet<PackageId>();
       for (String requestedCoordinates : dependencies.values()) {
         String requestedKey = PackageUtils.coordinateKey(requestedCoordinates);
         LocalDirectory dependencyPackage = session.resolvedDependencies.get(requestedKey);
         if (dependencyPackage == null) {
-          dependencyPackage = resolveDependency(requestedCoordinates);
+          dependencyPackage = registerSource(resolveDependency(requestedCoordinates), session);
           session.resolvedDependencies.put(requestedKey, dependencyPackage);
         }
-        session.resolvedDependencies.putIfAbsent(
-            PackageUtils.coordinateKey(dependencyPackage.id().coordinates()), dependencyPackage);
-        resolveDependencyGraph(
-            dependencyPackage, patchesDir, session, dependencyStack, inspectedPackages);
+        session.graph.addDependency(dependencyPackage.id(), source.id());
+        resolvedIds.add(dependencyPackage.id());
+        pending.addLast(dependencyPackage);
       }
-      inspectedPackages.add(key);
-    } catch (SnapshotGenerationException e) {
-      throw e;
-    } catch (Exception e) {
-      throw new SnapshotGenerationException(
-          "Failed to resolve dependency graph for " + coordinates + ": " + e.getLocalizedMessage(),
-          e);
-    } finally {
-      removeLastOccurrence(dependencyStack, coordinates);
-      cleanupTempFolder(workDir);
+      session.dependencies.put(source.id(), List.copyOf(resolvedIds));
     }
   }
 
-  private void processRootPackage(
-      LocalDirectory localPackage,
-      Path outputDir,
-      @Nullable Path patchesDir,
-      ProcessingSession session,
-      String coordinates) {
-    try {
-      processRecursively(localPackage, outputDir, patchesDir, session, new ArrayDeque<>());
-    } catch (Exception e) {
-      session.results.putIfAbsent(coordinates, errorResult(coordinates, e));
-      log.error("Failed to process root package {}", coordinates, e);
+  private LocalDirectory registerSource(LocalDirectory source, ProcessingSession session)
+      throws IOException {
+    var key = PackageUtils.coordinateKey(source.id().coordinates());
+    var existing = session.resolvedDependencies.putIfAbsent(key, source);
+    if (existing == null) {
+      return source;
     }
+    if (!existing.path().equals(source.path())) {
+      var existingDigest = newDigest();
+      var sourceDigest = newDigest();
+      hashDirectory(existingDigest, existing.path());
+      hashDirectory(sourceDigest, source.path());
+      if (!MessageDigest.isEqual(existingDigest.digest(), sourceDigest.digest())) {
+        throw new SnapshotGenerationException(
+            "Conflicting package content for " + source.id().coordinates());
+      }
+    }
+    return existing;
   }
 
-  private ProcessedPackage processRecursively(
-      @NonNull LocalDirectory pkg,
-      @NonNull Path outputDir,
-      @Nullable Path patchesDir,
-      @NonNull ProcessingSession session,
-      @NonNull Deque<String> dependencyStack) {
-    Objects.requireNonNull(pkg, "The package must not be null");
-    Objects.requireNonNull(outputDir, "The output directory must not be null");
-    Objects.requireNonNull(session, "The processing session must not be null");
-    Objects.requireNonNull(dependencyStack, "The dependency stack must not be null");
-
-    final var coordinates = pkg.id().coordinates();
-    final var key = PackageUtils.coordinateKey(coordinates);
-
-    ProcessedPackage completedPackage = session.completedPackages.get(key);
-    if (Objects.nonNull(completedPackage)) {
-      log.debug("Reusing package {} already processed in this session", coordinates);
-      return completedPackage;
-    }
-    // check if a dependency has completed with failure, so we break the generation for the current
-    // package
-    detectPreviousSnapshotFailure(session, dependencyStack, key, coordinates);
-    // add the current coordinates to the end of the stack
-    dependencyStack.addLast(coordinates);
+  private void processPreparedPackage(
+      LocalDirectory pkg, Path outputDir, ProcessingSession session) {
+    var coordinates = pkg.id().coordinates();
+    var key = PackageUtils.coordinateKey(coordinates);
     try {
-      return processPackage(pkg, outputDir, patchesDir, session, dependencyStack);
+      var dependencyClosure = dependencyClosure(pkg.id(), session);
+      processPackage(pkg, outputDir, session, dependencyClosure);
     } catch (SnapshotGenerationException e) {
       recordFailure(session, key, coordinates, e);
-      throw e;
     } catch (Exception e) {
-      SnapshotGenerationException wrapped =
+      var wrapped =
           new SnapshotGenerationException(
               "Failed to process package " + coordinates + ": " + e.getLocalizedMessage(), e);
       recordFailure(session, key, coordinates, wrapped);
-      throw wrapped;
-    } finally {
-      removeLastOccurrence(dependencyStack, coordinates);
     }
   }
 
-  @SuppressWarnings("java:S5443")
   private ProcessedPackage processPackage(
-      LocalDirectory pkg,
+      LocalDirectory workingPackage,
       Path outputDir,
-      @Nullable Path patchesDir,
       ProcessingSession session,
-      Deque<String> dependencyStack)
+      Map<String, ArchivedPackage> dependencyClosure)
       throws IOException {
-    String coordinates = pkg.id().coordinates();
+    String coordinates = workingPackage.id().coordinates();
     String key = PackageUtils.coordinateKey(coordinates);
     log.info("Processing package {}", coordinates);
 
-    Path workDir = Files.createTempDirectory(SNAPSHOT_TEMP_PREFIX);
-    try {
-      LocalDirectory workingPackage = copyPackageToWorkingDirectory(pkg, workDir);
-      applyPatches(workingPackage, patchesDir);
-
-      Map<String, ArchivedPackage> dependencyClosure =
-          processDependencies(workingPackage, outputDir, patchesDir, session, dependencyStack);
-      String cacheKey = createArchiveCacheKey(workingPackage, dependencyClosure.values());
-      Optional<Path> materializedArchive =
-          archiveCache.materialize(cacheKey, outputDir, PackageUtils.expectedArchiveFileName(pkg));
-      if (materializedArchive.isPresent()) {
-        Path cachedPath = materializedArchive.orElseThrow();
-        SnapshotGenerationResult cachedResult = cacheHitResult(coordinates, cachedPath);
-        ProcessedPackage completed =
-            completedPackage(pkg, cachedPath, cachedResult, dependencyClosure);
-        session.complete(key, completed);
-        log.debug("Reused cached snapshot archive for {}", coordinates);
-        return completed;
-      }
-
-      List<ResolvedPackage> snapshotDependencies =
-          extractDependencies(dependencyClosure.values(), workDir);
-      log.info(
-          "Generating snapshots for {} using {} dependency packages",
-          coordinates,
-          snapshotDependencies.size());
-      log.debug("Using working directory {}", workDir);
-      SnapshotGenerationResult generationResult =
-          generateSnapshots(workingPackage, snapshotDependencies, coordinates);
-      if (hasErrors(generationResult)) {
-        SnapshotGenerationException failure =
-            new SnapshotGenerationException(
-                "Snapshot generation returned errors for " + coordinates);
-        session.failures.put(key, failure);
-        session.results.put(coordinates, generationResult);
-        throw failure;
-      }
-
-      Path generatedArchive = createCompressedArchive(workingPackage, outputDir);
-      archiveCache.publish(cacheKey, generatedArchive);
-      SnapshotGenerationResult successfulResult =
-          withMessage(generationResult, "Snapshot stored at " + generatedArchive);
+    String cacheKey = createArchiveCacheKey(workingPackage, dependencyClosure.values());
+    Optional<Path> materializedArchive =
+        archiveCache.materialize(
+            cacheKey, outputDir, PackageUtils.expectedArchiveFileName(workingPackage));
+    if (materializedArchive.isPresent()) {
+      Path cachedPath = materializedArchive.orElseThrow();
+      SnapshotGenerationResult cachedResult = cacheHitResult(coordinates, cachedPath);
       ProcessedPackage completed =
-          completedPackage(pkg, generatedArchive, successfulResult, dependencyClosure);
+          completedPackage(workingPackage, cachedPath, cachedResult, dependencyClosure);
+      extractDependencies(List.of(completed.archivedPackage()), session);
       session.complete(key, completed);
-      log.info(
-          "Successfully processed package {} and stored archive at {}",
-          coordinates,
-          generatedArchive);
+      log.debug("Reused cached snapshot archive for {}", coordinates);
       return completed;
-    } finally {
-      cleanupTempFolder(workDir);
     }
+
+    List<ResolvedPackage> snapshotDependencies =
+        extractDependencies(dependencyClosure.values(), session);
+    log.info(
+        "Generating snapshots for {} using {} dependency packages",
+        coordinates,
+        snapshotDependencies.size());
+    log.debug("Using working directory {}", workingPackage.path());
+    SnapshotGenerationResult generationResult =
+        generateSnapshots(workingPackage, snapshotDependencies, coordinates);
+    if (hasErrors(generationResult)) {
+      SnapshotGenerationException failure =
+          new SnapshotGenerationException("Snapshot generation returned errors for " + coordinates);
+      session.failures.put(key, failure);
+      session.results.put(coordinates, generationResult);
+      throw failure;
+    }
+
+    Path generatedArchive = createCompressedArchive(workingPackage, outputDir);
+    archiveCache.publish(cacheKey, generatedArchive);
+    SnapshotGenerationResult successfulResult =
+        withMessage(generationResult, "Snapshot stored at " + generatedArchive);
+    ProcessedPackage completed =
+        completedPackage(workingPackage, generatedArchive, successfulResult, dependencyClosure);
+    session.complete(key, completed);
+    log.info(
+        "Successfully processed package {} and stored archive at {}",
+        coordinates,
+        generatedArchive);
+    return completed;
   }
 
   private SnapshotGenerationResult generateSnapshots(
@@ -353,26 +321,26 @@ final class DefaultPackageProcessor implements AutoCloseable {
     try (var generationContext = fhirContext.cloneContext(snapshotDependencies)) {
       return generationContext.generateSnapshots(workingPackage.path());
     } catch (Exception e) {
-      throw new SnapshotGenerationException("Failed to generate snapshots for " + coordinates, e);
+      throw new SnapshotGenerationException(
+          "Failed to generate snapshots for " + coordinates + ": " + e.getMessage(), e);
     }
   }
 
-  private Map<String, ArchivedPackage> processDependencies(
-      LocalDirectory workingPackage,
-      Path outputDir,
-      @Nullable Path patchesDir,
-      ProcessingSession session,
-      Deque<String> dependencyStack) {
-    String ownerCoordinates = workingPackage.id().coordinates();
-    Map<String, String> dependencies =
-        packageDependencyExtractor.uniqueDependencies(
-            packageDependencyExtractor.fromPackage(workingPackage), ownerCoordinates);
-    log.debug("Package {} declares {} unique dependencies", ownerCoordinates, dependencies.size());
-
+  private Map<String, ArchivedPackage> dependencyClosure(
+      PackageId packageId, ProcessingSession session) {
     Map<String, ArchivedPackage> dependencyClosure = new LinkedHashMap<>();
-    for (String coordinates : dependencies.values()) {
-      ProcessedPackage dependency =
-          processDependency(coordinates, outputDir, patchesDir, session, dependencyStack);
+    for (var dependencyId : session.dependencies.get(packageId)) {
+      var key = PackageUtils.coordinateKey(dependencyId.coordinates());
+      var dependency = session.completedPackages.get(key);
+      if (dependency == null) {
+        throw new SnapshotGenerationException(
+            "Blocked "
+                + packageId.coordinates()
+                + " because dependency "
+                + dependencyId.coordinates()
+                + " did not complete successfully",
+            session.failures.get(key));
+      }
       mergeDependencyClosure(dependencyClosure, dependency.dependencyClosure());
       dependencyClosure.putIfAbsent(
           PackageUtils.coordinateKey(dependency.coordinates()), dependency.archivedPackage());
@@ -398,61 +366,6 @@ final class DefaultPackageProcessor implements AutoCloseable {
       SnapshotGenerationException failure) {
     session.failures.putIfAbsent(key, failure);
     session.results.putIfAbsent(coordinates, errorResult(coordinates, failure));
-  }
-
-  private void detectPreviousSnapshotFailure(
-      @NonNull ProcessingSession session,
-      @NonNull Deque<String> dependencyStack,
-      String key,
-      String coordinates) {
-    SnapshotGenerationException previousFailure = session.failures.get(key);
-    if (Objects.nonNull(previousFailure)) {
-      throw new SnapshotGenerationException(
-          "Package " + coordinates + " failed during an earlier processing attempt",
-          previousFailure);
-    }
-    if (dependencyStack.stream().anyMatch(item -> PackageUtils.coordinateKey(item).equals(key))) {
-      throw cyclicDependencyException(dependencyStack, coordinates);
-    }
-  }
-
-  private ProcessedPackage processDependency(
-      @NonNull String requestedCoordinates,
-      @NonNull Path outputDir,
-      @Nullable Path patchesDir,
-      @NonNull ProcessingSession session,
-      @NonNull Deque<String> dependencyStack) {
-
-    final var requestKey = PackageUtils.coordinateKey(requestedCoordinates);
-    LocalDirectory dependencyPackage = session.resolvedDependencies.get(requestKey);
-    if (dependencyPackage == null) {
-      dependencyPackage = resolveDependency(requestedCoordinates);
-      session.resolvedDependencies.put(requestKey, dependencyPackage);
-    }
-
-    String resolvedCoordinates = dependencyPackage.id().coordinates();
-    String resolvedKey = PackageUtils.coordinateKey(resolvedCoordinates);
-    session.resolvedDependencies.putIfAbsent(resolvedKey, dependencyPackage);
-
-    if (!PackageUtils.sameCoordinates(requestedCoordinates, resolvedCoordinates)) {
-      log.info("Dependency {} resolved to {}", requestedCoordinates, resolvedCoordinates);
-    }
-
-    ProcessedPackage completed = session.completedPackages.get(resolvedKey);
-    if (completed != null) {
-      return completed;
-    }
-
-    ProcessedPackage result =
-        processRecursively(dependencyPackage, outputDir, patchesDir, session, dependencyStack);
-    if (hasErrors(result.result())) {
-      throw new SnapshotGenerationException(
-          "Failed to process dependency "
-              + resolvedCoordinates
-              + " requested as "
-              + requestedCoordinates);
-    }
-    return result;
   }
 
   private LocalDirectory resolveDependency(@NonNull String requestedCoordinates) {
@@ -554,7 +467,9 @@ final class DefaultPackageProcessor implements AutoCloseable {
       @NonNull LocalDirectory sourcePackage, @NonNull Path workDir) throws IOException {
     Path copy =
         PackageUtils.resolveContainedPath(
-            workDir, PackageUtils.safeDirectoryName(sourcePackage.id().coordinates()));
+            workDir,
+            PackageUtils.safeArchiveRootName(
+                sourcePackage.id().name(), sourcePackage.id().version()));
     Files.createDirectories(copy);
     FileUtils.copyDirectory(sourcePackage.path().toFile(), copy.toFile(), true);
     return new LocalDirectory(sourcePackage.id(), copy);
@@ -567,12 +482,12 @@ final class DefaultPackageProcessor implements AutoCloseable {
   }
 
   private List<ResolvedPackage> extractDependencies(
-      @NonNull Collection<ArchivedPackage> dependencies, @NonNull Path workDir) {
+      @NonNull Collection<ArchivedPackage> dependencies, ProcessingSession session) {
     if (dependencies.isEmpty()) {
       return List.of();
     }
 
-    Path root = PackageUtils.resolveContainedPath(workDir, DEPENDENCIES_DIRECTORY);
+    Path root = PackageUtils.resolveContainedPath(session.workDirectory, DEPENDENCIES_DIRECTORY);
     try {
       Files.createDirectories(root);
     } catch (IOException e) {
@@ -582,12 +497,21 @@ final class DefaultPackageProcessor implements AutoCloseable {
     List<ResolvedPackage> result = new ArrayList<>(dependencies.size());
     for (ArchivedPackage dependency : dependencies) {
       String coordinates = dependency.descriptor().id().coordinates();
+      var existing = session.materializedDependencies.get(coordinates);
+      if (existing != null) {
+        result.add(existing);
+        continue;
+      }
       Path dependencyRoot =
           PackageUtils.resolveContainedPath(root, PackageUtils.safeDirectoryName(coordinates));
       try {
         Files.createDirectories(dependencyRoot);
         PackageArchiveUtils.decompress(dependency.archive().toString(), dependencyRoot.toFile());
-        result.add(new ResolvedPackage(dependency.descriptor().id(), dependencyRoot, List.of()));
+        var localPackage = new LocalDirectory(dependency.descriptor().id(), dependencyRoot);
+        packageDependencyExtractor.fromPackage(localPackage);
+        var materialized = new ResolvedPackage(localPackage.id(), dependencyRoot, List.of());
+        session.materializedDependencies.put(coordinates, materialized);
+        result.add(materialized);
       } catch (Exception e) {
         throw new SnapshotGenerationException(
             "Failed to materialize dependency " + coordinates + " from " + dependency.archive(), e);
@@ -601,20 +525,11 @@ final class DefaultPackageProcessor implements AutoCloseable {
     source.forEach(target::putIfAbsent);
   }
 
-  @SuppressWarnings("java:S5443")
   private Path createCompressedArchive(
       @NonNull LocalDirectory fhirPackage, @NonNull Path outputDirectory) {
-    Path stagingDirectory = null;
     try {
       Files.createDirectories(outputDirectory);
-      stagingDirectory = Files.createTempDirectory(ARCHIVE_TEMP_PREFIX);
-      final var stagedPackage =
-          PackageUtils.resolveContainedPath(
-              stagingDirectory,
-              PackageUtils.safeArchiveRootName(
-                  fhirPackage.id().name(), fhirPackage.id().version()));
-      FileUtils.copyDirectory(fhirPackage.path().toFile(), stagedPackage.toFile(), true);
-      final var archiveName = PackageArchiveUtils.compress(stagedPackage, outputDirectory);
+      final var archiveName = PackageArchiveUtils.compress(fhirPackage.path(), outputDirectory);
       if (archiveName.isBlank()) {
         throw new SnapshotGenerationException(
             "Archive utility returned an empty archive path for " + fhirPackage.id().coordinates());
@@ -636,8 +551,6 @@ final class DefaultPackageProcessor implements AutoCloseable {
     } catch (Exception e) {
       throw new SnapshotGenerationException(
           "Failed to create compressed archive: " + e.getLocalizedMessage(), e);
-    } finally {
-      cleanupTempFolder(stagingDirectory);
     }
   }
 
@@ -667,35 +580,6 @@ final class DefaultPackageProcessor implements AutoCloseable {
                   "The packages-to-process list must not contain null or blank coordinates")));
     }
     return Set.copyOf(normalized);
-  }
-
-  private SnapshotGenerationException cyclicDependencyException(
-      Deque<String> dependencyStack, String repeatedCoordinates) {
-    List<String> path = new ArrayList<>(dependencyStack);
-    int start = -1;
-    for (int i = 0; i < path.size(); i++) {
-      if (PackageUtils.sameCoordinates(path.get(i), repeatedCoordinates)) {
-        start = i;
-        break;
-      }
-    }
-    path.add(repeatedCoordinates);
-    List<String> cycle = start >= 0 ? path.subList(start, path.size()) : path;
-    return new SnapshotGenerationException(
-        "Cyclic package dependency detected: " + String.join(" -> ", cycle));
-  }
-
-  private void removeLastOccurrence(Deque<String> stack, String coordinates) {
-    if (!stack.isEmpty() && PackageUtils.sameCoordinates(coordinates, stack.peekLast())) {
-      stack.removeLast();
-      return;
-    }
-    for (var iterator = stack.descendingIterator(); iterator.hasNext(); ) {
-      if (PackageUtils.sameCoordinates(coordinates, iterator.next())) {
-        iterator.remove();
-        return;
-      }
-    }
   }
 
   private SnapshotGenerationResult aggregate(Map<String, SnapshotGenerationResult> results) {
@@ -761,6 +645,11 @@ final class DefaultPackageProcessor implements AutoCloseable {
   }
 
   private static final class ProcessingSession {
+    private Path workDirectory;
+    private final DependencyGraph graph = new DependencyGraph();
+    private final Map<PackageId, LocalDirectory> preparedPackages = new LinkedHashMap<>();
+    private final Map<PackageId, List<PackageId>> dependencies = new LinkedHashMap<>();
+    private final Map<String, ResolvedPackage> materializedDependencies = new LinkedHashMap<>();
     private final Map<String, ProcessedPackage> completedPackages = new LinkedHashMap<>();
     private final Map<String, SnapshotGenerationException> failures = new LinkedHashMap<>();
     private final Map<String, SnapshotGenerationResult> results = new LinkedHashMap<>();

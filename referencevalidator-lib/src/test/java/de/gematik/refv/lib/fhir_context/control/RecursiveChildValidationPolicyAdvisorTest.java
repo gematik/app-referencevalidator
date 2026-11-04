@@ -51,13 +51,13 @@ class RecursiveChildValidationPolicyAdvisorTest {
   @EnumSource(
       value = SpecialElement.class,
       names = {"BUNDLE_ENTRY", "PARAMETER"})
-  void embeddedResourcesReceiveTypeChecksOnly(SpecialElement special) {
+  void embeddedResourcesReceiveFullValidation(SpecialElement special) {
     var delegate = mock(IValidationPolicyAdvisor.class);
     var advisor = new RecursiveChildValidationPolicyAdvisor(delegate);
     clearInvocations(delegate);
 
     assertEquals(
-        ContainedReferenceValidationPolicy.CHECK_TYPE,
+        ContainedReferenceValidationPolicy.CHECK_VALID,
         advisor.policyForContained(
             null, null, null, null, "Parameters", "id", special, "path", "url"));
     verifyNoInteractions(delegate);
@@ -115,7 +115,7 @@ class RecursiveChildValidationPolicyAdvisorTest {
       var captured = ArgumentCaptor.forClass(IValidationPolicyAdvisor.class);
       verify(engine).setPolicyAdvisor(captured.capture());
       assertEquals(
-          ContainedReferenceValidationPolicy.CHECK_TYPE,
+          ContainedReferenceValidationPolicy.CHECK_VALID,
           captured
               .getValue()
               .policyForContained(

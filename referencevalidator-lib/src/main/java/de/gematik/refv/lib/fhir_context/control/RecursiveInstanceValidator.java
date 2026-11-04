@@ -24,13 +24,12 @@
  */
 package de.gematik.refv.lib.fhir_context.control;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.hl7.fhir.model.Base;
 import org.hl7.fhir.model.ValidationInformation.ValidationMode;
 import org.hl7.fhir.model.core.ElementDefinition;
 import org.hl7.fhir.model.core.StructureDefinition;
-import org.hl7.fhir.model.core.VersionResolutionRules;
 import org.hl7.fhir.services.elementmodel.Element;
 import org.hl7.fhir.services.validation.ValidatorSession;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
@@ -41,10 +40,7 @@ import org.hl7.fhir.validation.instance.utils.NodeStack;
 import org.hl7.fhir.validation.instance.utils.ValidationContext;
 import org.hl7.fhir.validation.service.model.InstanceValidatorParameters;
 
-/**
- * Custom HL7 InstanceValidator which allows the multiple-profile branch to bypass the
- * 'policyForContained' option.
- */
+/** Configured HL7 validator that preserves embedded-resource paths in diagnostics. */
 @SuppressWarnings("java:S2637") // hostServices can be null
 final class RecursiveInstanceValidator extends InstanceValidator {
   @SuppressWarnings("ConstantConditions") // HL7's own engine supplies null host/xver services here.
@@ -80,70 +76,106 @@ final class RecursiveInstanceValidator extends InstanceValidator {
       boolean isSlice,
       ResourcePercentageLogger pct,
       ValidationMode mode) {
-    var special = ei.getElement().getSpecial();
-    if ((special == Element.SpecialElement.BUNDLE_ENTRY
-            || special == Element.SpecialElement.PARAMETER)
-        && checkDefn.getTypeList().stream().anyMatch(type -> type.getProfileList().size() > 1)) {
-      var replacement = typeOnlyDefinition(checkDefn);
-      if (replacement != checkDefn) {
-        var index = profile.getSnapshot().getElementList().indexOf(checkDefn);
-        if (index >= 0) {
-          // Never alter loaded snapshots: they can be shared by concurrent context clones.
-          var copy = profile.copy(Base.COPY_NOTHING);
-          copy.getSnapshot().getElementList().set(index, replacement);
-          profile = copy;
-          checkDefn = replacement;
-        }
-      }
+    int firstChildMessage = errors.size();
+    boolean valid =
+        super.checkChildByDefinition(
+            valContext,
+            errors,
+            profile,
+            definition,
+            resource,
+            element,
+            actualType,
+            stack,
+            inCodeableConcept,
+            checkDisplayInContext,
+            ei,
+            extensionUrl,
+            checkDefinitionForChild(checkDefn, ei.getElement()),
+            isSlice,
+            pct,
+            mode);
+    if (isEmbeddedResource(ei.getElement().getSpecial()) && ei.getElement().isResource()) {
+      prefixChildMessages(errors, firstChildMessage, ei.getPath());
     }
-    return super.checkChildByDefinition(
-        valContext,
-        errors,
-        profile,
-        definition,
-        resource,
-        element,
-        actualType,
-        stack,
-        inCodeableConcept,
-        checkDisplayInContext,
-        ei,
-        extensionUrl,
-        checkDefn,
-        isSlice,
-        pct,
-        mode);
+    return valid;
   }
 
-  ElementDefinition typeOnlyDefinition(ElementDefinition definition) {
-    var types = new ArrayList<ElementDefinition.TypeRefComponent>();
-    for (var type : definition.getTypeList()) {
-      if (!type.hasProfile()) {
-        types.add(type.copy(Base.COPY_NOTHING));
-        continue;
-      }
-      for (var canonical : type.getProfileList()) {
-        var candidate =
-            getContext()
-                .fetchResource(
-                    StructureDefinition.class,
-                    canonical.getValue(),
-                    VersionResolutionRules.defaultRule());
-        // Preserve HL7's normal diagnostics if a permitted profile cannot be resolved.
-        if (candidate == null || !candidate.hasType()) {
-          return definition;
-        }
-        var permitted = type.copy(Base.COPY_NOTHING);
-        permitted.setCode(candidate.getType());
-        permitted.getProfileList().clear();
-        if (types.stream().noneMatch(existing -> existing.getCode().equals(permitted.getCode()))) {
-          types.add(permitted);
-        }
+  private static ElementDefinition checkDefinitionForChild(
+      ElementDefinition definition, Element child) {
+    return isEmbeddedResource(child.getSpecial()) && child.isResource()
+        ? selectChildProfileAlternative(definition, child)
+        : definition;
+  }
+
+  static ElementDefinition selectChildProfileAlternative(
+      ElementDefinition definition, Element child) {
+    if (definition.getTypeList().size() != 1) {
+      return definition;
+    }
+    var type = definition.getTypeFirstRep();
+    if (type.getProfileList().size() < 2) {
+      return definition;
+    }
+    var meta = child.getNamedChild("meta", false);
+    if (meta == null) {
+      return definition;
+    }
+    var declaredProfileUrls =
+        meta.getChildrenByName("profile").stream()
+            .map(Element::getValue)
+            .filter(Objects::nonNull)
+            .map(RecursiveInstanceValidator::canonicalUrl)
+            .distinct()
+            .toList();
+    var allowedProfileUrls =
+        type.getProfileList().stream()
+            .map(profile -> canonicalUrl(profile.getValue()))
+            .distinct()
+            .toList();
+    var selectedProfileUrls =
+        allowedProfileUrls.stream().filter(declaredProfileUrls::contains).toList();
+    if (selectedProfileUrls.isEmpty() || selectedProfileUrls.size() == allowedProfileUrls.size()) {
+      return definition;
+    }
+
+    var narrowedDefinition = definition.copy(Base.COPY_ALL);
+    narrowedDefinition
+        .getTypeFirstRep()
+        .getProfileList()
+        .removeIf(profile -> !selectedProfileUrls.contains(canonicalUrl(profile.getValue())));
+    return narrowedDefinition;
+  }
+
+  private static String canonicalUrl(String canonical) {
+    if (canonical == null) {
+      return "";
+    }
+    int versionSeparator = canonical.indexOf('|');
+    return versionSeparator < 0 ? canonical : canonical.substring(0, versionSeparator);
+  }
+
+  private static void prefixChildMessages(
+      List<ValidationMessage> messages, int firstChildMessage, String childPath) {
+    for (int messageIndex = firstChildMessage; messageIndex < messages.size(); messageIndex++) {
+      var message = messages.get(messageIndex);
+      var content = message.getMessage();
+      if (content != null && !hasEmbeddedResourcePath(content)) {
+        message.setMessage(stripPathComments(childPath) + ": " + content);
       }
     }
-    var copy = definition.copy(Base.COPY_NOTHING);
-    copy.getTypeList().clear();
-    copy.getTypeList().addAll(types);
-    return copy;
+  }
+
+  private static boolean hasEmbeddedResourcePath(String message) {
+    return message.startsWith("Bundle.entry[") || message.startsWith("Parameters.parameter[");
+  }
+
+  private static String stripPathComments(String path) {
+    return path.replaceAll("/\\*[^*]*\\*/", "");
+  }
+
+  private static boolean isEmbeddedResource(Element.SpecialElement special) {
+    return special == Element.SpecialElement.BUNDLE_ENTRY
+        || special == Element.SpecialElement.PARAMETER;
   }
 }

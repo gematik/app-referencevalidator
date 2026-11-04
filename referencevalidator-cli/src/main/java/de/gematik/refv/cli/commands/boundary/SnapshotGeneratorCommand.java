@@ -266,16 +266,14 @@ public class SnapshotGeneratorCommand extends BaseCommand {
           "### Initializing the Snapshot Generator for package group {}", packageGroup.getKey());
       try (SnapshotGenerator snapshotGenerator =
           SnapshotGeneratorFactory.fromConfiguration(cliConfig.context())) {
-        for (var packageName : packageGroup.getValue()) {
-          final var result =
-              snapshotGenerator.generateSnapshots(
-                  new SnapshotGenerationRequest(
-                      cliConfig.context().packageLoading().cachePath().resolve(packageName),
-                      outputDir,
-                      packageGroup.getValue()),
-                  new SnapshotGenerationOptions(cliConfig.module().patchesPath()));
-          resultMap.put(packageName, result);
-        }
+        final var result =
+            snapshotGenerator.generateSnapshots(
+                new SnapshotGenerationRequest(
+                    cliConfig.context().packageLoading().cachePath(),
+                    outputDir,
+                    packageGroup.getValue()),
+                new SnapshotGenerationOptions(cliConfig.module().patchesPath()));
+        resultMap.put(packageGroup.getKey(), result);
       }
     }
     return resultMap;
@@ -312,9 +310,9 @@ public class SnapshotGeneratorCommand extends BaseCommand {
 
     for (var packageEntry : packagesToCache) {
       if (packageEntry.contains(PackageId.PACKAGE_SEPARATOR)) {
-        packageResolver.resolvePath(Path.of(packageEntry));
+        packageResolver.resolveSources(Path.of(packageEntry));
       } else if (packageEntry.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)) {
-        packageResolver.resolvePath(packagesDir.resolve(packageEntry));
+        packageResolver.resolveSources(packagesDir.resolve(packageEntry));
       }
     }
   }

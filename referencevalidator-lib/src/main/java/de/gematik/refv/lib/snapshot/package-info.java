@@ -38,12 +38,12 @@
 /// - R1.1 When a coordinate-named local package directory and output directory are supplied, the
 ///   Snapshot shall generate snapshots for the selected packages and their transitive dependencies.
 /// - R1.2 When a package declares dependencies, the Snapshot shall obtain the dependency packages
-///   through Package Resolver and compute the complete transitive dependency graph before generating
-///   any snapshots.
+///   through source-only Package Resolver operations, stage and patch each package once, and compute
+///   the complete graph from patched manifests before generating any snapshots.
 /// - R1.3 If the complete dependency graph contains a cycle or a required package cannot be
 ///   resolved, then the Snapshot shall return an error result without starting snapshot generation.
-/// - R1.4 When the dependency graph is acyclic, the Snapshot shall generate packages in
-///   dependency-first order and provide each package with the archived snapshots of its dependencies.
+/// - R1.4 When the dependency graph is acyclic, the Snapshot shall execute its Kahn dependency-first
+///   order and provide each package with only the archived snapshots of its transitive dependencies.
 /// - R1.5 When a package coordinate occurs more than once in the selected roots or dependency graph,
 ///   the Snapshot shall generate and archive that package at most once per request.
 /// - R1.6 When a package is generated successfully, the Snapshot shall write its snapshot package

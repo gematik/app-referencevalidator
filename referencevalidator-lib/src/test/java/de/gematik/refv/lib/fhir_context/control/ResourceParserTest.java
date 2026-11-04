@@ -24,6 +24,7 @@
  */
 package de.gematik.refv.lib.fhir_context.control;
 
+import de.gematik.refv.lib.config_parser.boundary.JSONMapperProvider;
 import de.gematik.refv.lib.exceptions.ParsingException;
 import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
 import java.io.ByteArrayInputStream;
@@ -31,10 +32,56 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ResourceParserTest {
 
   private static final String PATIENT_JSON = "{\"resourceType\":\"Patient\",\"id\":\"p1\"}";
+
+  @ParameterizedTest
+  @ValueSource(strings = {"4.0.1", "5.0.0"})
+  void snapshotSerializationPreservesTheDeclaredRelease(String version) throws Exception {
+    var release = FhirRelease.ofVersion(version);
+    var versionSpecificConstraint =
+        version.equals("4.0.1")
+            ? "\"constraint\":[{\"key\":\"test\",\"severity\":\"error\",\"human\":\"Test\",\"expression\":\"true\",\"xpath\":\"f:Patient\"}]"
+            : "\"binding\":{\"strength\":\"required\",\"valueSet\":\"http://example.org/ValueSet/base\",\"additional\":[{\"purpose\":\"maximum\",\"valueSet\":\"http://example.org/ValueSet/extra\"}]}";
+    var content =
+        """
+        {"resourceType":"StructureDefinition","id":"test","url":"http://example.org/test",
+         "version":"1.0.0","name":"Test","status":"active","fhirVersion":"%s",
+         "kind":"resource","abstract":false,"type":"Patient",
+         "baseDefinition":"http://hl7.org/fhir/StructureDefinition/Patient","derivation":"constraint",
+         "snapshot":{"element":[{"id":"Patient","path":"Patient","min":0,"max":"*"}]},
+         "differential":{"element":[{"id":"Patient","path":"Patient",%s}]}}
+        """
+            .formatted(version, versionSpecificConstraint);
+
+    try (var input = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
+      var parsed = ResourceParser.parseJsonToResource(input, version);
+      var output = ResourceParser.composeForRelease(parsed, release);
+      var json = JSONMapperProvider.getMapper().readTree(output);
+      Assertions.assertEquals(version, json.path("fhirVersion").asText());
+      Assertions.assertEquals(
+          "Patient", json.path("snapshot").path("element").get(0).path("path").asText());
+      var element = json.path("differential").path("element").get(0);
+      if (version.equals("4.0.1")) {
+        var nativeResource = new org.hl7.fhir.r4.formats.JsonParser().parse(output);
+        Assertions.assertInstanceOf(
+            org.hl7.fhir.r4.model.StructureDefinition.class, nativeResource);
+        Assertions.assertEquals(
+            "f:Patient", element.path("constraint").get(0).path("xpath").asText());
+      } else {
+        var nativeResource = new org.hl7.fhir.r5.formats.JsonParser().parse(output);
+        Assertions.assertInstanceOf(
+            org.hl7.fhir.r5.model.StructureDefinition.class, nativeResource);
+        Assertions.assertEquals(
+            "http://example.org/ValueSet/extra",
+            element.path("binding").path("additional").get(0).path("valueSet").asText());
+      }
+    }
+  }
 
   @DisplayName("Given a valid R4 JSON, when parsing as R4, then a resource is returned")
   @Test

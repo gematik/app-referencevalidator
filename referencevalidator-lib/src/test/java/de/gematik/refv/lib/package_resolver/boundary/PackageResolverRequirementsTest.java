@@ -24,6 +24,7 @@
  */
 package de.gematik.refv.lib.package_resolver.boundary;
 
+import de.gematik.refv.lib.config_parser.boundary.JSONMapperProvider;
 import de.gematik.refv.lib.exceptions.PackageLoadFailedException;
 import de.gematik.refv.lib.exceptions.SnapshotGenerationException;
 import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
@@ -33,9 +34,15 @@ import de.gematik.refv.lib.package_resolver.entity.PackageCategory;
 import de.gematik.refv.lib.package_resolver.entity.PackageId;
 import de.gematik.refv.lib.package_resolver.entity.PackageResolutionRequest;
 import de.gematik.refv.lib.package_resolver.entity.RemotePackage;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,6 +50,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class PackageResolverRequirementsTest {
 
@@ -204,6 +212,102 @@ class PackageResolverRequirementsTest {
     var resolver = resolver();
 
     Assertions.assertEquals(temporaryDirectory, resolver.cachePath());
+  }
+
+  @Test
+  void emptyPackageListReturnsAnEmptyResolution() {
+    var result = resolver().resolveList(List.of());
+
+    Assertions.assertEquals(List.of(), result.packages());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"files", "directory", "coordinates"})
+  void resolvesAllRootFormsAsOneDependencyFirstDiamond(String form) throws Exception {
+    var archives = Files.createDirectories(temporaryDirectory.resolve("archives"));
+    var shared = packageArchive(archives, "shared", Map.of());
+    var left = packageArchive(archives, "left", Map.of("shared", "1.0.0"));
+    var right = packageArchive(archives, "right", Map.of("shared", "1.0.0"));
+    var root = packageArchive(archives, "root", Map.of("left", "1.0.0", "right", "1.0.0"));
+    var resolver = resolver();
+    if (form.equals("coordinates")) {
+      resolver.resolveSources(archives);
+    }
+    var inputs =
+        switch (form) {
+          case "files" ->
+              List.of(
+                  root.toString(),
+                  left.toString(),
+                  right.toString(),
+                  shared.toString(),
+                  root.toString());
+          case "directory" -> List.of(archives.toString());
+          default -> List.of("root#1.0.0", "left#1.0.0", "right#1.0.0", "root#1.0.0");
+        };
+
+    var resolved = resolver.resolveList(inputs).packages();
+    var order = resolved.stream().map(pkg -> pkg.id().coordinates()).toList();
+
+    Assertions.assertEquals(4, order.size());
+    Assertions.assertEquals(4L, order.stream().distinct().count());
+    Assertions.assertEquals("shared#1.0.0", order.getFirst());
+    Assertions.assertEquals("root#1.0.0", order.getLast());
+    for (var pkg : resolved) {
+      for (var dependency : pkg.dependencies()) {
+        Assertions.assertTrue(order.indexOf(dependency.coordinates()) >= 0);
+        Assertions.assertTrue(
+            order.indexOf(dependency.coordinates()) < order.indexOf(pkg.id().coordinates()));
+      }
+    }
+  }
+
+  @Test
+  void sourceOnlyResolutionDoesNotRequireDependenciesOrReplaceExplicitDirectories()
+      throws Exception {
+    var archives = Files.createDirectories(temporaryDirectory.resolve("archives"));
+    var archive = packageArchive(archives, "root", Map.of("unavailable", "9.0.0"));
+    var resolver = resolver();
+    Assertions.assertEquals(1, resolver.resolveSources(archive).packages().size());
+    var unresolvedArchive = List.of(archive.toString());
+    Assertions.assertThrows(
+        PackageLoadFailedException.class, () -> resolver.resolveList(unresolvedArchive));
+
+    var directory =
+        Files.createDirectories(temporaryDirectory.resolve("explicit/root#1.0.0/package"));
+    JSONMapperProvider.getMapper()
+        .writeValue(
+            directory.resolve("package.json").toFile(),
+            Map.of("name", "root", "version", "1.0.0", "dependencies", Map.of()));
+    var explicit = resolver.resolveSources(directory.getParent()).packages().getFirst();
+    Assertions.assertEquals(directory.getParent().toAbsolutePath(), explicit.packagePath());
+  }
+
+  private Path packageArchive(Path directory, String name, Map<String, String> dependencies)
+      throws IOException {
+    var archive = directory.resolve(name + "-1.0.0.tgz");
+    var content =
+        JSONMapperProvider.getMapper()
+            .writeValueAsBytes(
+                Map.of(
+                    "name",
+                    name,
+                    "version",
+                    "1.0.0",
+                    "fhirVersions",
+                    List.of("4.0.1"),
+                    "dependencies",
+                    dependencies));
+    try (var output = Files.newOutputStream(archive);
+        var gzip = new GzipCompressorOutputStream(output);
+        var tar = new TarArchiveOutputStream(gzip)) {
+      var entry = new TarArchiveEntry("package/package.json");
+      entry.setSize(content.length);
+      tar.putArchiveEntry(entry);
+      tar.write(content);
+      tar.closeArchiveEntry();
+    }
+    return archive;
   }
 
   private PackageResolver resolver() {
