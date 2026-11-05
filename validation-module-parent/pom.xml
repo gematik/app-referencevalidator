@@ -139,6 +139,7 @@
                                 <arguments>
                                     <argument>validate</argument>
                                     <argument>--config=${project.basedir}/validator.config.yaml</argument>
+                                    <argument>--inspect-expected-validity</argument>
                                     <argument>
                                         src/test/resources/fhir/
                                     </argument>

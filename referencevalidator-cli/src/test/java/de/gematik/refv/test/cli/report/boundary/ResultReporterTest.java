@@ -24,6 +24,7 @@
  */
 package de.gematik.refv.test.cli.report.boundary;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.gematik.refv.cli.report.boundary.ResultReporter;
 import de.gematik.refv.lib.fhir_context.entity.ContextResult;
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
@@ -35,6 +36,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -119,6 +121,49 @@ class ResultReporterTest {
         Assertions.assertDoesNotThrow(() -> resultReporter.generateReport(validationResultMap));
     // Result should be valid
     Assertions.assertEquals(true, result);
+  }
+
+  @Test
+  void inspectExpectedValidityComparesExpectedAndActualResults() {
+    final var invalidSource = "fixtures/InVaLiD/patient.json";
+    final var invalidResult =
+        Map.<String, ContextResult>of(
+            invalidSource,
+            createValidSingleResult(
+                IssueSeverity.ERROR, "invalid resource", "validation error", "Patient.name"));
+    final var validResult =
+        Map.<String, ContextResult>of(
+            invalidSource,
+            createValidSingleResult(
+                IssueSeverity.INFORMATION, "resource valid", "validation info", "Patient"));
+
+    Assertions.assertTrue(resultReporter.generateReport(invalidResult, Set.of(invalidSource)));
+    Assertions.assertFalse(resultReporter.generateReport(validResult, Set.of(invalidSource)));
+    Assertions.assertFalse(resultReporter.generateReport(invalidResult, Set.of()));
+  }
+
+  @Test
+  void inspectedReportsIncludeExpectedAndActualValidity() throws Exception {
+    final var invalidSource = "fixtures/invalid/patient.json";
+    final var results =
+        Map.<String, ContextResult>of(
+            invalidSource,
+            createValidSingleResult(
+                IssueSeverity.ERROR, "invalid resource", "validation error", "Patient.name"));
+    final var expectedInvalidSources = Set.of(invalidSource);
+    final var jsonReport = Files.createTempFile("refv-expected-validity", ".json");
+    final var htmlReport = Files.createTempFile("refv-expected-validity", ".html");
+
+    resultReporter.writeJsonReport(results, jsonReport, expectedInvalidSources);
+    final var jsonEntry = new ObjectMapper().readTree(jsonReport.toFile()).get(invalidSource);
+    Assertions.assertEquals("INVALID", jsonEntry.get("expected").asText());
+    Assertions.assertEquals("INVALID", jsonEntry.get("actual").asText());
+    Assertions.assertTrue(jsonEntry.get("expectationMatched").asBoolean());
+
+    resultReporter.writeHtmlReport(results, htmlReport, "R4", expectedInvalidSources);
+    final var htmlContent = Files.readString(htmlReport);
+    Assertions.assertTrue(htmlContent.contains("All expectations matched"));
+    Assertions.assertTrue(htmlContent.contains("EXPECTED ERROR"));
   }
 
   @Test

@@ -259,6 +259,16 @@ The supported formats for the FHIR Resources to be validated are `JSON` and `XML
   ```bash
   java -jar referencevalidator-cli.jar validate -p http://example.org/Profile/MyProfile --fhir-version R4 --report output.html --locale de my_resource.json
   ```
+- **Check expected-invalid resources:**
+  ```bash
+  java -jar referencevalidator-cli.jar validate ./fixtures/ --inspect-expected-validity --config path/to/config.yaml
+  ```
+
+When `--inspect-expected-validity` is enabled, any input path containing `invalid` (case-insensitive) is expected to
+produce at least one `ERROR` or `FATAL` validation message. Other input paths are expected to validate without those
+severities. The command succeeds only when every resource matches its expected validity; reports show expected and
+actual status. Matching expected errors do not fail the command. The check applies to the full input path, including
+parent directory names.
 
 **Options:**
 
@@ -269,6 +279,7 @@ The supported formats for the FHIR Resources to be validated are `JSON` and `XML
 | `--module-name <name>`                  |   -   | The specific Validation Module to use.                                                                              |
 | `--json`                                | `-j`  | Outputs logs and reports in JSON format.                                                                            |
 | `--report <path>`                       | `-r`  | Specifies the file path where the validation report should be written.                                              |
+| `--inspect-expected-validity`            |   -   | Treats paths containing `invalid` (case-insensitive) as expected-invalid and fails if any input's result disagrees. |
 | `--use-terminology-server`              |   -   | Enables the use of a terminology server to expand ValueSets during validation.                                      |
 | `--fhir-version <version>`              | `-f`  | Specifies the FHIR version (e.g., `R4`, `R5`). Defaults to `R4`.                                                    |
 | `--terminology-server <url>`            | `-t`  | The URL of the Terminology Service to be used.                                                                      |

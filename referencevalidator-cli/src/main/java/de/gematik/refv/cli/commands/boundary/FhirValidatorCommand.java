@@ -38,7 +38,6 @@ import de.gematik.refv.lib.exceptions.InitializationException;
 import de.gematik.refv.lib.exceptions.LoadModuleException;
 import de.gematik.refv.lib.exceptions.ParsingException;
 import de.gematik.refv.lib.exceptions.UnsupportedFileTypeException;
-import de.gematik.refv.lib.exceptions.ValidationException;
 import de.gematik.refv.lib.fhir_context.boundary.BatchValidationContextProvider;
 import de.gematik.refv.lib.fhir_context.boundary.ContextProvider;
 import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
@@ -76,8 +75,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -132,6 +133,12 @@ public class FhirValidatorCommand extends BaseCommand {
       description = "Write validation report to a specified file path",
       defaultValue = "output.html")
   private Path reportFilePath;
+
+  @CommandLine.Option(
+      names = "--inspect-expected-validity",
+      description =
+          "Expect paths containing 'invalid' (case-insensitive) to have validation errors")
+  private boolean shouldInspectExpectedValidity;
 
   @CommandLine.Option(
       names = {"--use-terminology-server"},
@@ -295,6 +302,15 @@ public class FhirValidatorCommand extends BaseCommand {
         validationPackageSelector = new ValidationPackageSelector();
       }
       final var validationSources = getFilesForValidation(sources, inputLimits);
+      final Set<String> expectedInvalidSources =
+          shouldInspectExpectedValidity
+              ? validationSources.stream()
+                  .filter(
+                      source ->
+                          source.path().toString().toLowerCase(Locale.ROOT).contains("invalid"))
+                  .map(source -> source.path().toString())
+                  .collect(Collectors.toUnmodifiableSet())
+              : null;
       preloadCache(cliConfig.context(), validationModule.orElse(null));
       log.info("Loading {} files for the validation", validationSources.size());
       final Map<String, ContextResult> resultMap = new HashMap<>();
@@ -309,7 +325,11 @@ public class FhirValidatorCommand extends BaseCommand {
                   validationCliConfig,
                   validationPackageSelector,
                   batchContexts);
-          resultMap.put(validationSources.toString(), singleResult);
+          final String sourceKey =
+              shouldInspectExpectedValidity
+                  ? validationSources.getFirst().path().toString()
+                  : validationSources.toString();
+          resultMap.put(sourceKey, singleResult);
         } else {
           var concurrentResult =
               validateConcurrently(
@@ -318,14 +338,15 @@ public class FhirValidatorCommand extends BaseCommand {
         }
       }
 
-      boolean overallValid = reporter.generateReport(resultMap);
+      boolean overallValid = reporter.generateReport(resultMap, expectedInvalidSources);
       if (shouldUseJson) {
-        reporter.writeJsonReport(resultMap, cliConfig.report().filePath());
+        reporter.writeJsonReport(resultMap, cliConfig.report().filePath(), expectedInvalidSources);
       } else {
         reporter.writeHtmlReport(
             resultMap,
             cliConfig.report().filePath(),
-            cliConfig.context().fhirRelease().corePackageVersion());
+            cliConfig.context().fhirRelease().corePackageVersion(),
+            expectedInvalidSources);
       }
       return overallValid ? 0 : 1;
     } catch (Exception e) {
@@ -339,11 +360,22 @@ public class FhirValidatorCommand extends BaseCommand {
       ValidationInputCollector.ValidationInput validationSource,
       ValidationCliConfig cliConfig,
       ValidationPackageSelector validationPackageSelector,
-      BatchValidationContextProvider batchContexts)
-      throws IOException, ValidationException {
-    final FhirResource resource;
+      BatchValidationContextProvider batchContexts) {
     try {
-      resource = createResource(validationSource);
+      final FhirResource resource = createResource(validationSource);
+      final var packageSelection =
+          detectPackagesToLoad(cliConfig, validationPackageSelector, resource);
+      logSelectedTransformations(validationSource.path(), packageSelection);
+      final var validationRequest = createRequest(resource);
+      try (var lease = batchContexts.acquire(packageSelection.packages());
+          var context = lease.newIsolatedContext()) {
+        final var validator = ValidatorFactory.withValidationContext(context);
+        log.info("Starting the validation of {}", validationSource.path());
+        return validator.validate(
+            validationRequest,
+            withPackageGroupTransformations(
+                cliConfig.validationOptions(), packageSelection.messageTransformations()));
+      }
     } catch (UnsupportedFileTypeException e) {
       return new ValidationResult(
           List.of(
@@ -351,24 +383,11 @@ public class FhirValidatorCommand extends BaseCommand {
                   IssueSeverity.INFORMATION,
                   MessageId.IO_ERROR.getCode(),
                   e.getLocalizedMessage())));
-    }
-    final var packageSelection =
-        detectPackagesToLoad(cliConfig, validationPackageSelector, resource);
-    logSelectedTransformations(validationSource.path(), packageSelection);
-    final var validationRequest = createRequest(resource);
-    try (var lease = batchContexts.acquire(packageSelection.packages());
-        var context = lease.newIsolatedContext()) {
-      final var validator = ValidatorFactory.withValidationContext(context);
-      log.info("Starting the validation of {}", validationSource.path());
-      return validator.validate(
-          validationRequest,
-          withPackageGroupTransformations(
-              cliConfig.validationOptions(), packageSelection.messageTransformations()));
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      throw new ValidationException(e.getLocalizedMessage(), e);
+      return validationError(validationSource, e).getValue();
     } catch (Exception e) {
-      throw new ValidationException(e.getLocalizedMessage(), e);
+      return validationError(validationSource, e).getValue();
     }
   }
 

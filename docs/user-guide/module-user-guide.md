@@ -340,6 +340,37 @@ versions.
 The parent sets `blockSystemExit=true`: a non-zero CLI exit code fails the Maven execution. Keep
 the managed exec plugin enabled so both snapshot generation and validation run as part of the build.
 
+To include expected-invalid resources in the build, enable the CLI's
+`--inspect-expected-validity` option in the managed `validate-module` execution. Add an execution
+with the same id to the child POM to override its arguments; the managed `verify` phase and `java`
+goal remain inherited:
+
+```xml
+<plugin>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>exec-maven-plugin</artifactId>
+  <executions>
+    <execution>
+      <id>validate-module</id>
+      <configuration>
+        <arguments>
+          <argument>validate</argument>
+          <argument>--config=${project.basedir}/validator.config.yaml</argument>
+          <argument>--inspect-expected-validity</argument>
+          <argument>src/test/resources/fhir/</argument>
+        </arguments>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+```
+
+With inspection enabled, a file whose full path contains `invalid` (case-insensitive) is expected
+to produce an `ERROR` or `FATAL` validation message; all other files are expected to have neither.
+The CLI exits successfully only when every file matches its expectation, so an expected validation
+error does not fail Maven, but a mismatch does. Because the full path is checked, keep `invalid`
+out of the project and parent directory names unless all resources below them are expected to fail.
+
 ## 6. Configure snapshot generation and offline validation
 
 The parent executions refer to `snapshot.config.yaml` and `validator.config.yaml` in the project
@@ -432,6 +463,21 @@ directory to the CLI validation command. Files are found recursively, so subdire
 `fhir/DummyPatient/1.0.0/` are supported. See the [CLI User Guide](cli-user-guide.md) for the complete
 CLI configuration and policy options.
 
+For a mix of positive and expected-invalid examples, organize the test resources so only the
+negative cases have `invalid` in their path, for example:
+
+```text
+src/test/resources/fhir/
+├── valid/
+│   └── patient.json
+└── invalid/
+  └── patient-violating-profile.json
+```
+
+Add `--inspect-expected-validity` to the inherited `validate-module` execution as shown above.
+Without that option, the CLI uses its normal rule that any validation error makes the overall
+validation fail; keep expected-invalid examples out of the directory passed to that normal run.
+
 ### Plan for offline terminology validation
 
 The validation configuration above disables terminology-server access. Terminology checks can only
@@ -487,8 +533,9 @@ The build performs these steps:
    disabled, writing `target/validation-report.html`.
 
 Review both reports. Resolve snapshot errors before investigating downstream validation failures.
-The validation command returns a non-zero exit code if the overall result is invalid, which fails
-the parent's Maven execution. Keep expected-invalid instances out of this positive-test directory.
+With the normal validation invocation, any invalid resource fails the parent's Maven execution. With
+`--inspect-expected-validity`, the build passes when valid and expected-invalid resources all match
+their path-based expectations, and fails on any mismatch.
 
 `mvn package` stops before the validation step. `mvn clean install` also runs verification and then
 installs the module in the local Maven repository.
@@ -519,6 +566,7 @@ java -jar referencevalidator-cli.jar validate \
   --modules-folder ./target \
   --module-name dummy \
   --config ./validator.config.yaml \
+  --inspect-expected-validity \
   --report ./target/validation-report.html \
   ./src/test/resources/fhir/
 ```
