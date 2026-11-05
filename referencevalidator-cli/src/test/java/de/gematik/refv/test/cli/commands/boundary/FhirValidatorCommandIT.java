@@ -95,6 +95,46 @@ class FhirValidatorCommandIT {
     Assertions.assertEquals(1, exitCode);
   }
 
+  @DisplayName("Given an invalid resource in a path containing invalid, inspection succeeds")
+  @Test
+  void expectInvalidResourceMatchesPathExpectation() throws IOException {
+    final Path invalidDirectory = Files.createDirectory(tempDir.resolve("InVaLiD"));
+    final Path resource =
+        Files.writeString(invalidDirectory.resolve("patient.json"), invalidPatientJson());
+
+    final int exitCode =
+        executeCommand(
+            "--modules-folder",
+            "../referencevalidator-lib/src/test/resources/modules",
+            "--module-name",
+            "isik5",
+            "--inspect-expected-validity",
+            "--report",
+            reportOutputHtml.toString(),
+            resource.toString());
+
+    Assertions.assertEquals(0, exitCode);
+  }
+
+  @DisplayName("Given a valid resource in a path containing invalid, inspection fails")
+  @Test
+  void expectValidResourceDoesNotMatchPathExpectation() throws IOException {
+    final Path invalidDirectory = Files.createDirectory(tempDir.resolve("invalid"));
+    final Path resource =
+        Files.writeString(invalidDirectory.resolve("patient.json"), patientJson(true));
+
+    final int exitCode =
+        executeCommand(
+            "--profile",
+            PROFILE_URL,
+            "--inspect-expected-validity",
+            "--report",
+            reportOutputHtml.toString(),
+            resource.toString());
+
+    Assertions.assertEquals(1, exitCode);
+  }
+
   @DisplayName(
       "Given a resource without a profile reference, when validating with an explicit profile,"
           + " then the command fails")
@@ -198,6 +238,15 @@ class FhirValidatorCommandIT {
         }
         """
         .formatted(PROFILE_URL, withName ? ", \"name\": [ { \"family\": \"Doe\" } ]" : "");
+  }
+
+  private static String invalidPatientJson() {
+    return """
+        {
+          "resourceType": "Patient",
+          "gender": "not-a-valid-gender"
+        }
+        """;
   }
 
   private static String patientJsonWithoutProfile() {

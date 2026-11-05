@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.gematik.refv.cli.commands.VersionProvider;
+import de.gematik.refv.cli.report.entity.ExpectedValidationResult;
 import de.gematik.refv.lib.fhir_context.entity.ContextResult;
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
 import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
@@ -41,10 +42,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +66,11 @@ public class ResultReporter {
   }
 
   public boolean generateReport(@NonNull Map<String, ContextResult> resultMap) {
+    return generateReport(resultMap, null);
+  }
+
+  public boolean generateReport(
+      @NonNull Map<String, ContextResult> resultMap, @Nullable Set<String> expectedInvalidSources) {
     if (Objects.requireNonNull(resultMap, "The result map cannot be empty").isEmpty()) {
       throw new IllegalArgumentException(
           "Could not generate the report: an empty validation result has been supplied");
@@ -70,6 +79,7 @@ public class ResultReporter {
     long totalErrors = 0;
     long totalWarnings = 0;
     long totalFatalErrors = 0;
+    boolean expectationsMatched = true;
 
     final StringBuilder stringBuilder = new StringBuilder();
 
@@ -80,33 +90,52 @@ public class ResultReporter {
       }
       var messages = result.getValue().messages();
       var counts = countMessages(messages);
-      appendValidationResult(stringBuilder, result.getKey(), messages, counts);
+      final ExpectedValidationResult expectedResult =
+          expectedInvalidSources == null
+              ? null
+              : expectedValidationResult(result.getKey(), messages, counts, expectedInvalidSources);
+      appendValidationResult(stringBuilder, result.getKey(), messages, counts, expectedResult);
+      if (expectedResult != null) {
+        expectationsMatched &= expectedResult.expectationMatched();
+      }
       totalErrors += counts.errors();
       totalFatalErrors += counts.fatalErrors();
       totalWarnings += counts.warnings();
     }
 
-    boolean overallValid = totalFatalErrors == 0 && totalErrors == 0;
+    boolean resultSuccessful =
+        expectedInvalidSources == null
+            ? totalFatalErrors == 0 && totalErrors == 0
+            : expectationsMatched;
+    String overallStatus =
+        expectedInvalidSources == null
+            ? resultSuccessful ? "VALID" : "INVALID"
+            : resultSuccessful ? "EXPECTATIONS MET" : "EXPECTATION MISMATCH";
     stringBuilder
         .append("\n")
         .append(
             String.format(
                 "Overall: %s | %d file(s) | %d fatal(s) | %d error(s) | %d warning(s)%n",
-                overallValid ? "VALID" : "INVALID",
-                resultMap.size(),
-                totalFatalErrors,
-                totalErrors,
-                totalWarnings));
+                overallStatus, resultMap.size(), totalFatalErrors, totalErrors, totalWarnings));
 
     log.info("{}", stringBuilder);
 
-    return overallValid;
+    return resultSuccessful;
   }
 
   public void writeHtmlReport(
       @NonNull Map<String, ContextResult> results,
       @NonNull Path outputPath,
       @NonNull String fhirVersion)
+      throws IOException {
+    writeHtmlReport(results, outputPath, fhirVersion, null);
+  }
+
+  public void writeHtmlReport(
+      @NonNull Map<String, ContextResult> results,
+      @NonNull Path outputPath,
+      @NonNull String fhirVersion,
+      @Nullable Set<String> expectedInvalidSources)
       throws IOException {
     final var totalTime = System.currentTimeMillis() - startTime;
     final var htmlTemplate = importHtmlTemplate();
@@ -122,6 +151,7 @@ public class ResultReporter {
     long totalErrors = 0;
     long totalWarnings = 0;
     long totalFatalErrors = 0;
+    boolean expectationsMatched = true;
 
     final StringBuilder messageCardsBuilder = new StringBuilder();
     for (var result : results.entrySet()) {
@@ -131,6 +161,13 @@ public class ResultReporter {
       }
       var counts =
           appendHtmlMessages(messageCardsBuilder, result.getKey(), result.getValue().messages());
+      if (expectedInvalidSources != null) {
+        final var expectedResult =
+            expectedValidationResult(
+                result.getKey(), result.getValue().messages(), counts, expectedInvalidSources);
+        messageCardsBuilder.append(generateExpectedResultEntry(result.getKey(), expectedResult));
+        expectationsMatched &= expectedResult.expectationMatched();
+      }
       totalAll += counts.total();
       totalErrors += counts.errors();
       totalFatalErrors += counts.fatalErrors();
@@ -138,6 +175,10 @@ public class ResultReporter {
     }
 
     final var totalMinutes = TimeUnit.MILLISECONDS.toMinutes(totalTime);
+    final var expectationStatus =
+        expectedInvalidSources == null
+            ? "Not enabled"
+            : expectationsMatched ? "All expectations matched" : "Expectation mismatch";
     final var totalTimeFormat =
         String.format(
             "%d min, %d sec",
@@ -150,6 +191,7 @@ public class ResultReporter {
             .replace("%NUM_ERRORS%", String.valueOf(totalErrors))
             .replace("%NUM_WARNINGS%", String.valueOf(totalWarnings))
             .replace("%NUM_TOTAL%", String.valueOf(totalAll))
+            .replace("%EXPECTATION_STATUS%", expectationStatus)
             .replace("%FHIR_VERSION%", fhirVersion)
             .replace("%EXECUTION_TIME%", totalTimeFormat)
             .replace("%APPLICATION_VERSION%", VersionProvider.PROJECT_VERSION)
@@ -187,24 +229,89 @@ public class ResultReporter {
       StringBuilder stringBuilder,
       String source,
       Iterable<ResultMessage> messages,
-      MessageCounts counts) {
+      MessageCounts counts,
+      @Nullable ExpectedValidationResult expectedResult) {
     stringBuilder
-        .append("\n")
-        .append(
-            String.format(
-                """
-                  ===================================================
-                  Source:\t%s
-                  Valid:\t%s
-                  ---------------------------------------------------
-                  """,
-                source, counts.errors() == 0 && counts.fatalErrors() == 0 ? "YES" : "NO"));
+        .append("\n===================================================\nSource:\t")
+        .append(source);
+    if (expectedResult == null) {
+      stringBuilder
+          .append("\nValid:\t")
+          .append(
+              expectedResultValidity(counts) == ExpectedValidationResult.Validity.VALID
+                  ? "YES"
+                  : "NO");
+    } else {
+      stringBuilder
+          .append("\nExpected:\t")
+          .append(expectedResult.expected())
+          .append("\nActual:\t")
+          .append(expectedResult.actual())
+          .append("\nExpectation:\t")
+          .append(expectationLabel(expectedResult));
+    }
+    stringBuilder.append("\n---------------------------------------------------\n");
     for (var message : messages) {
       stringBuilder.append(
           String.format(
               "  \t%s %s %s%n", message.severity(), message.messageId(), message.messageContent()));
     }
     stringBuilder.append("===================================================");
+  }
+
+  private ExpectedValidationResult expectedValidationResult(
+      String source,
+      java.util.Collection<ResultMessage> messages,
+      MessageCounts counts,
+      Set<String> expectedInvalidSources) {
+    final boolean expectedInvalid = expectedInvalidSources.contains(source);
+    final boolean actualInvalid = counts.errors() > 0 || counts.fatalErrors() > 0;
+    return new ExpectedValidationResult(
+        expectedInvalid
+            ? ExpectedValidationResult.Validity.INVALID
+            : ExpectedValidationResult.Validity.VALID,
+        actualInvalid
+            ? ExpectedValidationResult.Validity.INVALID
+            : ExpectedValidationResult.Validity.VALID,
+        expectedInvalid == actualInvalid,
+        messages);
+  }
+
+  private ExpectedValidationResult.Validity expectedResultValidity(MessageCounts counts) {
+    return counts.errors() > 0 || counts.fatalErrors() > 0
+        ? ExpectedValidationResult.Validity.INVALID
+        : ExpectedValidationResult.Validity.VALID;
+  }
+
+  private String expectationLabel(ExpectedValidationResult expectedResult) {
+    if (expectedResult.expected() == ExpectedValidationResult.Validity.INVALID) {
+      return expectedResult.expectationMatched() ? "EXPECTED ERROR" : "UNEXPECTED VALID";
+    }
+    return expectedResult.expectationMatched() ? "EXPECTED VALID" : "UNEXPECTED ERROR";
+  }
+
+  private String generateExpectedResultEntry(
+      String source, ExpectedValidationResult expectedResult) {
+    final String messageClass = expectedResult.expectationMatched() ? "information" : "error";
+    final String badgeClass = expectedResult.expectationMatched() ? "info" : "error";
+    final String status = expectedResult.expectationMatched() ? "MATCH" : "MISMATCH";
+    return String.format(
+        """
+        <div class="message %s">
+            <div class="message-header">
+                <span class="badge %s">%s</span>
+                <span class="message-id">EXPECTATION</span>
+                <span class="message-content">%s: expected %s, actual %s (%s)</span>
+            </div>
+        </div>
+        """,
+        messageClass,
+        badgeClass,
+        status,
+        escapeHtml(source),
+        expectedResult.expected(),
+        expectedResult.actual(),
+        expectationLabel(expectedResult));
   }
 
   private MessageCounts appendHtmlMessages(
@@ -258,6 +365,14 @@ public class ResultReporter {
 
   public void writeJsonReport(@NonNull Map<String, ContextResult> results, @NonNull Path outputPath)
       throws IOException {
+    writeJsonReport(results, outputPath, null);
+  }
+
+  public void writeJsonReport(
+      @NonNull Map<String, ContextResult> results,
+      @NonNull Path outputPath,
+      @Nullable Set<String> expectedInvalidSources)
+      throws IOException {
     if (Objects.requireNonNull(results, "The results cannot be null").isEmpty()) {
       throw new IllegalArgumentException(
           "Could not write the report: an empty validation result has been supplied");
@@ -265,7 +380,23 @@ public class ResultReporter {
     if (outputPath.getParent() != null) {
       Files.createDirectories(outputPath.getParent());
     }
-    objectMapper.writeValue(outputPath.toFile(), results);
+    if (expectedInvalidSources == null) {
+      objectMapper.writeValue(outputPath.toFile(), results);
+    } else {
+      final Map<String, ExpectedValidationResult> expectedResults = new HashMap<>();
+      for (var result : results.entrySet()) {
+        if (result.getValue() == null) {
+          expectedResults.put(result.getKey(), null);
+          continue;
+        }
+        final var messages = result.getValue().messages();
+        expectedResults.put(
+            result.getKey(),
+            expectedValidationResult(
+                result.getKey(), messages, countMessages(messages), expectedInvalidSources));
+      }
+      objectMapper.writeValue(outputPath.toFile(), expectedResults);
+    }
     log.info("JSON report written to: {}", outputPath.toUri());
   }
 
