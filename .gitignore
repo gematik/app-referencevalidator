@@ -7,6 +7,7 @@ target/
 !**/src/test/**/target/
 *.iml
 *.xml.versionsBackup
+referencevalidator-cli/output.html
 jenkinsfile.*
 .githubignore
 tools

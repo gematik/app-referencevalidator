@@ -60,7 +60,8 @@
 /// - R2.3 When validation options specify no profile, the BC shall request validation without an
 ///   additional explicit profile, leaving core and resource-declared profile checks to the context.
 /// - R2.4 If a validation request or its options are absent, or validation or result processing
-///   fails, then the BC shall report a validation failure retaining the underlying cause.
+///   fails, then the BC shall report a validation failure whose message includes the underlying
+///   cause detail and that retains the underlying cause.
 ///
 /// ### R3 — Profile extraction
 ///

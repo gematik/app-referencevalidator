@@ -191,14 +191,19 @@ class ValidationModuleIndexTest {
     Assertions.assertThrows(NullPointerException.class, () -> index.isProfileDefined(null));
   }
 
-  @DisplayName("Given message transformations, when resolving a version, then they are aggregated")
+  @DisplayName(
+      "Given an open-ended group, when selected as fallback, then its transformations are returned")
   @Test
-  void expectMessageTransformationsAggregated() {
+  void expectFallbackGroupTransformations() {
     final var transformation = new MessageTransformation("error", "warning", "loc", ".*", "id");
     final var groups = Map.of("g1", new PackageGroup(List.of("a-1.0.tgz"), List.of("t1")));
     final var families = Map.of("fam", familyWithOpenEnded());
     final var index = indexFor(config(groups, families, Map.of("t1", List.of(transformation))));
-    final var transformations = index.getMessageTransformations(BASE + "/MyProfile", "1.0");
+    final var transformations =
+        index
+            .getFallbackPackageGroup(BASE + "/MyProfile", "1.0")
+            .orElseThrow()
+            .messageTransformations();
     Assertions.assertEquals(1, transformations.size());
     Assertions.assertEquals("id", transformations.get(0).messageId());
   }
@@ -314,7 +319,7 @@ class ValidationModuleIndexTest {
   }
 
   @DisplayName(
-      "Given a family without declared profiles and message transformations, when resolving by prefix, then transformations are aggregated")
+      "Given a family without declared profiles, when selecting its period, then group transformations are returned")
   @Test
   void expectMessageTransformationsForPrefixMatch() {
     final var t1 = new MessageTransformation("error", "information", "loc", ".*", "id-1");
@@ -335,8 +340,11 @@ class ValidationModuleIndexTest {
                 Map.of("isik", family),
                 Map.of("meta_profile_slice_to_error", List.of(t1, t2))));
     // no defaultVersion declared -> the explicit version must be used
-    Assertions.assertEquals(
-        2, index.getMessageTransformations(ISIK_BASE + "/ISiKPatient", "5.0.0").size());
+    final var selectedGroup =
+        index
+            .getPackageGroupForDate(ISIK_BASE + "/ISiKPatient", "5.0.0", LocalDate.of(2026, 1, 1))
+            .orElseThrow();
+    Assertions.assertEquals(2, selectedGroup.messageTransformations().size());
   }
 
   @DisplayName(

@@ -107,10 +107,7 @@ public class ResultReporter {
         expectedInvalidSources == null
             ? totalFatalErrors == 0 && totalErrors == 0
             : expectationsMatched;
-    String overallStatus =
-        expectedInvalidSources == null
-            ? resultSuccessful ? "VALID" : "INVALID"
-            : resultSuccessful ? "EXPECTATIONS MET" : "EXPECTATION MISMATCH";
+    String overallStatus = overallStatus(expectedInvalidSources != null, resultSuccessful);
     stringBuilder
         .append("\n")
         .append(
@@ -176,9 +173,7 @@ public class ResultReporter {
 
     final var totalMinutes = TimeUnit.MILLISECONDS.toMinutes(totalTime);
     final var expectationStatus =
-        expectedInvalidSources == null
-            ? "Not enabled"
-            : expectationsMatched ? "All expectations matched" : "Expectation mismatch";
+        expectationStatus(expectedInvalidSources != null, expectationsMatched);
     final var totalTimeFormat =
         String.format(
             "%d min, %d sec",
@@ -281,6 +276,20 @@ public class ResultReporter {
     return counts.errors() > 0 || counts.fatalErrors() > 0
         ? ExpectedValidationResult.Validity.INVALID
         : ExpectedValidationResult.Validity.VALID;
+  }
+
+  private static String overallStatus(boolean expectationCheckEnabled, boolean resultSuccessful) {
+    if (expectationCheckEnabled) {
+      return resultSuccessful ? "EXPECTATIONS MET" : "EXPECTATION MISMATCH";
+    }
+    return resultSuccessful ? "VALID" : "INVALID";
+  }
+
+  private static String expectationStatus(boolean expectationCheckEnabled, boolean matched) {
+    if (!expectationCheckEnabled) {
+      return "Not enabled";
+    }
+    return matched ? "All expectations matched" : "Expectation mismatch";
   }
 
   private String expectationLabel(ExpectedValidationResult expectedResult) {

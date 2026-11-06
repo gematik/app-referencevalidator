@@ -113,14 +113,11 @@ public final class ValidationModuleIndex {
    * @param validityPeriods ordered timeline of package groups; first match wins
    * @param openEndedPeriod the currently active period, used when no reference date is available;
    *     null if all periods are closed
-   * @param messageTransformations aggregated, duplicate-free transformations of all package groups
-   *     bound to this version
    * @param validityDateSource the FHIRPath expression extracting the reference date, or null
    */
   private record ResolvedVersion(
       @NonNull List<ResolvedPeriod> validityPeriods,
       @Nullable ResolvedPeriod openEndedPeriod,
-      @NonNull List<MessageTransformation> messageTransformations,
       @Nullable String validityDateSource) {
 
     /** Returns the first period (declaration order) containing the reference date. */
@@ -246,20 +243,6 @@ public final class ValidationModuleIndex {
     return findProfileVersion(profileUrl, version)
         .flatMap(ResolvedVersion::fallbackPeriod)
         .map(ValidationModuleIndex::selectionOf);
-  }
-
-  /**
-   * Aggregated message transformations of all package groups bound to the profile version.
-   *
-   * @deprecated This union ignores the selected validity period. Use the group-selection methods
-   *     before applying transformations to a resource.
-   */
-  @Deprecated(forRemoval = false)
-  public List<MessageTransformation> getMessageTransformations(
-      @NonNull String profileUrl, @Nullable String version) {
-    return findProfileVersion(profileUrl, version)
-        .map(ResolvedVersion::messageTransformations)
-        .orElse(List.of());
   }
 
   /** The FHIRPath expression used to extract the reference date for the profile version. */
@@ -449,10 +432,7 @@ public final class ValidationModuleIndex {
         periods.stream().filter(ResolvedPeriod::isOpenEnded).findFirst().orElse(null);
 
     return new ResolvedVersion(
-        periods,
-        openEnded,
-        aggregateMessageTransformations(configuration, profileVersion),
-        profileDefinition.dateSourceFor(version).orElse(null));
+        periods, openEnded, profileDefinition.dateSourceFor(version).orElse(null));
   }
 
   private static List<String> packagesOf(
@@ -485,39 +465,5 @@ public final class ValidationModuleIndex {
         .flatMap(
             name -> configuration.messageTransformations().getOrDefault(name, List.of()).stream())
         .toList();
-  }
-
-  /**
-   * Collects the distinct message-transformation templates referenced by all package groups of the
-   * version, preserving declaration order.
-   */
-  private static List<MessageTransformation> aggregateMessageTransformations(
-      ValidationModuleManifest configuration, ProfileVersion profileVersion) {
-    final Set<String> transformationNames = new LinkedHashSet<>();
-    profileVersion
-        .groups()
-        .forEach(
-            period -> {
-              if (!configuration.packageGroups().isEmpty()) {
-                transformationNames.addAll(
-                    Objects.requireNonNull(
-                        configuration
-                            .packageGroups()
-                            .get(period.packageGroupName())
-                            .messageTransformations()));
-              }
-            });
-
-    if (transformationNames.isEmpty()) {
-      return List.of();
-    }
-
-    final List<MessageTransformation> transformations = new ArrayList<>();
-    transformationNames.forEach(
-        name ->
-            transformations.addAll(
-                Objects.requireNonNull(configuration.messageTransformations())
-                    .getOrDefault(name, List.of())));
-    return Collections.unmodifiableList(transformations);
   }
 }

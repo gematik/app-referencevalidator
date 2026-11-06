@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -58,7 +59,7 @@ class BatchValidationContextTemplateManagerTest {
   void sameConfigurationAndOrderedPackageSetReuseTemplateButReturnDistinctContexts()
       throws Exception {
     final var provider = mock(ContextProvider.class);
-    final var template = contextTemplate();
+    final var template = defaultContextTemplate();
     when(provider.validationContext(configuration, List.of("core#1", "guide#2")))
         .thenReturn(template);
 
@@ -75,6 +76,8 @@ class BatchValidationContextTemplateManagerTest {
         verify(template, times(2)).cloneContext(List.of());
       }
     }
+
+    verify(template).close();
   }
 
   @Test
@@ -219,6 +222,119 @@ class BatchValidationContextTemplateManagerTest {
       }
       verify(provider, times(2)).validationContext(configuration, List.of("guide#2"));
     }
+  }
+
+  @Test
+  void preparationFailureClosesCreatedTemplateAndAllowsRetry() throws Exception {
+    final var provider = mock(ContextProvider.class);
+    final var failedTemplate = mock(DefaultValidationContext.class);
+    final var template = contextTemplate();
+    final var packageCoordinates = List.of("guide#2");
+    doThrow(new AssertionError("preparation failed"))
+        .when(failedTemplate)
+        .prepareForConcurrentCloning();
+    doThrow(new AssertionError("close failed")).when(failedTemplate).close();
+    when(provider.validationContext(configuration, List.of("guide#2")))
+        .thenReturn(failedTemplate, template);
+
+    try (var manager = new BatchValidationContextTemplateManager(provider, 1)) {
+      final var failure =
+          assertThrows(
+              AssertionError.class, () -> manager.acquire(configuration, packageCoordinates));
+      assertEquals("preparation failed", failure.getMessage());
+      assertEquals(1, failure.getSuppressed().length);
+      assertEquals("close failed", failure.getSuppressed()[0].getMessage());
+      verify(failedTemplate, times(1)).close();
+
+      try (var lease = manager.acquire(configuration, packageCoordinates)) {
+        assertNotSame(template, lease.newIsolatedContext());
+      }
+    }
+
+    verify(template).close();
+  }
+
+  @Test
+  void preparationExceptionClosesCreatedTemplateAndAllowsRetry() throws Exception {
+    final var provider = mock(ContextProvider.class);
+    final var failedTemplate = mock(DefaultValidationContext.class);
+    final var template = contextTemplate();
+    final var packageCoordinates = List.of("guide#2");
+    final var preparationFailure = new IllegalStateException("preparation failed");
+    doThrow(preparationFailure).when(failedTemplate).prepareForConcurrentCloning();
+    doThrow(preparationFailure).when(failedTemplate).close();
+    when(provider.validationContext(configuration, packageCoordinates))
+        .thenReturn(failedTemplate, template);
+
+    try (var manager = new BatchValidationContextTemplateManager(provider, 1)) {
+      final var failure =
+          assertThrows(
+              IllegalStateException.class,
+              () -> manager.acquire(configuration, packageCoordinates));
+      assertEquals("preparation failed", failure.getMessage());
+      assertEquals(0, failure.getSuppressed().length);
+      verify(failedTemplate, times(1)).close();
+
+      try (var lease = manager.acquire(configuration, packageCoordinates)) {
+        assertNotSame(template, lease.newIsolatedContext());
+      }
+    }
+
+    verify(template).close();
+  }
+
+  @Test
+  void preparationFailureClosesTemplateWhenCleanupSucceeds() throws Exception {
+    final var provider = mock(ContextProvider.class);
+    final var failedTemplate = mock(DefaultValidationContext.class);
+    final var template = contextTemplate();
+    final var packageCoordinates = List.of("guide#2");
+    doThrow(new IllegalStateException("preparation failed"))
+        .when(failedTemplate)
+        .prepareForConcurrentCloning();
+    when(provider.validationContext(configuration, packageCoordinates))
+        .thenReturn(failedTemplate, template);
+
+    try (var manager = new BatchValidationContextTemplateManager(provider, 1)) {
+      assertThrows(
+          IllegalStateException.class, () -> manager.acquire(configuration, packageCoordinates));
+      verify(failedTemplate, times(1)).close();
+
+      try (var lease = manager.acquire(configuration, packageCoordinates)) {
+        assertNotSame(template, lease.newIsolatedContext());
+      }
+    }
+
+    verify(template).close();
+  }
+
+  @Test
+  void distinctCleanupFailureIsSuppressedOntoPreparationFailure() throws Exception {
+    final var provider = mock(ContextProvider.class);
+    final var failedTemplate = mock(DefaultValidationContext.class);
+    final var packageCoordinates = List.of("guide#2");
+    final var preparationFailure = new IllegalStateException("preparation failed");
+    final var cleanupFailure = new IllegalArgumentException("close failed");
+    doThrow(preparationFailure).when(failedTemplate).prepareForConcurrentCloning();
+    doThrow(cleanupFailure).when(failedTemplate).close();
+    when(provider.validationContext(configuration, packageCoordinates)).thenReturn(failedTemplate);
+
+    try (var manager = new BatchValidationContextTemplateManager(provider, 1)) {
+      final var failure =
+          assertThrows(
+              IllegalStateException.class,
+              () -> manager.acquire(configuration, packageCoordinates));
+      assertEquals("preparation failed", failure.getMessage());
+      assertEquals(1, failure.getSuppressed().length);
+      assertEquals("close failed", failure.getSuppressed()[0].getMessage());
+      verify(failedTemplate, times(1)).close();
+    }
+  }
+
+  private DefaultValidationContext defaultContextTemplate() {
+    final var template = mock(DefaultValidationContext.class);
+    when(template.cloneContext(anyCollection())).thenAnswer(_ -> mock(ValidationContext.class));
+    return template;
   }
 
   private ValidationContext contextTemplate() {
