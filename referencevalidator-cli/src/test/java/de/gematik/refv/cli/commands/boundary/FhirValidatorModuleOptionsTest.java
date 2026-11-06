@@ -115,11 +115,22 @@ class FhirValidatorModuleOptionsTest {
             List.of());
     final var moduleOptions =
         FhirValidatorCommand.withValidationModuleOptions(baseOptions, manifest);
+    final var baseWithoutSuppressionRules =
+        new ValidationOptions(
+            null,
+            null,
+            ValidationOptions.ValidationMessagesFilterStrategy.KEEP_ALL,
+            ValidationOptions.ProfileValidityPeriodCheckStrategy.VALIDATE,
+            null,
+            null);
+    final var moduleOptionsWithoutSuppressionRules =
+        FhirValidatorCommand.withValidationModuleOptions(baseWithoutSuppressionRules, manifest);
     final var selector =
         new ValidationPackageSelector(
             new ValidationModuleIndex(new ValidationModule(manifest, Path.of("module.jar"))));
 
     assertThat(moduleOptions.messageTransformations()).containsExactly(globalTransformation);
+    assertThat(moduleOptionsWithoutSuppressionRules.suppressionRules()).isEmpty();
     assertSelectedGroup(
         selector,
         moduleOptions,

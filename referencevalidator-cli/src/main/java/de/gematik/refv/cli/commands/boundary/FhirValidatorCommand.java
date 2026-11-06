@@ -68,7 +68,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -271,36 +270,7 @@ public class FhirValidatorCommand extends BaseCommand {
 
       log.debug("User configuration loaded successfully");
 
-      final ContextConfiguration contextConfig;
-      final ValidationPackageSelector validationPackageSelector;
-      final Optional<ValidationModule> validationModule;
-      var validationCliConfig = cliConfig;
-      if (Objects.nonNull(cliConfig.module())) {
-        log.info("Attempting to load module '{}'...", cliConfig.module().name());
-        validationModule =
-            ModuleLoader.defaultLoader()
-                .forValidation(cliConfig.module().directory(), cliConfig.module().name());
-        if (validationModule.isEmpty()) {
-          throw new LoadModuleException("Could not find a suitable module");
-        }
-        final var validationModuleIndex = new ValidationModuleIndex(validationModule.get());
-        validationPackageSelector = new ValidationPackageSelector(validationModuleIndex);
-        validationCliConfig =
-            new ValidationCliConfig(
-                cliConfig.context(),
-                cliConfig.module(),
-                withValidationModuleOptions(
-                    cliConfig.validationOptions(),
-                    validationModuleIndex.getValidationModuleConfiguration()),
-                cliConfig.report());
-        // Merge the module's engine-level validation settings into the context configuration
-        contextConfig = withModuleValidation(cliConfig.context(), validationModuleIndex);
-      } else {
-        log.info("No explicit module selected, using core definitions");
-        validationModule = Optional.empty();
-        contextConfig = cliConfig.context();
-        validationPackageSelector = new ValidationPackageSelector();
-      }
+      final var validationSetup = configureValidation(cliConfig);
       final var validationSources = getFilesForValidation(sources, inputLimits);
       final Set<String> expectedInvalidSources =
           shouldInspectExpectedValidity
@@ -311,31 +281,16 @@ public class FhirValidatorCommand extends BaseCommand {
                   .map(source -> source.path().toString())
                   .collect(Collectors.toUnmodifiableSet())
               : null;
-      preloadCache(cliConfig.context(), validationModule.orElse(null));
+      preloadCache(cliConfig.context(), validationSetup.validationModule().orElse(null));
       log.info("Loading {} files for the validation", validationSources.size());
       final Map<String, ContextResult> resultMap = new HashMap<>();
 
       try (var batchContexts =
           BatchValidationContextProvider.defaultProvider(
-              ContextProvider.defaultProvider(), contextConfig, parallelThreads)) {
-        if (validationSources.size() == 1) {
-          final var singleResult =
-              validateSingle(
-                  validationSources.getFirst(),
-                  validationCliConfig,
-                  validationPackageSelector,
-                  batchContexts);
-          final String sourceKey =
-              shouldInspectExpectedValidity
-                  ? validationSources.getFirst().path().toString()
-                  : validationSources.toString();
-          resultMap.put(sourceKey, singleResult);
-        } else {
-          var concurrentResult =
-              validateConcurrently(
-                  validationSources, validationPackageSelector, validationCliConfig, batchContexts);
-          resultMap.putAll(concurrentResult);
-        }
+              ContextProvider.defaultProvider(),
+              validationSetup.contextConfiguration(),
+              parallelThreads)) {
+        validateSources(validationSources, validationSetup, batchContexts, resultMap);
       }
 
       boolean overallValid = reporter.generateReport(resultMap, expectedInvalidSources);
@@ -354,6 +309,65 @@ public class FhirValidatorCommand extends BaseCommand {
       log.debug("Stack trace:", e);
       return 1;
     }
+  }
+
+  private ValidationSetup configureValidation(ValidationCliConfig cliConfig)
+      throws LoadModuleException {
+    final var module = cliConfig.module();
+    if (module == null) {
+      log.info("No explicit module selected, using core definitions");
+      return new ValidationSetup(
+          cliConfig.context(), new ValidationPackageSelector(), Optional.empty(), cliConfig);
+    }
+
+    log.info("Attempting to load module '{}'...", module.name());
+    final var validationModule =
+        ModuleLoader.defaultLoader().forValidation(module.directory(), module.name());
+    if (validationModule.isEmpty()) {
+      throw new LoadModuleException("Could not find a suitable module");
+    }
+
+    final var validationModuleIndex = new ValidationModuleIndex(validationModule.get());
+    final var moduleCliConfig =
+        new ValidationCliConfig(
+            cliConfig.context(),
+            module,
+            withValidationModuleOptions(
+                cliConfig.validationOptions(),
+                validationModuleIndex.getValidationModuleConfiguration()),
+            cliConfig.report());
+    return new ValidationSetup(
+        withModuleValidation(cliConfig.context(), validationModuleIndex),
+        new ValidationPackageSelector(validationModuleIndex),
+        validationModule,
+        moduleCliConfig);
+  }
+
+  private void validateSources(
+      List<ValidationInputCollector.ValidationInput> validationSources,
+      ValidationSetup validationSetup,
+      BatchValidationContextProvider batchContexts,
+      Map<String, ContextResult> resultMap) {
+    if (validationSources.size() == 1) {
+      final var source = validationSources.getFirst();
+      final var result =
+          validateSingle(
+              source,
+              validationSetup.cliConfig(),
+              validationSetup.packageSelector(),
+              batchContexts);
+      final var sourceKey =
+          shouldInspectExpectedValidity ? source.path().toString() : validationSources.toString();
+      resultMap.put(sourceKey, result);
+      return;
+    }
+
+    resultMap.putAll(
+        validateConcurrently(
+            validationSources,
+            validationSetup.packageSelector(),
+            validationSetup.cliConfig(),
+            batchContexts));
   }
 
   private ValidationResult validateSingle(
@@ -628,29 +642,32 @@ public class FhirValidatorCommand extends BaseCommand {
 
   private void logSelectedTransformations(
       Path resourcePath, ResourcePackageSelection packageSelection) {
-    if (!packageSelection.messageTransformationIds().isEmpty()) {
-      log.info(
-          "Selected message transformation IDs {} from package group '{}' for {}",
-          packageSelection.messageTransformationIds(),
-          packageSelection.packageGroup().orElse("unspecified"),
-          resourcePath);
+    if (log.isInfoEnabled()) {
+      final var transformationIds = packageSelection.messageTransformationIds();
+      if (!transformationIds.isEmpty()) {
+        log.info(
+            "Selected message transformation IDs {} from package group '{}' for {}",
+            transformationIds,
+            packageSelection.packageGroup().orElse("unspecified"),
+            resourcePath);
+      }
     }
   }
 
   private static @NonNull List<SuppressionRule> getSuppressionRules(
       @NonNull ValidationOptions base, @NonNull ValidationModuleManifest moduleManifest) {
-    List<SuppressionRule> suppressionRules;
-    Collection<SuppressionRule> baseRules =
-        Objects.requireNonNullElse(base.suppressionRules(), Collections.emptyList());
-    if (Objects.nonNull(moduleManifest.globalSuppressionRules())) {
-      suppressionRules =
-          new ArrayList<>(baseRules.size() + moduleManifest.globalSuppressionRules().size());
+    final var suppressionRules = new ArrayList<SuppressionRule>();
+    final var baseRules = base.suppressionRules();
+    if (baseRules != null) {
       suppressionRules.addAll(baseRules);
-      suppressionRules.addAll(moduleManifest.globalSuppressionRules());
-    } else {
-      suppressionRules = base.suppressionRules();
     }
-    log.debug("Total Suppression Rules loaded: {}", suppressionRules.size());
+    final var moduleRules = moduleManifest.globalSuppressionRules();
+    if (moduleRules != null) {
+      suppressionRules.addAll(moduleRules);
+    }
+    if (log.isDebugEnabled()) {
+      log.debug("Total Suppression Rules loaded: {}", suppressionRules.size());
+    }
     return suppressionRules;
   }
 
@@ -666,4 +683,10 @@ public class FhirValidatorCommand extends BaseCommand {
       messageTransformations = List.copyOf(messageTransformations);
     }
   }
+
+  private record ValidationSetup(
+      ContextConfiguration contextConfiguration,
+      ValidationPackageSelector packageSelector,
+      Optional<ValidationModule> validationModule,
+      ValidationCliConfig cliConfig) {}
 }

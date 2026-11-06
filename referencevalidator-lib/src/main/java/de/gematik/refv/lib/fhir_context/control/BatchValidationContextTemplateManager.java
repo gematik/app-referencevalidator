@@ -200,23 +200,28 @@ final class BatchValidationContextTemplateManager implements AutoCloseable {
       ContextConfiguration configuration, ValidationPackageSetKey key, Entry entry)
       throws InitializationException {
     var initialized = false;
-    try {
-      final var template =
-          Objects.requireNonNull(
-              templateFactory.create(configuration, key.packageCoordinates()),
-              "Context provider returned a null validation context");
-      if (template instanceof DefaultValidationContext defaultTemplate) {
-        defaultTemplate.prepareForConcurrentCloning();
-      }
-      entry.template = template;
-      initialized = true;
-    } catch (Exception exception) {
-      failInitialization(key, entry, exception);
-      rethrow(exception);
-    } finally {
-      if (!initialized && entry.initializing) {
-        failInitialization(
-            key, entry, new IllegalStateException("Template initialization did not complete"));
+    try (var ownership = new TemplateInitialization()) {
+      try {
+        final var template =
+            Objects.requireNonNull(
+                templateFactory.create(configuration, key.packageCoordinates()),
+                "Context provider returned a null validation context");
+        ownership.own(template);
+        if (template instanceof DefaultValidationContext defaultTemplate) {
+          defaultTemplate.prepareForConcurrentCloning();
+        }
+        entry.template = template;
+        ownership.commit();
+        initialized = true;
+      } catch (Exception failure) {
+        ownership.failed(failure);
+        failInitialization(key, entry, failure);
+        rethrow(failure);
+      } finally {
+        if (!initialized && entry.initializing) {
+          failInitialization(
+              key, entry, new IllegalStateException("Template initialization did not complete"));
+        }
       }
     }
 
@@ -306,6 +311,37 @@ final class BatchValidationContextTemplateManager implements AutoCloseable {
       throw error;
     }
     throw new IllegalStateException("Unexpected template initialization failure", failure);
+  }
+
+  private static final class TemplateInitialization implements AutoCloseable {
+    private ValidationContext template;
+    private Exception initializationFailure;
+    private boolean committed;
+
+    void own(ValidationContext template) {
+      this.template = template;
+    }
+
+    void commit() {
+      committed = true;
+    }
+
+    void failed(Exception failure) {
+      initializationFailure = failure;
+    }
+
+    @Override
+    public void close() {
+      if (!committed && template != null) {
+        try {
+          template.close();
+        } catch (Exception closeFailure) {
+          if (initializationFailure != closeFailure) {
+            throw closeFailure;
+          }
+        }
+      }
+    }
   }
 
   private static final class Entry {

@@ -31,6 +31,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import de.gematik.refv.lib.exceptions.ValidationException;
 import de.gematik.refv.lib.fhir_context.boundary.ValidationContext;
 import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
@@ -56,11 +57,21 @@ class DefaultValidatorTest {
   @DisplayName("Given a context that throws, when validating, then a ValidationException is thrown")
   @Test
   void expectValidateWrapsErrorsInValidationException() {
-    try (var validator = new DefaultValidator(ContextConfiguration.defaultConfiguration())) {
-      final var request =
-          new ValidationRequest(FhirResource.fromJson("{\"resourceType\":\"Patient\"}"));
-      Assertions.assertDoesNotThrow(
-          () -> validator.validate(request, ValidationOptions.defaultConfiguration()));
+    final var context = mock(ValidationContext.class);
+    final var resource = FhirResource.fromJson("{\"resourceType\":\"Patient\"}");
+    final var cause = new IllegalStateException("profile resolution failed");
+    when(context.validate(resource, List.of())).thenThrow(cause);
+
+    try (var validator = ValidatorFactory.withValidationContext(context)) {
+      final var request = new ValidationRequest(resource);
+      final var options = ValidationOptions.defaultConfiguration();
+      final var failure =
+          Assertions.assertThrows(
+              ValidationException.class, () -> validator.validate(request, options));
+
+      assertEquals(
+          "Failed to validate the resource: profile resolution failed", failure.getMessage());
+      Assertions.assertSame(cause, failure.getCause());
     }
   }
 

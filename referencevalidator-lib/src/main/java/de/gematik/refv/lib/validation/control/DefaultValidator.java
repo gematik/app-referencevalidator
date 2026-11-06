@@ -96,7 +96,11 @@ public class DefaultValidator implements Validator {
       return ValidationResultFilter.apply(
           transformed.messages(), validationOptions.validationMessagesFilterStrategy());
     } catch (Exception e) {
-      throw new ValidationException("Failed to validate the resource", e);
+      var reason = e.getLocalizedMessage();
+      if (reason == null || reason.isBlank()) {
+        reason = e.getClass().getSimpleName();
+      }
+      throw new ValidationException("Failed to validate the resource: " + reason, e);
     }
   }
 }
