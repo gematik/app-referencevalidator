@@ -111,20 +111,17 @@ class AutomaticChildValidationTest {
       var wrongSlice =
           FhirResource.fromJson(
               """
-          {"resourceType":"Parameters","parameter":[{"name":"other","resource":{
-            "resourceType":"Patient","meta":{"profile":["%s"]},"active":false
-          }}]}
-          """
+              {"resourceType":"Parameters","parameter":[{"name":"other","resource":{
+                "resourceType":"Patient","meta":{"profile":["%s"]},"active":false
+              }}]}
+              """
                   .formatted(LOOSE_PROFILE));
       var invalidMessages = context.validate(wrongSlice, profile).messages();
       assertTrue(
           invalidMessages.stream()
-              .anyMatch(
-                  message ->
-                      isError(message)
-                          && !message
-                              .messageContent()
-                              .startsWith("Parameters.parameter[0].resource:")),
+              .anyMatch(message ->
+                  isError(message)
+                      && !message.messageContent().startsWith("Parameters.parameter[0].resource:")),
           invalidMessages::toString);
     }
   }
@@ -147,13 +144,13 @@ class AutomaticChildValidationTest {
     return FhirResource.fromJson(
         type.equals("Bundle")
             ? """
-          {"resourceType":"Bundle","type":"collection","entry":[{
-            "fullUrl":"urn:uuid:7acf2d71-95df-43d0-89df-873492c7d27a","resource":%s}]}
-          """
+            {"resourceType":"Bundle","type":"collection","entry":[{
+              "fullUrl":"urn:uuid:7acf2d71-95df-43d0-89df-873492c7d27a","resource":%s}]}
+            """
                 .formatted(child)
             : """
-          {"resourceType":"Parameters","parameter":[{"name":"subject","resource":%s}]}
-          """
+            {"resourceType":"Parameters","parameter":[{"name":"subject","resource":%s}]}
+            """
                 .formatted(child));
   }
 

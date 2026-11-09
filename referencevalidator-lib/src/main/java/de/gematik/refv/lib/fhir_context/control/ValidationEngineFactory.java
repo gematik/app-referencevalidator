@@ -36,12 +36,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import org.hl7.fhir.model.utilities.formats.FhirFormat;
 import org.hl7.fhir.services.validation.constants.BestPracticeWarningLevel;
+import org.hl7.fhir.services.validation.constants.ReferenceValidationPolicy;
 import org.hl7.fhir.utilities.FhirPublication;
 import org.hl7.fhir.utilities.logging.Slf4JLoggingService;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
+import org.hl7.fhir.utilities.settings.FhirSettings;
 import org.hl7.fhir.validation.ValidationEngine;
+import org.hl7.fhir.validation.instance.advisor.BasePolicyAdvisorForFullValidation;
 import org.hl7.fhir.validation.service.model.InstanceValidatorParameters;
 import org.hl7.fhir.validation.service.utils.ValidationLevel;
 import org.jspecify.annotations.NonNull;
@@ -110,28 +114,26 @@ final class ValidationEngineFactory {
    * Creates {@link InstanceValidatorParameters} out of given {@link ContextConfiguration}
    * configuration
    */
-  private static InstanceValidatorParameters buildInstanceValidationParameters(
+  static InstanceValidatorParameters buildInstanceValidationParameters(
       @NonNull ContextConfiguration contextConfiguration) {
     final var instanceParameters = new InstanceValidatorParameters();
     // Fixed Parameters
     instanceParameters.setAllowDoubleQuotesInFHIRPath(
         false); // Double quotes are not FHIR-conform, fixed to stay as false
     // Configurable parameters
-    instanceParameters.setLevel(
-        contextConfiguration
-                .displayBehavior()
-                .displayWarnings()
-                .equals(DisplayBehaviorConfiguration.DisplayWarnings.ENABLED)
-            ? ValidationLevel.WARNINGS
-            : ValidationLevel.HINTS);
+    instanceParameters.setLevel(toValidationLevel(contextConfiguration.validationPolicy()));
     instanceParameters.setBestPracticeLevel(
         toBestPracticeWarningLevel(
             contextConfiguration.displayBehavior().displayBestPracticeMessageLevel()));
     instanceParameters.setAllowExampleUrls(
-        contextConfiguration
-            .validationPolicy()
-            .exampleUrlsUsagePolicy()
-            .equals(ValidationPolicyConfiguration.ExampleUrlsUsagePolicy.ALLOWED));
+        ValidationPolicyConfiguration.ExampleUrlsUsagePolicy.ALLOWED.equals(
+                contextConfiguration.validationPolicy().exampleUrlsUsagePolicy())
+            && ValidationPolicyConfiguration.ExampleCodeSystemsUsagePolicy.ALLOWED.equals(
+                contextConfiguration.validationPolicy().exampleCodeSystemsUsagePolicy()));
+    if (ValidationPolicyConfiguration.AnyExtensionPolicy.ALLOWED.equals(
+        contextConfiguration.validationPolicy().anyExtensionPolicy())) {
+      instanceParameters.addExtension("any");
+    }
     instanceParameters.setShowMessageIds(
         contextConfiguration
             .displayBehavior()
@@ -229,8 +231,14 @@ final class ValidationEngineFactory {
     // There is no way to set up the custom package path with the builder
     // so the setting must be applied on the engine directly.
     configurePackageDownloadSettings(validationEngine, contextConfiguration);
+    configureDefaultReferencePolicy(validationEngine);
     configureRecursiveChildValidation(validationEngine, contextConfiguration.validationPolicy());
     return validationEngine;
+  }
+
+  static void configureDefaultReferencePolicy(ValidationEngine validationEngine) {
+    validationEngine.setPolicyAdvisor(
+        new BasePolicyAdvisorForFullValidation(ReferenceValidationPolicy.IGNORE, Set.of()));
   }
 
   static void configureRecursiveChildValidation(
@@ -281,7 +289,7 @@ final class ValidationEngineFactory {
           terminologyConfiguration.serverUri().toString(),
           null,
           FhirPublication.fromCode(contextConfiguration.fhirRelease().corePackageVersion()),
-          true);
+          FhirSettings.getDefaultTxEcosystemFor(terminologyConfiguration.serverUri().toString()));
     } else {
       // Set Offline mode
       validationEngine.getContext().setNoTerminologyServer(true);
@@ -300,6 +308,14 @@ final class ValidationEngineFactory {
       case SHOW_HINTS -> BestPracticeWarningLevel.Hint;
       case SHOW_WARNINGS -> BestPracticeWarningLevel.Warning;
       case SHOW_ERRORS -> BestPracticeWarningLevel.Error;
+    };
+  }
+
+  static ValidationLevel toValidationLevel(ValidationPolicyConfiguration validationPolicy) {
+    return switch (validationPolicy.validationLevelPolicy()) {
+      case SHOW_ALL -> ValidationLevel.HINTS;
+      case SHOW_WARNINGS_AND_ERRORS -> ValidationLevel.WARNINGS;
+      case SHOW_ONLY_ERRORS -> ValidationLevel.ERRORS;
     };
   }
 }

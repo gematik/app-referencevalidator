@@ -192,14 +192,13 @@ class DefaultValidationContext implements ValidationContext {
     boolean areProfilesLoaded =
         // HL7 uses null, not an empty string, to resolve an unversioned canonical.
         profiles.stream()
-            .allMatch(
-                profile ->
-                    this.validationEngine
-                        .getContext()
-                        .hasResourceVersion(
-                            StructureDefinition.class,
-                            profile.canonical().toString(),
-                            profile.version().isBlank() ? null : profile.version()));
+            .allMatch(profile ->
+                this.validationEngine
+                    .getContext()
+                    .hasResourceVersion(
+                        StructureDefinition.class,
+                        profile.canonical().toString(),
+                        profile.version().isBlank() ? null : profile.version()));
 
     if (!areProfilesLoaded) {
       log.error("FHIR profiles were not loaded: {}", profiles);

@@ -284,28 +284,27 @@ public final class ValidationModuleIndex {
   private Optional<ResolvedVersion> resolveByFamilyPrefix(
       @NonNull String profileUrl, @Nullable String version) {
     return matchingFamily(profileUrl)
-        .flatMap(
-            family -> {
-              final String requested = normalizeVersion(version);
-              final String effective =
-                  ProfileCanonical.DEFAULT_VERSION.equals(requested)
-                      ? family.defaultVersion()
-                      : requested;
-              if (effective == null) {
-                return Optional.empty();
-              }
-              final ProfileVersion profileVersion =
-                  Objects.requireNonNull(family.versions()).get(effective);
-              if (profileVersion == null) {
-                return Optional.empty();
-              }
-              return Optional.of(
-                  resolveVersion(
-                      validationModule.configuration(),
-                      profileVersion,
-                      new ProfileDefinition(null, null),
-                      effective));
-            });
+        .flatMap(family -> {
+          final String requested = normalizeVersion(version);
+          final String effective =
+              ProfileCanonical.DEFAULT_VERSION.equals(requested)
+                  ? family.defaultVersion()
+                  : requested;
+          if (effective == null) {
+            return Optional.empty();
+          }
+          final ProfileVersion profileVersion =
+              Objects.requireNonNull(family.versions()).get(effective);
+          if (profileVersion == null) {
+            return Optional.empty();
+          }
+          return Optional.of(
+              resolveVersion(
+                  validationModule.configuration(),
+                  profileVersion,
+                  new ProfileDefinition(null, null),
+                  effective));
+        });
   }
 
   // ---------------------------------------------
@@ -341,11 +340,10 @@ public final class ValidationModuleIndex {
     final List<ProfileFamilyByCanonical> byPrefix = new ArrayList<>();
     configuration
         .profileFamilies()
-        .forEach(
-            (familyName, family) -> {
-              final String prefix = urlPrefix(family.canonicalBase());
-              byPrefix.add(new ProfileFamilyByCanonical(prefix, family));
-            });
+        .forEach((familyName, family) -> {
+          final String prefix = urlPrefix(family.canonicalBase());
+          byPrefix.add(new ProfileFamilyByCanonical(prefix, family));
+        });
     return byPrefix;
   }
 
@@ -355,20 +353,18 @@ public final class ValidationModuleIndex {
 
     configuration
         .profileFamilies()
-        .forEach(
-            (familyName, family) -> {
-              final String prefix = urlPrefix(family.canonicalBase());
-              Objects.requireNonNull(family.profiles())
-                  .forEach(
-                      (profileName, profileDefinition) ->
-                          registerProfile(
-                              index,
-                              configuration,
-                              familyName,
-                              family,
-                              prefix + profileName,
-                              profileDefinition));
-            });
+        .forEach((familyName, family) -> {
+          final String prefix = urlPrefix(family.canonicalBase());
+          Objects.requireNonNull(family.profiles())
+              .forEach((profileName, profileDefinition) ->
+                  registerProfile(
+                      index,
+                      configuration,
+                      familyName,
+                      family,
+                      prefix + profileName,
+                      profileDefinition));
+        });
     return Collections.unmodifiableMap(index);
   }
 
@@ -381,17 +377,16 @@ public final class ValidationModuleIndex {
       ProfileDefinition profileDefinition) {
 
     Objects.requireNonNull(family.versions())
-        .forEach(
-            (version, profileVersion) -> {
-              final String canonical = canonicalKey(profileUrl, version);
-              final ResolvedVersion resolved =
-                  resolveVersion(configuration, profileVersion, profileDefinition, version);
-              if (index.putIfAbsent(canonical, resolved) != null) {
-                throw new IllegalStateException(
-                    "Duplicate profile canonical '%s' introduced by profile family '%s'"
-                        .formatted(canonical, familyName));
-              }
-            });
+        .forEach((version, profileVersion) -> {
+          final String canonical = canonicalKey(profileUrl, version);
+          final ResolvedVersion resolved =
+              resolveVersion(configuration, profileVersion, profileDefinition, version);
+          if (index.putIfAbsent(canonical, resolved) != null) {
+            throw new IllegalStateException(
+                "Duplicate profile canonical '%s' introduced by profile family '%s'"
+                    .formatted(canonical, familyName));
+          }
+        });
 
     // Alias for versionless canonicals: url|DEFAULT_VERSION -> declared defaultVersion.
     final String defaultVersion = family.defaultVersion();
@@ -417,15 +412,14 @@ public final class ValidationModuleIndex {
 
     final List<ResolvedPeriod> periods =
         profileVersion.groups().stream()
-            .map(
-                period ->
-                    new ResolvedPeriod(
-                        period.packageGroupName(),
-                        period.validFrom(),
-                        period.validTill(),
-                        packagesOf(configuration, period.packageGroupName()),
-                        transformationIdsOf(configuration, period.packageGroupName()),
-                        transformationsOf(configuration, period.packageGroupName())))
+            .map(period ->
+                new ResolvedPeriod(
+                    period.packageGroupName(),
+                    period.validFrom(),
+                    period.validTill(),
+                    packagesOf(configuration, period.packageGroupName()),
+                    transformationIdsOf(configuration, period.packageGroupName()),
+                    transformationsOf(configuration, period.packageGroupName())))
             .toList();
 
     final ResolvedPeriod openEnded =

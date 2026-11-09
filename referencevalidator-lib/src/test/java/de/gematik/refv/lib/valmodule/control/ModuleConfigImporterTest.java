@@ -87,25 +87,25 @@ class ModuleConfigImporterTest {
 
   static String validManifest() {
     return """
-        configSpecVersion: "3.0"
-        name: "erp"
-        version: "1.0"
-        author: "gematik"
-        description: "test module"
-        errorOnUnknownProfile: true
-        anyExtensionsAllowed: false
-        requireExpansionBeforeValidation: false
-        packageGroups:
-          mypkg:
-             packages:
-               - "my.pkg-1.0.0.tgz"
-        profileFamilies:
-          mypkg:
-            canonicalBase: "https://example.org/fhir"
-            versions:
-              "1.0.0":
-                 groups:
-                   - packageGroupName: mypkg
-        """;
+    configSpecVersion: "3.0"
+    name: "erp"
+    version: "1.0"
+    author: "gematik"
+    description: "test module"
+    errorOnUnknownProfile: true
+    anyExtensionsAllowed: false
+    requireExpansionBeforeValidation: false
+    packageGroups:
+      mypkg:
+         packages:
+           - "my.pkg-1.0.0.tgz"
+    profileFamilies:
+      mypkg:
+        canonicalBase: "https://example.org/fhir"
+        versions:
+          "1.0.0":
+             groups:
+               - packageGroupName: mypkg
+    """;
   }
 }

@@ -114,10 +114,8 @@ class ContextPackageLoaderTest {
           .when(() -> ValidationEngineFactory.createNewCoreEngine(configuration))
           .thenReturn(new ValidationEngineFactory.EngineSession(templateEngine, null));
       factory
-          .when(
-              () ->
-                  ValidationEngineFactory.createNewCoreEngine(
-                      configuration, generated.packagePath()))
+          .when(() ->
+              ValidationEngineFactory.createNewCoreEngine(configuration, generated.packagePath()))
           .thenReturn(new ValidationEngineFactory.EngineSession(executionEngine, null));
       try (var template =
               new DefaultSnapshotGenerationContext(
@@ -126,10 +124,8 @@ class ContextPackageLoaderTest {
         Assertions.assertNotSame(template, execution);
         Assertions.assertEquals("GeneratedProfile", loadedProfile(executionEngine).getName());
         Assertions.assertEquals("OriginalProfile", loadedProfile(templateEngine).getName());
-        factory.verify(
-            () ->
-                ValidationEngineFactory.createNewCoreEngine(
-                    configuration, generated.packagePath()));
+        factory.verify(() ->
+            ValidationEngineFactory.createNewCoreEngine(configuration, generated.packagePath()));
       }
     }
   }
@@ -157,8 +153,8 @@ class ContextPackageLoaderTest {
     Files.writeString(
         examples.resolve("Patient-example.json"),
         """
-      {"resourceType":"Patient","id":"example"}
-      """);
+        {"resourceType":"Patient","id":"example"}
+        """);
     var npmPackage = NpmPackage.fromFolder(profile.packagePath().toString(), false);
 
     for (int rebuild = 0; rebuild < 2; rebuild++) {
@@ -183,14 +179,14 @@ class ContextPackageLoaderTest {
     Files.writeString(
         packageFolder.resolve("StructureDefinition-test.json"),
         """
-      {"resourceType":"ValueSet","id":"test","url":"http://example.org/ValueSet/test",
-       "version":"1.0.0","status":"active"}
-      """);
+        {"resourceType":"ValueSet","id":"test","url":"http://example.org/ValueSet/test",
+         "version":"1.0.0","status":"active"}
+        """);
     Files.writeString(
         packageFolder.resolve("Patient-new.json"),
         """
-      {"resourceType":"Patient","id":"new"}
-      """);
+        {"resourceType":"Patient","id":"new"}
+        """);
 
     DefaultSnapshotGenerationContext.rebuildPackageIndexes(npmPackage, profile.packagePath());
 

@@ -152,10 +152,9 @@ class RecursiveValidationIT {
     final var recursiveMessages = validate(resource, RecursiveModePolicy.ALLOWED);
     assertTrue(
         recursiveMessages.stream()
-            .anyMatch(
-                message ->
-                    message.severity() == IssueSeverity.ERROR
-                        && message.messageContent().startsWith(childPath)),
+            .anyMatch(message ->
+                message.severity() == IssueSeverity.ERROR
+                    && message.messageContent().startsWith(childPath)),
         recursiveMessages::toString);
   }
 
@@ -208,10 +207,9 @@ class RecursiveValidationIT {
   private static void assertNoErrors(List<ResultMessage> messages) {
     assertFalse(
         messages.stream()
-            .anyMatch(
-                message ->
-                    message.severity() == IssueSeverity.ERROR
-                        || message.severity() == IssueSeverity.FATAL),
+            .anyMatch(message ->
+                message.severity() == IssueSeverity.ERROR
+                    || message.severity() == IssueSeverity.FATAL),
         () -> "Expected no errors, received: " + messages);
   }
 }

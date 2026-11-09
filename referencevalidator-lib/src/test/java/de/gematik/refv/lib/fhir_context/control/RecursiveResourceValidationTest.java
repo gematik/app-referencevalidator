@@ -108,8 +108,8 @@ class RecursiveResourceValidationTest {
     var resource =
         FhirResource.fromJson(
             """
-        {"resourceType":"Bundle","entry":[{"fullUrl":"%s","resource":{"resourceType":"Patient","gender":"invalid"}}]}
-        """
+            {"resourceType":"Bundle","entry":[{"fullUrl":"%s","resource":{"resourceType":"Patient","gender":"invalid"}}]}
+            """
                 .formatted(PATIENT_FULL_URL));
     try (var context =
         context(
@@ -137,10 +137,10 @@ class RecursiveResourceValidationTest {
     var resource =
         FhirResource.fromJson(
             """
-        {"resourceType":"Parameters","parameter":[{"name":"patient","resource":{
-          "resourceType":"Patient","meta":{"profile":["%s"]}
-        }}]}
-        """
+            {"resourceType":"Parameters","parameter":[{"name":"patient","resource":{
+              "resourceType":"Patient","meta":{"profile":["%s"]}
+            }}]}
+            """
                 .formatted(canonical));
     try (var context =
         context(
@@ -248,10 +248,9 @@ class RecursiveResourceValidationTest {
       assertTrue(standaloneMessages.stream().anyMatch(RecursiveResourceValidationTest::isError));
       assertTrue(
           containedMessages.stream()
-              .anyMatch(
-                  message ->
-                      isError(message)
-                          && message.messageContent().startsWith("Bundle.entry[0].resource:")),
+              .anyMatch(message ->
+                  isError(message)
+                      && message.messageContent().startsWith("Bundle.entry[0].resource:")),
           containedMessages::toString);
     }
   }

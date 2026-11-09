@@ -79,11 +79,10 @@ final class PackageDependencyExtractor {
 
       if (packageJson.has(DEPENDENCIES_ENTRY)) {
         final var dependencyNode = packageJson.get(DEPENDENCIES_ENTRY);
-        dependencyNode.forEachEntry(
-            (packageName, jsonNodeVersion) -> {
-              final String packageVersion = jsonMapper.convertValue(jsonNodeVersion, String.class);
-              dependencies.add(packageName + PackageId.PACKAGE_SEPARATOR + packageVersion);
-            });
+        dependencyNode.forEachEntry((packageName, jsonNodeVersion) -> {
+          final String packageVersion = jsonMapper.convertValue(jsonNodeVersion, String.class);
+          dependencies.add(packageName + PackageId.PACKAGE_SEPARATOR + packageVersion);
+        });
       }
       log.debug("{} dependencies {}", coordinates, dependencies);
       return dependencies;

@@ -350,20 +350,21 @@ public class ResultReporter {
     final var severityCode = message.severity();
     return String.format(
         """
-                      <div class="message %s">
-                                  <div class="message-header">
-                                      <span class="badge %s">
-                                          %s
-                                      </span>
-                                      <span class="message-id">
-                                          %s
-                                      </span>
-                                      <span class="message-content">
-                                          %s : %s
-                                      </span>
-                                  </div>
-                              </div>
-                             \s""",
+        <div class="message %s">
+                    <div class="message-header">
+                        <span class="badge %s">
+                            %s
+                        </span>
+                        <span class="message-id">
+                            %s
+                        </span>
+                        <span class="message-content">
+                            %s : %s
+                        </span>
+                    </div>
+                </div>
+               \s\
+        """,
         severityCode.getCode(),
         severityCode.getCode(),
         severityCode.name(),

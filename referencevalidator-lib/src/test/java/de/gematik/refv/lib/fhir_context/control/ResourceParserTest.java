@@ -146,10 +146,9 @@ class ResourceParserTest {
   @Test
   void expectParseAndConvertR4() {
     final var resource =
-        Assertions.assertDoesNotThrow(
-            () ->
-                ResourceParser.parseAndConvert(
-                    PATIENT_JSON.getBytes(StandardCharsets.UTF_8), FhirRelease.asR4()));
+        Assertions.assertDoesNotThrow(() ->
+            ResourceParser.parseAndConvert(
+                PATIENT_JSON.getBytes(StandardCharsets.UTF_8), FhirRelease.asR4()));
     Assertions.assertNotNull(resource);
   }
 
@@ -157,10 +156,9 @@ class ResourceParserTest {
   @Test
   void expectParseAndConvertR5() {
     final var resource =
-        Assertions.assertDoesNotThrow(
-            () ->
-                ResourceParser.parseAndConvert(
-                    PATIENT_JSON.getBytes(StandardCharsets.UTF_8), FhirRelease.asR5()));
+        Assertions.assertDoesNotThrow(() ->
+            ResourceParser.parseAndConvert(
+                PATIENT_JSON.getBytes(StandardCharsets.UTF_8), FhirRelease.asR5()));
     Assertions.assertNotNull(resource);
   }
 }

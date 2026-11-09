@@ -122,13 +122,12 @@ class BatchValidationContextTemplateManagerTest {
     final var allowInitialization = new CountDownLatch(1);
     final var initializationCount = new AtomicInteger();
     when(provider.validationContext(configuration, List.of("guide#2")))
-        .thenAnswer(
-            _ -> {
-              initializationCount.incrementAndGet();
-              initializationStarted.countDown();
-              assertTrue(allowInitialization.await(5, TimeUnit.SECONDS));
-              return template;
-            });
+        .thenAnswer(_ -> {
+          initializationCount.incrementAndGet();
+          initializationStarted.countDown();
+          assertTrue(allowInitialization.await(5, TimeUnit.SECONDS));
+          return template;
+        });
 
     try (var manager = new BatchValidationContextTemplateManager(provider, 2);
         var executor = Executors.newFixedThreadPool(6)) {
@@ -138,12 +137,11 @@ class BatchValidationContextTemplateManagerTest {
           new ArrayList<Future<BatchValidationContextTemplateManager.TemplateLease>>();
       for (int i = 0; i < 6; i++) {
         futures.add(
-            executor.submit(
-                () -> {
-                  ready.countDown();
-                  assertTrue(start.await(5, TimeUnit.SECONDS));
-                  return manager.acquire(configuration, List.of("guide#2"));
-                }));
+            executor.submit(() -> {
+              ready.countDown();
+              assertTrue(start.await(5, TimeUnit.SECONDS));
+              return manager.acquire(configuration, List.of("guide#2"));
+            }));
       }
 
       assertTrue(ready.await(5, TimeUnit.SECONDS));
@@ -181,11 +179,10 @@ class BatchValidationContextTemplateManagerTest {
       final var firstLease = manager.acquire(configuration, List.of("first#1"));
       final var secondRequestStarted = new CountDownLatch(1);
       final var secondLeaseFuture =
-          executor.submit(
-              () -> {
-                secondRequestStarted.countDown();
-                return manager.acquire(configuration, List.of("second#1"));
-              });
+          executor.submit(() -> {
+            secondRequestStarted.countDown();
+            return manager.acquire(configuration, List.of("second#1"));
+          });
 
       assertTrue(secondRequestStarted.await(5, TimeUnit.SECONDS));
       assertThrows(TimeoutException.class, () -> secondLeaseFuture.get(100, TimeUnit.MILLISECONDS));

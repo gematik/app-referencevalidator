@@ -90,11 +90,10 @@ public final class JarPackageLoader {
     try (JarFile jar = new JarFile(modulePath.toFile())) {
       final var packageEntries =
           jar.stream()
-              .filter(
-                  entry ->
-                      !entry.isDirectory()
-                          && entry.getName().startsWith(ModuleLoader.PACKAGE_PATH)
-                          && entry.getName().endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION))
+              .filter(entry ->
+                  !entry.isDirectory()
+                      && entry.getName().startsWith(ModuleLoader.PACKAGE_PATH)
+                      && entry.getName().endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION))
               .toList();
 
       for (var entry : packageEntries) {

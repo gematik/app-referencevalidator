@@ -23,10 +23,12 @@
  * #L%
  */
 /// # Snapshot
+///
 /// > Generate and archive snapshot packages for an Implementation Guide and its transitive package
 /// > dependencies.
 ///
 /// ## Boundary
+///
 /// - `create-generator` — creates a snapshot generator using supplied context configuration.
 /// - `generate-snapshots` — generates and archives snapshots for selected package roots and their
 ///   transitive dependencies.
@@ -35,17 +37,19 @@
 /// ## Requirements
 ///
 /// ### R1 — Generate snapshots
+///
 /// - R1.1 When a coordinate-named local package directory and output directory are supplied, the
 ///   Snapshot shall generate snapshots for the selected packages and their transitive dependencies.
 /// - R1.2 When a package declares dependencies, the Snapshot shall obtain the dependency packages
-///   through source-only Package Resolver operations, stage and patch each package once, and compute
-///   the complete graph from patched manifests before generating any snapshots.
+///   through source-only Package Resolver operations, stage and patch each package once, and
+///   compute the complete graph from patched manifests before generating any snapshots.
 /// - R1.3 If the complete dependency graph contains a cycle or a required package cannot be
 ///   resolved, then the Snapshot shall return an error result without starting snapshot generation.
-/// - R1.4 When the dependency graph is acyclic, the Snapshot shall execute its Kahn dependency-first
-///   order and provide each package with only the archived snapshots of its transitive dependencies.
-/// - R1.5 When a package coordinate occurs more than once in the selected roots or dependency graph,
-///   the Snapshot shall generate and archive that package at most once per request.
+/// - R1.4 When the dependency graph is acyclic, the Snapshot shall execute its Kahn
+///   dependency-first order and provide each package with only the archived snapshots of its
+///   transitive dependencies.
+/// - R1.5 When a package coordinate occurs more than once in the selected roots or dependency
+///   graph, the Snapshot shall generate and archive that package at most once per request.
 /// - R1.6 When a package is generated successfully, the Snapshot shall write its snapshot package
 ///   archive to the supplied output directory.
 /// - R1.7 When a package has a matching `name#version` subdirectory in the supplied patches
@@ -61,22 +65,26 @@
 /// - R1.12 The Snapshot shall not expose concrete HL7 types through its boundary.
 ///
 /// ### R2 — Create a generator
+///
 /// - R2.1 When context configuration is supplied, the Snapshot shall create a generator.
 /// - R2.2 If a generator cannot be initialized, then the Snapshot shall report an initialization
 ///   failure.
 ///
 /// ### R3 — Close a generator
+///
 /// - R3.1 When a generator is closed, the Snapshot shall release the resources it owns.
 /// - R3.2 When a closed generator is closed again, the Snapshot shall leave it closed without
 ///   additional effects.
 ///
 /// ## Entities
+///
 /// - `SnapshotGenerationRequest` identifies the local source package directory, output directory,
 ///   and optional selected root package coordinates.
 /// - `SnapshotGenerationOptions` supplies optional package-specific patches.
 /// - `SnapshotGenerationResult` contains the messages describing package generation outcomes.
 ///
 /// ## Out of scope
+///
 /// - Configure the FHIR context or construct snapshot-generation options.
 /// - Implement package resolution or package loading; Snapshot obtains dependency packages through
 ///   the Package Resolver boundary.

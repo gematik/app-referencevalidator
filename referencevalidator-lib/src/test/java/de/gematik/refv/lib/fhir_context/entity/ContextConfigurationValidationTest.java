@@ -39,15 +39,14 @@ class ContextConfigurationValidationTest {
   @ValueSource(strings = {"de", "en-GB", "en-US"})
   void expectSupportedLocalesAccepted(String locale) {
     final var config =
-        Assertions.assertDoesNotThrow(
-            () ->
-                new ContextConfiguration(
-                    FhirRelease.asR4(),
-                    locale,
-                    DisplayBehaviorConfiguration.defaultConfiguration(),
-                    PackageDownloadConfiguration.defaultConfiguration(),
-                    TerminologyConfiguration.defaultConfiguration(),
-                    ValidationPolicyConfiguration.defaultConfiguration()));
+        Assertions.assertDoesNotThrow(() ->
+            new ContextConfiguration(
+                FhirRelease.asR4(),
+                locale,
+                DisplayBehaviorConfiguration.defaultConfiguration(),
+                PackageDownloadConfiguration.defaultConfiguration(),
+                TerminologyConfiguration.defaultConfiguration(),
+                ValidationPolicyConfiguration.defaultConfiguration()));
     Assertions.assertEquals(locale, config.locale());
   }
 

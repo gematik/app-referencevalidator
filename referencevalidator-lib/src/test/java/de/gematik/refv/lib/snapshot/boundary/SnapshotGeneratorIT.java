@@ -83,11 +83,10 @@ class SnapshotGeneratorIT {
             ValidationPolicyConfiguration.defaultConfiguration());
     final var snapshotGenerator = createSnapshotGenerator(contextConfiguration);
     final var result =
-        Assertions.assertDoesNotThrow(
-            () ->
-                snapshotGenerator.generateSnapshots(
-                    new SnapshotGenerationRequest(packagePath, tempDir),
-                    new SnapshotGenerationOptions()));
+        Assertions.assertDoesNotThrow(() ->
+            snapshotGenerator.generateSnapshots(
+                new SnapshotGenerationRequest(packagePath, tempDir),
+                new SnapshotGenerationOptions()));
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
@@ -114,11 +113,10 @@ class SnapshotGeneratorIT {
             ValidationPolicyConfiguration.defaultConfiguration());
     final var snapshotGenerator = createSnapshotGenerator(contextConfiguration);
     final var result =
-        Assertions.assertDoesNotThrow(
-            () ->
-                snapshotGenerator.generateSnapshots(
-                    new SnapshotGenerationRequest(packagePath, tempDir),
-                    new SnapshotGenerationOptions()));
+        Assertions.assertDoesNotThrow(() ->
+            snapshotGenerator.generateSnapshots(
+                new SnapshotGenerationRequest(packagePath, tempDir),
+                new SnapshotGenerationOptions()));
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
@@ -146,12 +144,11 @@ class SnapshotGeneratorIT {
             ValidationPolicyConfiguration.defaultConfiguration());
     final var snapshotGenerator = createSnapshotGenerator(contextConfiguration);
     final var result =
-        Assertions.assertDoesNotThrow(
-            () ->
-                snapshotGenerator.generateSnapshots(
-                    new SnapshotGenerationRequest(
-                        packagePath, tempDir, List.of("de.abda.erezeptabgabedaten#1.5.0")),
-                    new SnapshotGenerationOptions()));
+        Assertions.assertDoesNotThrow(() ->
+            snapshotGenerator.generateSnapshots(
+                new SnapshotGenerationRequest(
+                    packagePath, tempDir, List.of("de.abda.erezeptabgabedaten#1.5.0")),
+                new SnapshotGenerationOptions()));
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
@@ -179,12 +176,11 @@ class SnapshotGeneratorIT {
     // When I resolve the package
     final var snapshotGenerator = createSnapshotGenerator(contextConfiguration);
     final var result =
-        Assertions.assertDoesNotThrow(
-            () ->
-                snapshotGenerator.generateSnapshots(
-                    new SnapshotGenerationRequest(packagePath, tempDir),
-                    new SnapshotGenerationOptions(
-                        Path.of("src/test/resources/packages/erezept/withpatch/patches"))));
+        Assertions.assertDoesNotThrow(() ->
+            snapshotGenerator.generateSnapshots(
+                new SnapshotGenerationRequest(packagePath, tempDir),
+                new SnapshotGenerationOptions(
+                    Path.of("src/test/resources/packages/erezept/withpatch/patches"))));
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
@@ -213,12 +209,11 @@ class SnapshotGeneratorIT {
     // When I resolve the package
     final var snapshotGenerator = createSnapshotGenerator(contextConfiguration);
     final var result =
-        Assertions.assertDoesNotThrow(
-            () ->
-                snapshotGenerator.generateSnapshots(
-                    new SnapshotGenerationRequest(packagePath, tempDir),
-                    new SnapshotGenerationOptions(
-                        Path.of("src/test/resources/packages/erezept/withpatch/patches"))));
+        Assertions.assertDoesNotThrow(() ->
+            snapshotGenerator.generateSnapshots(
+                new SnapshotGenerationRequest(packagePath, tempDir),
+                new SnapshotGenerationOptions(
+                    Path.of("src/test/resources/packages/erezept/withpatch/patches"))));
     // Then it is successful
     Assertions.assertFalse(result.messages().isEmpty());
     ResultPrinter.printMessages(result);
@@ -275,14 +270,13 @@ class SnapshotGeneratorIT {
     final var resultMap = new HashMap<String, SnapshotGenerationResult>();
     for (var packageName : packagesToGenerate) {
       final var result =
-          Assertions.assertDoesNotThrow(
-              () ->
-                  snapshotGenerator.generateSnapshots(
-                      new SnapshotGenerationRequest(
-                          contextConfiguration.packageLoading().cachePath().resolve(packageName),
-                          tempDir,
-                          packagesToGenerate),
-                      new SnapshotGenerationOptions()));
+          Assertions.assertDoesNotThrow(() ->
+              snapshotGenerator.generateSnapshots(
+                  new SnapshotGenerationRequest(
+                      contextConfiguration.packageLoading().cachePath().resolve(packageName),
+                      tempDir,
+                      packagesToGenerate),
+                  new SnapshotGenerationOptions()));
       resultMap.put(packageName, result);
     }
 
@@ -297,20 +291,18 @@ class SnapshotGeneratorIT {
   private void assertSuccessful(SnapshotGenerationResult result) {
     Assertions.assertTrue(
         result.messages().stream()
-            .noneMatch(
-                message ->
-                    message.severity() == IssueSeverity.ERROR
-                        || message.severity() == IssueSeverity.FATAL),
+            .noneMatch(message ->
+                message.severity() == IssueSeverity.ERROR
+                    || message.severity() == IssueSeverity.FATAL),
         () -> result.messages().toString());
   }
 
   private SnapshotGenerator createSnapshotGenerator(ContextConfiguration configuration) {
-    return Assertions.assertDoesNotThrow(
-        () -> {
-          var generator = SnapshotGeneratorFactory.fromConfiguration(configuration);
-          generators.add(generator);
-          return generator;
-        });
+    return Assertions.assertDoesNotThrow(() -> {
+      var generator = SnapshotGeneratorFactory.fromConfiguration(configuration);
+      generators.add(generator);
+      return generator;
+    });
   }
 
   private PackageDownloadConfiguration packageDownloadConfiguration() {

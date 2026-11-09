@@ -153,11 +153,10 @@ public final class DefaultPackageResolver implements PackageResolver {
       throws PackageLoadFailedException {
     var sources =
         discoverSources(inputPath).requirements().stream()
-            .map(
-                source ->
-                    source instanceof LocalDirectory(PackageId id, Path path)
-                        ? new ResolvedPackage(id, path, List.of())
-                        : packageSource.loadPackage(source))
+            .map(source ->
+                source instanceof LocalDirectory(PackageId id, Path path)
+                    ? new ResolvedPackage(id, path, List.of())
+                    : packageSource.loadPackage(source))
             .toList();
     return new PackageResolution(sources);
   }
@@ -280,12 +279,11 @@ public final class DefaultPackageResolver implements PackageResolver {
     var ordered =
         graph.dependencyFirstOrder().stream()
             .map(all::get)
-            .map(
-                resolvedPackage ->
-                    new ResolvedPackage(
-                        resolvedPackage.id(),
-                        resolvedPackage.packagePath(),
-                        resolvedPackage.dependencies()))
+            .map(resolvedPackage ->
+                new ResolvedPackage(
+                    resolvedPackage.id(),
+                    resolvedPackage.packagePath(),
+                    resolvedPackage.dependencies()))
             .toList();
     log.debug("Found resolve packages {}", ordered.size());
     return new PackageResolution(ordered);
@@ -353,11 +351,9 @@ public final class DefaultPackageResolver implements PackageResolver {
 
   private @NonNull PackageResolutionRequest resolveDirectory(@NonNull File directory) {
     final File[] tgzFiles =
-        directory.listFiles(
-            file ->
-                (file.isFile() && file.getName().endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION))
-                    || (file.isDirectory()
-                        && file.getName().contains(PackageId.PACKAGE_SEPARATOR)));
+        directory.listFiles(file ->
+            (file.isFile() && file.getName().endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION))
+                || (file.isDirectory() && file.getName().contains(PackageId.PACKAGE_SEPARATOR)));
 
     if (tgzFiles == null || tgzFiles.length == 0) {
       return PackageResolutionRequest.of();
@@ -366,12 +362,11 @@ public final class DefaultPackageResolver implements PackageResolver {
     final var packageList =
         Arrays.stream(tgzFiles)
             .sorted(java.util.Comparator.comparing(File::getName))
-            .map(
-                file ->
-                    file.isDirectory()
-                        ? (PackageCategory)
-                            new LocalDirectory(PackageId.parse(file.getName()), file.toPath())
-                        : LocalArchive.parse(file.getName(), file.toPath()))
+            .map(file ->
+                file.isDirectory()
+                    ? (PackageCategory)
+                        new LocalDirectory(PackageId.parse(file.getName()), file.toPath())
+                    : LocalArchive.parse(file.getName(), file.toPath()))
             .toList();
     log.debug("Found {} dependencies in directory {}", packageList.size(), directory);
     return new PackageResolutionRequest(packageList);

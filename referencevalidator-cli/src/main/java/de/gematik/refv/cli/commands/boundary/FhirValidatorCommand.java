@@ -275,9 +275,8 @@ public class FhirValidatorCommand extends BaseCommand {
       final Set<String> expectedInvalidSources =
           shouldInspectExpectedValidity
               ? validationSources.stream()
-                  .filter(
-                      source ->
-                          source.path().toString().toLowerCase(Locale.ROOT).contains("invalid"))
+                  .filter(source ->
+                      source.path().toString().toLowerCase(Locale.ROOT).contains("invalid"))
                   .map(source -> source.path().toString())
                   .collect(Collectors.toUnmodifiableSet())
               : null;
@@ -420,42 +419,41 @@ public class FhirValidatorCommand extends BaseCommand {
     List<Callable<Map.Entry<String, ValidationResult>>> tasks =
         new ArrayList<>(sourcesToValidate.size());
     for (var source : sourcesToValidate) {
-      tasks.add(
-          () -> {
-            try {
-              final var resource = createResource(source);
-              final var packageSelection =
-                  detectPackagesToLoad(validationCliConfig, validationPackageSelector, resource);
-              logSelectedTransformations(source.path(), packageSelection);
-              final ValidationRequest validationRequest = createRequest(resource);
-              try (var lease = batchContexts.acquire(packageSelection.packages());
-                  var context = lease.newIsolatedContext()) {
-                final var validator = ValidatorFactory.withValidationContext(context);
-                log.info("Validating '{}'", source.path());
-                final var result =
-                    validator.validate(
-                        validationRequest,
-                        withPackageGroupTransformations(
-                            validationCliConfig.validationOptions(),
-                            packageSelection.messageTransformations()));
-                return Map.entry(source.path().toString(), result);
-              }
-            } catch (UnsupportedFileTypeException e) {
-              return Map.entry(
-                  source.path().toString(),
-                  new ValidationResult(
-                      List.of(
-                          ResultMessage.fromMessage(
-                              IssueSeverity.INFORMATION,
-                              MessageId.IO_ERROR.getCode(),
-                              e.getLocalizedMessage()))));
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-              return validationError(source, e);
-            } catch (Exception e) {
-              return validationError(source, e);
-            }
-          });
+      tasks.add(() -> {
+        try {
+          final var resource = createResource(source);
+          final var packageSelection =
+              detectPackagesToLoad(validationCliConfig, validationPackageSelector, resource);
+          logSelectedTransformations(source.path(), packageSelection);
+          final ValidationRequest validationRequest = createRequest(resource);
+          try (var lease = batchContexts.acquire(packageSelection.packages());
+              var context = lease.newIsolatedContext()) {
+            final var validator = ValidatorFactory.withValidationContext(context);
+            log.info("Validating '{}'", source.path());
+            final var result =
+                validator.validate(
+                    validationRequest,
+                    withPackageGroupTransformations(
+                        validationCliConfig.validationOptions(),
+                        packageSelection.messageTransformations()));
+            return Map.entry(source.path().toString(), result);
+          }
+        } catch (UnsupportedFileTypeException e) {
+          return Map.entry(
+              source.path().toString(),
+              new ValidationResult(
+                  List.of(
+                      ResultMessage.fromMessage(
+                          IssueSeverity.INFORMATION,
+                          MessageId.IO_ERROR.getCode(),
+                          e.getLocalizedMessage()))));
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          return validationError(source, e);
+        } catch (Exception e) {
+          return validationError(source, e);
+        }
+      });
     }
 
     var results = new HashMap<String, ValidationResult>();
@@ -628,12 +626,11 @@ public class FhirValidatorCommand extends BaseCommand {
     // Translate all the tgz coordinate packages into remote ones (they are already in cache)
     return new ResourcePackageSelection(
         packagesToLoad.stream()
-            .map(
-                s ->
-                    s.contains(LocalArchive.PACKAGE_SEPARATOR)
-                            && s.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)
-                        ? LocalArchive.parse(s).coordinates()
-                        : s)
+            .map(s ->
+                s.contains(LocalArchive.PACKAGE_SEPARATOR)
+                        && s.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)
+                    ? LocalArchive.parse(s).coordinates()
+                    : s)
             .toList(),
         selectedPackageGroup,
         selectedTransformationIds,

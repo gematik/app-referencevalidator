@@ -50,33 +50,33 @@ public class ConfigurationReporter {
         """
 
 
-                        ===================================================
-                        Context Configuration:
-                        """);
+        ===================================================
+        Context Configuration:
+        """);
     appendContextConfiguration(stringBuilder, cliConfig.context());
 
     stringBuilder.append(
         """
 
 
-                            ===================================================
-                            Report Configuration:
-                            """);
+        ===================================================
+        Report Configuration:
+        """);
     appendReportConfiguration(stringBuilder, cliConfig.report());
 
     if (cliConfig instanceof ValidationCliConfig validationCliConfig) {
       stringBuilder.append(
           """
-                        ===================================================
-                        Module Configuration:
-                        """);
+          ===================================================
+          Module Configuration:
+          """);
       appendModuleConfiguration(stringBuilder, validationCliConfig.module());
 
       stringBuilder.append(
           """
-                        ===================================================
-                        Validation Options:
-                        """);
+          ===================================================
+          Validation Options:
+          """);
       appendValidationOptions(stringBuilder, validationCliConfig.validationOptions());
     }
 

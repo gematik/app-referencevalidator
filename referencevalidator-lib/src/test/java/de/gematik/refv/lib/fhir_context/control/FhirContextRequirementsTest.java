@@ -194,18 +194,17 @@ class FhirContextRequirementsTest {
     var patient =
         FhirResource.fromJson(
             """
-        {"resourceType":"Patient","id":"core-patient","active":true}
-        """);
+            {"resourceType":"Patient","id":"core-patient","active":true}
+            """);
 
     try (var context = provider.validationContext(configuration)) {
       var result = context.validate(patient, List.of());
 
       Assertions.assertFalse(
           result.messages().stream()
-              .anyMatch(
-                  message ->
-                      message.severity() == IssueSeverity.ERROR
-                          || message.severity() == IssueSeverity.FATAL));
+              .anyMatch(message ->
+                  message.severity() == IssueSeverity.ERROR
+                      || message.severity() == IssueSeverity.FATAL));
     } catch (Exception e) {
       Assertions.fail(e.getMessage());
     }
@@ -249,8 +248,8 @@ class FhirContextRequirementsTest {
     var resource =
         FhirResource.fromJson(
             """
-        {"resourceType":"Patient","id":"profile-check"}
-        """);
+            {"resourceType":"Patient","id":"profile-check"}
+            """);
     var missingProfile =
         new ProfileCanonical(
             URI.create("https://example.org/StructureDefinition/missing"), "1.0.0");

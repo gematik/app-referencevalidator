@@ -101,30 +101,28 @@ public class ValidationPackageSelector {
     final var validityDate = profileValidity.validityDate();
     final var selectedGroup =
         validityDate
-            .map(
-                date ->
-                    validationModuleIndex.getPackageGroupForDate(profileUrl, profileVersion, date))
+            .map(date ->
+                validationModuleIndex.getPackageGroupForDate(profileUrl, profileVersion, date))
             .orElseGet(
                 () -> validationModuleIndex.getFallbackPackageGroup(profileUrl, profileVersion));
     final List<String> profilePackages =
         selectedGroup.map(ValidationModuleIndex.PackageGroupSelection::packages).orElse(List.of());
 
-    validityDate.ifPresent(
-        date -> {
-          if (ValidationOptions.ProfileValidityPeriodCheckStrategy.VALIDATE.equals(
-                  validationOptions.profileValidityPeriodCheckStrategy())
-              && profilePackages.isEmpty()) {
-            if (log.isErrorEnabled()) {
-              log.error(
-                  "The profile {} is outside the validity period for date {}",
-                  profileValidity.profileCanonical().value(),
-                  date);
-            }
-            throw new ProfileOutsideValidityPeriodException("Profile is outside of valid period");
-          }
+    validityDate.ifPresent(date -> {
+      if (ValidationOptions.ProfileValidityPeriodCheckStrategy.VALIDATE.equals(
+              validationOptions.profileValidityPeriodCheckStrategy())
+          && profilePackages.isEmpty()) {
+        if (log.isErrorEnabled()) {
+          log.error(
+              "The profile {} is outside the validity period for date {}",
+              profileValidity.profileCanonical().value(),
+              date);
+        }
+        throw new ProfileOutsideValidityPeriodException("Profile is outside of valid period");
+      }
 
-          log.debug("Found valid dependencies {}", profilePackages);
-        });
+      log.debug("Found valid dependencies {}", profilePackages);
+    });
 
     log.debug("Profile Packages detected: {}", profilePackages);
     return new PackageSelection(

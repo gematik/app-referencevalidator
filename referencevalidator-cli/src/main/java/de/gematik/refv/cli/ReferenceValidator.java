@@ -39,8 +39,9 @@ import picocli.CommandLine;
     description =
         """
 
-          The validator checks conformance of FHIR resources to the underlying specification, through plugins that might bring pre-compiled FHIR-/terminology packages and pre-defined validation configuration.
-          It supports expansion of ValueSets, generation of snapshots for profiles, and can output validation reports in both human-readable text and JSON formats.""",
+        The validator checks conformance of FHIR resources to the underlying specification, through plugins that might bring pre-compiled FHIR-/terminology packages and pre-defined validation configuration.
+        It supports expansion of ValueSets, generation of snapshots for profiles, and can output validation reports in both human-readable text and JSON formats.\
+        """,
     subcommands = {FhirValidatorCommand.class, SnapshotGeneratorCommand.class, ConfigCommand.class})
 public class ReferenceValidator implements Callable<Integer> {
   static void main(String[] args) {

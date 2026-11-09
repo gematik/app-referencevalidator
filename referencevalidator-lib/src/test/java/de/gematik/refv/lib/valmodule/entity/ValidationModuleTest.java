@@ -40,123 +40,118 @@ class ValidationModuleTest {
 
   @Test
   void expectCreationIsValid() {
-    Assertions.assertDoesNotThrow(
-        () ->
-            new ValidationModule(
-                new ValidationModuleManifest(
-                    "test",
-                    "4.0",
-                    "me",
-                    "Test validation module",
-                    "",
-                    "",
-                    true,
-                    false,
-                    false,
-                    List.of(),
-                    createDummyPackageGroups(),
-                    Map.of(),
-                    createDummyProfileFamilies(),
-                    List.of(),
-                    List.of()),
-                Path.of("/modules/")));
+    Assertions.assertDoesNotThrow(() ->
+        new ValidationModule(
+            new ValidationModuleManifest(
+                "test",
+                "4.0",
+                "me",
+                "Test validation module",
+                "",
+                "",
+                true,
+                false,
+                false,
+                List.of(),
+                createDummyPackageGroups(),
+                Map.of(),
+                createDummyProfileFamilies(),
+                List.of(),
+                List.of()),
+            Path.of("/modules/")));
   }
 
   @Test
   void expectSuccessOnNullSpecUrl() {
-    Assertions.assertDoesNotThrow(
-        () ->
-            new ValidationModule(
-                new ValidationModuleManifest(
-                    "test",
-                    "3.0",
-                    "me",
-                    "Test validation module",
-                    "",
-                    null,
-                    true,
-                    false,
-                    false,
-                    List.of(),
-                    createDummyPackageGroups(),
-                    Map.of(),
-                    createDummyProfileFamilies(),
-                    List.of(),
-                    List.of()),
-                Path.of("/modules/")));
+    Assertions.assertDoesNotThrow(() ->
+        new ValidationModule(
+            new ValidationModuleManifest(
+                "test",
+                "3.0",
+                "me",
+                "Test validation module",
+                "",
+                null,
+                true,
+                false,
+                false,
+                List.of(),
+                createDummyPackageGroups(),
+                Map.of(),
+                createDummyProfileFamilies(),
+                List.of(),
+                List.of()),
+            Path.of("/modules/")));
   }
 
   @Test
   void expectSuccessOnNullListOfSuppressions() {
-    Assertions.assertDoesNotThrow(
-        () ->
-            new ValidationModule(
-                new ValidationModuleManifest(
-                    "test",
-                    "3.0",
-                    "me",
-                    "Test validation module",
-                    "",
-                    "https://blabla",
-                    true,
-                    false,
-                    false,
-                    null,
-                    createDummyPackageGroups(),
-                    Map.of(),
-                    createDummyProfileFamilies(),
-                    List.of(),
-                    List.of()),
-                Path.of("/modules/")));
+    Assertions.assertDoesNotThrow(() ->
+        new ValidationModule(
+            new ValidationModuleManifest(
+                "test",
+                "3.0",
+                "me",
+                "Test validation module",
+                "",
+                "https://blabla",
+                true,
+                false,
+                false,
+                null,
+                createDummyPackageGroups(),
+                Map.of(),
+                createDummyProfileFamilies(),
+                List.of(),
+                List.of()),
+            Path.of("/modules/")));
   }
 
   @DisplayName("Expect Success on null dependency list")
   @Test
   void expectSuccessOnNullDependencyLists() {
-    Assertions.assertDoesNotThrow(
-        () ->
-            new ValidationModule(
-                new ValidationModuleManifest(
-                    "test",
-                    "3.0",
-                    "me",
-                    "Test validation module",
-                    "",
-                    "https://blabla",
-                    true,
-                    false,
-                    false,
-                    List.of(),
-                    createDummyPackageGroups(),
-                    Map.of(),
-                    createDummyProfileFamilies(),
-                    List.of(),
-                    List.of()),
-                Path.of("/modules/")));
+    Assertions.assertDoesNotThrow(() ->
+        new ValidationModule(
+            new ValidationModuleManifest(
+                "test",
+                "3.0",
+                "me",
+                "Test validation module",
+                "",
+                "https://blabla",
+                true,
+                false,
+                false,
+                List.of(),
+                createDummyPackageGroups(),
+                Map.of(),
+                createDummyProfileFamilies(),
+                List.of(),
+                List.of()),
+            Path.of("/modules/")));
   }
 
   @Test
   void expectSuccessOnNullMessageTransforms() {
-    Assertions.assertDoesNotThrow(
-        () ->
-            new ValidationModule(
-                new ValidationModuleManifest(
-                    "test",
-                    "3.0",
-                    "me",
-                    "Test validation module",
-                    "",
-                    "https://blabla",
-                    true,
-                    false,
-                    false,
-                    List.of(),
-                    createDummyPackageGroups(),
-                    null,
-                    createDummyProfileFamilies(),
-                    List.of(),
-                    List.of()),
-                Path.of("/modules/")));
+    Assertions.assertDoesNotThrow(() ->
+        new ValidationModule(
+            new ValidationModuleManifest(
+                "test",
+                "3.0",
+                "me",
+                "Test validation module",
+                "",
+                "https://blabla",
+                true,
+                false,
+                false,
+                List.of(),
+                createDummyPackageGroups(),
+                null,
+                createDummyProfileFamilies(),
+                List.of(),
+                List.of()),
+            Path.of("/modules/")));
   }
 
   @DisplayName("Expect NullPointerException when no profile group is defined")
@@ -167,50 +162,48 @@ class ValidationModuleTest {
 
   @Test
   void expectSuccessOnNullIgnoredCodeSystem() {
-    Assertions.assertDoesNotThrow(
-        () ->
-            new ValidationModule(
-                new ValidationModuleManifest(
-                    "test",
-                    "3.0",
-                    "me",
-                    "Test validation module",
-                    "",
-                    "https://blabla",
-                    true,
-                    false,
-                    false,
-                    List.of(),
-                    createDummyPackageGroups(),
-                    Map.of(),
-                    createDummyProfileFamilies(),
-                    null,
-                    List.of()),
-                Path.of("/modules/")));
+    Assertions.assertDoesNotThrow(() ->
+        new ValidationModule(
+            new ValidationModuleManifest(
+                "test",
+                "3.0",
+                "me",
+                "Test validation module",
+                "",
+                "https://blabla",
+                true,
+                false,
+                false,
+                List.of(),
+                createDummyPackageGroups(),
+                Map.of(),
+                createDummyProfileFamilies(),
+                null,
+                List.of()),
+            Path.of("/modules/")));
   }
 
   @Test
   void expectSuccessOnNullIgnoredValueSets() {
-    Assertions.assertDoesNotThrow(
-        () ->
-            new ValidationModule(
-                new ValidationModuleManifest(
-                    "test",
-                    "3.0",
-                    "me",
-                    "Test validation module",
-                    "",
-                    "https://blabla",
-                    true,
-                    false,
-                    false,
-                    List.of(),
-                    createDummyPackageGroups(),
-                    Map.of(),
-                    createDummyProfileFamilies(),
-                    List.of(),
-                    null),
-                Path.of("/modules/")));
+    Assertions.assertDoesNotThrow(() ->
+        new ValidationModule(
+            new ValidationModuleManifest(
+                "test",
+                "3.0",
+                "me",
+                "Test validation module",
+                "",
+                "https://blabla",
+                true,
+                false,
+                false,
+                List.of(),
+                createDummyPackageGroups(),
+                Map.of(),
+                createDummyProfileFamilies(),
+                List.of(),
+                null),
+            Path.of("/modules/")));
   }
 
   private Map<String, PackageGroup> createDummyPackageGroups() {

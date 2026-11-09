@@ -140,14 +140,12 @@ final class DefaultPackageProcessor implements AutoCloseable {
 
       var selectedRoots =
           resolution.packages().stream()
-              .filter(
-                  resolvedPackage ->
-                      requestedPackages.isEmpty()
-                          || requestedPackages.contains(
-                              PackageUtils.coordinateKey(resolvedPackage.id().coordinates())))
-              .map(
-                  resolvedPackage ->
-                      new LocalDirectory(resolvedPackage.id(), resolvedPackage.packagePath()))
+              .filter(resolvedPackage ->
+                  requestedPackages.isEmpty()
+                      || requestedPackages.contains(
+                          PackageUtils.coordinateKey(resolvedPackage.id().coordinates())))
+              .map(resolvedPackage ->
+                  new LocalDirectory(resolvedPackage.id(), resolvedPackage.packagePath()))
               .toList();
       if (selectedRoots.isEmpty()) {
         return errorResult(
@@ -621,10 +619,8 @@ final class DefaultPackageProcessor implements AutoCloseable {
 
   private boolean hasErrors(SnapshotGenerationResult result) {
     return result.messages().stream()
-        .anyMatch(
-            message ->
-                message.severity() == IssueSeverity.ERROR
-                    || message.severity() == IssueSeverity.FATAL);
+        .anyMatch(message ->
+            message.severity() == IssueSeverity.ERROR || message.severity() == IssueSeverity.FATAL);
   }
 
   private void cleanupTempFolder(@Nullable Path directory) {

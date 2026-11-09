@@ -142,26 +142,26 @@ class JarValidationModuleLoaderTest {
 
   private static String configFor(String name) {
     return """
-        configSpecVersion: "3.0"
-        name: "%s"
-        version: "1.0"
-        author: "gematik"
-        description: "test module"
-        errorOnUnknownProfile: true
-        anyExtensionsAllowed: false
-        requireExpansionBeforeValidation: false
-        packageGroups:
-          my-group-id:
-            packages:
-              - "de.basisprofil.r4-1.5.4.tgz"
-        profileFamilies:
-          my-family-id:
-            canonicalBase: "https://gematik.de/example/fhir"
-            versions:
-              "1.0.0":
-                groups:
-                  - packageGroupName: "my-group-id"
-        """
+    configSpecVersion: "3.0"
+    name: "%s"
+    version: "1.0"
+    author: "gematik"
+    description: "test module"
+    errorOnUnknownProfile: true
+    anyExtensionsAllowed: false
+    requireExpansionBeforeValidation: false
+    packageGroups:
+      my-group-id:
+        packages:
+          - "de.basisprofil.r4-1.5.4.tgz"
+    profileFamilies:
+      my-family-id:
+        canonicalBase: "https://gematik.de/example/fhir"
+        versions:
+          "1.0.0":
+            groups:
+              - packageGroupName: "my-group-id"
+    """
         .formatted(name);
   }
 }
