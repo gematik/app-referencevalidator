@@ -122,12 +122,11 @@ class DefaultValidatorTransformationTest {
   void printValidationResults(@NonNull ValidationResult validationResult) {
     validationResult
         .messages()
-        .forEach(
-            resultMessage ->
-                log.info(
-                    "{}: {} - {}",
-                    resultMessage.severity(),
-                    resultMessage.messageId(),
-                    resultMessage.messageContent()));
+        .forEach(resultMessage ->
+            log.info(
+                "{}: {} - {}",
+                resultMessage.severity(),
+                resultMessage.messageId(),
+                resultMessage.messageContent()));
   }
 }

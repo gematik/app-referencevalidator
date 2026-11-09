@@ -231,30 +231,30 @@ class FhirValidatorCommandIT {
 
   private static String patientJson(boolean withName) {
     return """
-        {
-          "resourceType": "Patient",
-          "meta": { "profile": [ "%s" ] }
-          %s
-        }
-        """
+    {
+      "resourceType": "Patient",
+      "meta": { "profile": [ "%s" ] }
+      %s
+    }
+    """
         .formatted(PROFILE_URL, withName ? ", \"name\": [ { \"family\": \"Doe\" } ]" : "");
   }
 
   private static String invalidPatientJson() {
     return """
-        {
-          "resourceType": "Patient",
-          "gender": "not-a-valid-gender"
-        }
-        """;
+    {
+      "resourceType": "Patient",
+      "gender": "not-a-valid-gender"
+    }
+    """;
   }
 
   private static String patientJsonWithoutProfile() {
     return """
-        {
-          "resourceType": "Patient",
-          "name": [ { "family": "Doe" } ]
-        }
-        """;
+    {
+      "resourceType": "Patient",
+      "name": [ { "family": "Doe" } ]
+    }
+    """;
   }
 }

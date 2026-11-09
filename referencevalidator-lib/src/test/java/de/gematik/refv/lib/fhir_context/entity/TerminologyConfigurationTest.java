@@ -62,11 +62,10 @@ class TerminologyConfigurationTest {
   @Test
   void expectAllowedWithServerUriSucceeds() {
     final var config =
-        Assertions.assertDoesNotThrow(
-            () ->
-                new TerminologyConfiguration(
-                    TerminologyConfiguration.RemoteLoadingPolicy.ALLOWED,
-                    URI.create("https://tx.fhir.org")));
+        Assertions.assertDoesNotThrow(() ->
+            new TerminologyConfiguration(
+                TerminologyConfiguration.RemoteLoadingPolicy.ALLOWED,
+                URI.create("https://tx.fhir.org")));
     Assertions.assertEquals(URI.create("https://tx.fhir.org"), config.serverUri());
     Assertions.assertNull(config.cachePath());
   }

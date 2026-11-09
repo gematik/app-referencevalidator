@@ -105,20 +105,20 @@ class PackageArchiveUtilsTest {
     Files.writeString(
         source.resolve("package.json"),
         """
-            {
-              "name": "example.package",
-              "version": "1.0.0"
-            }
-            """,
+        {
+          "name": "example.package",
+          "version": "1.0.0"
+        }
+        """,
         StandardCharsets.UTF_8);
 
     Files.writeString(
         source.resolve("package/StructureDefinition-example.json"),
         """
-            {
-              "resourceType": "StructureDefinition"
-            }
-            """,
+        {
+          "resourceType": "StructureDefinition"
+        }
+        """,
         StandardCharsets.UTF_8);
 
     Files.writeString(

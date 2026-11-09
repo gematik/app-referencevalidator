@@ -45,8 +45,8 @@ import picocli.CommandLine;
     description =
         """
 
-                        Allows to validate an existing configuration file or generate a new one to be used for snapshot generation or for validation of FHIR resources.
-                        """)
+        Allows to validate an existing configuration file or generate a new one to be used for snapshot generation or for validation of FHIR resources.
+        """)
 public class ConfigCommand extends BaseCommand {
   private static final Logger log = LoggerFactory.getLogger(ConfigCommand.class);
   public static final String COMMAND_NAME = "configuration";

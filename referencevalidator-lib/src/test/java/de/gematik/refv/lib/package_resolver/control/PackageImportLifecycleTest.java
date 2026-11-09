@@ -122,15 +122,14 @@ class PackageImportLifecycleTest {
       var futures = new ArrayList<Future<?>>();
       for (int index = 0; index < parallelism; index++) {
         futures.add(
-            executor.submit(
-                () -> {
-                  ready.countDown();
-                  if (!start.await(5, TimeUnit.SECONDS)) {
-                    throw new IllegalStateException("Timed out waiting to start module import");
-                  }
-                  resolver.loadModulePackages(modulePath);
-                  return null;
-                }));
+            executor.submit(() -> {
+              ready.countDown();
+              if (!start.await(5, TimeUnit.SECONDS)) {
+                throw new IllegalStateException("Timed out waiting to start module import");
+              }
+              resolver.loadModulePackages(modulePath);
+              return null;
+            }));
       }
       assertTrue(ready.await(5, TimeUnit.SECONDS));
       start.countDown();

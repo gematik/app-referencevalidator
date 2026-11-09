@@ -51,7 +51,8 @@
 /// - `open-batch-validation-context-provider` — open a batch-scoped provider for isolated contexts
 ///   backed by reusable package-set templates (R6).
 /// - `acquire-package-set-lease` — retain a package-set template for a batch resource (R6).
-/// - `create-isolated-validation-context` — obtain an isolated context from a package-set lease (R6).
+/// - `create-isolated-validation-context` — obtain an isolated context from a package-set lease
+///   (R6).
 /// - `release-package-set-lease` — release a lease's ownership of its retained template (R6).
 /// - `close-batch-validation-context-provider` — release templates after active leases end (R6).
 ///
@@ -112,8 +113,8 @@
 ///
 /// - R6.1 When a batch requests a package set, the FHIR Context shall reuse its initialized
 ///   template while that package set remains retained by the batch provider.
-/// - R6.2 When a resource requests a context from a package-set lease, the FHIR Context shall
-///   an isolated clone and shall not expose the reusable template for validation.
+/// - R6.2 When a resource requests a context from a package-set lease, the FHIR Context shall an
+///   isolated clone and shall not expose the reusable template for validation.
 /// - R6.3 When a batch provider is closed, the FHIR Context shall release its retained templates
 ///   after active leases have been released.
 ///

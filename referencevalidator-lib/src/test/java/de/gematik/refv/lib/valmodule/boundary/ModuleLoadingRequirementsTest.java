@@ -220,10 +220,9 @@ class ModuleLoadingRequirementsTest {
     var appender = mock(Appender.class);
     when(appender.getName()).thenReturn("valmodule-requirements");
     when(appender.isStarted()).thenReturn(true);
-    doAnswer(
-            invocation ->
-                diagnostics.add(
-                    invocation.getArgument(0, LogEvent.class).getMessage().getFormattedMessage()))
+    doAnswer(invocation ->
+            diagnostics.add(
+                invocation.getArgument(0, LogEvent.class).getMessage().getFormattedMessage()))
         .when(appender)
         .append(any());
     var logger = (Logger) LogManager.getLogger(JarValidationModuleLoader.class);
@@ -275,22 +274,22 @@ class ModuleLoadingRequirementsTest {
 
   static String manifest(String name, String version) {
     return """
-        configSpecVersion: "3.0"
-        name: "%s"
-        version: "%s"
-        author: "example publisher"
-        description: "module requirements fixture"
-        packageGroups:
-          example:
-            packages: ["example#1.0.0"]
-        profileFamilies:
-          example:
-            canonicalBase: "https://example.org/fhir/StructureDefinition"
-            versions:
-              "1.0":
-                groups:
-                  - packageGroupName: "example"
-        """
+    configSpecVersion: "3.0"
+    name: "%s"
+    version: "%s"
+    author: "example publisher"
+    description: "module requirements fixture"
+    packageGroups:
+      example:
+        packages: ["example#1.0.0"]
+    profileFamilies:
+      example:
+        canonicalBase: "https://example.org/fhir/StructureDefinition"
+        versions:
+          "1.0":
+            groups:
+              - packageGroupName: "example"
+    """
         .formatted(name, version);
   }
 }

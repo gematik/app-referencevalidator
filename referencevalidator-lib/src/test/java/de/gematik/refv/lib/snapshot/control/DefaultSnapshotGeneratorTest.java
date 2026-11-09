@@ -127,9 +127,8 @@ class DefaultSnapshotGeneratorTest {
             .anyMatch(resultMessage -> resultMessage.severity().equals(IssueSeverity.ERROR)));
     Assertions.assertTrue(
         result.messages().stream()
-            .anyMatch(
-                resultMessage ->
-                    resultMessage.messageContent().contains("The request cannot be null")));
+            .anyMatch(resultMessage ->
+                resultMessage.messageContent().contains("The request cannot be null")));
   }
 
   @DisplayName("Given null options, when generating, then a Snapshot Generation Error is generated")
@@ -144,8 +143,7 @@ class DefaultSnapshotGeneratorTest {
             .anyMatch(resultMessage -> resultMessage.severity().equals(IssueSeverity.ERROR)));
     Assertions.assertTrue(
         result.messages().stream()
-            .anyMatch(
-                resultMessage ->
-                    resultMessage.messageContent().contains("The options cannot be null")));
+            .anyMatch(resultMessage ->
+                resultMessage.messageContent().contains("The options cannot be null")));
   }
 }

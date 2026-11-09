@@ -54,14 +54,13 @@ final class ValidationResultFilter {
 
     final var processedMessages =
         messagesToFilter.stream()
-            .map(
-                resultMessage ->
-                    resultMessage.messageId().startsWith("REFV-")
-                        ? resultMessage
-                        : ResultMessage.fromMessage(
-                            resultMessage.severity(),
-                            MessageId.VALIDATION_ERROR.getCode(),
-                            resultMessage.messageContent()))
+            .map(resultMessage ->
+                resultMessage.messageId().startsWith("REFV-")
+                    ? resultMessage
+                    : ResultMessage.fromMessage(
+                        resultMessage.severity(),
+                        MessageId.VALIDATION_ERROR.getCode(),
+                        resultMessage.messageContent()))
             .toList();
 
     if (validationMessagesFilterStrategy
@@ -73,11 +72,10 @@ final class ValidationResultFilter {
         == ValidationOptions.ValidationMessagesFilterStrategy.KEEP_ERRORS_AND_WARNINGS_ONLY) {
       var filteredMessages =
           processedMessages.stream()
-              .filter(
-                  m ->
-                      m.severity() == IssueSeverity.ERROR
-                          || m.severity() == IssueSeverity.FATAL
-                          || m.severity() == IssueSeverity.WARNING)
+              .filter(m ->
+                  m.severity() == IssueSeverity.ERROR
+                      || m.severity() == IssueSeverity.FATAL
+                      || m.severity() == IssueSeverity.WARNING)
               .toList();
       return resultOrNoError(filteredMessages);
     }

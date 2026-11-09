@@ -185,19 +185,18 @@ class ValidationInputLimitsTest {
     List<Callable<Integer>> tasks = new ArrayList<>();
     for (int value = 0; value < maximumInFlight + 1; value++) {
       int taskValue = value;
-      tasks.add(
-          () -> {
-            int nowActive = active.incrementAndGet();
-            peak.accumulateAndGet(nowActive, Math::max);
-            startedCount.incrementAndGet();
-            firstBatchStarted.countDown();
-            try {
-              assertTrue(releaseFirstBatch.await(5, TimeUnit.SECONDS));
-              return taskValue;
-            } finally {
-              active.decrementAndGet();
-            }
-          });
+      tasks.add(() -> {
+        int nowActive = active.incrementAndGet();
+        peak.accumulateAndGet(nowActive, Math::max);
+        startedCount.incrementAndGet();
+        firstBatchStarted.countDown();
+        try {
+          assertTrue(releaseFirstBatch.await(5, TimeUnit.SECONDS));
+          return taskValue;
+        } finally {
+          active.decrementAndGet();
+        }
+      });
     }
 
     try (var coordinator = Executors.newSingleThreadExecutor()) {

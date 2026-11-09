@@ -69,8 +69,8 @@ import picocli.CommandLine;
     description =
         """
 
-                  Generates a snapshot from a profile or a folder containing dependencies.
-                  """)
+        Generates a snapshot from a profile or a folder containing dependencies.
+        """)
 public class SnapshotGeneratorCommand extends BaseCommand {
 
   private final Logger log = LoggerFactory.getLogger(SnapshotGeneratorCommand.class);
@@ -282,21 +282,17 @@ public class SnapshotGeneratorCommand extends BaseCommand {
   private @NonNull Map<String, List<String>> filterPackageGroupsByUser(
       @NonNull Map<String, List<String>> packageGroups) {
     return packageGroups.entrySet().stream()
-        .map(
-            group ->
-                Map.entry(
-                    group.getKey(),
-                    group.getValue().stream()
-                        .filter(
-                            packageName ->
-                                userPackageNames.isEmpty()
-                                    || userPackageNames.contains(packageName))
-                        .map(
-                            packageName ->
-                                packageName.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)
-                                    ? LocalArchive.parse(packageName).coordinates()
-                                    : packageName)
-                        .toList()))
+        .map(group ->
+            Map.entry(
+                group.getKey(),
+                group.getValue().stream()
+                    .filter(packageName ->
+                        userPackageNames.isEmpty() || userPackageNames.contains(packageName))
+                    .map(packageName ->
+                        packageName.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)
+                            ? LocalArchive.parse(packageName).coordinates()
+                            : packageName)
+                    .toList()))
         .filter(group -> !group.getValue().isEmpty())
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }

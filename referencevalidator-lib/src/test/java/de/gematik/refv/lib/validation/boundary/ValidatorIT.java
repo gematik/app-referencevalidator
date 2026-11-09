@@ -89,15 +89,15 @@ class ValidatorIT {
     ResultPrinter.printMessages(result);
     Assertions.assertTrue(
         result.messages().stream()
-            .noneMatch(
-                resultMessage ->
-                    resultMessage.severity().equals(IssueSeverity.ERROR)
-                        || resultMessage.severity().equals(IssueSeverity.FATAL)));
+            .noneMatch(resultMessage ->
+                resultMessage.severity().equals(IssueSeverity.ERROR)
+                    || resultMessage.severity().equals(IssueSeverity.FATAL)));
   }
 
-  @DisplayName("Performs the validation of a XML resource using HL7 Core Profile")
+  @DisplayName(
+      "Reports the unresolved ISO 4217 CodeSystem when validating XML using the HL7 Core Profile")
   @Test
-  void testValidationOfXmlWithCoreProfileWorks() {
+  void testValidationOfXmlWithCoreProfileReportsUnknownCurrencyCodeSystem() {
     // Given a XML Resource
     FhirResource fhirResource =
         FhirResource.fromXml(
@@ -120,20 +120,21 @@ class ValidatorIT {
     final var result =
         Assertions.assertDoesNotThrow(
             () -> validator.validate(new ValidationRequest(fhirResource), validationOptions));
-    // Then I expect a successful result
+    // Then I expect the validator to report that the ISO 4217 CodeSystem is unknown
     Assertions.assertNotNull(result);
     ResultPrinter.printMessages(result);
     Assertions.assertTrue(
         result.messages().stream()
-            .noneMatch(
-                resultMessage ->
-                    resultMessage.severity().equals(IssueSeverity.ERROR)
-                        || resultMessage.severity().equals(IssueSeverity.FATAL)));
+            .anyMatch(resultMessage ->
+                resultMessage.severity().equals(IssueSeverity.ERROR)
+                    && resultMessage.messageContent().contains("urn:iso:std:iso:4217")),
+        "Expected an ERROR for the unknown ISO 4217 CodeSystem");
   }
 
-  @DisplayName("Performs the validation of a JSON resource using Remote Implementation Guide")
+  @DisplayName(
+      "Reports the unresolved UCUM CodeSystem when validating JSON using a Remote Implementation Guide")
   @Test
-  void testValidationOfXmlWithRemoteImplementationGuideWorks() {
+  void testValidationOfJsonWithRemoteImplementationGuideReportsUnknownUcumCodeSystem() {
     // Given a JSON Resource
     final FhirResource fhirResource =
         FhirResource.fromJson(
@@ -159,15 +160,21 @@ class ValidatorIT {
     final var result =
         Assertions.assertDoesNotThrow(
             () -> validator.validate(new ValidationRequest(fhirResource), validationOptions));
-    // Then I expect a successful result
+    // Then the offline terminology setup reports the unresolved UCUM CodeSystem
     Assertions.assertNotNull(result);
     ResultPrinter.printMessages(result);
-    Assertions.assertTrue(
+    final var errors =
         result.messages().stream()
-            .noneMatch(
-                resultMessage ->
-                    resultMessage.severity().equals(IssueSeverity.ERROR)
-                        || resultMessage.severity().equals(IssueSeverity.FATAL)));
+            .filter(resultMessage ->
+                resultMessage.severity().equals(IssueSeverity.ERROR)
+                    || resultMessage.severity().equals(IssueSeverity.FATAL))
+            .toList();
+    Assertions.assertFalse(errors.isEmpty(), "Expected an error for the unresolved UCUM system");
+    Assertions.assertTrue(
+        errors.stream()
+            .allMatch(resultMessage ->
+                resultMessage.messageContent().contains("http://unitsofmeasure.org")),
+        "Expected all errors to concern the unresolved UCUM system");
   }
 
   @DisplayName(
@@ -196,23 +203,21 @@ class ValidatorIT {
         track(ValidatorFactory.withCustomPackages(contextConfiguration, packagesToLoad));
     // When I execute the validation
     final var result =
-        Assertions.assertDoesNotThrow(
-            () ->
-                validator.validate(
-                    new ValidationRequest(
-                        FhirResource.fromJson(
-                            Path.of(
-                                "src/test/resources/fhir/isik/Observation-ISiKKopfumfangMaxExample.json"))),
-                    validationOptions));
+        Assertions.assertDoesNotThrow(() ->
+            validator.validate(
+                new ValidationRequest(
+                    FhirResource.fromJson(
+                        Path.of(
+                            "src/test/resources/fhir/isik/Observation-ISiKKopfumfangMaxExample.json"))),
+                validationOptions));
     // Then I expect a successful result
     Assertions.assertNotNull(result);
     ResultPrinter.printMessages(result);
     Assertions.assertTrue(
         result.messages().stream()
-            .noneMatch(
-                resultMessage ->
-                    resultMessage.severity().equals(IssueSeverity.ERROR)
-                        || resultMessage.severity().equals(IssueSeverity.FATAL)));
+            .noneMatch(resultMessage ->
+                resultMessage.severity().equals(IssueSeverity.ERROR)
+                    || resultMessage.severity().equals(IssueSeverity.FATAL)));
   }
 
   private @NonNull List<String> detectPackagesToLoad(
@@ -236,12 +241,11 @@ class ValidatorIT {
 
     // Translate all the tgz coordinate packages into remote ones (they are already in cache)
     return packagesToLoad.stream()
-        .map(
-            s ->
-                s.contains(LocalArchive.PACKAGE_SEPARATOR)
-                        && s.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)
-                    ? LocalArchive.parse(s).coordinates()
-                    : s)
+        .map(s ->
+            s.contains(LocalArchive.PACKAGE_SEPARATOR)
+                    && s.endsWith(LocalArchive.ARCHIVE_PACKAGE_EXTENSION)
+                ? LocalArchive.parse(s).coordinates()
+                : s)
         .toList();
   }
 

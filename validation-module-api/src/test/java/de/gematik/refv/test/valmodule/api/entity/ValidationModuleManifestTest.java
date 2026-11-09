@@ -184,9 +184,8 @@ class ValidationModuleManifestTest {
                     new ProfileVersion(List.of(new PackageGroupReference("g1", null, null)))),
                 Map.of()));
     final var config =
-        Assertions.assertDoesNotThrow(
-            () ->
-                configWith(packageGroups, Map.of("t1", List.of(transformation)), profileFamilies));
+        Assertions.assertDoesNotThrow(() ->
+            configWith(packageGroups, Map.of("t1", List.of(transformation)), profileFamilies));
     Assertions.assertTrue(config.packageGroups().containsKey("g1"));
   }
 

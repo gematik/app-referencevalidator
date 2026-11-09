@@ -275,28 +275,28 @@ class SnapshotGeneratorCommandIT {
 
   private static String structureDefinition(String title) {
     return """
-        {
-          "resourceType": "StructureDefinition",
-          "id": "test-patient",
-          "url": "http://example.org/fhir/StructureDefinition/test-patient",
-          "version": "1.0.0",
-          "name": "TestPatient",
-          "title": "%s",
-          "status": "active",
-          "fhirVersion": "4.0.1",
-          "kind": "resource",
-          "abstract": false,
-          "type": "Patient",
-          "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Patient",
-          "derivation": "constraint",
-          "differential": {
-            "element": [
-              { "id": "Patient", "path": "Patient" },
-              { "id": "Patient.name", "path": "Patient.name", "min": 1 }
-            ]
-          }
-        }
-        """
+    {
+      "resourceType": "StructureDefinition",
+      "id": "test-patient",
+      "url": "http://example.org/fhir/StructureDefinition/test-patient",
+      "version": "1.0.0",
+      "name": "TestPatient",
+      "title": "%s",
+      "status": "active",
+      "fhirVersion": "4.0.1",
+      "kind": "resource",
+      "abstract": false,
+      "type": "Patient",
+      "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Patient",
+      "derivation": "constraint",
+      "differential": {
+        "element": [
+          { "id": "Patient", "path": "Patient" },
+          { "id": "Patient.name", "path": "Patient.name", "min": 1 }
+        ]
+      }
+    }
+    """
         .formatted(title);
   }
 

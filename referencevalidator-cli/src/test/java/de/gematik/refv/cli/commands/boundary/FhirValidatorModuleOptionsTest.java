@@ -172,8 +172,8 @@ class FhirValidatorModuleOptionsTest {
     final var resource =
         FhirResource.fromJson(
             """
-          {"resourceType":"Patient","meta":{"profile":["http://example.org/fhir/StructureDefinition/Patient|1.0"]}%s}
-          """
+            {"resourceType":"Patient","meta":{"profile":["http://example.org/fhir/StructureDefinition/Patient|1.0"]}%s}
+            """
                 .formatted(birthDate == null ? "" : ",\"birthDate\":\"%s\"".formatted(birthDate)));
     final var selection = selector.selectForResource(resource, FhirRelease.asR4(), moduleOptions);
     final var effectiveOptions =

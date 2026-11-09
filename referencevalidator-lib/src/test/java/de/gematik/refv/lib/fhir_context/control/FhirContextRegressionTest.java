@@ -91,18 +91,17 @@ class FhirContextRegressionTest {
     var patient =
         FhirResource.fromJson(
             """
-        {"resourceType":"Patient","id":"core-patient","active":true}
-        """);
+            {"resourceType":"Patient","id":"core-patient","active":true}
+            """);
 
     try (var context = provider.validationContext(configuration)) {
       var result = context.validate(patient, List.of());
 
       Assertions.assertFalse(
           result.messages().stream()
-              .anyMatch(
-                  message ->
-                      message.severity() == IssueSeverity.ERROR
-                          || message.severity() == IssueSeverity.FATAL));
+              .anyMatch(message ->
+                  message.severity() == IssueSeverity.ERROR
+                      || message.severity() == IssueSeverity.FATAL));
     } catch (Exception e) {
       Assertions.fail(e.getMessage());
     }
@@ -195,11 +194,9 @@ class FhirContextRegressionTest {
                 missingProfileOptions));
     var expectedOutcomes =
         cases.stream()
-            .map(
-                validationCase ->
-                    validate(
-                        ValidatorFactory.withCustomPackages(configuration, packages),
-                        validationCase))
+            .map(validationCase ->
+                validate(
+                    ValidatorFactory.withCustomPackages(configuration, packages), validationCase))
             .toList();
 
     Assertions.assertNotEquals(expectedOutcomes.getFirst(), expectedOutcomes.get(2));
@@ -227,22 +224,21 @@ class FhirContextRegressionTest {
         for (int runIndex = 0; runIndex < parallelism; runIndex++) {
           final int validationIndex = runIndex % cases.size();
           validations.add(
-              executor.submit(
-                  () -> {
-                    try (var lease = batchContexts.acquire(packages);
-                        var clone = lease.newIsolatedContext()) {
-                      var validator = ValidatorFactory.withValidationContext(clone);
-                      contextsReady.countDown();
-                      if (!startValidation.await(30, TimeUnit.SECONDS)) {
-                        throw new IllegalStateException("Timed out waiting to start validation");
-                      }
-                      return new ValidationRun(
-                          validationIndex,
-                          validator,
-                          clone,
-                          validate(validator, cases.get(validationIndex)));
-                    }
-                  }));
+              executor.submit(() -> {
+                try (var lease = batchContexts.acquire(packages);
+                    var clone = lease.newIsolatedContext()) {
+                  var validator = ValidatorFactory.withValidationContext(clone);
+                  contextsReady.countDown();
+                  if (!startValidation.await(30, TimeUnit.SECONDS)) {
+                    throw new IllegalStateException("Timed out waiting to start validation");
+                  }
+                  return new ValidationRun(
+                      validationIndex,
+                      validator,
+                      clone,
+                      validate(validator, cases.get(validationIndex)));
+                }
+              }));
         }
 
         var allContextsReady = contextsReady.await(30, TimeUnit.SECONDS);
@@ -361,12 +357,10 @@ class FhirContextRegressionTest {
     packageResolver.resolveList(List.of(minimalPackageDirectory));
     var expectedOutcomes =
         cases.stream()
-            .map(
-                validationCase ->
-                    validate(
-                        ValidatorFactory.withCustomPackages(
-                            configuration, validationCase.packages()),
-                        validationCase.validationCase()))
+            .map(validationCase ->
+                validate(
+                    ValidatorFactory.withCustomPackages(configuration, validationCase.packages()),
+                    validationCase.validationCase()))
             .toList();
 
     Assertions.assertNotEquals(
@@ -390,30 +384,29 @@ class FhirContextRegressionTest {
         final var validationIndex = runIndex % cases.size();
         final var validationCase = cases.get(validationIndex);
         validations.add(
-            executor.submit(
-                () -> {
-                  var reachedBarrier = false;
-                  try {
-                    try (var lease = batchContexts.acquire(validationCase.packages());
-                        var context = lease.newIsolatedContext()) {
-                      var validator = ValidatorFactory.withValidationContext(context);
-                      ready.countDown();
-                      reachedBarrier = true;
-                      if (!startValidation.await(60, TimeUnit.SECONDS)) {
-                        throw new IllegalStateException("Timed out waiting to start validation");
-                      }
-                      return new ValidationRun(
-                          validationIndex,
-                          validator,
-                          context,
-                          validate(validator, validationCase.validationCase()));
-                    }
-                  } finally {
-                    if (!reachedBarrier) {
-                      ready.countDown();
-                    }
+            executor.submit(() -> {
+              var reachedBarrier = false;
+              try {
+                try (var lease = batchContexts.acquire(validationCase.packages());
+                    var context = lease.newIsolatedContext()) {
+                  var validator = ValidatorFactory.withValidationContext(context);
+                  ready.countDown();
+                  reachedBarrier = true;
+                  if (!startValidation.await(60, TimeUnit.SECONDS)) {
+                    throw new IllegalStateException("Timed out waiting to start validation");
                   }
-                }));
+                  return new ValidationRun(
+                      validationIndex,
+                      validator,
+                      context,
+                      validate(validator, validationCase.validationCase()));
+                }
+              } finally {
+                if (!reachedBarrier) {
+                  ready.countDown();
+                }
+              }
+            }));
       }
 
       var allContextsReady = ready.await(60, TimeUnit.SECONDS);
@@ -439,8 +432,8 @@ class FhirContextRegressionTest {
     var resource =
         FhirResource.fromJson(
             """
-        {"resourceType":"Patient","id":"profile-check"}
-        """);
+            {"resourceType":"Patient","id":"profile-check"}
+            """);
     var missingProfile =
         new ProfileCanonical(
             URI.create("https://example.org/StructureDefinition/missing"), "1.0.0");
@@ -584,11 +577,10 @@ class FhirContextRegressionTest {
   private static void assertDistinctContextsAndValidators(List<ValidationRun> runs) {
     var contexts = new IdentityHashMap<Object, Boolean>();
     var validators = new IdentityHashMap<Object, Boolean>();
-    runs.forEach(
-        run -> {
-          contexts.put(run.context(), Boolean.TRUE);
-          validators.put(run.validator(), Boolean.TRUE);
-        });
+    runs.forEach(run -> {
+      contexts.put(run.context(), Boolean.TRUE);
+      validators.put(run.validator(), Boolean.TRUE);
+    });
     Assertions.assertEquals(runs.size(), contexts.size(), "Each run must own its own context");
     Assertions.assertEquals(runs.size(), validators.size(), "Each run must own its own validator");
   }

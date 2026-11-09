@@ -33,7 +33,8 @@
 /// - `create-context-validator` — create a validator using a caller-owned context (R1).
 /// - `validate-resource` — validate a resource and return policy-processed messages (R2, R6).
 /// - `create-profile-validity-extractor` — obtain an extractor for module profile validity (R3).
-/// - `extract-profile-validity` — resolve a resource's supported profile and validity date (R3, R4).
+/// - `extract-profile-validity` — resolve a resource's supported profile and validity date (R3,
+///   R4).
 /// - `select-resource-packages` — select module dependencies for a resource (R5).
 /// - `close-validator` — release resources owned by a validator (R7).
 ///
@@ -72,16 +73,16 @@
 /// - R3.3 When a Bundle or Parameters resource has no top-level profile, the BC shall inspect only
 ///   its first resource-bearing entry or parameter and select that resource's first profile when
 ///   present.
-/// - R3.4 If no resource profile can be found, then the BC shall report a profile-extraction failure
-///   even when validation options supply an explicit profile override.
+/// - R3.4 If no resource profile can be found, then the BC shall report a profile-extraction
+///   failure even when validation options supply an explicit profile override.
 /// - R3.5 If a resource declares multiple top-level profiles, then the BC shall report a
 ///   profile-extraction failure.
 /// - R3.6 Where a profile filter is supplied, if the resource profile does not match that filter,
 ///   then the BC shall report a profile-extraction failure before applying any profile override.
-/// - R3.7 When an explicit profile override is supplied and resource-profile checks succeed, the
-///   BC shall select the override instead of the resource profile.
-/// - R3.8 If the selected profile canonical is not supported by the module, then the BC shall report
-///   a profile-extraction failure.
+/// - R3.7 When an explicit profile override is supplied and resource-profile checks succeed, the BC
+///   shall select the override instead of the resource profile.
+/// - R3.8 If the selected profile canonical is not supported by the module, then the BC shall
+///   report a profile-extraction failure.
 /// - R3.9 If the resource cannot be parsed or its profile cannot be resolved, then the BC shall
 ///   report a profile-extraction failure retaining the underlying cause.
 /// - R3.10 If a required resource, FHIR release, validation options, or module index is absent,
@@ -89,11 +90,11 @@
 ///
 /// ### R4 — Validity date extraction
 ///
-/// - R4.1 When the module defines a validity-date locator for the selected profile and version,
-///   the BC shall evaluate that locator against the resource.
+/// - R4.1 When the module defines a validity-date locator for the selected profile and version, the
+///   BC shall evaluate that locator against the resource.
 /// - R4.2 If the locator is absent, yields no value, fails evaluation, yields multiple values, or
-///   yields a non-date or unusable date value, then the BC shall return profile validity without
-///   a date.
+///   yields a non-date or unusable date value, then the BC shall return profile validity without a
+///   date.
 /// - R4.3 When a locator yields one usable date value with timezone information, the BC shall
 ///   return its calendar date in Europe/Berlin.
 /// - R4.4 When a locator yields one usable date value without timezone information, the BC shall
@@ -127,15 +128,15 @@
 ///   locators by content containment, and regular expressions by a match within the content.
 /// - R6.4 Where a transformation omits or leaves blank its source severity or a matching criterion,
 ///   the BC shall treat that condition as unrestricted.
-/// - R6.5 Where a matching transformation specifies a fatal, error, or warning target severity,
-///   the BC shall apply that severity case-insensitively; otherwise it shall apply informational
+/// - R6.5 Where a matching transformation specifies a fatal, error, or warning target severity, the
+///   BC shall apply that severity case-insensitively; otherwise it shall apply informational
 ///   severity.
 /// - R6.6 Where ignored terminology canonicals are supplied, when a retained message contains a
-///   nonblank ignored CodeSystem or ValueSet canonical, the BC shall set that message's severity
-///   to informational after severity transformation and before severity filtering.
-/// - R6.7 When messages are returned, the BC shall preserve identifiers beginning with `REFV-`
-///   and replace other identifiers with the reference validator's validation-error identifier
-///   without changing their content or severity.
+///   nonblank ignored CodeSystem or ValueSet canonical, the BC shall set that message's severity to
+///   informational after severity transformation and before severity filtering.
+/// - R6.7 When messages are returned, the BC shall preserve identifiers beginning with `REFV-` and
+///   replace other identifiers with the reference validator's validation-error identifier without
+///   changing their content or severity.
 /// - R6.8 While the keep-all policy is selected, the BC shall retain all messages remaining after
 ///   suppression, severity transformation, and ignored-terminology handling.
 /// - R6.9 While the errors-only policy is selected, the BC shall retain only error and fatal

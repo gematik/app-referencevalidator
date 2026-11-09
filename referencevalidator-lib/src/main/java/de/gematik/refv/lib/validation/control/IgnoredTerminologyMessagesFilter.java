@@ -44,11 +44,10 @@ final class IgnoredTerminologyMessagesFilter {
     }
 
     return resultMessages.stream()
-        .map(
-            message ->
-                containsCanonical(message.messageContent(), ignoredCodeSystems, ignoredValueSets)
-                    ? ResultMessage.withSeverity(message, IssueSeverity.INFORMATION)
-                    : message)
+        .map(message ->
+            containsCanonical(message.messageContent(), ignoredCodeSystems, ignoredValueSets)
+                ? ResultMessage.withSeverity(message, IssueSeverity.INFORMATION)
+                : message)
         .toList();
   }
 

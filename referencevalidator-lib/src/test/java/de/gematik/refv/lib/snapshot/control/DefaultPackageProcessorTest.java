@@ -187,24 +187,20 @@ class DefaultPackageProcessorTest {
     List<String> rootDependencyCoordinates = new ArrayList<>();
     try (var context = processorResult.context()) {
       when(context.cloneContext(anyCollection()))
-          .thenAnswer(
-              invocation -> {
-                var dependencies = invocation.<List<ResolvedPackage>>getArgument(0);
-                rootDependencyCoordinates.clear();
-                rootDependencyCoordinates.addAll(
-                    dependencies.stream().map(pkg -> pkg.id().coordinates()).toList());
-                return processorResult.context();
-              });
+          .thenAnswer(invocation -> {
+            var dependencies = invocation.<List<ResolvedPackage>>getArgument(0);
+            rootDependencyCoordinates.clear();
+            rootDependencyCoordinates.addAll(
+                dependencies.stream().map(pkg -> pkg.id().coordinates()).toList());
+            return processorResult.context();
+          });
       when(context.generateSnapshots(any(Path.class)))
-          .thenAnswer(
-              invocation -> {
-                Path packagePath = invocation.getArgument(0);
-                generatedCoordinates.add(packageCoordinates(packagePath));
-                return SnapshotGenerationResult.forMessage(
-                    IssueSeverity.INFORMATION,
-                    MessageId.NO_ERROR.getCode(),
-                    "generation succeeded");
-              });
+          .thenAnswer(invocation -> {
+            Path packagePath = invocation.getArgument(0);
+            generatedCoordinates.add(packageCoordinates(packagePath));
+            return SnapshotGenerationResult.forMessage(
+                IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generation succeeded");
+          });
     }
 
     try (var processor = processorResult.processor()) {
@@ -326,15 +322,12 @@ class DefaultPackageProcessorTest {
 
     try (var context = processorResult.context()) {
       when(context.generateSnapshots(any(Path.class)))
-          .thenAnswer(
-              invocation -> {
-                Path packagePath = invocation.getArgument(0);
-                observedPatches.add(Files.readString(packagePath.resolve("package/patched.txt")));
-                return SnapshotGenerationResult.forMessage(
-                    IssueSeverity.INFORMATION,
-                    MessageId.NO_ERROR.getCode(),
-                    "generation succeeded");
-              });
+          .thenAnswer(invocation -> {
+            Path packagePath = invocation.getArgument(0);
+            observedPatches.add(Files.readString(packagePath.resolve("package/patched.txt")));
+            return SnapshotGenerationResult.forMessage(
+                IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generation succeeded");
+          });
     }
 
     try (var processor = processorResult.processor()) {
@@ -364,14 +357,11 @@ class DefaultPackageProcessorTest {
     List<String> firstGroupGenerations = new ArrayList<>();
     try (var context = firstGroup.context()) {
       when(context.generateSnapshots(any(Path.class)))
-          .thenAnswer(
-              invocation -> {
-                firstGroupGenerations.add(packageCoordinates(invocation.getArgument(0)));
-                return SnapshotGenerationResult.forMessage(
-                    IssueSeverity.INFORMATION,
-                    MessageId.NO_ERROR.getCode(),
-                    "generation succeeded");
-              });
+          .thenAnswer(invocation -> {
+            firstGroupGenerations.add(packageCoordinates(invocation.getArgument(0)));
+            return SnapshotGenerationResult.forMessage(
+                IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generation succeeded");
+          });
     }
 
     try (var processor = firstGroup.processor()) {
@@ -383,22 +373,18 @@ class DefaultPackageProcessorTest {
     List<String> secondGroupDependencies = new ArrayList<>();
     try (var context = secondGroup.context()) {
       when(context.cloneContext(anyCollection()))
-          .thenAnswer(
-              invocation -> {
-                var dependencies = invocation.<List<ResolvedPackage>>getArgument(0);
-                secondGroupDependencies.addAll(
-                    dependencies.stream().map(pkg -> pkg.id().coordinates()).toList());
-                return context;
-              });
+          .thenAnswer(invocation -> {
+            var dependencies = invocation.<List<ResolvedPackage>>getArgument(0);
+            secondGroupDependencies.addAll(
+                dependencies.stream().map(pkg -> pkg.id().coordinates()).toList());
+            return context;
+          });
       when(context.generateSnapshots(any(Path.class)))
-          .thenAnswer(
-              invocation -> {
-                secondGroupGenerations.add(packageCoordinates(invocation.getArgument(0)));
-                return SnapshotGenerationResult.forMessage(
-                    IssueSeverity.INFORMATION,
-                    MessageId.NO_ERROR.getCode(),
-                    "generation succeeded");
-              });
+          .thenAnswer(invocation -> {
+            secondGroupGenerations.add(packageCoordinates(invocation.getArgument(0)));
+            return SnapshotGenerationResult.forMessage(
+                IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generation succeeded");
+          });
     }
 
     try (var processor = secondGroup.processor()) {
@@ -501,21 +487,20 @@ class DefaultPackageProcessorTest {
     List<String> generatedPackages = new ArrayList<>();
     try (var context = processorResult.context()) {
       when(context.generateSnapshots(any(Path.class)))
-          .thenAnswer(
-              invocation -> {
-                Path packagePath = invocation.getArgument(0);
-                String coordinates = packageCoordinates(packagePath);
-                generatedPackages.add(coordinates);
-                return coordinates.equals(dependency.id().coordinates())
-                    ? SnapshotGenerationResult.forMessage(
-                        IssueSeverity.ERROR,
-                        MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
-                        "dependency generation failed")
-                    : SnapshotGenerationResult.forMessage(
-                        IssueSeverity.INFORMATION,
-                        MessageId.NO_ERROR.getCode(),
-                        "generation succeeded");
-              });
+          .thenAnswer(invocation -> {
+            Path packagePath = invocation.getArgument(0);
+            String coordinates = packageCoordinates(packagePath);
+            generatedPackages.add(coordinates);
+            return coordinates.equals(dependency.id().coordinates())
+                ? SnapshotGenerationResult.forMessage(
+                    IssueSeverity.ERROR,
+                    MessageId.SNAPSHOT_GENERATION_ERROR.getCode(),
+                    "dependency generation failed")
+                : SnapshotGenerationResult.forMessage(
+                    IssueSeverity.INFORMATION,
+                    MessageId.NO_ERROR.getCode(),
+                    "generation succeeded");
+          });
     }
 
     try (var processor = processorResult.processor()) {
@@ -664,26 +649,25 @@ class DefaultPackageProcessorTest {
     var generated = new ArrayList<String>();
     var workingDirectories = new ArrayList<Path>();
     when(context.generateSnapshots(any(Path.class)))
-        .thenAnswer(
-            invocation -> {
-              Path path = invocation.getArgument(0);
-              var coordinates = packageCoordinates(path);
-              workingDirectories.add(path);
-              generated.add(coordinates);
-              if (coordinates.equals(leaf.id().coordinates())) {
-                Files.writeString(patch, packageJson(root.id(), Map.of("late-change", "1.0.0")));
-              } else {
-                Assertions.assertEquals(
-                    "1.0.0",
-                    JSONMapperProvider.getMapper()
-                        .readTree(path.resolve("package/package.json").toFile())
-                        .path("dependencies")
-                        .path("leaf")
-                        .asText());
-              }
-              return SnapshotGenerationResult.forMessage(
-                  IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generated");
-            });
+        .thenAnswer(invocation -> {
+          Path path = invocation.getArgument(0);
+          var coordinates = packageCoordinates(path);
+          workingDirectories.add(path);
+          generated.add(coordinates);
+          if (coordinates.equals(leaf.id().coordinates())) {
+            Files.writeString(patch, packageJson(root.id(), Map.of("late-change", "1.0.0")));
+          } else {
+            Assertions.assertEquals(
+                "1.0.0",
+                JSONMapperProvider.getMapper()
+                    .readTree(path.resolve("package/package.json").toFile())
+                    .path("dependencies")
+                    .path("leaf")
+                    .asText());
+          }
+          return SnapshotGenerationResult.forMessage(
+              IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generated");
+        });
     var resolver =
         PackageResolverFactory.withConfiguration(
             contextConfiguration(packageCache).packageLoading());
@@ -715,38 +699,36 @@ class DefaultPackageProcessorTest {
     var contextPackages = new ArrayList<ResolvedPackage>();
     var dependencyPaths = new ArrayList<Path>();
     when(setup.context().cloneContext(anyCollection()))
-        .thenAnswer(
-            invocation -> {
-              contextPackages.clear();
-              contextPackages.addAll(invocation.<List<ResolvedPackage>>getArgument(0));
-              return setup.context();
-            });
+        .thenAnswer(invocation -> {
+          contextPackages.clear();
+          contextPackages.addAll(invocation.<List<ResolvedPackage>>getArgument(0));
+          return setup.context();
+        });
     when(setup.context().generateSnapshots(any(Path.class)))
-        .thenAnswer(
-            invocation -> {
-              Path path = invocation.getArgument(0);
-              var coordinates = packageCoordinates(path);
-              generated.add(coordinates);
-              var ids = contextPackages.stream().map(pkg -> pkg.id().coordinates()).toList();
-              Assertions.assertFalse(ids.contains("unrelated#1.0.0"));
-              for (var dependency : contextPackages) {
-                dependencyPaths.add(dependency.packagePath());
-                if (dependency.id().name().equals("shared")) {
-                  Assertions.assertEquals(
-                      "generated",
-                      Files.readString(dependency.packagePath().resolve("package/marker.txt")));
-                }
-              }
-              if (coordinates.equals("root#1.0.0")) {
-                Assertions.assertEquals(3, ids.size());
-                Assertions.assertEquals("shared#1.0.0", ids.getFirst());
-              }
-              if (coordinates.equals("shared#1.0.0")) {
-                Files.writeString(path.resolve("package/marker.txt"), "generated");
-              }
-              return SnapshotGenerationResult.forMessage(
-                  IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generated");
-            });
+        .thenAnswer(invocation -> {
+          Path path = invocation.getArgument(0);
+          var coordinates = packageCoordinates(path);
+          generated.add(coordinates);
+          var ids = contextPackages.stream().map(pkg -> pkg.id().coordinates()).toList();
+          Assertions.assertFalse(ids.contains("unrelated#1.0.0"));
+          for (var dependency : contextPackages) {
+            dependencyPaths.add(dependency.packagePath());
+            if (dependency.id().name().equals("shared")) {
+              Assertions.assertEquals(
+                  "generated",
+                  Files.readString(dependency.packagePath().resolve("package/marker.txt")));
+            }
+          }
+          if (coordinates.equals("root#1.0.0")) {
+            Assertions.assertEquals(3, ids.size());
+            Assertions.assertEquals("shared#1.0.0", ids.getFirst());
+          }
+          if (coordinates.equals("shared#1.0.0")) {
+            Files.writeString(path.resolve("package/marker.txt"), "generated");
+          }
+          return SnapshotGenerationResult.forMessage(
+              IssueSeverity.INFORMATION, MessageId.NO_ERROR.getCode(), "generated");
+        });
     try (var processor = setup.processor()) {
       var result = processor.process(root.path(), setup.outputDirectory(), null, List.of());
       Assertions.assertFalse(
@@ -821,12 +803,11 @@ class DefaultPackageProcessorTest {
     PackageResolver resolver = mock(PackageResolver.class);
     when(resolver.resolveSources(any(Path.class))).thenReturn(new PackageResolution(roots));
     when(resolver.getMatchingPackage(anyString()))
-        .thenAnswer(
-            invocation -> {
-              var packageId = PackageId.parse(invocation.getArgument(0));
-              Path cachedPackage = packageCache.resolve(packageId.coordinates());
-              return new LocalDirectory(packageId, cachedPackage);
-            });
+        .thenAnswer(invocation -> {
+          var packageId = PackageId.parse(invocation.getArgument(0));
+          Path cachedPackage = packageCache.resolve(packageId.coordinates());
+          return new LocalDirectory(packageId, cachedPackage);
+        });
 
     return new ProcessorResult(
         track(new DefaultPackageProcessor(context, resolver, archiveCache, "edge-case-tests")),

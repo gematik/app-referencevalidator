@@ -97,12 +97,11 @@ public final class DependencyGraph {
     Map<PackageId, Integer> counts = new LinkedHashMap<>(indegree);
     ArrayDeque<PackageId> queue = new ArrayDeque<>();
 
-    counts.forEach(
-        (node, degree) -> {
-          if (degree == 0) {
-            queue.addLast(node);
-          }
-        });
+    counts.forEach((node, degree) -> {
+      if (degree == 0) {
+        queue.addLast(node);
+      }
+    });
 
     List<PackageId> result = new ArrayList<>(counts.size());
 

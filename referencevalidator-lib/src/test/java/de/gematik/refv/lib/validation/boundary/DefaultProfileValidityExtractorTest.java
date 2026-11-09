@@ -83,10 +83,9 @@ class DefaultProfileValidityExtractorTest {
     final var index = indexSupporting();
     final var resource = patientWithProfile(BASE + "/MyProfile|1.0");
     final var validity =
-        Assertions.assertDoesNotThrow(
-            () ->
-                extractor.extractProfileValidity(
-                    resource, FhirRelease.asR4(), ValidationOptions.defaultConfiguration(), index));
+        Assertions.assertDoesNotThrow(() ->
+            extractor.extractProfileValidity(
+                resource, FhirRelease.asR4(), ValidationOptions.defaultConfiguration(), index));
     Assertions.assertNotNull(validity);
     Assertions.assertEquals(
         BASE + "/MyProfile", validity.profileCanonical().canonical().toString());

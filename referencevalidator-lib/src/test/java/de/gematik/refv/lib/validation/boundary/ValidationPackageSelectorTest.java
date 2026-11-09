@@ -65,10 +65,9 @@ class ValidationPackageSelectorTest {
                 + BASE
                 + "/MyProfile|1.0\"]}}");
     final var packageCategories =
-        Assertions.assertDoesNotThrow(
-            () ->
-                selector.getPackagesForResource(
-                    resource, FhirRelease.asR4(), ValidationOptions.defaultConfiguration()));
+        Assertions.assertDoesNotThrow(() ->
+            selector.getPackagesForResource(
+                resource, FhirRelease.asR4(), ValidationOptions.defaultConfiguration()));
     Assertions.assertNotNull(packageCategories);
     Assertions.assertFalse(packageCategories.isEmpty());
   }

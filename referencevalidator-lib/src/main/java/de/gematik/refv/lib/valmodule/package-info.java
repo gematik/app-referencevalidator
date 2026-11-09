@@ -40,8 +40,8 @@
 ///
 /// - R1.1 When a valid module matching the requested name is found, the BC shall return its parsed
 ///   manifest and the path of that module.
-/// - R1.2 If no valid matching module is found in a valid search directory, then the BC shall return
-///   an empty result.
+/// - R1.2 If no valid matching module is found in a valid search directory, then the BC shall
+///   return an empty result.
 /// - R1.3 If multiple valid modules match the requested name, then the BC shall return the first
 ///   matching module encountered during the search without choosing by release version.
 /// - R1.4 When a module name is compared with the requested name, the BC shall compare the names
@@ -54,7 +54,8 @@
 ///   report a diagnostic identifying that candidate and the failure reason and continue searching.
 /// - R1.8 If the search path is missing or is not a directory, then the BC shall report a
 ///   module-loading failure.
-/// - R1.9 If the search directory or requested name is absent, then the BC shall reject the request.
+/// - R1.9 If the search directory or requested name is absent, then the BC shall reject the
+///   request.
 /// - R1.10 If the search directory cannot be listed, then the BC shall report a module-loading
 ///   failure retaining the underlying cause.
 /// - R1.11 When loading a module, the BC shall read its metadata without instantiating its SPI
@@ -64,12 +65,12 @@
 ///
 /// ### R2 — Load a module for snapshot generation
 ///
-/// - R2.1 When a module root containing a valid manifest is supplied, the BC shall return the parsed
-///   manifest and that module root as the module location.
-/// - R2.2 If the manifest below the module root is missing or unreadable, then the BC shall report a
-///   module-loading failure retaining the underlying cause.
-/// - R2.3 If the manifest below the module root is invalid, then the BC shall report a module-loading
-///   failure retaining the manifest diagnostic and underlying cause.
+/// - R2.1 When a module root containing a valid manifest is supplied, the BC shall return the
+///   parsed manifest and that module root as the module location.
+/// - R2.2 If the manifest below the module root is missing or unreadable, then the BC shall report
+///   a module-loading failure retaining the underlying cause.
+/// - R2.3 If the manifest below the module root is invalid, then the BC shall report a
+///   module-loading failure retaining the manifest diagnostic and underlying cause.
 /// - R2.4 If the module root is absent, then the BC shall reject the request.
 /// - R2.5 If a loader does not support snapshot-module loading, then the BC shall report an
 ///   unsupported-operation module-loading failure.
@@ -95,8 +96,8 @@
 ///   is the module root.
 ///
 /// Manifests reside at `META-INF/config.yaml`. SPI registrations reside at
-/// `META-INF/services/de.gematik.refv.valmodule.api.boundary.FhirValidationModule`.
-/// The module release version is metadata, not a search priority or an engine compatibility check.
+/// `META-INF/services/de.gematik.refv.valmodule.api.boundary.FhirValidationModule`. The module
+/// release version is metadata, not a search priority or an engine compatibility check.
 ///
 /// ## Out of scope
 ///

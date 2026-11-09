@@ -57,7 +57,8 @@ public record ValidationPolicyConfiguration(
   /**
    * Policy that defines if Example Code Systems are allowed or not in FHIR Resources. In case the
    * {@link ExampleCodeSystemsUsagePolicy#DISALLOWED} is selected, it may cause errors during the
-   * validation.
+   * validation. HL7 7.0.5 uses one validator setting for example CodeSystems and example URLs, so
+   * the setting is enabled only when both related policies are {@link #ALLOWED}.
    */
   public enum ExampleCodeSystemsUsagePolicy {
     ALLOWED,

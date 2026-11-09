@@ -91,14 +91,12 @@ class PackageResolverRequirementsTest {
     if (transitiveResolution == PackageResolver.TransitiveResolution.ALLOWED) {
       Assertions.assertTrue(
           result.packages().stream()
-              .allMatch(
-                  pkg ->
-                      pkg.dependencies().stream()
-                          .allMatch(
-                              dependency ->
-                                  resolvedIds.indexOf(dependency.coordinates()) >= 0
-                                      && resolvedIds.indexOf(dependency.coordinates())
-                                          < resolvedIds.indexOf(pkg.id().coordinates()))),
+              .allMatch(pkg ->
+                  pkg.dependencies().stream()
+                      .allMatch(dependency ->
+                          resolvedIds.indexOf(dependency.coordinates()) >= 0
+                              && resolvedIds.indexOf(dependency.coordinates())
+                                  < resolvedIds.indexOf(pkg.id().coordinates()))),
           "Every resolved dependency must precede its dependent package");
     }
     if (transitiveResolution == PackageResolver.TransitiveResolution.IGNORE) {
