@@ -118,8 +118,18 @@ own `version` is chosen by its publisher.
   reference date from a resource. `validityDateSourceByVersion` can override it for particular
   versions. Leave the profile settings empty (`{}`) if no date is needed.
 - `errorOnUnknownProfile`, `anyExtensionsAllowed`, and `requireExpansionBeforeValidation` control
-  validation policy. `ignoredCodeSystems` and `ignoredValueSets` list terminology canonicals to
-  ignore. Use these when necessary, since they affect the validation behavior.
+  validation policy. When `errorOnUnknownProfile` is `true`, a profile canonical or version not
+  supported by the module is a validation error. When it is `false`, validation reports a warning,
+  continues with core validation and any other available checks, and does not claim that
+  module-specific validation was applied to that profile. A version supplied in the resource must
+  match a version supported by the module; an unsupported version is unknown even when its
+  canonical base is supported. A supported profile whose definition is missing from the loaded
+  packages remains an error under either setting. `ignoredCodeSystems` and `ignoredValueSets` list
+  terminology canonicals to ignore. Use these when necessary, since they affect the validation
+  behavior.
+- At runtime, the CLI projects the manifest's profile support and `errorOnUnknownProfile` setting
+  into the immutable `ModuleProfilePolicy` carried by `ValidationPolicyConfiguration`. The FHIR
+  context receives this policy value, not the module index or manifest object.
 - `globalSuppressionRules` can suppress matching messages using a rule ID, message pattern, and
   reason. `messageTransformations` declares named severity rewrites. A package group may refer to
   those names through `messageTransformations`. Each rewrite sets a target severity and can match

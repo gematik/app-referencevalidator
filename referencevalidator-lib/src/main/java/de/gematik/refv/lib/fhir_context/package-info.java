@@ -79,8 +79,9 @@
 ///   validate the resource against those profiles and return the validation result.
 /// - R2.2 When a resource is validated with no supplied profiles, the FHIR Context shall validate
 ///   the resource against the core FHIR structures for its configured release.
-/// - R2.3 If a supplied profile is not available in the validation context, then the FHIR Context
-///   shall report a validation failure.
+/// - R2.3 If a supplied profile is supported by the selected module but is not available in the
+///   validation context, then the FHIR Context shall report a validation failure regardless of the
+///   module's unknown-profile policy.
 /// - R2.4 If a Bundle or Parameters resource includes embedded resources and the
 ///   RecursiveModePolicy is enabled, then the FHIR Context shall validate each embedded resource
 ///   through the HL7 validator's native traversal, against its declared `meta.profile` values or
@@ -88,6 +89,10 @@
 ///   profile alternative, that alternative shall be selected instead of evaluating unrelated
 ///   alternatives. Parent structural constraints and slicing shall remain enforced, and validation
 ///   shall retain the owning Bundle or Parameters context for reference resolution.
+/// - R2.5 If a profile canonical or version is unsupported by the selected module, then the FHIR
+///   Context shall report a validation failure when `errorOnUnknownProfile` is enabled; otherwise
+///   it shall report a warning and continue without claiming module-specific profile validation.
+///   This policy shall apply to root and recursively validated embedded resources.
 ///
 /// ### R3 — Snapshot generation
 ///
@@ -131,6 +136,8 @@
 /// - `TerminologyConfiguration` defines terminology-server access and terminology cache settings.
 /// - `ZtsTerminologyServerConfiguration` identifies the endpoints of a ZTS terminology server.
 /// - `ValidationPolicyConfiguration` defines policy choices used when validating resources.
+/// - `ModuleProfilePolicy` contains immutable profile bases, supported versions, defaults, and
+///   unknown-profile behavior copied from the selected module manifest.
 /// - `ValidationModuleIndex` resolves module profile versions, validity periods, package groups,
 ///   and message transformations for validation.
 /// - `ProfileValidity` pairs a profile canonical with an optional resource validity date.

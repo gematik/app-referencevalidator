@@ -117,7 +117,12 @@ public class DefaultProfileValidityExtractor implements ProfileValidityExtractor
               resource, profileForValidation, validationModuleIndex);
       return new ProfileValidity(profileForValidation, profileDateDefinition);
     } catch (Exception e) {
-      throw new ParsingException("Failed to parse or resolve the FHIR resource profile", e);
+      var details = e.getLocalizedMessage();
+      if (details == null || details.isBlank()) {
+        details = e.getClass().getSimpleName();
+      }
+      throw new ParsingException(
+          "Failed to parse or resolve the FHIR resource profile: " + details, e);
     } finally {
       try {
         fhirResource.inputStream().close();
@@ -198,7 +203,7 @@ public class DefaultProfileValidityExtractor implements ProfileValidityExtractor
     return resource;
   }
 
-  private ProfileCanonical getProfileForValidation(
+  private @NonNull ProfileCanonical getProfileForValidation(
       @NonNull ProfileCanonical profileInResource,
       @NonNull ValidationOptions validationOptions,
       @NonNull ValidationModuleIndex validationModuleIndex) {
@@ -214,23 +219,31 @@ public class DefaultProfileValidityExtractor implements ProfileValidityExtractor
     }
 
     if (Objects.nonNull(validationOptions.profileToValidate())) {
-      // Only one user defined profile is supported at the moment
-      var userDefinedProfile = validationOptions.profileToValidate();
-      log.warn("Profile for validation has been passed by user: {}", userDefinedProfile);
-      // If a Validation Module is being used here, check that the validation module supports it
-      if (!validationModuleIndex.isProfileDefined(userDefinedProfile.canonical().toString())) {
-        throw new UnsupportedProfileException(
-            "The profile specified in the resource is not supported");
-      }
-      return userDefinedProfile;
+      log.warn(
+          "Profile for validation has been passed by user: {}",
+          validationOptions.profileToValidate());
+      return resolveProfileForValidation(
+          validationOptions.profileToValidate(), validationModuleIndex);
     }
 
-    if (!validationModuleIndex.isProfileDefined(profileInResource.canonical().toString())) {
+    return resolveProfileForValidation(profileInResource, validationModuleIndex);
+  }
+
+  private @NonNull ProfileCanonical resolveProfileForValidation(
+      ProfileCanonical profile, ValidationModuleIndex validationModuleIndex) {
+    if (validationModuleIndex.isProfileVersionDefined(profile)) {
+      return profile;
+    }
+    if (validationModuleIndex.errorOnUnknownProfile()) {
       throw new UnsupportedProfileException(
-          "The profile specified in the resource is not supported");
+          "The profile specified in the resource is not supported: " + profile.value());
     }
-
-    return profileInResource;
+    if (log.isWarnEnabled()) {
+      log.warn(
+          "Profile {} is not supported by the module; continuing without module profile validation",
+          profile.value());
+    }
+    return profile;
   }
 
   private Optional<LocalDate> findDateInResourceByConfiguredLocator(

@@ -143,6 +143,8 @@ public final class ValidationModuleIndex {
   /// Contains the Runtime Information of a module, including the parsed configuration itself
   private final ValidationModule validationModule;
 
+  private final ModuleProfilePolicy moduleProfilePolicy;
+
   /// The single lookup map: profile canonical ("url|version") -> resolved version
   private final Map<String, ResolvedVersion> resolvedVersionsByCanonical;
 
@@ -159,6 +161,7 @@ public final class ValidationModuleIndex {
    */
   public ValidationModuleIndex(@NonNull ValidationModule validationModule) {
     this.validationModule = Objects.requireNonNull(validationModule);
+    this.moduleProfilePolicy = ModuleProfilePolicy.fromManifest(validationModule.configuration());
     this.resolvedVersionsByCanonical = buildIndex(validationModule.configuration());
     this.knownProfileUrls = collectProfileUrls(validationModule.configuration());
     this.familiesByPrefix = collectFamiliesByPrefix(validationModule.configuration());
@@ -174,6 +177,10 @@ public final class ValidationModuleIndex {
     return validationModule.configuration();
   }
 
+  public boolean errorOnUnknownProfile() {
+    return moduleProfilePolicy.errorOnUnknownProfile();
+  }
+
   // ---------------------------------------------
   // Profile lookups (single-map model + prefix fallback)
   // ---------------------------------------------
@@ -185,6 +192,12 @@ public final class ValidationModuleIndex {
   public boolean isProfileDefined(@NonNull String profileUrl) {
     Objects.requireNonNull(profileUrl, INVALID_PROFILE_URL);
     return knownProfileUrls.contains(profileUrl) || matchingFamily(profileUrl).isPresent();
+  }
+
+  /** Returns true when the module supports the profile canonical and its supplied version. */
+  public boolean isProfileVersionDefined(@NonNull ProfileCanonical profile) {
+    Objects.requireNonNull(profile, INVALID_PROFILE_URL);
+    return moduleProfilePolicy.supports(profile);
   }
 
   /**

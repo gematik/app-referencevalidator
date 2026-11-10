@@ -33,6 +33,8 @@ import de.gematik.refv.lib.exceptions.ValidationException;
 import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
 import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
+import de.gematik.refv.lib.fhir_context.entity.MessageId;
+import de.gematik.refv.lib.fhir_context.entity.ModuleProfilePolicy;
 import de.gematik.refv.lib.fhir_context.entity.PackageDownloadConfiguration;
 import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
 import de.gematik.refv.lib.fhir_context.entity.ValidationPolicyConfiguration;
@@ -41,15 +43,24 @@ import de.gematik.refv.lib.package_resolver.entity.PackageId;
 import de.gematik.refv.lib.package_resolver.entity.ResolvedPackage;
 import de.gematik.refv.lib.validation.entity.FhirResource;
 import de.gematik.refv.lib.validation.entity.ProfileCanonical;
+import de.gematik.refv.valmodule.api.entity.PackageGroup;
+import de.gematik.refv.valmodule.api.entity.PackageGroupReference;
+import de.gematik.refv.valmodule.api.entity.ProfileFamily;
+import de.gematik.refv.valmodule.api.entity.ProfileVersion;
+import de.gematik.refv.valmodule.api.entity.ValidationModuleManifest;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -154,6 +165,101 @@ class RecursiveResourceValidationTest {
     }
   }
 
+  @DisplayName(
+      "Warns and continues for unsupported root and embedded profiles when the module allows them")
+  @ParameterizedTest
+  @CsvSource({"false, false", "true, true"})
+  void unsupportedProfilesWarnAndContinue(boolean embedded, boolean recursive) throws Exception {
+    var canonical = "http://other.example/StructureDefinition/Unknown|9.0.0";
+    var resource =
+        embedded
+            ? FhirResource.fromJson(
+                """
+                {"resourceType":"Parameters","parameter":[{"name":"patient","resource":{
+                  "resourceType":"Patient","meta":{"profile":["%s"]},"active":true
+                }}]}
+                """
+                    .formatted(canonical))
+            : FhirResource.fromJson(
+                """
+                {"resourceType":"Patient","meta":{"profile":["%s"]},"active":true}
+                """
+                    .formatted(canonical));
+    try (var context =
+        context(
+            FhirRelease.asR4(),
+            recursive ? RecursiveModePolicy.ALLOWED : RecursiveModePolicy.DISALLOWED,
+            profilePackage(FhirRelease.asR4()),
+            moduleProfilePolicy(false))) {
+      var messages = context.validate(resource, List.of()).messages();
+      assertTrue(
+          messages.stream()
+              .anyMatch(message ->
+                  message.messageId().equals(MessageId.UNSUPPORTED_PROFILE.getCode())
+                      && message.severity() == IssueSeverity.WARNING
+                      && message.messageContent().contains(canonical)
+                      && message.messageContent().contains("no module profile validation")),
+          messages::toString);
+      assertNoErrors(messages);
+    }
+  }
+
+  @DisplayName("Rejects unsupported root and embedded profiles when the module requires them")
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void unsupportedProfilesFailWhenModuleRequiresKnownProfiles(boolean embedded) throws Exception {
+    var canonical = "http://other.example/StructureDefinition/Unknown|9.0.0";
+    var profiles = List.<ProfileCanonical>of();
+    var resource =
+        embedded
+            ? FhirResource.fromJson(
+                """
+                {"resourceType":"Parameters","parameter":[{"name":"patient","resource":{
+                  "resourceType":"Patient","meta":{"profile":["%s"]},"active":true
+                }}]}
+                """
+                    .formatted(canonical))
+            : FhirResource.fromJson(
+                """
+                {"resourceType":"Patient","meta":{"profile":["%s"]},"active":true}
+                """
+                    .formatted(canonical));
+    try (var context =
+        context(
+            FhirRelease.asR4(),
+            RecursiveModePolicy.ALLOWED,
+            profilePackage(FhirRelease.asR4()),
+            moduleProfilePolicy(true))) {
+      assertThrows(ValidationException.class, () -> context.validate(resource, profiles));
+    }
+  }
+
+  @DisplayName("Still fails when a module-supported embedded profile is missing from the engine")
+  @Test
+  void supportedButUnavailableChildProfileStillFailsInWarningMode() throws Exception {
+    var resource =
+        FhirResource.fromJson(
+            """
+            {"resourceType":"Parameters","parameter":[{"name":"patient","resource":{
+              "resourceType":"Patient","meta":{"profile":["%s"]},"active":true
+            }}]}
+            """
+                .formatted("http://example.org/StructureDefinition/Missing|1.0.0"));
+    var profiles = List.<ProfileCanonical>of();
+    try (var context =
+        context(
+            FhirRelease.asR4(),
+            RecursiveModePolicy.ALLOWED,
+            profilePackage(FhirRelease.asR4()),
+            moduleProfilePolicy(false))) {
+      var exception =
+          assertThrows(ValidationException.class, () -> context.validate(resource, profiles));
+      assertEquals(
+          "The User-Provided FHIR profiles are not available in the Engine Context",
+          exception.getMessage());
+    }
+  }
+
   @ParameterizedTest
   @ValueSource(
       strings = {
@@ -212,7 +318,10 @@ class RecursiveResourceValidationTest {
 
     try (var context =
         context(
-            FhirRelease.asR4(), RecursiveModePolicy.ALLOWED, profilePackage(FhirRelease.asR4()))) {
+            FhirRelease.asR4(),
+            RecursiveModePolicy.ALLOWED,
+            profilePackage(FhirRelease.asR4()),
+            moduleProfilePolicy(false))) {
       var messages = context.validate(nestedBundle, List.of()).messages();
       assertNoErrors(messages);
     }
@@ -240,7 +349,10 @@ class RecursiveResourceValidationTest {
                 .formatted(PATIENT_FULL_URL, PROFILE));
     try (var context =
         context(
-            FhirRelease.asR4(), RecursiveModePolicy.ALLOWED, profilePackage(FhirRelease.asR4()))) {
+            FhirRelease.asR4(),
+            RecursiveModePolicy.ALLOWED,
+            profilePackage(FhirRelease.asR4()),
+            moduleProfilePolicy(false))) {
       var standaloneMessages =
           context.validate(standalone, List.of(ProfileCanonical.fromCanonical(PROFILE))).messages();
       var containedMessages = context.validate(contained, List.of()).messages();
@@ -282,6 +394,14 @@ class RecursiveResourceValidationTest {
 
   private DefaultValidationContext context(
       FhirRelease release, RecursiveModePolicy recursion, ResolvedPackage packageToLoad) {
+    return context(release, recursion, packageToLoad, null);
+  }
+
+  private DefaultValidationContext context(
+      FhirRelease release,
+      RecursiveModePolicy recursion,
+      ResolvedPackage packageToLoad,
+      ModuleProfilePolicy moduleProfilePolicy) {
     var defaults = ContextConfiguration.defaultConfiguration();
     var policy = defaults.validationPolicy();
     var configuration =
@@ -300,8 +420,37 @@ class RecursiveResourceValidationTest {
                 policy.exampleUrlsUsagePolicy(),
                 policy.exampleRestReferencesPolicy(),
                 recursion,
-                policy.anyExtensionPolicy()));
+                policy.anyExtensionPolicy(),
+                moduleProfilePolicy));
     return new DefaultValidationContext(configuration, List.of(packageToLoad));
+  }
+
+  private ModuleProfilePolicy moduleProfilePolicy(boolean errorOnUnknownProfile) {
+    var group = new PackageGroup(List.of("recursive-test#1.0.0"), null);
+    var version =
+        new ProfileVersion(
+            List.of(new PackageGroupReference("recursive-test", LocalDate.of(2020, 1, 1), null)));
+    var family =
+        new ProfileFamily(
+            "http://example.org/StructureDefinition", "1.0.0", Map.of("1.0.0", version), Map.of());
+    var manifest =
+        new ValidationModuleManifest(
+            "3.0",
+            "recursive-test",
+            "1.0.0",
+            "test",
+            "test",
+            "",
+            errorOnUnknownProfile,
+            false,
+            false,
+            List.of(),
+            Map.of("recursive-test", group),
+            Map.of(),
+            Map.of("recursive-test", family),
+            List.of(),
+            List.of());
+    return ModuleProfilePolicy.fromManifest(manifest);
   }
 
   private ResolvedPackage profilePackage(FhirRelease release) throws Exception {

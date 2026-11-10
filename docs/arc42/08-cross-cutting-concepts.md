@@ -7,6 +7,11 @@ immutability and value-based equality. Collection fields are defensively copied 
 `Map.copyOf`). Runtime contexts, validators, engines, and caches remain mutable and
 are not made thread-safe merely by the use of records.
 
+`ModuleProfilePolicy` is an immutable projection of profile-family bases, supported versions,
+defaults, and unknown-profile behavior from a module manifest. `ValidationPolicyConfiguration`
+carries this value into the FHIR context; the context does not retain the `ValidationModuleIndex` or
+manifest object.
+
 ## 8.2 Concurrency
 
 * Multi-file CLI validation uses a virtual-thread-per-task executor behind a sliding completion
@@ -31,6 +36,10 @@ are not made thread-safe merely by the use of records.
   `SnapshotGenerationResult`) containing `ResultMessage` findings. Expected conformance findings
   are results, while initialization, parsing, and operation failures may be exceptions. The common
   result interface does not impose a universal message-sorting guarantee.
+* With `errorOnUnknownProfile` enabled, a profile canonical or version unsupported by the module is
+  a validation error. When disabled, it is reported as a warning and validation continues without
+  claiming module-specific profile validation. A profile supported by the manifest but unavailable
+  in the engine context remains an error under either setting.
 * **Fail-fast** for configuration errors (module config cross-references, invalid options).
 * The shared JSON/YAML mappers reject unknown fields unless a target type explicitly permits them.
   YAML failures identify offending fields or incompatible values and include line/column information

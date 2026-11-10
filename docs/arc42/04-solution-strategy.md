@@ -13,9 +13,11 @@
 
 ## 4.2 How the pieces collaborate
 
-* **CLI boundary (`referencevalidator-cli`)** parses arguments and YAML, loads modules, collects
-  inputs within configured bounds, selects packages, schedules only the configured number of
-  in-flight validations, and writes reports after results are collected.
+* **CLI boundary (`referencevalidator-cli`)** parses arguments and YAML, loads modules, builds the
+   `ValidationModuleIndex` used for package selection, and projects manifest profile settings into
+   an immutable `ModuleProfilePolicy`. It merges that policy into `ValidationPolicyConfiguration`
+   before creating validation contexts, collects inputs within configured bounds, schedules only the
+   configured number of in-flight validations, and writes reports after results are collected.
 * **Library (`referencevalidator-lib`)** contains the public interfaces and value types as well as
   the workflows and HL7-backed implementations. Packages such as `validation`, `snapshot`,
   `fhir_context`, `package_resolver`, and `valmodule` use `boundary`, `control`, and `entity`
@@ -33,8 +35,10 @@
   the external template. This build-time integration is separate from runtime module loading.
 
 Library callers perform the same composition explicitly: load module metadata, import its archives
-through Package Resolver, select the resource's packages, then create a validator with core and
-selected packages. Loading metadata alone does not configure a validator or apply module policies.
+through Package Resolver, select the resource's packages, project the manifest to
+`ModuleProfilePolicy`, and pass it through `ValidationPolicyConfiguration` when creating a context.
+The context receives immutable policy data, not a `ValidationModuleIndex` or manifest. Loading
+metadata alone does not configure a validator or apply module policies.
 
 ## 4.3 Package-selection algorithm (validity periods)
 
@@ -45,8 +49,10 @@ The heart of the validation is choosing the right FHIR packages for a resource:
    only the first resource-bearing entry or parameter and use that resource's first profile.
    A missing profile fails extraction even when an explicit override was supplied.
 2. Apply any profile-filter regex to the extracted resource profile before applying an explicit
-   override. Check the selected canonical against the module index. A versionless canonical uses the family's declared
-   `defaultVersion`; undeclared profile URLs may resolve through the family's canonical-base prefix.
+   override. Resolve the selected canonical and version against the module index. A versionless
+   canonical uses the family's declared `defaultVersion`; undeclared profile URLs may resolve
+   through the family's canonical-base prefix. A version not declared by that family is unsupported
+   even when its canonical base is known.
 3. Evaluate `validityDateSource`, using a version-specific locator when defined. Timezone-bearing
    values are converted to a calendar date in Europe/Berlin. Values without a timezone retain their
    calendar date. A usable date selects the first inclusive matching period in declaration order.
@@ -57,8 +63,15 @@ The heart of the validation is choosing the right FHIR packages for a resource:
 
 `ValidationModuleIndex` builds a lookup from loaded module metadata. `DefaultProfileValidityExtractor`
 reads the profile and date, while `ValidationPackageSelector` applies the period-check policy.
-These rules apply to module package selection, not to every direct validator call. In particular,
-core-only validation does not require a module-supported `meta.profile`.
+For validation, the CLI separately projects the manifest's supported profile bases, names, versions,
+defaults, and `errorOnUnknownProfile` setting into `ModuleProfilePolicy`. When the setting is true,
+an unsupported canonical or version fails validation. When false, it produces a warning and no module
+packages are selected; validation continues with core and any other available checks without claiming
+that the unknown profile was validated. A profile the module supports but whose definition is absent
+from loaded packages remains a validation error. The same policy applies to root and recursively
+validated embedded resources. These rules apply to module package selection and module-backed
+validation, not to every direct validator call. In particular, core-only validation does not require
+a module-supported `meta.profile`.
 
 Under validation contract R4.2, evaluation errors, multiple values, non-date values, and unusable
 dates produce profile validity without a date. Year-only and year-month values are not precise
