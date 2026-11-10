@@ -154,7 +154,7 @@ class ProfileSelectionRequirementsTest {
                     ParsingException.class,
                     () -> extractor.extractProfileValidity(patient, release, filtered, index))
                 .getCause());
-        verify(index, never()).isProfileDefined(anyString());
+        verify(index, never()).isProfileVersionDefined(any(ProfileCanonical.class));
       }
       case "R3.7" -> {
         var override = options(OVERRIDE + "|2.0", Pattern.compile("example"));
@@ -163,14 +163,16 @@ class ProfileSelectionRequirementsTest {
             extractor.extractProfileValidity(patient, release, override, index).profileCanonical());
       }
       case "R3.8" -> {
-        when(index.isProfileDefined(PROFILE)).thenReturn(false);
+        when(index.isProfileVersionDefined(ProfileCanonical.fromCanonical(PROFILE + "|1.0")))
+            .thenReturn(false);
         assertInstanceOf(
             UnsupportedProfileException.class,
             assertThrows(
                     ParsingException.class,
                     () -> extractor.extractProfileValidity(patient, release, options, index))
                 .getCause());
-        when(index.isProfileDefined(OVERRIDE)).thenReturn(false);
+        when(index.isProfileVersionDefined(ProfileCanonical.fromCanonical(OVERRIDE)))
+            .thenReturn(false);
         var override = options(OVERRIDE, null);
         assertInstanceOf(
             UnsupportedProfileException.class,
@@ -357,6 +359,8 @@ class ProfileSelectionRequirementsTest {
     var index = mock(ValidationModuleIndex.class);
     when(index.isProfileDefined(PROFILE)).thenReturn(true);
     when(index.isProfileDefined(OVERRIDE)).thenReturn(true);
+    when(index.isProfileVersionDefined(any(ProfileCanonical.class))).thenReturn(true);
+    when(index.errorOnUnknownProfile()).thenReturn(true);
     when(index.getValidityDateSource(anyString(), anyString()))
         .thenReturn(Optional.ofNullable(locator));
     return index;

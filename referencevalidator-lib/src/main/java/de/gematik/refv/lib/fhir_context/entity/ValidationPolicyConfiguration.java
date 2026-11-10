@@ -26,8 +26,13 @@ package de.gematik.refv.lib.fhir_context.entity;
 
 import java.util.Objects;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
-/** Defines the configuration of Validation Policies for the FHIR Engine. */
+/**
+ * Defines the configuration of Validation Policies for the FHIR Engine.
+ *
+ * @param moduleProfilePolicy immutable module profile support, or null when no module is selected
+ */
 public record ValidationPolicyConfiguration(
     @NonNull ValidationLevelPolicy validationLevelPolicy,
     @NonNull UnknownCodeSystemsPolicy unknownCodeSystemsPolicy,
@@ -35,7 +40,27 @@ public record ValidationPolicyConfiguration(
     @NonNull ExampleUrlsUsagePolicy exampleUrlsUsagePolicy,
     @NonNull ExampleRestReferencesPolicy exampleRestReferencesPolicy,
     @NonNull RecursiveModePolicy recursiveModePolicy,
-    @NonNull AnyExtensionPolicy anyExtensionPolicy) {
+    @NonNull AnyExtensionPolicy anyExtensionPolicy,
+    @Nullable ModuleProfilePolicy moduleProfilePolicy) {
+
+  public ValidationPolicyConfiguration(
+      @NonNull ValidationLevelPolicy validationLevelPolicy,
+      @NonNull UnknownCodeSystemsPolicy unknownCodeSystemsPolicy,
+      @NonNull ExampleCodeSystemsUsagePolicy exampleCodeSystemsUsagePolicy,
+      @NonNull ExampleUrlsUsagePolicy exampleUrlsUsagePolicy,
+      @NonNull ExampleRestReferencesPolicy exampleRestReferencesPolicy,
+      @NonNull RecursiveModePolicy recursiveModePolicy,
+      @NonNull AnyExtensionPolicy anyExtensionPolicy) {
+    this(
+        validationLevelPolicy,
+        unknownCodeSystemsPolicy,
+        exampleCodeSystemsUsagePolicy,
+        exampleUrlsUsagePolicy,
+        exampleRestReferencesPolicy,
+        recursiveModePolicy,
+        anyExtensionPolicy,
+        null);
+  }
 
   /** Policy that defines which level of details should be displayed in messages. */
   public enum ValidationLevelPolicy {

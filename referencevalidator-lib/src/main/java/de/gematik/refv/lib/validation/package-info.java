@@ -81,12 +81,15 @@
 ///   then the BC shall report a profile-extraction failure before applying any profile override.
 /// - R3.7 When an explicit profile override is supplied and resource-profile checks succeed, the BC
 ///   shall select the override instead of the resource profile.
-/// - R3.8 If the selected profile canonical is not supported by the module, then the BC shall
-///   report a profile-extraction failure.
+/// - R3.8 If the selected profile canonical or version is unsupported, then the BC shall report a
+///   profile-extraction failure when the module's `errorOnUnknownProfile` policy is enabled;
+///   otherwise it shall retain the canonical and continue without selecting module packages.
 /// - R3.9 If the resource cannot be parsed or its profile cannot be resolved, then the BC shall
 ///   report a profile-extraction failure retaining the underlying cause.
 /// - R3.10 If a required resource, FHIR release, validation options, or module index is absent,
 ///   then the BC shall reject the profile-extraction request.
+/// - R3.11 When an unsupported profile is retained under the warning policy, the BC shall report
+///   that module-specific profile validation was not applied.
 ///
 /// ### R4 — Validity date extraction
 ///
@@ -116,6 +119,8 @@
 ///   selection request.
 /// - R5.6 If profile-validity extraction fails during package selection, then the BC shall report
 ///   that failure rather than return a package selection.
+/// - R5.7 If the module permits unknown profiles and the selected canonical or version is
+///   unsupported, then the BC shall return no module packages and allow core validation to proceed.
 ///
 /// ### R6 — Validation result policies
 ///

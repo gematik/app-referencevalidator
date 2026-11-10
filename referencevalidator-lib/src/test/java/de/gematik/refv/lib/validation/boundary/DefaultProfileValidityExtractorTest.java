@@ -28,6 +28,7 @@ import de.gematik.refv.lib.exceptions.ParsingException;
 import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
 import de.gematik.refv.lib.fhir_context.entity.ValidationModuleIndex;
 import de.gematik.refv.lib.validation.entity.FhirResource;
+import de.gematik.refv.lib.validation.entity.ProfileCanonical;
 import de.gematik.refv.lib.validation.entity.ValidationOptions;
 import de.gematik.refv.lib.valmodule.entity.ValidationModule;
 import de.gematik.refv.valmodule.api.entity.PackageGroup;
@@ -43,6 +44,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class DefaultProfileValidityExtractorTest {
 
@@ -51,6 +54,10 @@ class DefaultProfileValidityExtractorTest {
   private final ProfileValidityExtractor extractor = ProfileValidityExtractor.defaultExtractor();
 
   private static ValidationModuleIndex indexSupporting() {
+    return indexSupporting(true);
+  }
+
+  private static ValidationModuleIndex indexSupporting(boolean errorOnUnknownProfile) {
     final var groups = Map.of("g1", new PackageGroup(List.of("a-1.0.tgz"), null));
     final var periods =
         new ProfileVersion(
@@ -65,8 +72,21 @@ class DefaultProfileValidityExtractorTest {
                 Map.of("MyProfile", new ProfileDefinition(null, null))));
     final var config =
         new ValidationModuleManifest(
-            "4.0", "m", "1.0", "a", "d", "", true, false, false, List.of(), groups, Map.of(),
-            families, List.of(), List.of());
+            "4.0",
+            "m",
+            "1.0",
+            "a",
+            "d",
+            "",
+            errorOnUnknownProfile,
+            false,
+            false,
+            List.of(),
+            groups,
+            Map.of(),
+            families,
+            List.of(),
+            List.of());
     return new ValidationModuleIndex(new ValidationModule(config, Path.of("/modules/m.jar")));
   }
 
@@ -92,6 +112,19 @@ class DefaultProfileValidityExtractorTest {
   }
 
   @DisplayName(
+      "Given a versionless profile and a module default version, when extracting, then the default profile is resolved")
+  @Test
+  void resolveVersionlessProfileUsingModuleDefault() {
+    final var index = indexSupporting();
+    final var resource = patientWithProfile(BASE + "/MyProfile");
+    final var validity =
+        extractor.extractProfileValidity(
+            resource, FhirRelease.asR4(), ValidationOptions.defaultConfiguration(), index);
+    Assertions.assertEquals(
+        BASE + "/MyProfile", validity.profileCanonical().canonical().toString());
+  }
+
+  @DisplayName(
       "Given a resource without a profile, when extracting, then a ParsingException is thrown")
   @Test
   void expectMissingProfileThrows() {
@@ -99,9 +132,61 @@ class DefaultProfileValidityExtractorTest {
     final var resource = FhirResource.fromJson("{\"resourceType\":\"Patient\"}");
     final var release = FhirRelease.asR4();
     final var options = ValidationOptions.defaultConfiguration();
-    Assertions.assertThrows(
-        ParsingException.class,
-        () -> extractor.extractProfileValidity(resource, release, options, index));
+    final var exception =
+        Assertions.assertThrows(
+            ParsingException.class,
+            () -> extractor.extractProfileValidity(resource, release, options, index));
+  }
+
+  @DisplayName(
+      "Given an unsupported profile URL or version and warning policy, when extracting, then the profile is retained for core validation")
+  @ParameterizedTest
+  @ValueSource(
+      strings = {
+        "http://another-example.org/fhir/StructureDefinition/Unsupported|1.0",
+        BASE + "/MyProfile|2.0"
+      })
+  void continueForUnsupportedProfilesWhenModuleAllowsUnknownProfiles(String canonical) {
+    final var index = indexSupporting(false);
+    final var resource = patientWithProfile(canonical);
+    final var validity =
+        extractor.extractProfileValidity(
+            resource, FhirRelease.asR4(), ValidationOptions.defaultConfiguration(), index);
+    Assertions.assertEquals(ProfileCanonical.fromCanonical(canonical), validity.profileCanonical());
+    Assertions.assertTrue(validity.validityDate().isEmpty());
+  }
+
+  @DisplayName(
+      "Given an unsupported version and strict policy, when extracting, then a profile error is thrown")
+  @Test
+  void rejectUnsupportedProfileVersionWhenModuleRequiresKnownProfiles() {
+    final var index = indexSupporting(true);
+    final var resource = patientWithProfile(BASE + "/MyProfile|2.0");
+    final var release = FhirRelease.asR4();
+    final var options = ValidationOptions.defaultConfiguration();
+    final var exception =
+        Assertions.assertThrows(
+            ParsingException.class,
+            () -> extractor.extractProfileValidity(resource, release, options, index));
+    Assertions.assertTrue(
+        exception.getMessage().contains("The profile specified in the resource is not supported"));
+  }
+
+  @DisplayName(
+      "Given an unsupported profile URL or version and warning policy, when selecting packages, then no module packages are selected")
+  @ParameterizedTest
+  @ValueSource(
+      strings = {
+        "http://another-example.org/fhir/StructureDefinition/Unsupported|1.0",
+        BASE + "/MyProfile|2.0"
+      })
+  void selectNoModulePackagesForUnsupportedProfiles(String canonical) {
+    final var selector = new ValidationPackageSelector(indexSupporting(false));
+    final var resource = patientWithProfile(canonical);
+    final var packages =
+        selector.getPackagesForResource(
+            resource, FhirRelease.asR4(), ValidationOptions.defaultConfiguration());
+    Assertions.assertTrue(packages.isEmpty());
   }
 
   @DisplayName(

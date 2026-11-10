@@ -40,6 +40,19 @@ final class EmbeddedResourceExtractor {
     return resources;
   }
 
+  static List<ProfileCanonical> profiles(Element resource) {
+    var meta = resource.getNamedChild("meta", false);
+    return meta == null || !meta.hasChildren()
+        ? List.of()
+        : meta.getChildrenByName("profile").stream()
+            .map(Element::getValue)
+            .filter(Objects::nonNull)
+            .filter(value -> !value.isBlank())
+            .map(ProfileCanonical::fromCanonical)
+            .distinct()
+            .toList();
+  }
+
   private static void extract(Element resource, String path, List<EmbeddedResource> resources) {
     switch (resource.fhirType()) {
       case "Bundle" -> extractComponents(resource, "entry", path, resources);
@@ -73,16 +86,7 @@ final class EmbeddedResourceExtractor {
 
   record EmbeddedResource(Element resource, String path) {
     List<ProfileCanonical> profiles() {
-      var meta = resource.getNamedChild("meta", false);
-      return meta == null || !meta.hasChildren()
-          ? List.of()
-          : meta.getChildrenByName("profile").stream()
-              .map(Element::getValue)
-              .filter(Objects::nonNull)
-              .filter(value -> !value.isBlank())
-              .map(ProfileCanonical::fromCanonical)
-              .distinct()
-              .toList();
+      return EmbeddedResourceExtractor.profiles(resource);
     }
   }
 }

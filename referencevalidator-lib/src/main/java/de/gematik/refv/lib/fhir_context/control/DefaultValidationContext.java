@@ -29,6 +29,9 @@ import de.gematik.refv.lib.exceptions.ValidationException;
 import de.gematik.refv.lib.fhir_context.boundary.ValidationContext;
 import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
 import de.gematik.refv.lib.fhir_context.entity.FhirRelease;
+import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
+import de.gematik.refv.lib.fhir_context.entity.MessageId;
+import de.gematik.refv.lib.fhir_context.entity.ModuleProfilePolicy;
 import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
 import de.gematik.refv.lib.fhir_context.entity.ValidationPolicyConfiguration;
 import de.gematik.refv.lib.package_resolver.entity.ResolvedPackage;
@@ -40,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import org.hl7.fhir.model.core.OperationOutcome;
@@ -113,12 +117,18 @@ class DefaultValidationContext implements ValidationContext {
       @NonNull FhirResource fhirResource, @NonNull Collection<ProfileCanonical> profiles)
       throws ValidationException {
     try {
-      // Check that profiles are loaded in context
-      assertProfilesAreLoadedInContext(profiles);
-      if (contextConfiguration.validationPolicy().recursiveModePolicy()
-          == ValidationPolicyConfiguration.RecursiveModePolicy.ALLOWED) {
-        assertEmbeddedProfilesAreLoaded(fhirResource);
+      var recursiveValidationAllowed =
+          contextConfiguration.validationPolicy().recursiveModePolicy()
+              == ValidationPolicyConfiguration.RecursiveModePolicy.ALLOWED;
+      var moduleProfilePolicy = contextConfiguration.validationPolicy().moduleProfilePolicy();
+      var profilesToCheck = new LinkedHashSet<>(profiles);
+      if (moduleProfilePolicy != null || recursiveValidationAllowed) {
+        profilesToCheck.addAll(
+            profilesInResource(
+                fhirResource, recursiveValidationAllowed, moduleProfilePolicy != null));
       }
+      var unsupportedProfiles =
+          assertProfilesAreLoadedInContext(profilesToCheck, moduleProfilePolicy);
       final OperationOutcome operationOutcome;
       if (fhirResource instanceof JsonFhirResource jsonFhirResource) {
         operationOutcome =
@@ -136,7 +146,8 @@ class DefaultValidationContext implements ValidationContext {
       // BUG HL7: the resources are still searched, even if the configuration is disabled
       final var fixedOutcome =
           suppressExternalAllowedContent(operationOutcome, contextConfiguration);
-      return OutcomeConverter.toValidationResult(fixedOutcome);
+      return addUnsupportedProfileWarnings(
+          OutcomeConverter.toValidationResult(fixedOutcome), unsupportedProfiles);
     } catch (Exception e) {
       throw new ValidationException(e.getLocalizedMessage(), e);
     }
@@ -153,16 +164,66 @@ class DefaultValidationContext implements ValidationContext {
     }
   }
 
-  private void assertEmbeddedProfilesAreLoaded(FhirResource resource) throws IOException {
+  private List<ProfileCanonical> profilesInResource(
+      FhirResource resource, boolean includeEmbedded, boolean includeRoot) throws IOException {
     var format = resource instanceof JsonFhirResource ? FhirFormat.JSON : FhirFormat.XML;
     try (var input = resource.inputStream()) {
       var root =
           org.hl7.fhir.services.elementmodel.Manager.parseSingle(
               validationEngine.getContext(), input, format);
-      for (var child : EmbeddedResourceExtractor.extract(root)) {
-        assertProfilesAreLoadedInContext(child.profiles());
+      var profiles = new LinkedHashSet<ProfileCanonical>();
+      if (includeRoot) {
+        profiles.addAll(EmbeddedResourceExtractor.profiles(root));
+      }
+      if (includeEmbedded) {
+        EmbeddedResourceExtractor.extract(root).stream()
+            .map(EmbeddedResourceExtractor.EmbeddedResource::profiles)
+            .forEach(profiles::addAll);
+      }
+      return List.copyOf(profiles);
+    }
+  }
+
+  private List<ProfileCanonical> assertProfilesAreLoadedInContext(
+      Collection<ProfileCanonical> profiles, ModuleProfilePolicy moduleProfilePolicy) {
+    var unsupportedProfiles = new LinkedHashSet<ProfileCanonical>();
+    for (var profile : profiles) {
+      if (moduleProfilePolicy != null && !moduleProfilePolicy.supports(profile)) {
+        if (moduleProfilePolicy.errorOnUnknownProfile()) {
+          throw new ValidationException(
+              "The profile is not supported by the validation module: " + profile.value());
+        }
+        unsupportedProfiles.add(profile);
+        continue;
+      }
+
+      var version = profile.version().isBlank() ? null : profile.version();
+      if (!validationEngine
+          .getContext()
+          .hasResourceVersion(StructureDefinition.class, profile.canonical().toString(), version)) {
+        throw new ValidationException(
+            "The User-Provided FHIR profiles are not available in the Engine Context");
       }
     }
+    return List.copyOf(unsupportedProfiles);
+  }
+
+  private ValidationResult addUnsupportedProfileWarnings(
+      ValidationResult result, Collection<ProfileCanonical> unsupportedProfiles) {
+    if (unsupportedProfiles.isEmpty()) {
+      return result;
+    }
+    var messages = new ArrayList<>(result.messages());
+    unsupportedProfiles.stream()
+        .map(profile ->
+            ResultMessage.fromMessage(
+                IssueSeverity.WARNING,
+                MessageId.UNSUPPORTED_PROFILE.getCode(),
+                "Profile '%s' is not supported by the module; no module profile validation was applied"
+                    .formatted(profile.value())))
+        .forEach(messages::add);
+    messages.sort(ResultMessage.comparatorBySeverity());
+    return new ValidationResult(messages);
   }
 
   @Override
@@ -180,30 +241,6 @@ class DefaultValidationContext implements ValidationContext {
   public void close() {
     if (terminologyCacheLease != null) {
       terminologyCacheLease.close();
-    }
-  }
-
-  /**
-   * Checks that the given profiles are loaded in the context.
-   *
-   * @param profiles collection of profiles to be validated
-   */
-  private void assertProfilesAreLoadedInContext(Collection<ProfileCanonical> profiles) {
-    boolean areProfilesLoaded =
-        // HL7 uses null, not an empty string, to resolve an unversioned canonical.
-        profiles.stream()
-            .allMatch(profile ->
-                this.validationEngine
-                    .getContext()
-                    .hasResourceVersion(
-                        StructureDefinition.class,
-                        profile.canonical().toString(),
-                        profile.version().isBlank() ? null : profile.version()));
-
-    if (!areProfilesLoaded) {
-      log.error("FHIR profiles were not loaded: {}", profiles);
-      throw new ValidationException(
-          "The User-Provided FHIR profiles are not available in the Engine Context");
     }
   }
 

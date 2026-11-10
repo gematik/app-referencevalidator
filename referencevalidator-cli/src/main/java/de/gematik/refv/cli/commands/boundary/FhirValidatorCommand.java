@@ -44,6 +44,7 @@ import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
 import de.gematik.refv.lib.fhir_context.entity.ContextResult;
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
 import de.gematik.refv.lib.fhir_context.entity.MessageId;
+import de.gematik.refv.lib.fhir_context.entity.ModuleProfilePolicy;
 import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
 import de.gematik.refv.lib.fhir_context.entity.ValidationModuleIndex;
 import de.gematik.refv.lib.fhir_context.entity.ValidationPolicyConfiguration;
@@ -499,6 +500,7 @@ public class FhirValidatorCommand extends BaseCommand {
   private @NonNull ContextConfiguration withModuleValidation(
       @NonNull ContextConfiguration base, @NonNull ValidationModuleIndex moduleIndex) {
     final var moduleManifest = moduleIndex.getValidationModuleConfiguration();
+    final var moduleProfilePolicy = ModuleProfilePolicy.fromManifest(moduleManifest);
 
     ValidationPolicyConfiguration validationPolicyConfiguration =
         new ValidationPolicyConfiguration(
@@ -510,7 +512,8 @@ public class FhirValidatorCommand extends BaseCommand {
             base.validationPolicy().recursiveModePolicy(),
             moduleManifest.anyExtensionsAllowed()
                 ? ValidationPolicyConfiguration.AnyExtensionPolicy.ALLOWED
-                : ValidationPolicyConfiguration.AnyExtensionPolicy.DISALLOWED);
+                : ValidationPolicyConfiguration.AnyExtensionPolicy.DISALLOWED,
+            moduleProfilePolicy);
 
     return new ContextConfiguration(
         base.fhirRelease(),

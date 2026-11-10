@@ -26,6 +26,7 @@ sequenceDiagram
     opt validation module selected
         CLI ->> Module: load JAR and META-INF/config.yaml
         Module -->> CLI: ValidationModule
+        CLI ->> CLI: Build package index and project ModuleProfilePolicy
     end
     CLI ->> Inputs: collect bounded input list
     Inputs -->> CLI: validated paths and recorded sizes
@@ -61,7 +62,14 @@ sequenceDiagram
 
 **Notes**
 
-* The module index is built after loading the manifest and resolves profile/version/date lookups.
+* The CLI retains `ValidationModuleIndex` for package and profile/version/date selection. It projects
+  supported profile-family data and `errorOnUnknownProfile` into `ModuleProfilePolicy`, merged into
+  `ValidationPolicyConfiguration` before opening the batch context provider. `ContextConfiguration`
+  carries generic context settings; `DefaultValidationContext` receives no module index or manifest.
+* With `errorOnUnknownProfile` enabled, an unsupported canonical or version fails validation. When
+  disabled, the context reports a warning and continues without module-specific profile validation;
+  supported profiles whose definitions were not loaded still fail. The same policy is applied to
+  root profiles and profiles on recursively validated embedded resources.
 * One batch-scoped provider is shared by the single-input and multi-input paths. It owns a capped,
   access-ordered package-set template cache; active leases protect templates from eviction. A
   template is only a clone source and is never used to validate a resource.
