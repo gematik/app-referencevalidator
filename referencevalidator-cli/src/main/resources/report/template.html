@@ -238,7 +238,8 @@
             background: rgba(239, 236, 0, .25);
         }
 
-        .badge.info {
+        .badge.info,
+        .badge.information {
             background: rgba(74, 255, 255, .25);
         }
 
@@ -355,7 +356,7 @@
             <label for="search">Search:</label><input
                 type="text"
                 id="search"
-                placeholder="Search by Message ID or Content..."
+                placeholder="Search by Message ID, content, or file..."
         >
         </div>
         <div class="filters">
@@ -379,40 +380,28 @@
 </div>
 
 <script>
+    let activeFilter = 'all';
+
     function filterMessages(type) {
+        activeFilter = type;
+        updateMessages();
+    }
+
+    function updateMessages() {
+        const searchTerm = document.getElementById('search').value.toLowerCase();
         const messages = document.querySelectorAll('.message');
         messages.forEach(msg => {
-            if (type === 'all') {
-                msg.style.display = '';
-                return;
-            }
-
-            msg.style.display =
-                msg.classList.contains(type)
-                    ? ''
-                    : 'none';
+            const matchesFilter =
+                activeFilter === 'all' || msg.classList.contains(activeFilter);
+            const matchesSearch =
+                msg.innerText.toLowerCase().includes(searchTerm);
+            msg.style.display = matchesFilter && matchesSearch ? '' : 'none';
         });
     }
 
     document
         .getElementById('search')
-        .addEventListener('input', function () {
-            const value =
-                this.value.toLowerCase();
-
-            document
-                .querySelectorAll('.message')
-                .forEach(msg => {
-
-                    const text =
-                        msg.innerText.toLowerCase();
-
-                    msg.style.display =
-                        text.includes(value)
-                            ? ''
-                            : 'none';
-                });
-        });
+        .addEventListener('input', updateMessages);
 </script>
 </body>
 </html>
