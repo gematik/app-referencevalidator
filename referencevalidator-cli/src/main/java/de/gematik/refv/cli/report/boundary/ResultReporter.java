@@ -82,6 +82,7 @@ public class ResultReporter {
     boolean expectationsMatched = true;
 
     final StringBuilder stringBuilder = new StringBuilder();
+    final StringBuilder filesWithErrors = new StringBuilder();
 
     for (var result : resultMap.entrySet()) {
       if (result.getValue() == null) {
@@ -98,6 +99,7 @@ public class ResultReporter {
       if (expectedResult != null) {
         expectationsMatched &= expectedResult.expectationMatched();
       }
+      appendErrorSourceSummary(filesWithErrors, result.getKey(), counts, expectedResult);
       totalErrors += counts.errors();
       totalFatalErrors += counts.fatalErrors();
       totalWarnings += counts.warnings();
@@ -114,10 +116,33 @@ public class ResultReporter {
             String.format(
                 "Overall: %s | %d file(s) | %d fatal(s) | %d error(s) | %d warning(s)%n",
                 overallStatus, resultMap.size(), totalFatalErrors, totalErrors, totalWarnings));
+    if (!filesWithErrors.isEmpty()) {
+      stringBuilder.append("Files with errors:").append('\n').append(filesWithErrors);
+    }
 
     log.info("{}", stringBuilder);
 
     return resultSuccessful;
+  }
+
+  private void appendErrorSourceSummary(
+      StringBuilder summary,
+      String source,
+      MessageCounts counts,
+      @Nullable ExpectedValidationResult expectedResult) {
+    if ((counts.errors() == 0 && counts.fatalErrors() == 0)
+        || (expectedResult != null && expectedResult.expectationMatched())) {
+      return;
+    }
+    summary
+        .append("  ")
+        .append(source)
+        .append(
+            String.format(" | %d fatal(s) | %d error(s)", counts.fatalErrors(), counts.errors()));
+    if (expectedResult != null) {
+      summary.append(" | ").append(expectationLabel(expectedResult));
+    }
+    summary.append('\n');
   }
 
   public void writeHtmlReport(
@@ -156,8 +181,11 @@ public class ResultReporter {
         log.debug("Skipping result for {}", result.getKey());
         continue;
       }
+      final boolean expectedInvalid =
+          expectedInvalidSources != null && expectedInvalidSources.contains(result.getKey());
       var counts =
-          appendHtmlMessages(messageCardsBuilder, result.getKey(), result.getValue().messages());
+          appendHtmlMessages(
+              messageCardsBuilder, result.getKey(), result.getValue().messages(), expectedInvalid);
       if (expectedInvalidSources != null) {
         final var expectedResult =
             expectedValidationResult(
@@ -324,7 +352,10 @@ public class ResultReporter {
   }
 
   private MessageCounts appendHtmlMessages(
-      StringBuilder messageCardsBuilder, String source, Iterable<ResultMessage> messages) {
+      StringBuilder messageCardsBuilder,
+      String source,
+      Iterable<ResultMessage> messages,
+      boolean expectedInvalid) {
     long total = 0;
     long errors = 0;
     long fatalErrors = 0;
@@ -340,14 +371,20 @@ public class ResultReporter {
       if (IssueSeverity.WARNING.equals(message.severity())) {
         warnings++;
       }
-      messageCardsBuilder.append(generateSingleMessageEntry(source, message));
+      messageCardsBuilder.append(generateSingleMessageEntry(source, message, expectedInvalid));
     }
     return new MessageCounts(total, errors, fatalErrors, warnings);
   }
 
   private @NonNull String generateSingleMessageEntry(
-      @NonNull String fileName, @NonNull ResultMessage message) {
+      @NonNull String fileName, @NonNull ResultMessage message, boolean expectedInvalid) {
     final var severityCode = message.severity();
+    final boolean expectedError =
+        expectedInvalid
+            && (IssueSeverity.ERROR.equals(severityCode)
+                || IssueSeverity.FATAL.equals(severityCode));
+    final var displaySeverity = expectedError ? IssueSeverity.INFORMATION : severityCode;
+    final var displayLabel = expectedError ? "EXPECTED ERROR" : severityCode.name();
     return String.format(
         """
         <div class="message %s">
@@ -365,9 +402,9 @@ public class ResultReporter {
                 </div>
                \s\
         """,
-        severityCode.getCode(),
-        severityCode.getCode(),
-        severityCode.name(),
+        displaySeverity.getCode(),
+        displaySeverity.getCode(),
+        displayLabel,
         message.messageId(),
         escapeHtml(fileName),
         escapeHtml(message.messageContent()));

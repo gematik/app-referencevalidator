@@ -164,6 +164,19 @@ class ResultReporterTest {
     final var htmlContent = Files.readString(htmlReport);
     Assertions.assertTrue(htmlContent.contains("All expectations matched"));
     Assertions.assertTrue(htmlContent.contains("EXPECTED ERROR"));
+    Assertions.assertTrue(htmlContent.contains("class=\"message information\""));
+    Assertions.assertTrue(htmlContent.contains(".badge.information"));
+
+    final var validResult =
+        Map.<String, ContextResult>of(
+            invalidSource,
+            createValidSingleResult(
+                IssueSeverity.INFORMATION, "resource valid", "validation info", "Patient"));
+    resultReporter.writeHtmlReport(validResult, htmlReport, "R4", expectedInvalidSources);
+    final var unmatchedHtmlContent = Files.readString(htmlReport);
+    Assertions.assertTrue(unmatchedHtmlContent.contains("Expectation mismatch"));
+    Assertions.assertTrue(unmatchedHtmlContent.contains("UNEXPECTED VALID"));
+    Assertions.assertTrue(unmatchedHtmlContent.contains("class=\"message error\""));
   }
 
   @Test
