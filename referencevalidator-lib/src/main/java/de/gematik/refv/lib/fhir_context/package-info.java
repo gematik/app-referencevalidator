@@ -93,6 +93,11 @@
 ///   Context shall report a validation failure when `errorOnUnknownProfile` is enabled; otherwise
 ///   it shall report a warning and continue without claiming module-specific profile validation.
 ///   This policy shall apply to root and recursively validated embedded resources.
+/// - R2.6 When a profile canonical requests a numeric `X.Y` version and the context contains
+///   matching `X.Y.Z` definitions, the FHIR Context shall prefer an exact `X.Y` definition when
+///   loaded; otherwise it shall select the highest loaded patch version and validate the instance's
+///   unchanged canonical through a context-local alias without changing the selected definition's
+///   constraints. This shall also apply to embedded resources.
 ///
 /// ### R3 — Snapshot generation
 ///

@@ -24,6 +24,7 @@
  */
 package de.gematik.refv.lib.fhir_context.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,6 +52,30 @@ class ModuleProfilePolicyTest {
     assertTrue(policy.supports(ProfileCanonical.fromCanonical(BASE + "/Explicit|1.0.0")));
     assertTrue(policy.supports(ProfileCanonical.fromCanonical(BASE + "/Other|1.1.0")));
     assertTrue(policy.supports(ProfileCanonical.fromCanonical("https://example.org/other/P|5.0")));
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3.10"),
+        policy
+            .resolveProfileVersion(ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3"))
+            .orElseThrow());
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3.3"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3"), List.of("1.3.2", "1.3.3"))
+            .orElseThrow());
+    assertEquals(
+        ProfileCanonical.fromCanonical("https://example.org/exact/P|1.3"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical("https://example.org/exact/P|1.3"))
+            .orElseThrow());
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.0.3"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit|1.0"),
+                List.of("1.0.0", "1.0.2", "1.0.3"))
+            .orElseThrow());
   }
 
   @DisplayName("Uses the default version for versionless canonicals only when one is declared")
@@ -89,7 +114,14 @@ class ModuleProfilePolicyTest {
         new ProfileFamily(
             BASE,
             "1.0.0",
-            Map.of("1.0.0", firstVersion, "1.1.0", secondVersion),
+            Map.of(
+                "1.0.0", firstVersion,
+                "1.0.2", secondVersion,
+                "1.0.3", firstVersion,
+                "1.1.0", secondVersion,
+                "1.3.2", firstVersion,
+                "1.3.3", secondVersion,
+                "1.3.10", firstVersion),
             Map.of("Explicit", new ProfileDefinition(null, null)));
     var trailingSlashFamily =
         new ProfileFamily(
@@ -102,6 +134,12 @@ class ModuleProfilePolicyTest {
             "https://example.org/no-default",
             null,
             Map.of("1.0.0", firstVersion),
+            Map.of("P", new ProfileDefinition(null, null)));
+    var familyWithExactShortVersion =
+        new ProfileFamily(
+            "https://example.org/exact",
+            "1.3.10",
+            Map.of("1.3", firstVersion, "1.3.10", secondVersion),
             Map.of("P", new ProfileDefinition(null, null)));
     return new ValidationModuleManifest(
         "3.0",
@@ -119,7 +157,8 @@ class ModuleProfilePolicyTest {
         Map.of(
             "main", family,
             "trailing-slash", trailingSlashFamily,
-            "no-default", familyWithoutDefault),
+            "no-default", familyWithoutDefault,
+            "exact", familyWithExactShortVersion),
         List.of(),
         List.of());
   }

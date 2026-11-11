@@ -67,6 +67,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 class RecursiveResourceValidationTest {
   private static final String PROFILE =
       "http://example.org/StructureDefinition/ActivePatient|1.0.0";
+  private static final String SHORT_PROFILE =
+      "http://example.org/StructureDefinition/ActivePatient|1.0";
   private static final String GENDER_PROFILE =
       "http://example.org/StructureDefinition/PatientGender";
   private static final String PATIENT_ORGANIZATION_PROFILE =
@@ -367,6 +369,60 @@ class RecursiveResourceValidationTest {
     }
   }
 
+  @DisplayName(
+      "Resolves a short canonical to the highest loaded patch and validates its unchanged canonical")
+  @ParameterizedTest
+  @CsvSource({"false, false", "true, true"})
+  void shortProfileCanonicalUsesHighestLoadedPatch(boolean embedded, boolean recursive)
+      throws Exception {
+    var resource =
+        embedded
+            ? FhirResource.fromJson(
+                """
+                {"resourceType":"Parameters","parameter":[{"name":"patient","resource":{
+                  "resourceType":"Patient","meta":{"profile":["%s"]},"active":true
+                }}]}
+                """
+                    .formatted(SHORT_PROFILE))
+            : FhirResource.fromJson(
+                """
+                {"resourceType":"Patient","meta":{"profile":["%s"]},"active":true}
+                """
+                    .formatted(SHORT_PROFILE));
+    try (var context =
+        context(
+            FhirRelease.asR4(),
+            recursive ? RecursiveModePolicy.ALLOWED : RecursiveModePolicy.DISALLOWED,
+            profilePackage(FhirRelease.asR4()),
+            moduleProfilePolicy(false))) {
+      var messages = context.validate(resource, List.of()).messages();
+      assertTrue(
+          messages.stream()
+              .anyMatch(message ->
+                  message.severity() == IssueSeverity.ERROR
+                      && message.messageId().equals("_DT_Fixed_Wrong")),
+          messages::toString);
+      assertFalse(
+          messages.stream()
+              .anyMatch(
+                  message -> message.messageId().equals(MessageId.UNSUPPORTED_PROFILE.getCode())),
+          messages::toString);
+
+      var exactProfileResource =
+          FhirResource.fromJson(
+              """
+              {"resourceType":"Patient","meta":{"profile":["%s"]},"active":true}
+              """
+                  .formatted(PROFILE));
+      var exactProfileMessages = context.validate(exactProfileResource, List.of()).messages();
+      assertFalse(
+          exactProfileMessages.stream()
+              .anyMatch(
+                  message -> message.messageId().equals(MessageId.UNSUPPORTED_PROFILE.getCode())),
+          exactProfileMessages::toString);
+    }
+  }
+
   static Stream<Arguments> formatsAndReleases() {
     return Stream.of(
         Arguments.of(FhirRelease.asR4(), false),
@@ -432,7 +488,10 @@ class RecursiveResourceValidationTest {
             List.of(new PackageGroupReference("recursive-test", LocalDate.of(2020, 1, 1), null)));
     var family =
         new ProfileFamily(
-            "http://example.org/StructureDefinition", "1.0.0", Map.of("1.0.0", version), Map.of());
+            "http://example.org/StructureDefinition",
+            "1.0.0",
+            Map.of("1.0.0", version, "1.0.2", version, "1.0.3", version),
+            Map.of());
     var manifest =
         new ValidationModuleManifest(
             "3.0",
@@ -462,8 +521,10 @@ class RecursiveResourceValidationTest {
         {"name":"recursive-test","version":"1.0.0","fhirVersions":["%s"]}
         """
             .formatted(release.corePackageVersion()));
-    writeProfile(directory, release, "ActivePatient", "active", "\"fixedBoolean\":true");
-    writeProfile(directory, release, "PatientGender", "gender", "\"min\":1");
+    writeProfile(directory, release, "ActivePatient", "1.0.0", "active", "\"fixedBoolean\":true");
+    writeProfile(directory, release, "ActivePatient", "1.0.2", "active", "\"fixedBoolean\":true");
+    writeProfile(directory, release, "ActivePatient", "1.0.3", "active", "\"fixedBoolean\":false");
+    writeProfile(directory, release, "PatientGender", "1.0.0", "gender", "\"min\":1");
     writeOrganizationNameProfile(directory, release);
     writePatientOrganizationReferenceProfile(directory, release);
     return new ResolvedPackage(PackageId.parse("recursive-test#1.0.0"), root, List.of());
@@ -538,19 +599,25 @@ class RecursiveResourceValidationTest {
   }
 
   private static void writeProfile(
-      Path directory, FhirRelease release, String name, String field, String constraint)
+      Path directory,
+      FhirRelease release,
+      String name,
+      String version,
+      String field,
+      String constraint)
       throws Exception {
     Files.writeString(
-        directory.resolve("StructureDefinition-" + name + ".json"),
+        directory.resolve("StructureDefinition-" + name + "-" + version + ".json"),
         """
         {"resourceType":"StructureDefinition","url":"http://example.org/StructureDefinition/%s",
-         "version":"1.0.0","name":"%s","status":"active","fhirVersion":"%s",
+         "version":"%s","name":"%s","status":"active","fhirVersion":"%s",
          "kind":"resource","abstract":false,"type":"Patient",
          "baseDefinition":"http://hl7.org/fhir/StructureDefinition/Patient","derivation":"constraint",
          "differential":{"element":[{"id":"Patient","path":"Patient"},
            {"id":"Patient.%s","path":"Patient.%s",%s}]}}
         """
-            .formatted(name, name, release.corePackageVersion(), field, field, constraint));
+            .formatted(
+                name, version, name, release.corePackageVersion(), field, field, constraint));
   }
 
   private static FhirResource nestedResource(boolean xml) {

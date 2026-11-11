@@ -10,7 +10,10 @@ are not made thread-safe merely by the use of records.
 `ModuleProfilePolicy` is an immutable projection of profile-family bases, supported versions,
 defaults, and unknown-profile behavior from a module manifest. `ValidationPolicyConfiguration`
 carries this value into the FHIR context; the context does not retain the `ValidationModuleIndex` or
-manifest object.
+manifest object. For validation, a short numeric `X.Y` canonical resolves to an exact declared
+version if available, otherwise to the highest loaded `X.Y.Z` patch. The context adds a deep-copied
+alias to its isolated engine context under the requested canonical; it never changes the loaded
+StructureDefinition or its constraints.
 
 ## 8.2 Concurrency
 

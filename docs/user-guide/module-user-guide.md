@@ -122,9 +122,13 @@ own `version` is chosen by its publisher.
   supported by the module is a validation error. When it is `false`, validation reports a warning,
   continues with core validation and any other available checks, and does not claim that
   module-specific validation was applied to that profile. A version supplied in the resource must
-  match a version supported by the module; an unsupported version is unknown even when its
-  canonical base is supported. A supported profile whose definition is missing from the loaded
-  packages remains an error under either setting. `ignoredCodeSystems` and `ignoredValueSets` list
+  match a version supported by the module, except that a numeric `X.Y` may resolve to a declared
+  `X.Y.Z` patch. An exact declared version takes precedence; otherwise, the highest matching patch
+  is selected. Other unsupported versions are unknown even when their canonical base is supported.
+  During validation, the context aliases the selected loaded definition under the requested `X.Y`
+  canonical on a deep copy, leaving the full-version definition and its constraints unchanged. A
+  profile declared by the module but whose definition is missing from the loaded packages remains
+  an error under either setting. `ignoredCodeSystems` and `ignoredValueSets` list
   terminology canonicals to ignore. Use these when necessary, since they affect the validation
   behavior.
 - At runtime, the CLI projects the manifest's profile support and `errorOnUnknownProfile` setting

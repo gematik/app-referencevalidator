@@ -229,10 +229,15 @@ public class DefaultProfileValidityExtractor implements ProfileValidityExtractor
     return resolveProfileForValidation(profileInResource, validationModuleIndex);
   }
 
+  /**
+   * Resolves the selected profile against the module policy, retaining unsupported canonicals only
+   * when the module configures warning behavior.
+   */
   private @NonNull ProfileCanonical resolveProfileForValidation(
       ProfileCanonical profile, ValidationModuleIndex validationModuleIndex) {
-    if (validationModuleIndex.isProfileVersionDefined(profile)) {
-      return profile;
+    var resolvedProfile = validationModuleIndex.resolveProfileVersion(profile);
+    if (resolvedProfile.isPresent()) {
+      return resolvedProfile.get();
     }
     if (validationModuleIndex.errorOnUnknownProfile()) {
       throw new UnsupportedProfileException(

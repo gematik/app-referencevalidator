@@ -138,4 +138,32 @@ class ValidationModuleIndexResolutionTest {
 
     Assertions.assertTrue(index.findProfileVersion(BASE + "/P", "  ").isPresent());
   }
+
+  @DisplayName(
+      "Given a short profile version, when resolving package groups, then the highest patch is selected unless an exact version exists")
+  @Test
+  void expectShortVersionSelectsHighestPatchAndExactVersionWins() {
+    final var groups =
+        Map.of(
+            "1.3.2", new PackageGroup(List.of("kbv.ita.erp#1.3.2"), null),
+            "1.3.10", new PackageGroup(List.of("kbv.ita.erp#1.3.10"), null));
+    final var version132 =
+        new ProfileVersion(
+            List.of(new PackageGroupReference("1.3.2", LocalDate.of(2020, 1, 1), null)));
+    final var version1310 =
+        new ProfileVersion(
+            List.of(new PackageGroupReference("1.3.10", LocalDate.of(2020, 1, 1), null)));
+    final var family =
+        new ProfileFamily(
+            BASE,
+            "1.3.2",
+            Map.of("1.3.2", version132, "1.3.10", version1310),
+            Map.of("P", new ProfileDefinition(null, null)));
+    final var index = indexFor(groups, Map.of("kbv", family));
+
+    Assertions.assertEquals(
+        List.of("kbv.ita.erp#1.3.10"), index.getFallbackPackages(BASE + "/P", "1.3"));
+    Assertions.assertEquals(
+        List.of("kbv.ita.erp#1.3.2"), index.getFallbackPackages(BASE + "/P", "1.3.2"));
+  }
 }

@@ -90,6 +90,9 @@
 ///   then the BC shall reject the profile-extraction request.
 /// - R3.11 When an unsupported profile is retained under the warning policy, the BC shall report
 ///   that module-specific profile validation was not applied.
+/// - R3.12 When a resource requests a numeric `X.Y` profile version and the module declares
+///   matching `X.Y.Z` versions, the BC shall prefer the exact version when declared; otherwise it
+///   shall resolve to the highest declared patch version.
 ///
 /// ### R4 — Validity date extraction
 ///
@@ -121,6 +124,8 @@
 ///   that failure rather than return a package selection.
 /// - R5.7 If the module permits unknown profiles and the selected canonical or version is
 ///   unsupported, then the BC shall return no module packages and allow core validation to proceed.
+/// - R5.8 When package selection receives a profile canonical resolved from `X.Y` to `X.Y.Z`, the
+///   BC shall select the package group for the resolved `X.Y.Z` version.
 ///
 /// ### R6 — Validation result policies
 ///

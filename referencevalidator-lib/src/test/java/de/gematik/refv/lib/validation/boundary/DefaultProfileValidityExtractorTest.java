@@ -132,10 +132,9 @@ class DefaultProfileValidityExtractorTest {
     final var resource = FhirResource.fromJson("{\"resourceType\":\"Patient\"}");
     final var release = FhirRelease.asR4();
     final var options = ValidationOptions.defaultConfiguration();
-    final var exception =
-        Assertions.assertThrows(
-            ParsingException.class,
-            () -> extractor.extractProfileValidity(resource, release, options, index));
+    Assertions.assertThrows(
+        ParsingException.class,
+        () -> extractor.extractProfileValidity(resource, release, options, index));
   }
 
   @DisplayName(
