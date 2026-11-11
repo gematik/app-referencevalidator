@@ -63,7 +63,10 @@ support and API artifacts from this project.
 * `ModuleProfilePolicy` — projects profile-family bases, names, versions, defaults, and
   `errorOnUnknownProfile` from the manifest into immutable policy data. The CLI passes this value
   through `ValidationPolicyConfiguration`; `DefaultValidationContext` does not depend on the module
-  index or manifest.
+  index or manifest. Its version resolver prefers exact matches, then maps a numeric `X.Y` to the
+  highest available matching `X.Y.Z` patch. The validation context caches a deep-copied alias under
+  the requested canonical only for the isolated context; the loaded definition and its constraints
+  remain unchanged.
 * `DefaultPackageProcessor` — resolves package dependencies, applies patches, generates snapshots,
   and writes `.tgz` archives. `SnapshotArchiveCache` reuses successful generated archives.
 

@@ -140,18 +140,18 @@ public final class ValidationModuleIndex {
 
   private static final String INVALID_PROFILE_URL = "Invalid profile url specified";
 
-  /// Contains the Runtime Information of a module, including the parsed configuration itself
+  /** Contains the runtime information of a module, including its parsed configuration. */
   private final ValidationModule validationModule;
 
   private final ModuleProfilePolicy moduleProfilePolicy;
 
-  /// The single lookup map: profile canonical ("url|version") -> resolved version
+  /** The lookup map from profile canonical ({@code url|version}) to resolved version. */
   private final Map<String, ResolvedVersion> resolvedVersionsByCanonical;
 
-  /// All known profile URLs (without version), for fast profile-support checks
+  /** All known profile URLs without versions, for fast profile-support checks. */
   private final Set<String> knownProfileUrls;
 
-  /// Families by their canonical base prefix (with trailing '/'), for the prefix fallback
+  /** Profile families indexed by canonical-base prefix for prefix fallback. */
   private final List<ProfileFamilyByCanonical> familiesByPrefix;
 
   /**
@@ -177,6 +177,7 @@ public final class ValidationModuleIndex {
     return validationModule.configuration();
   }
 
+  /** Returns whether unsupported module profiles must fail validation instead of warning. */
   public boolean errorOnUnknownProfile() {
     return moduleProfilePolicy.errorOnUnknownProfile();
   }
@@ -194,28 +195,56 @@ public final class ValidationModuleIndex {
     return knownProfileUrls.contains(profileUrl) || matchingFamily(profileUrl).isPresent();
   }
 
-  /** Returns true when the module supports the profile canonical and its supplied version. */
+  /**
+   * Returns true when the module supports the profile canonical and its supplied or aliased
+   * version.
+   */
   public boolean isProfileVersionDefined(@NonNull ProfileCanonical profile) {
     Objects.requireNonNull(profile, INVALID_PROFILE_URL);
-    return moduleProfilePolicy.supports(profile);
+    return resolveProfileVersion(profile).isPresent();
   }
 
   /**
-   * Resolves a profile canonical. Explicitly declared profiles are served by a single map lookup; a
-   * null/blank version is served by the family's declared {@code defaultVersion}. If no exact
-   * canonical matches, the canonical-base prefix fallback applies: the URL must start with a
-   * family's {@code canonicalBase + "/"} and the (normalized) version must be declared by that
-   * family.
+   * Resolves a requested canonical to the module's effective supported version. An exact version
+   * takes precedence. A numeric {@code X.Y} may resolve to the highest declared {@code X.Y.Z} patch
+   * version; a versionless canonical uses the family's default.
+   *
+   * @param profile canonical and requested version
+   * @return the canonical with its effective version, or empty when unsupported
+   */
+  public @NonNull Optional<ProfileCanonical> resolveProfileVersion(
+      @NonNull ProfileCanonical profile) {
+    Objects.requireNonNull(profile, INVALID_PROFILE_URL);
+    return moduleProfilePolicy.resolveProfileVersion(profile);
+  }
+
+  /**
+   * Resolves a profile canonical to its validity timeline. Exact versions take precedence; numeric
+   * {@code X.Y} requests may resolve to the highest declared {@code X.Y.Z} patch. Versionless
+   * canonicals use the family's {@code defaultVersion}; undeclared names may use the canonical-base
+   * prefix fallback.
+   *
+   * @param profileUrl profile canonical URL
+   * @param version requested profile version, or null/blank for the family's default
+   * @return the resolved validity timeline, or empty when unsupported
    */
   public Optional<ResolvedVersion> findProfileVersion(
       @NonNull String profileUrl, @Nullable String version) {
     Objects.requireNonNull(profileUrl, INVALID_PROFILE_URL);
+    var resolvedProfile =
+        moduleProfilePolicy.resolveProfileVersion(
+            new ProfileCanonical(java.net.URI.create(profileUrl), version));
+    if (resolvedProfile.isEmpty()) {
+      return Optional.empty();
+    }
+    var resolvedVersion = resolvedProfile.get().version();
     final ResolvedVersion exact =
-        resolvedVersionsByCanonical.get(canonicalKey(profileUrl, normalizeVersion(version)));
+        resolvedVersionsByCanonical.get(
+            canonicalKey(profileUrl, normalizeVersion(resolvedVersion)));
     if (exact != null) {
       return Optional.of(exact);
     }
-    return resolveByFamilyPrefix(profileUrl, version);
+    return resolveByFamilyPrefix(profileUrl, resolvedVersion);
   }
 
   /**

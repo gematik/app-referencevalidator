@@ -43,11 +43,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import org.hl7.fhir.model.Base.CopyObjectOptions;
 import org.hl7.fhir.model.core.OperationOutcome;
 import org.hl7.fhir.model.core.StructureDefinition;
+import org.hl7.fhir.model.core.VersionResolutionRules;
 import org.hl7.fhir.model.utilities.EOperationOutcome;
 import org.hl7.fhir.model.utilities.formats.FhirFormat;
 import org.hl7.fhir.utilities.i18n.I18nConstants;
@@ -164,6 +168,14 @@ class DefaultValidationContext implements ValidationContext {
     }
   }
 
+  /**
+   * Extracts root and/or embedded {@code meta.profile} canonicals before engine validation.
+   *
+   * @param resource resource to inspect
+   * @param includeEmbedded whether Bundle or Parameters child resources are included
+   * @param includeRoot whether the root resource's profiles are included
+   * @return distinct profiles in encounter order
+   */
   private List<ProfileCanonical> profilesInResource(
       FhirResource resource, boolean includeEmbedded, boolean includeRoot) throws IOException {
     var format = resource instanceof JsonFhirResource ? FhirFormat.JSON : FhirFormat.XML;
@@ -184,30 +196,114 @@ class DefaultValidationContext implements ValidationContext {
     }
   }
 
+  /**
+   * Requires supported profiles to be loaded and returns profiles allowed to continue with warning.
+   */
   private List<ProfileCanonical> assertProfilesAreLoadedInContext(
       Collection<ProfileCanonical> profiles, ModuleProfilePolicy moduleProfilePolicy) {
-    var unsupportedProfiles = new LinkedHashSet<ProfileCanonical>();
-    for (var profile : profiles) {
-      if (moduleProfilePolicy != null && !moduleProfilePolicy.supports(profile)) {
-        if (moduleProfilePolicy.errorOnUnknownProfile()) {
-          throw new ValidationException(
-              "The profile is not supported by the validation module: " + profile.value());
-        }
-        unsupportedProfiles.add(profile);
-        continue;
-      }
-
-      var version = profile.version().isBlank() ? null : profile.version();
-      if (!validationEngine
-          .getContext()
-          .hasResourceVersion(StructureDefinition.class, profile.canonical().toString(), version)) {
-        throw new ValidationException(
-            "The User-Provided FHIR profiles are not available in the Engine Context");
-      }
-    }
-    return List.copyOf(unsupportedProfiles);
+    return profiles.stream()
+        .map(profile -> checkProfileAvailability(profile, moduleProfilePolicy))
+        .flatMap(Optional::stream)
+        .toList();
   }
 
+  /** Resolves one profile against available context definitions and the optional module policy. */
+  private Optional<ProfileCanonical> checkProfileAvailability(
+      ProfileCanonical profile, ModuleProfilePolicy moduleProfilePolicy) {
+    var loadedVersions = loadedProfileVersions(profile);
+    var resolvedProfile =
+        moduleProfilePolicy == null
+            ? resolveLoadedProfileVersion(profile, loadedVersions)
+            : moduleProfilePolicy.resolveProfileVersion(profile, loadedVersions);
+    if (resolvedProfile.isEmpty()) {
+      return unsupportedOrUnavailableProfile(profile, moduleProfilePolicy);
+    }
+
+    var resolved = resolvedProfile.get();
+    ensureProfileIsLoaded(resolved);
+    cacheProfileAlias(profile, resolved);
+    return Optional.empty();
+  }
+
+  /** Applies strict failure or warning behavior when a profile cannot be resolved. */
+  private Optional<ProfileCanonical> unsupportedOrUnavailableProfile(
+      ProfileCanonical profile, ModuleProfilePolicy moduleProfilePolicy) {
+    if (moduleProfilePolicy == null) {
+      throw profileNotAvailable();
+    }
+    var declaredProfile = moduleProfilePolicy.resolveProfileVersion(profile);
+    if (declaredProfile.isPresent()) {
+      throw profileNotAvailable();
+    }
+    if (moduleProfilePolicy.errorOnUnknownProfile()) {
+      throw new ValidationException(
+          "The profile is not supported by the validation module: " + profile.value());
+    }
+    return Optional.of(profile);
+  }
+
+  /** Fails when the context lacks the exact resolved StructureDefinition version. */
+  private void ensureProfileIsLoaded(ProfileCanonical profile) {
+    var version = profile.version().isBlank() ? null : profile.version();
+    if (!validationEngine
+        .getContext()
+        .hasResourceVersion(StructureDefinition.class, profile.canonical().toString(), version)) {
+      throw profileNotAvailable();
+    }
+  }
+
+  /** Returns versions of definitions with the requested canonical URL loaded in this context. */
+  private List<String> loadedProfileVersions(ProfileCanonical profile) {
+    return validationEngine.getContext().fetchResourcesByType(StructureDefinition.class).stream()
+        .filter(structureDefinition ->
+            profile.canonical().toString().equals(structureDefinition.getUrl()))
+        .filter(StructureDefinition::hasVersion)
+        .map(StructureDefinition::getVersion)
+        .distinct()
+        .toList();
+  }
+
+  /** Resolves a canonical using only definitions currently loaded in this context. */
+  private Optional<ProfileCanonical> resolveLoadedProfileVersion(
+      ProfileCanonical profile, Collection<String> loadedVersions) {
+    if (profile.version().isBlank()) {
+      return validationEngine
+              .getContext()
+              .hasResourceVersion(StructureDefinition.class, profile.canonical().toString(), null)
+          ? Optional.of(profile)
+          : Optional.empty();
+    }
+    return ModuleProfilePolicy.resolveLoadedVersion(profile.version(), loadedVersions)
+        .map(version -> new ProfileCanonical(profile.canonical(), version));
+  }
+
+  /**
+   * Adds a deep-copied version alias to this isolated context without mutating the source profile.
+   */
+  private void cacheProfileAlias(ProfileCanonical requested, ProfileCanonical resolved) {
+    var context = validationEngine.getContext();
+    if (context.hasResourceVersion(
+        StructureDefinition.class, requested.canonical().toString(), requested.version())) {
+      return;
+    }
+    StructureDefinition loadedDefinition =
+        context.fetchResource(
+            StructureDefinition.class, resolved.value(), VersionResolutionRules.defaultRule());
+    if (loadedDefinition == null) {
+      throw profileNotAvailable();
+    }
+    var alias = loadedDefinition.copy(EnumSet.noneOf(CopyObjectOptions.class));
+    alias.setVersion(requested.version());
+    context.cacheResource(alias);
+  }
+
+  /** Creates the stable validation failure used when a required profile is unavailable. */
+  private static ValidationException profileNotAvailable() {
+    return new ValidationException(
+        "The User-Provided FHIR profiles are not available in the Engine Context");
+  }
+
+  /** Adds explicit warnings for profiles that continue without module-specific validation. */
   private ValidationResult addUnsupportedProfileWarnings(
       ValidationResult result, Collection<ProfileCanonical> unsupportedProfiles) {
     if (unsupportedProfiles.isEmpty()) {

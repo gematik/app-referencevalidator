@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -154,7 +156,7 @@ class ProfileSelectionRequirementsTest {
                     ParsingException.class,
                     () -> extractor.extractProfileValidity(patient, release, filtered, index))
                 .getCause());
-        verify(index, never()).isProfileVersionDefined(any(ProfileCanonical.class));
+        verify(index, never()).resolveProfileVersion(any(ProfileCanonical.class));
       }
       case "R3.7" -> {
         var override = options(OVERRIDE + "|2.0", Pattern.compile("example"));
@@ -163,16 +165,16 @@ class ProfileSelectionRequirementsTest {
             extractor.extractProfileValidity(patient, release, override, index).profileCanonical());
       }
       case "R3.8" -> {
-        when(index.isProfileVersionDefined(ProfileCanonical.fromCanonical(PROFILE + "|1.0")))
-            .thenReturn(false);
+        when(index.resolveProfileVersion(ProfileCanonical.fromCanonical(PROFILE + "|1.0")))
+            .thenReturn(Optional.empty());
         assertInstanceOf(
             UnsupportedProfileException.class,
             assertThrows(
                     ParsingException.class,
                     () -> extractor.extractProfileValidity(patient, release, options, index))
                 .getCause());
-        when(index.isProfileVersionDefined(ProfileCanonical.fromCanonical(OVERRIDE)))
-            .thenReturn(false);
+        when(index.resolveProfileVersion(ProfileCanonical.fromCanonical(OVERRIDE)))
+            .thenReturn(Optional.empty());
         var override = options(OVERRIDE, null);
         assertInstanceOf(
             UnsupportedProfileException.class,
@@ -210,6 +212,23 @@ class ProfileSelectionRequirementsTest {
   static Stream<String> profileCases() {
     return Stream.of(
         "R3.1", "R3.2", "R3.3", "R3.4", "R3.5", "R3.6", "R3.7", "R3.8", "R3.9", "R3.10");
+  }
+
+  @DisplayName("R3.12 Resolves a short profile version to the highest declared patch")
+  @Test
+  void shortProfileVersionResolvesToHighestPatch() {
+    var index = index(null);
+    var shortProfile = ProfileCanonical.fromCanonical(PROFILE + "|1.0");
+    var resolvedProfile = ProfileCanonical.fromCanonical(PROFILE + "|1.0.3");
+    when(index.resolveProfileVersion(shortProfile)).thenReturn(Optional.of(resolvedProfile));
+
+    assertEquals(
+        resolvedProfile,
+        ProfileValidityExtractor.defaultExtractor()
+            .extractProfileValidity(
+                patient(""), FhirRelease.asR4(), ValidationOptions.defaultConfiguration(), index)
+            .profileCanonical());
+    verify(index).getValidityDateSource(PROFILE, "1.0.3");
   }
 
   @ParameterizedTest(name = "{0}")
@@ -347,12 +366,24 @@ class ProfileSelectionRequirementsTest {
         verify(index, never()).getPackageGroupForDate(anyString(), anyString(), any());
         verify(index, never()).getFallbackPackageGroup(anyString(), anyString());
       }
+      case "R5.8" -> {
+        var shortProfile = ProfileCanonical.fromCanonical(PROFILE + "|1.0");
+        var resolvedProfile = ProfileCanonical.fromCanonical(PROFILE + "|1.0.3");
+        when(index.resolveProfileVersion(shortProfile)).thenReturn(Optional.of(resolvedProfile));
+        when(index.getFallbackPackageGroup(PROFILE, "1.0.3"))
+            .thenReturn(
+                Optional.of(
+                    new ValidationModuleIndex.PackageGroupSelection(
+                        "group", packages, List.of(), List.of())));
+        assertEquals(packages, selector.getPackagesForResource(patient(""), release, options));
+        verify(index).getFallbackPackageGroup(PROFILE, "1.0.3");
+      }
       default -> fail("Unexpected requirement " + requirement);
     }
   }
 
   static Stream<String> packageCases() {
-    return Stream.of("R5.1", "R5.2", "R5.3", "R5.4", "R5.5", "R5.6");
+    return Stream.of("R5.1", "R5.2", "R5.3", "R5.4", "R5.5", "R5.6", "R5.8");
   }
 
   static ValidationModuleIndex index(String locator) {
@@ -360,6 +391,8 @@ class ProfileSelectionRequirementsTest {
     when(index.isProfileDefined(PROFILE)).thenReturn(true);
     when(index.isProfileDefined(OVERRIDE)).thenReturn(true);
     when(index.isProfileVersionDefined(any(ProfileCanonical.class))).thenReturn(true);
+    when(index.resolveProfileVersion(any(ProfileCanonical.class)))
+        .thenAnswer(invocation -> Optional.of(invocation.getArgument(0)));
     when(index.errorOnUnknownProfile()).thenReturn(true);
     when(index.getValidityDateSource(anyString(), anyString()))
         .thenReturn(Optional.ofNullable(locator));

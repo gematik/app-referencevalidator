@@ -51,8 +51,10 @@ The heart of the validation is choosing the right FHIR packages for a resource:
 2. Apply any profile-filter regex to the extracted resource profile before applying an explicit
    override. Resolve the selected canonical and version against the module index. A versionless
    canonical uses the family's declared `defaultVersion`; undeclared profile URLs may resolve
-   through the family's canonical-base prefix. A version not declared by that family is unsupported
-   even when its canonical base is known.
+   through the family's canonical-base prefix. An exact declared version wins. If the resource
+   declares a numeric `X.Y` and the family declares no exact `X.Y` but has `X.Y.Z` versions, resolve
+   to the highest semantic patch version. Other undeclared versions are unsupported even when the
+   canonical base is known.
 3. Evaluate `validityDateSource`, using a version-specific locator when defined. Timezone-bearing
    values are converted to a calendar date in Europe/Berlin. Values without a timezone retain their
    calendar date. A usable date selects the first inclusive matching period in declaration order.
@@ -72,6 +74,12 @@ from loaded packages remains a validation error. The same policy applies to root
 validated embedded resources. These rules apply to module package selection and module-backed
 validation, not to every direct validator call. In particular, core-only validation does not require
 a module-supported `meta.profile`.
+
+When a resource declares `X.Y` and a matching full-version profile such as `X.Y.Z` is selected, the
+context registers a deep-copied alias under the requested canonical version for that isolated
+validation. The original `StructureDefinition` and its fixed/profile constraints are unchanged.
+The alias is created only from a matching loaded definition, so the selected version is constrained
+by both the module declaration and the package set loaded for the resource.
 
 Under validation contract R4.2, evaluation errors, multiple values, non-date values, and unusable
 dates produce profile validity without a date. Year-only and year-month values are not precise

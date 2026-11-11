@@ -66,6 +66,10 @@ sequenceDiagram
   supported profile-family data and `errorOnUnknownProfile` into `ModuleProfilePolicy`, merged into
   `ValidationPolicyConfiguration` before opening the batch context provider. `ContextConfiguration`
   carries generic context settings; `DefaultValidationContext` receives no module index or manifest.
+* For numeric `X.Y` profile canonicals, exact versions take precedence; otherwise, the module policy
+  selects the highest matching `X.Y.Z` version, filtered to definitions loaded for that resource.
+  The isolated context registers a deep-copied alias under `X.Y` so the unchanged root or embedded
+  `meta.profile` resolves. The loaded full-version definition and its constraints are not mutated.
 * With `errorOnUnknownProfile` enabled, an unsupported canonical or version fails validation. When
   disabled, the context reports a warning and continues without module-specific profile validation;
   supported profiles whose definitions were not loaded still fail. The same policy is applied to
