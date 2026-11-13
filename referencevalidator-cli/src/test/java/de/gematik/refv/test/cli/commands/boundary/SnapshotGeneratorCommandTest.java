@@ -25,6 +25,7 @@
 package de.gematik.refv.test.cli.commands.boundary;
 
 import de.gematik.refv.cli.commands.boundary.SnapshotGeneratorCommand;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -83,6 +84,63 @@ class SnapshotGeneratorCommandTest {
                 "de",
                 "--report",
                 tempDir.resolve("report.html").toString(),
+                "--offline-mode");
+    Assertions.assertEquals(1, exitCode);
+  }
+
+  @DisplayName("Missing output directory is reported before generation starts")
+  @Test
+  void expectMissingOutputDirectoryFails() {
+    final int exitCode =
+        new CommandLine(new SnapshotGeneratorCommand())
+            .execute(
+                "--source",
+                "example.package#1.0.0",
+                "--report",
+                tempDir.resolve("report.html").toString(),
+                "--fhir-version",
+                "R4",
+                "--locale",
+                "de",
+                "--offline-mode");
+    Assertions.assertEquals(1, exitCode);
+  }
+
+  @DisplayName("Missing source and module manifest are reported before generation starts")
+  @Test
+  void expectMissingSourceAndModuleFails() {
+    final int exitCode =
+        new CommandLine(new SnapshotGeneratorCommand())
+            .execute(
+                "--output-dir",
+                tempDir.resolve("out").toString(),
+                "--report",
+                tempDir.resolve("report.html").toString(),
+                "--fhir-version",
+                "R4",
+                "--locale",
+                "de",
+                "--offline-mode");
+    Assertions.assertEquals(1, exitCode);
+  }
+
+  @DisplayName("A file cannot be used as the snapshot output directory")
+  @Test
+  void expectOutputFileFails() throws Exception {
+    var outputFile = Files.writeString(tempDir.resolve("output"), "not a directory");
+    final int exitCode =
+        new CommandLine(new SnapshotGeneratorCommand())
+            .execute(
+                "--source",
+                "example.package#1.0.0",
+                "--output-dir",
+                outputFile.toString(),
+                "--report",
+                tempDir.resolve("report.html").toString(),
+                "--fhir-version",
+                "R4",
+                "--locale",
+                "de",
                 "--offline-mode");
     Assertions.assertEquals(1, exitCode);
   }

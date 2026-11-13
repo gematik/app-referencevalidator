@@ -32,6 +32,9 @@ The CLI application can be executed by passing different arguments, but it suppo
 configuration file, in YAML format. Both the `validate` and `generate-snapshot` commands have their own settings, that
 can help you fine-tune the operations.
 
+For the meaning of diagnostic identifiers such as `REFV-001` and `REFV-009`, see the
+[CLI error code reference](cli-error-codes.md).
+
 ### Global Flags
 
 | Flag           | Description                         |

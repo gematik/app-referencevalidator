@@ -68,13 +68,12 @@ public final class ConfigBuilder {
    */
   public static @NonNull SnapshotCliConfig loadSnapshotConfigFromPath(
       @NonNull final Path configPath) throws ConfigurationException {
-    if (!Files.exists(configPath) || !Files.isRegularFile(configPath)) {
-      throw new InitializationException("Config file not found: " + configPath);
-    }
+    validateConfigurationFile(configPath);
     try (InputStream inputStream = Files.newInputStream(configPath)) {
       return YAMLMapperProvider.getMapper().readValue(inputStream, SnapshotCliConfig.class);
     } catch (IOException e) {
-      throw new ConfigurationException("Could not load or parse config file: " + configPath, e);
+      throw new ConfigurationException(
+          "Configuration file is invalid YAML or could not be read: " + configPath, e);
     }
   }
 
@@ -88,13 +87,25 @@ public final class ConfigBuilder {
    */
   public static @NonNull ValidationCliConfig loadValidationConfigFromPath(
       @NonNull final Path configPath) throws ConfigurationException {
-    if (!Files.exists(configPath) || !Files.isRegularFile(configPath)) {
-      throw new InitializationException("Config file not found: " + configPath);
-    }
+    validateConfigurationFile(configPath);
     try (InputStream inputStream = Files.newInputStream(configPath)) {
       return YAMLMapperProvider.getMapper().readValue(inputStream, ValidationCliConfig.class);
     } catch (IOException e) {
-      throw new ConfigurationException("Could not load or parse config file: " + configPath, e);
+      throw new ConfigurationException(
+          "Configuration file is invalid YAML or could not be read: " + configPath, e);
+    }
+  }
+
+  private static void validateConfigurationFile(Path configPath) {
+    if (Files.notExists(configPath)) {
+      throw new InitializationException("Configuration file does not exist: " + configPath);
+    }
+    if (!Files.isRegularFile(configPath)) {
+      throw new InitializationException(
+          "Configuration path is not a regular file: " + configPath);
+    }
+    if (!Files.isReadable(configPath)) {
+      throw new InitializationException("Configuration file is not readable: " + configPath);
     }
   }
 
@@ -212,8 +223,14 @@ public final class ConfigBuilder {
       return null;
     }
     if (Files.notExists(manifestPath)) {
+      throw new InitializationException("Module manifest does not exist: " + manifestPath);
+    }
+    if (!Files.isRegularFile(manifestPath)) {
       throw new InitializationException(
-          "Failed to retrieve the directory where the module is defined");
+          "Module manifest path is not a regular file: " + manifestPath);
+    }
+    if (!Files.isReadable(manifestPath)) {
+      throw new InitializationException("Module manifest is not readable: " + manifestPath);
     }
     return new SnapshotModuleConfiguration(
         manifestPath, moduleArguments.sourcePackagesPath(), moduleArguments.patchesPath());

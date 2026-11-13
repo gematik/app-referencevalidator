@@ -112,7 +112,7 @@ public class ConfigCommand extends BaseCommand {
 
       return 0;
     } catch (Exception e) {
-      log.error("Failed with the configuration: {}", e.getMessage());
+      log.error("Failed with the configuration: {}", formatErrorMessage(e));
       log.debug("Stack trace:", e);
       return 1;
     }

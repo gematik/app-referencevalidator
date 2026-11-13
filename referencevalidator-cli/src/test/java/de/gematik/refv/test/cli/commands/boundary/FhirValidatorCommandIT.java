@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -214,6 +215,33 @@ class FhirValidatorCommandIT {
 
     // Then the command fails because one of the resources is invalid
     Assertions.assertEquals(1, exitCode);
+  }
+
+  @DisplayName("Unsupported resource types are reported for single and concurrent inputs")
+  @Test
+  void expectUnsupportedResourceTypesAreReported() throws IOException {
+    final Path singleResource = Files.writeString(tempDir.resolve("readme.txt"), "not FHIR");
+    Assumptions.assumeTrue(
+        "text/plain".equals(Files.probeContentType(singleResource)),
+        "The platform does not identify .txt files as text/plain");
+    var singleReport = tempDir.resolve("unsupported-single.json");
+    final int singleExitCode =
+        executeCommand(
+            "--json", "--report", singleReport.toString(), singleResource.toString());
+
+    Assertions.assertEquals(0, singleExitCode);
+    Assertions.assertTrue(Files.readString(singleReport).contains("REFV-006"));
+
+    final Path resourceDirectory = Files.createDirectory(tempDir.resolve("unsupported"));
+    Files.writeString(resourceDirectory.resolve("first.txt"), "not FHIR");
+    Files.writeString(resourceDirectory.resolve("second.txt"), "not FHIR");
+    var concurrentReport = tempDir.resolve("unsupported-concurrent.json");
+    final int concurrentExitCode =
+        executeCommand(
+            "--json", "--report", concurrentReport.toString(), resourceDirectory.toString());
+
+    Assertions.assertEquals(0, concurrentExitCode);
+    Assertions.assertTrue(Files.readString(concurrentReport).contains("REFV-006"));
   }
 
   private int executeCommand(String... args) {

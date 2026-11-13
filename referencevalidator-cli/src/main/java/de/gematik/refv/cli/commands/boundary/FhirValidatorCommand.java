@@ -305,7 +305,7 @@ public class FhirValidatorCommand extends BaseCommand {
       }
       return overallValid ? 0 : 1;
     } catch (Exception e) {
-      log.error("FHIR Validation failed with error: {}", e.getMessage());
+      log.error("FHIR Validation failed with error: {}", formatErrorMessage(e));
       log.debug("Stack trace:", e);
       return 1;
     }
@@ -324,7 +324,10 @@ public class FhirValidatorCommand extends BaseCommand {
     final var validationModule =
         ModuleLoader.defaultLoader().forValidation(module.directory(), module.name());
     if (validationModule.isEmpty()) {
-      throw new LoadModuleException("Could not find a suitable module");
+      throw new LoadModuleException(
+          "No validation module named '%s' was found in '%s'. Check that the folder contains the"
+              .formatted(module.name(), module.directory())
+              + " module JAR and its manifest.");
     }
 
     final var validationModuleIndex = new ValidationModuleIndex(validationModule.get());
@@ -395,8 +398,8 @@ public class FhirValidatorCommand extends BaseCommand {
           List.of(
               ResultMessage.fromMessage(
                   IssueSeverity.INFORMATION,
-                  MessageId.IO_ERROR.getCode(),
-                  e.getLocalizedMessage())));
+                  messageIdFor(e).getCode(),
+                  describeError(e))));
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       return validationError(validationSource, e).getValue();
@@ -416,47 +419,67 @@ public class FhirValidatorCommand extends BaseCommand {
       @NonNull ValidationPackageSelector validationPackageSelector,
       @NonNull ValidationCliConfig validationCliConfig,
       @NonNull BatchValidationContextProvider batchContexts) {
-    // Every task validates through an isolated context cloned from its package-set template.
-    List<Callable<Map.Entry<String, ValidationResult>>> tasks =
-        new ArrayList<>(sourcesToValidate.size());
-    for (var source : sourcesToValidate) {
-      tasks.add(() -> {
-        try {
-          final var resource = createResource(source);
-          final var packageSelection =
-              detectPackagesToLoad(validationCliConfig, validationPackageSelector, resource);
-          logSelectedTransformations(source.path(), packageSelection);
-          final ValidationRequest validationRequest = createRequest(resource);
-          try (var lease = batchContexts.acquire(packageSelection.packages());
-              var context = lease.newIsolatedContext()) {
-            final var validator = ValidatorFactory.withValidationContext(context);
-            log.info("Validating '{}'", source.path());
-            final var result =
-                validator.validate(
-                    validationRequest,
-                    withPackageGroupTransformations(
-                        validationCliConfig.validationOptions(),
-                        packageSelection.messageTransformations()));
-            return Map.entry(source.path().toString(), result);
-          }
-        } catch (UnsupportedFileTypeException e) {
-          return Map.entry(
-              source.path().toString(),
-              new ValidationResult(
-                  List.of(
-                      ResultMessage.fromMessage(
-                          IssueSeverity.INFORMATION,
-                          MessageId.IO_ERROR.getCode(),
-                          e.getLocalizedMessage()))));
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-          return validationError(source, e);
-        } catch (Exception e) {
-          return validationError(source, e);
-        }
-      });
-    }
+    var tasks =
+        sourcesToValidate.stream()
+            .map(source ->
+                validationTask(
+                    source, validationPackageSelector, validationCliConfig, batchContexts))
+            .toList();
+    return collectConcurrentResults(tasks);
+  }
 
+  private Callable<Map.Entry<String, ValidationResult>> validationTask(
+      ValidationInputCollector.ValidationInput source,
+      ValidationPackageSelector validationPackageSelector,
+      ValidationCliConfig validationCliConfig,
+      BatchValidationContextProvider batchContexts) {
+    return () ->
+        validateSourceConcurrently(
+            source, validationPackageSelector, validationCliConfig, batchContexts);
+  }
+
+  private Map.Entry<String, ValidationResult> validateSourceConcurrently(
+      ValidationInputCollector.ValidationInput source,
+      ValidationPackageSelector validationPackageSelector,
+      ValidationCliConfig validationCliConfig,
+      BatchValidationContextProvider batchContexts) {
+    try {
+      final var resource = createResource(source);
+      final var packageSelection =
+          detectPackagesToLoad(validationCliConfig, validationPackageSelector, resource);
+      logSelectedTransformations(source.path(), packageSelection);
+      final ValidationRequest validationRequest = createRequest(resource);
+      try (var lease = batchContexts.acquire(packageSelection.packages());
+          var context = lease.newIsolatedContext()) {
+        final var validator = ValidatorFactory.withValidationContext(context);
+        log.info("Validating '{}'", source.path());
+        final var result =
+            validator.validate(
+                validationRequest,
+                withPackageGroupTransformations(
+                    validationCliConfig.validationOptions(),
+                    packageSelection.messageTransformations()));
+        return Map.entry(source.path().toString(), result);
+      }
+    } catch (UnsupportedFileTypeException e) {
+      return Map.entry(
+          source.path().toString(),
+          new ValidationResult(
+              List.of(
+                  ResultMessage.fromMessage(
+                      IssueSeverity.INFORMATION,
+                      messageIdFor(e).getCode(),
+                      describeError(e)))));
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      return validationError(source, e);
+    } catch (Exception e) {
+      return validationError(source, e);
+    }
+  }
+
+  private HashMap<String, ValidationResult> collectConcurrentResults(
+      List<Callable<Map.Entry<String, ValidationResult>>> tasks) {
     var results = new HashMap<String, ValidationResult>();
     try {
       for (var entry : BoundedValidationExecutor.runAll(tasks, parallelThreads)) {
@@ -472,8 +495,8 @@ public class FhirValidatorCommand extends BaseCommand {
               List.of(
                   ResultMessage.fromMessage(
                       IssueSeverity.ERROR,
-                      MessageId.INTERNAL_ERROR.getCode(),
-                      "Failed to perform the validation: " + e.getLocalizedMessage()))));
+                      messageIdFor(e.getCause() == null ? e : e.getCause()).getCode(),
+                      "Failed to perform the validation: " + describeError(e)))));
     }
 
     return results;
@@ -487,8 +510,8 @@ public class FhirValidatorCommand extends BaseCommand {
             List.of(
                 ResultMessage.fromMessage(
                     IssueSeverity.ERROR,
-                    MessageId.VALIDATION_ERROR.getCode(),
-                    exception.getLocalizedMessage()))));
+                    messageIdFor(exception).getCode(),
+                    describeError(exception)))));
   }
 
   private @NonNull List<ValidationInputCollector.ValidationInput> getFilesForValidation(

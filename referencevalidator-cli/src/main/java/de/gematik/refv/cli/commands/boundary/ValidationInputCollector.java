@@ -59,10 +59,19 @@ final class ValidationInputCollector {
       @NonNull List<String> sources, @NonNull Limits limits) throws IOException {
     Objects.requireNonNull(sources, "The validation sources cannot be null");
     Objects.requireNonNull(limits, "The validation input limits cannot be null");
+    if (sources.isEmpty()) {
+      throw new IOException(
+          "No FHIR resource files were specified. Provide one or more input files or directories.");
+    }
 
     var collector = new Collector(limits);
     for (var source : sources) {
       collector.visit(Path.of(source));
+    }
+    if (collector.inputs.isEmpty()) {
+      throw new IOException(
+          "No regular FHIR resource files were found in the input path(s): "
+              + String.join(", ", sources));
     }
     return List.copyOf(collector.inputs);
   }
@@ -136,10 +145,18 @@ final class ValidationInputCollector {
     }
 
     private void visit(Path source) throws IOException {
-      var attributes =
-          Files.readAttributes(source, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+      final BasicFileAttributes attributes;
+      try {
+        attributes =
+            Files.readAttributes(source, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+      } catch (java.nio.file.NoSuchFileException e) {
+        throw new IOException("Validation input does not exist: " + source, e);
+      }
       if (attributes.isSymbolicLink()) {
         throw new IOException("Symbolic links are not accepted as validation inputs: " + source);
+      }
+      if (!Files.isReadable(source)) {
+        throw new IOException("Validation input is not readable: " + source);
       }
       if (attributes.isDirectory()) {
         visitDirectory(source);
@@ -206,7 +223,8 @@ final class ValidationInputCollector {
 
     private void addFile(Path file, BasicFileAttributes attributes) throws IOException {
       if (!attributes.isRegularFile()) {
-        throw new IOException("Validation input is not a regular file: " + file);
+        throw new IOException(
+            "Validation input is not a regular file or directory: " + file);
       }
       if (inputs.size() >= limits.maximumFiles()) {
         throw new IOException(
