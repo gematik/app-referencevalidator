@@ -25,7 +25,17 @@
 package de.gematik.refv.cli;
 
 import de.gematik.refv.cli.commands.VersionProvider;
+import de.gematik.refv.lib.exceptions.ContextFailure;
+import de.gematik.refv.lib.exceptions.MissingProfileDefinitionException;
+import de.gematik.refv.lib.exceptions.ProfileMismatchException;
+import de.gematik.refv.lib.exceptions.ProfileOutsideValidityPeriodException;
+import de.gematik.refv.lib.exceptions.RefValException;
+import de.gematik.refv.lib.exceptions.UnsupportedProfileException;
+import de.gematik.refv.lib.fhir_context.entity.MessageId;
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import org.apache.logging.log4j.Level;
@@ -80,5 +90,61 @@ public abstract class BaseCommand implements Callable<Integer> {
                 Runtime.getRuntime().availableProcessors())
         + "%nSystem Locale: %s".formatted(Locale.getDefault())
         + "%nTimezone: %18s%n".formatted(TimeZone.getDefault().getID());
+  }
+
+  protected String formatErrorMessage(Throwable exception) {
+    return "%s: %s".formatted(messageIdFor(exception).getCode(), describeError(exception));
+  }
+
+  protected String describeError(Throwable exception) {
+    String message =
+        Objects.toString(exception.getLocalizedMessage(), exception.getClass().getSimpleName());
+    Throwable rootCause = exception;
+    while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
+      rootCause = rootCause.getCause();
+    }
+
+    String rootCauseMessage = rootCause.getLocalizedMessage();
+    if (rootCause != exception
+        && rootCauseMessage != null
+        && !rootCauseMessage.isBlank()
+        && !message.contains(rootCauseMessage)) {
+      return "%s (details: %s)".formatted(message, rootCauseMessage);
+    }
+    return message;
+  }
+
+  protected MessageId messageIdFor(Throwable exception) {
+    if (exception instanceof ProfileMismatchException) {
+      return MessageId.PROFILE_FILTER_MISMATCH;
+    }
+    if (exception instanceof ProfileOutsideValidityPeriodException) {
+      return MessageId.PROFILE_OUTSIDE_OF_VALIDITY_PERIOD;
+    }
+    if (exception instanceof UnsupportedProfileException) {
+      return MessageId.UNSUPPORTED_PROFILE;
+    }
+    if (exception instanceof MissingProfileDefinitionException) {
+      return MessageId.MISSING_PROFILE;
+    }
+    if (exception instanceof RefValException refValException) {
+      return messageIdFor(refValException.getCategory());
+    }
+    if (exception instanceof IOException || exception instanceof InvalidPathException) {
+      return MessageId.IO_ERROR;
+    }
+    return MessageId.INTERNAL_ERROR;
+  }
+
+  protected MessageId messageIdFor(ContextFailure.FailureCategory category) {
+    return switch (category) {
+      case INITIALIZATION, CONFIGURATION -> MessageId.INIT_CONTEXT_FAILED;
+      case NETWORK -> MessageId.TERMINOLOGY_SERVER_ERROR;
+      case PARSING -> MessageId.PROFILE_PARSE_ERROR;
+      case INTERNAL -> MessageId.INTERNAL_ERROR;
+      case VALIDATION -> MessageId.VALIDATION_ERROR;
+      case SNAPSHOT -> MessageId.SNAPSHOT_GENERATION_ERROR;
+      case PACKAGE_LOADING -> MessageId.PACKAGE_LOADING_ERROR;
+    };
   }
 }

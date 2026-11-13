@@ -69,7 +69,7 @@ class SnapshotManifestDiagnosticsTest {
                   "--source",
                   packages.toString(),
                   "--output-dir",
-                  tempDir.resolve("out").toString(),
+                  tempDir.toString(),
                   "--cache-dir",
                   tempDir.resolve("cache").toString(),
                   "--fhir-version",

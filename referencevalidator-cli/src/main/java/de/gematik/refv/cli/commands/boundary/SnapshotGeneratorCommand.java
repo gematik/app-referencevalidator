@@ -201,6 +201,16 @@ public class SnapshotGeneratorCommand extends BaseCommand {
 
       log.info("### User configuration loaded successfully");
 
+      if (outputDir == null) {
+        throw new InitializationException("Missing required option '--output-dir'.");
+      }
+      if (cliConfig.module() == null && sourcePackagePath == null) {
+        throw new InitializationException(
+            "Specify '--source' or configure a module manifest before generating snapshots.");
+      }
+      if (Files.exists(outputDir) && !Files.isDirectory(outputDir)) {
+        throw new InitializationException("Output path is not a directory: " + outputDir);
+      }
       if (Files.notExists(outputDir)) {
         log.info("Creating output directory {}", outputDir);
         Files.createDirectories(outputDir);
@@ -236,7 +246,7 @@ public class SnapshotGeneratorCommand extends BaseCommand {
       }
       return resultValid ? 0 : 1;
     } catch (Exception e) {
-      log.error("Failed to generate snapshots: {}", e.getLocalizedMessage());
+      log.error("Failed to generate snapshots: {}", formatErrorMessage(e));
       log.debug(e.getLocalizedMessage(), e);
       return 1;
     }
