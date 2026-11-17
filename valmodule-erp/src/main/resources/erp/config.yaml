@@ -1,5 +1,5 @@
 id: "erp"
-version: "2.22"
+version: "2.23"
 errorOnUnknownProfile: "true"
 anyExtensionsAllowed: "false"
 ignoredCodeSystems:
@@ -1008,6 +1008,23 @@ dependencyLists:
         locatorString: stimmt mit keinem bekannten Slice
         messageLocationRegex: meta.profile
     validFrom: "2025-10-01"
+    validTill: "2026-12-31"
+
+  de.gkvsv.erezeptabrechnungsdaten.1.5.4:
+    packages:
+      - "de.gkvsv.erezeptabrechnungsdaten-1.5.4.tgz"
+      - "de.abda.erezeptabgabedatenbasis-1.5.0.tgz"
+      - "de.basisprofil.r4-1.5.2.tgz"
+    validationMessageTransformations: # Obwohl die Profile mehrfache meta.profile-Angaben technisch zulassen, wurden diese bis auf Weiteres für die Verwendung im E-Rezept-Kontext verboten
+      - severityLevelFrom: "information"
+        severityLevelTo: "error"
+        locatorString: does not match any known slice
+        messageLocationRegex: meta.profile
+      - severityLevelFrom: "information"
+        severityLevelTo: "error"
+        locatorString: stimmt mit keinem bekannten Slice
+        messageLocationRegex: meta.profile
+    validFrom: "2027-01-01"
 
 supportedProfiles:
   "http://fhir.abda.de/eRezeptAbgabadaten/StructureDefinition/DAV-PR-ERP-Abgabeinformationen":
@@ -1280,6 +1297,7 @@ supportedProfiles:
       1.5:
         dependencyLists:
           - "de.gkvsv.erezeptabrechnungsdaten.1.5.1"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.5.4"
 
   "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_ERP_eAbrechnungsdaten":
     profileVersions:
@@ -1309,6 +1327,7 @@ supportedProfiles:
       1.5:
         dependencyLists:
           - "de.gkvsv.erezeptabrechnungsdaten.1.5.1"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.5.4"
 
   "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung":
     profileVersions:
@@ -1347,6 +1366,7 @@ supportedProfiles:
       1.5:
         dependencyLists:
           - "de.gkvsv.erezeptabrechnungsdaten.1.5.1"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.5.4"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Rechnung_Composition')).date"
 
   "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_Composition":
@@ -1363,6 +1383,7 @@ supportedProfiles:
       1.5:
         dependencyLists:
           - "de.gkvsv.erezeptabrechnungsdaten.1.5.1"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.5.4"
         creationDateLocator: "Bundle.entry.resource.where(meta.profile.contains('GKVSV_PR_TA7_Rechnung_Composition')).date"
 
   "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_List":
@@ -1377,6 +1398,7 @@ supportedProfiles:
       1.5:
         dependencyLists:
           - "de.gkvsv.erezeptabrechnungsdaten.1.5.1"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.5.4"
 
   "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_RezeptBundle":
     profileVersions:
@@ -1411,6 +1433,7 @@ supportedProfiles:
       1.5:
         dependencyLists:
           - "de.gkvsv.erezeptabrechnungsdaten.1.5.1"
+          - "de.gkvsv.erezeptabrechnungsdaten.1.5.4"
 
   "https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Sammelrechnung_Bundle":
     profileVersions:
