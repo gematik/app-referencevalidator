@@ -2,10 +2,19 @@
 
 # Release Notes Gematik Referenzvalidator
 
+## Release 2.16.7 (2026-11)
+
+> [!IMPORTANT]
+> A new major Version of the Reference Validator will be soon released, with major breaking changes
+
+### changed
+- ERP module Patch (version update to 2.23):
+  - new `erezeptabrechnungsdaten` Package version 1.5.4, valid from 1.1.2027
+
 ## Release 2.16.6 (2026-08)
 
 ### changed
--- ERP module Patches (version update to 2.22):
+- ERP module Patches (version update to 2.22):
   - `GEM-ERP-PR-MedicationDispense`: 
     - change Constraint `workflow-dosageExtensionOhneDosierung` -> without GeneratedDosageInstructionsMeta
     - add Constraint `workflow-dosageExtensionMetaOhneDosierung` -> severity level warning
