@@ -226,8 +226,7 @@ class FhirValidatorCommandIT {
         "The platform does not identify .txt files as text/plain");
     var singleReport = tempDir.resolve("unsupported-single.json");
     final int singleExitCode =
-        executeCommand(
-            "--json", "--report", singleReport.toString(), singleResource.toString());
+        executeCommand("--json", "--report", singleReport.toString(), singleResource.toString());
 
     Assertions.assertEquals(0, singleExitCode);
     Assertions.assertTrue(Files.readString(singleReport).contains("REFV-006"));

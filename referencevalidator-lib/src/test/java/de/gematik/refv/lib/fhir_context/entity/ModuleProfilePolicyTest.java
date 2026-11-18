@@ -38,6 +38,7 @@ import de.gematik.refv.valmodule.api.entity.ValidationModuleManifest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -78,6 +79,57 @@ class ModuleProfilePolicyTest {
             .orElseThrow());
   }
 
+  @Test
+  void resolvesDeclaredMinorVersionToLoadedPatchVersion() {
+    var policy =
+        new ModuleProfilePolicy(
+            false,
+            List.of(
+                new ModuleProfilePolicy.ProfileFamilySupport(
+                    BASE, "1.6", Set.of("1.6"), Set.of("Explicit"))));
+    var loadedVersions = List.of("1.6.4");
+
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.6.4"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit|1.6"), loadedVersions)
+            .orElseThrow());
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.6.4"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit"), loadedVersions)
+            .orElseThrow());
+    assertTrue(
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit|1.6.5"), loadedVersions)
+            .isEmpty());
+  }
+
+  @Test
+  void resolvesVersionlessDefaultToHighestLoadedPatchInSameMinor() {
+    var policy =
+        new ModuleProfilePolicy(
+            false,
+            List.of(
+                new ModuleProfilePolicy.ProfileFamilySupport(
+                    BASE, "1.3.5", Set.of("1.3.0", "1.3.2", "1.3.5"), Set.of("Explicit"))));
+
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3.2"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit"), List.of("1.3.2"))
+            .orElseThrow());
+    assertTrue(
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit"), List.of("1.2.9"))
+            .isEmpty());
+  }
+
   @DisplayName("Uses the default version for versionless canonicals only when one is declared")
   @Test
   void resolvesVersionlessProfilesThroughTheirFamilyDefault() {
@@ -85,6 +137,12 @@ class ModuleProfilePolicyTest {
 
     assertTrue(policy.supports(ProfileCanonical.fromCanonical(BASE + "/Explicit")));
     assertTrue(policy.supports(ProfileCanonical.fromCanonical("https://example.org/other/P")));
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.0.0"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit"), List.of("1.0.0"))
+            .orElseThrow());
     assertFalse(
         policy.supports(ProfileCanonical.fromCanonical("https://example.org/no-default/P")));
   }

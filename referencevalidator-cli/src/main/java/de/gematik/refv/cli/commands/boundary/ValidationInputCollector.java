@@ -223,8 +223,7 @@ final class ValidationInputCollector {
 
     private void addFile(Path file, BasicFileAttributes attributes) throws IOException {
       if (!attributes.isRegularFile()) {
-        throw new IOException(
-            "Validation input is not a regular file or directory: " + file);
+        throw new IOException("Validation input is not a regular file or directory: " + file);
       }
       if (inputs.size() >= limits.maximumFiles()) {
         throw new IOException(

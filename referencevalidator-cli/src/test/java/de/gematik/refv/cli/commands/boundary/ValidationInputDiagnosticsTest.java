@@ -74,8 +74,7 @@ class ValidationInputDiagnosticsTest {
       Assumptions.assumeFalse(Files.isReadable(file), "The current user can still read this file");
       var failure =
           assertThrows(
-              IOException.class,
-              () -> ValidationInputCollector.collect(List.of(file.toString())));
+              IOException.class, () -> ValidationInputCollector.collect(List.of(file.toString())));
       assertTrue(failure.getMessage().contains("Validation input is not readable"));
     } finally {
       Files.setPosixFilePermissions(file, permissions);

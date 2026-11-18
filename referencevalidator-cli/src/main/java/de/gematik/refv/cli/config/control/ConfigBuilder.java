@@ -101,8 +101,7 @@ public final class ConfigBuilder {
       throw new InitializationException("Configuration file does not exist: " + configPath);
     }
     if (!Files.isRegularFile(configPath)) {
-      throw new InitializationException(
-          "Configuration path is not a regular file: " + configPath);
+      throw new InitializationException("Configuration path is not a regular file: " + configPath);
     }
     if (!Files.isReadable(configPath)) {
       throw new InitializationException("Configuration file is not readable: " + configPath);
