@@ -43,7 +43,6 @@ import de.gematik.refv.lib.fhir_context.boundary.ContextProvider;
 import de.gematik.refv.lib.fhir_context.entity.ContextConfiguration;
 import de.gematik.refv.lib.fhir_context.entity.ContextResult;
 import de.gematik.refv.lib.fhir_context.entity.IssueSeverity;
-import de.gematik.refv.lib.fhir_context.entity.MessageId;
 import de.gematik.refv.lib.fhir_context.entity.ModuleProfilePolicy;
 import de.gematik.refv.lib.fhir_context.entity.ResultMessage;
 import de.gematik.refv.lib.fhir_context.entity.ValidationModuleIndex;
@@ -326,7 +325,7 @@ public class FhirValidatorCommand extends BaseCommand {
     if (validationModule.isEmpty()) {
       throw new LoadModuleException(
           "No validation module named '%s' was found in '%s'. Check that the folder contains the"
-              .formatted(module.name(), module.directory())
+                  .formatted(module.name(), module.directory())
               + " module JAR and its manifest.");
     }
 
@@ -397,9 +396,7 @@ public class FhirValidatorCommand extends BaseCommand {
       return new ValidationResult(
           List.of(
               ResultMessage.fromMessage(
-                  IssueSeverity.INFORMATION,
-                  messageIdFor(e).getCode(),
-                  describeError(e))));
+                  IssueSeverity.INFORMATION, messageIdFor(e).getCode(), describeError(e))));
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       return validationError(validationSource, e).getValue();
@@ -467,9 +464,7 @@ public class FhirValidatorCommand extends BaseCommand {
           new ValidationResult(
               List.of(
                   ResultMessage.fromMessage(
-                      IssueSeverity.INFORMATION,
-                      messageIdFor(e).getCode(),
-                      describeError(e)))));
+                      IssueSeverity.INFORMATION, messageIdFor(e).getCode(), describeError(e)))));
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       return validationError(source, e);

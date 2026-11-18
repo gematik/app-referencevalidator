@@ -423,6 +423,69 @@ class RecursiveResourceValidationTest {
     }
   }
 
+  @Test
+  void shortProfileCanonicalPrefersLoadedExactMinorVersion() throws Exception {
+    var resource =
+        FhirResource.fromJson(
+            """
+            {"resourceType":"Patient","meta":{"profile":["%s"]},"active":true}
+            """
+                .formatted(SHORT_PROFILE));
+    try (var context =
+        context(
+            FhirRelease.asR4(),
+            RecursiveModePolicy.DISALLOWED,
+            profilePackage(FhirRelease.asR4(), List.of("1.0", "1.0.3")),
+            moduleProfilePolicy(false))) {
+      var messages = context.validate(resource, List.of()).messages();
+
+      assertNoErrors(messages);
+      assertFalse(
+          messages.stream()
+              .anyMatch(
+                  message -> message.messageId().equals(MessageId.UNSUPPORTED_PROFILE.getCode())),
+          messages::toString);
+    }
+  }
+
+  @ParameterizedTest
+  @CsvSource({"false, false", "true, true"})
+  void versionlessProfileUsesHighestLoadedPatchWhenDefaultIsUnavailable(
+      boolean embedded, boolean recursive) throws Exception {
+    var profileCanonical = "http://example.org/StructureDefinition/ActivePatient";
+    var resource =
+        embedded
+            ? FhirResource.fromJson(
+                """
+                {"resourceType":"Parameters","parameter":[{"name":"patient","resource":{
+                  "resourceType":"Patient","meta":{"profile":["%s"]},"active":true
+                }}]}
+                """
+                    .formatted(profileCanonical))
+            : FhirResource.fromJson(
+                """
+                {"resourceType":"Patient","meta":{"profile":["%s"]},"active":true}
+                """
+                    .formatted(profileCanonical));
+    try (var context =
+        context(
+            FhirRelease.asR4(),
+            recursive ? RecursiveModePolicy.ALLOWED : RecursiveModePolicy.DISALLOWED,
+            profilePackage(FhirRelease.asR4(), List.of("1.0.0", "1.0.3")),
+            moduleProfilePolicy(false, "1.0.2"))) {
+      var messages = context.validate(resource, List.of()).messages();
+
+      assertTrue(
+          messages.stream().anyMatch(message -> message.messageId().equals("_DT_Fixed_Wrong")),
+          messages::toString);
+      assertFalse(
+          messages.stream()
+              .anyMatch(
+                  message -> message.messageId().equals(MessageId.UNSUPPORTED_PROFILE.getCode())),
+          messages::toString);
+    }
+  }
+
   static Stream<Arguments> formatsAndReleases() {
     return Stream.of(
         Arguments.of(FhirRelease.asR4(), false),
@@ -482,6 +545,11 @@ class RecursiveResourceValidationTest {
   }
 
   private ModuleProfilePolicy moduleProfilePolicy(boolean errorOnUnknownProfile) {
+    return moduleProfilePolicy(errorOnUnknownProfile, "1.0.0");
+  }
+
+  private ModuleProfilePolicy moduleProfilePolicy(
+      boolean errorOnUnknownProfile, String defaultVersion) {
     var group = new PackageGroup(List.of("recursive-test#1.0.0"), null);
     var version =
         new ProfileVersion(
@@ -489,8 +557,12 @@ class RecursiveResourceValidationTest {
     var family =
         new ProfileFamily(
             "http://example.org/StructureDefinition",
-            "1.0.0",
-            Map.of("1.0.0", version, "1.0.2", version, "1.0.3", version),
+            defaultVersion,
+            Map.of(
+                "1.0", version,
+                "1.0.0", version,
+                "1.0.2", version,
+                "1.0.3", version),
             Map.of());
     var manifest =
         new ValidationModuleManifest(
@@ -513,6 +585,11 @@ class RecursiveResourceValidationTest {
   }
 
   private ResolvedPackage profilePackage(FhirRelease release) throws Exception {
+    return profilePackage(release, List.of("1.0.0", "1.0.2", "1.0.3"));
+  }
+
+  private ResolvedPackage profilePackage(
+      FhirRelease release, Collection<String> activePatientVersions) throws Exception {
     var root = temporaryDirectory.resolve("recursive-test#1.0.0");
     var directory = Files.createDirectories(root.resolve("package"));
     Files.writeString(
@@ -521,9 +598,10 @@ class RecursiveResourceValidationTest {
         {"name":"recursive-test","version":"1.0.0","fhirVersions":["%s"]}
         """
             .formatted(release.corePackageVersion()));
-    writeProfile(directory, release, "ActivePatient", "1.0.0", "active", "\"fixedBoolean\":true");
-    writeProfile(directory, release, "ActivePatient", "1.0.2", "active", "\"fixedBoolean\":true");
-    writeProfile(directory, release, "ActivePatient", "1.0.3", "active", "\"fixedBoolean\":false");
+    for (var version : activePatientVersions) {
+      var constraint = version.equals("1.0.3") ? "\"fixedBoolean\":false" : "\"fixedBoolean\":true";
+      writeProfile(directory, release, "ActivePatient", version, "active", constraint);
+    }
     writeProfile(directory, release, "PatientGender", "1.0.0", "gender", "\"min\":1");
     writeOrganizationNameProfile(directory, release);
     writePatientOrganizationReferenceProfile(directory, release);

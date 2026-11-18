@@ -135,8 +135,7 @@ class BaseCommandTest {
         MessageId.INIT_CONTEXT_FAILED,
         command.errorCode(new InitializationException("initialization failed")));
     Assertions.assertEquals(
-        MessageId.PROFILE_PARSE_ERROR,
-        command.errorCode(new ParsingException("parsing failed")));
+        MessageId.PROFILE_PARSE_ERROR, command.errorCode(new ParsingException("parsing failed")));
     Assertions.assertEquals(
         MessageId.VALIDATION_ERROR,
         command.errorCode(new ValidationException("validation failed")));
@@ -151,8 +150,7 @@ class BaseCommandTest {
   void expectFailureCategoriesMapToErrorCodes() {
     final var command = new TestCommand();
     Assertions.assertEquals(
-        MessageId.INTERNAL_ERROR,
-        command.errorCode(ContextFailure.FailureCategory.INTERNAL));
+        MessageId.INTERNAL_ERROR, command.errorCode(ContextFailure.FailureCategory.INTERNAL));
     Assertions.assertEquals(
         MessageId.INIT_CONTEXT_FAILED,
         command.errorCode(ContextFailure.FailureCategory.CONFIGURATION));
@@ -183,7 +181,8 @@ class BaseCommandTest {
     Assertions.assertEquals(
         "REFV-011: same message",
         command.diagnostic(
-            new IllegalStateException("same message", new IllegalArgumentException("same message"))));
+            new IllegalStateException(
+                "same message", new IllegalArgumentException("same message"))));
     Assertions.assertEquals(
         "REFV-011: outer failure",
         command.diagnostic(

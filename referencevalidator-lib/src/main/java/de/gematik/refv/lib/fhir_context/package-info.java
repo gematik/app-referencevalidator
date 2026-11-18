@@ -93,11 +93,20 @@
 ///   Context shall report a validation failure when `errorOnUnknownProfile` is enabled; otherwise
 ///   it shall report a warning and continue without claiming module-specific profile validation.
 ///   This policy shall apply to root and recursively validated embedded resources.
-/// - R2.6 When a profile canonical requests a numeric `X.Y` version and the context contains
-///   matching `X.Y.Z` definitions, the FHIR Context shall prefer an exact `X.Y` definition when
-///   loaded; otherwise it shall select the highest loaded patch version and validate the instance's
-///   unchanged canonical through a context-local alias without changing the selected definition's
-///   constraints. This shall also apply to embedded resources.
+/// - R2.6 Profile versions shall be resolved according to the following rules:
+///   - If the canonical explicitly requests numeric version `X.Y` and an exact `X.Y` definition is
+///     loaded, the FHIR Context shall select that definition.
+///   - If no exact `X.Y` definition is loaded, the FHIR Context shall select the highest loaded
+///     `X.Y.Z` version declared by the selected module.
+///   - If a module-supported versionless profile has a declared default that is not loaded, the
+///     FHIR Context shall select the highest loaded, module-declared version with the same numeric
+///     `X.Y` as the declared default.
+///   - The FHIR Context shall not select an undeclared version or a version outside the applicable
+///     `X.Y` version line.
+///   - For an explicitly versioned `X.Y` canonical, validation shall use the original canonical
+///     unchanged via a context-local alias. The alias shall not alter the constraints of the
+///     selected definition.
+///   - All rules above shall also apply recursively to embedded resources.
 ///
 /// ### R3 — Snapshot generation
 ///

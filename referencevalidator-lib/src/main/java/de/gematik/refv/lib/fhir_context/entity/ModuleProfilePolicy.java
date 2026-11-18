@@ -186,14 +186,53 @@ public record ModuleProfilePolicy(
      */
     private Optional<String> resolveVersion(
         @Nullable String profileVersion, @Nullable Collection<String> loadedVersions) {
-      var availableVersions =
-          loadedVersions == null
-              ? versions
-              : versions.stream().filter(loadedVersions::contains).toList();
       if (profileVersion == null || profileVersion.isBlank()) {
-        return Optional.ofNullable(defaultVersion).filter(availableVersions::contains);
+        if (defaultVersion == null || !versions.contains(defaultVersion)) {
+          return Optional.empty();
+        }
+        if (loadedVersions == null) {
+          return Optional.of(defaultVersion);
+        }
+        var availableVersions = availableLoadedVersions(loadedVersions);
+        var resolvedDefault =
+            ModuleProfilePolicy.resolveLoadedVersion(defaultVersion, availableVersions);
+        if (resolvedDefault.isPresent()) {
+          return resolvedDefault;
+        }
+        return minorVersion(defaultVersion)
+            .flatMap(
+                version -> ModuleProfilePolicy.resolveLoadedVersion(version, availableVersions));
       }
-      return ModuleProfilePolicy.resolveLoadedVersion(profileVersion, availableVersions);
+      if (ModuleProfilePolicy.resolveLoadedVersion(profileVersion, versions).isEmpty()) {
+        return Optional.empty();
+      }
+      return ModuleProfilePolicy.resolveLoadedVersion(
+          profileVersion,
+          loadedVersions == null ? versions : availableLoadedVersions(loadedVersions));
+    }
+
+    private List<String> availableLoadedVersions(Collection<String> loadedVersions) {
+      return loadedVersions.stream()
+          .filter(version -> versions.contains(version) || isLoadedPatchOfDeclaredMinor(version))
+          .distinct()
+          .toList();
+    }
+
+    private boolean isLoadedPatchOfDeclaredMinor(String version) {
+      if (!version.matches("\\d+\\.\\d+\\.\\d+")) {
+        return false;
+      }
+      return versions.contains(version.substring(0, version.lastIndexOf('.')));
+    }
+
+    private Optional<String> minorVersion(String version) {
+      if (version.matches("\\d+\\.\\d+\\.\\d+")) {
+        return Optional.of(version.substring(0, version.lastIndexOf('.')));
+      }
+      if (version.matches("\\d+\\.\\d+")) {
+        return Optional.of(version);
+      }
+      return Optional.empty();
     }
   }
 }
