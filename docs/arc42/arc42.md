@@ -28,7 +28,8 @@ validating FHIR resources and generating FHIR snapshots for the German Telematik
 
 The default Maven reactor contains six modules: `bom`, `validation-module-parent`,
 `validation-module-api`, `referencevalidator-lib`, `referencevalidator-cli`, and `report-aggregate`.
-The `jmh` profile adds `performance-benchmarks`. The CLI coordinates bounded validation batches.
+The JMH benchmarks are maintained in a separate `performance-benchmarks` repository and are not part
+of this reactor. The CLI coordinates bounded validation batches.
 Each resource receives its own validator and context clone from a batch-scoped package-set template.
 The library groups interfaces, domain types, and implementations in Boundary-Control-Entity (BCE)
 packages within one artifact.
@@ -56,4 +57,3 @@ requirement identifiers and explicitly separates historical E-Rezept/HAPI rules 
 and known limitations. The detailed technical design remains in these architecture chapters.
 Exported overview images are supplementary. The module inventory and contracts in this documentation
 describe the reviewed checkout.
-

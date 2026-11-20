@@ -543,7 +543,6 @@ Der **HL7 Core Validator** übernimmt Konformitätsprüfungen und Snapshot-Opera
 | `validation-module-api` | Manifestmodell und SPI-Vertrag für externe Validierungsmodule. |
 | `validation-module-parent` und `bom` | Verwalteter Modulbau und abgestimmte Abhängigkeitsversionen; keine deploybaren Validierungsmodule. |
 | `report-aggregate` | Aggregation der JaCoCo-Testabdeckung. |
-| `performance-benchmarks` | Optionales JMH-Modul, aktiviert über das Profil `jmh`. |
 
 Die aktuellen [Baustein-](../arc42/05-building-block-view.md) und [Laufzeitsichten](../arc42/06-runtime-view.md) beschreiben die Verantwortungsgrenzen. Die folgende Übersicht ersetzt die früheren HAPI-Diagramme:
 
@@ -610,7 +609,7 @@ Mehrdatei-Validierung nutzt virtuelle Threads mit begrenztem Fenster laufender A
 | Verzeichnistiefe | 32 | 64 |
 | Gleichzeitig laufende Validierungen | 5 | 32 |
 
-Diese Grenzen steuern angenommene Arbeit, nicht den maximalen Heapbedarf. HL7-Klone teilen ausgewählte interne Abhängigkeiten; Ergebnisparität und parallele Isolation sind versionsbezogen nachzuweisen. Das optionale [JMH-Benchmarkmodul](../../performance-benchmarks/README.md) vergleicht Kontextneuaufbau mit batchweiser Vorlagennutzung. Synthetische Messungen ersetzen keine Messungen mit realen Paketgruppen, Prozessspeicher und vollständigem CLI-Ablauf.
+Diese Grenzen steuern angenommene Arbeit, nicht den maximalen Heapbedarf. HL7-Klone teilen ausgewählte interne Abhängigkeiten; Ergebnisparität und parallele Isolation sind versionsbezogen nachzuweisen. Das separate Repository `performance-benchmarks` vergleicht Kontextneuaufbau mit batchweiser Vorlagennutzung. Synthetische Messungen ersetzen keine Messungen mit realen Paketgruppen, Prozessspeicher und vollständigem CLI-Ablauf.
 
 > **Warning**
 > Eine einzelne FHIR-Datei mit 1 GB liegt außerhalb der CLI-Grenzen. Eine Aufteilung ist nur sinnvoll, wenn eigenständig valide Ressourcen entstehen und Bundle-Zusammenhänge sowie notwendige Referenzen erhalten bleiben. Grenzwerte und Parallelität sind innerhalb der harten Obergrenzen anhand der Betriebsumgebung zu dimensionieren.

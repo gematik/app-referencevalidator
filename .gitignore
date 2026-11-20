@@ -8,6 +8,7 @@ target/
 *.iml
 *.xml.versionsBackup
 referencevalidator-cli/output.html
+/performance-benchmarks/
 jenkinsfile.*
 .githubignore
 tools

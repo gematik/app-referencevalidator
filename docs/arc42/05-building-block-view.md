@@ -16,7 +16,7 @@
 There is no `core-lib`, `refv-lib`, or `cli` Maven module. The library's boundary, control, and
 entity packages are organized inside `referencevalidator-lib`.
 
-`performance-benchmarks` is an optional reactor module enabled by the `jmh` profile. The external
+`performance-benchmarks` is maintained in a separate repository and is not part of this reactor. The external
 [validation module template](https://github.com/gematik/app-referencevalidator-module-template)
 is not a reactor module. It is copied into a publisher-owned repository and consumes the build
 support and API artifacts from this project.
@@ -121,4 +121,3 @@ Only `META-INF/**` resources and generated `package/**/*.tgz` archives are inclu
 resource configuration. Source packages and patches are build inputs, not separately shipped
 resources. Detailed phase ordering and release responsibilities are described in
 [chapter 7](07-deployment-view.md).
-

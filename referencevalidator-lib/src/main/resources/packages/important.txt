@@ -1,0 +1,7 @@
+Update of Packages
+
+Packages must be updated manually with each new release of these packages.
+
+Beware to download from simplifier or other package registries the Snapshot variant, so the snapshots are already built.
+
+Classes like `R4Version` or `R5Version` must also be updated, when packages are updated.
