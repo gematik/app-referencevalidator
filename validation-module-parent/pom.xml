@@ -116,6 +116,7 @@
                                 <goal>java</goal>
                             </goals>
                             <configuration>
+                                <skip>${skipITs}</skip>
                                 <arguments>
                                     <argument>generate-snapshot</argument>
                                     <argument>--config=${project.basedir}/snapshot.config.yaml</argument>
@@ -136,6 +137,7 @@
                                 <goal>java</goal>
                             </goals>
                             <configuration>
+                                <skip>${skipITs}</skip>
                                 <arguments>
                                     <argument>validate</argument>
                                     <argument>--config=${project.basedir}/validator.config.yaml</argument>

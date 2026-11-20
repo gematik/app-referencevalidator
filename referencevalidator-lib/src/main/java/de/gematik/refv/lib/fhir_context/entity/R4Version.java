@@ -61,8 +61,8 @@ public record R4Version() implements FhirRelease {
   public @NonNull List<String> packages() {
     return List.of(
         name + "#" + version,
-        "hl7.terminology.r4#7.4.0",
-        "hl7.fhir.uv.extensions.r4#5.3.0",
+        "hl7.terminology.r4#7.5.0",
+        "hl7.fhir.uv.extensions.r4#5.4.0",
         "hl7.fhir.xver-extensions#0.1.0",
         "hl7.fhir.uv.xver-r5.r4#0.1.0");
   }

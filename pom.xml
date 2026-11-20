@@ -519,14 +519,6 @@
             </build>
         </profile>
 
-        <!-- Opt-in JMH performance benchmarks -->
-        <profile>
-            <id>jmh</id>
-            <modules>
-                <module>performance-benchmarks</module>
-            </modules>
-        </profile>
-
         <!-- CI‑only profile -->
         <profile>
             <id>ci-memory</id>
