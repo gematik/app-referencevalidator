@@ -1,6 +1,17 @@
 <img align="right" width="250" height="47" src="docs/img/Gematik_Logo_Flag.png"/> <br/>
 
-# Release Notes Gematik Referenzvalidator
+# Release Notes
+
+## Release 2.16.8 (2026-11)
+
+> [!IMPORTANT]
+> A new major Version of the Reference Validator will be soon released, with major breaking changes
+
+### changed
+
+- Added missing Snapshot for `de.gkvsv.erezeptabrechnungsdaten#1.5.4`
+- Updated erpta7 with the new `erezeptabrechnungsdaten#1.5.4` package
+- Updated dependencies
 
 ## Release 2.16.7 (2026-11)
 

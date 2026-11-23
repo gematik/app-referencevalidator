@@ -2,7 +2,7 @@
 
 # Gematik Referenzvalidator
 
-![GitHub Latest Release)](https://img.shields.io/github/v/release/gematik/app-referencevalidator?label=release&logo=github) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.gematik.refv/referencevalidator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.gematik.refv/referencevalidator) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Latest GitHub release](https://img.shields.io/github/v/release/gematik/app-referencevalidator?label=release&logo=github)](https://github.com/gematik/app-referencevalidator/releases) [![Maven Central](https://img.shields.io/maven-central/v/de.gematik.refv/referencevalidator.svg)](https://search.maven.org/artifact/de.gematik.refv/referencevalidator) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 
 <details>
@@ -168,9 +168,9 @@ Für folgende Profile erfolgen Instanz-datumsbasierte Auswahl der FHIR-Packages 
 
 Der Referenzvalidator bietet die Möglichkeit, FHIR Core-Ressourcen zu validieren. Beim Aufruf des core-Validierungsmoduls ist die Angabe einer Profil-Canonical-URL zur Validierung erforderlich (siehe [Optionen der Konsolenanwendung](#konsolenanwendung-1)).
 
-### E-Rezept Abrechnungsdaten-Modul _(EXPERIMENTELL)_
+### E-Rezept Abrechnungsdaten-Modul
 
-Dieses Modul bietet eine experimentelle Umsetzung zur performanten Validierung von großen [TA7-FHIR-Abrechnungsdateien](https://simplifier.net/erezeptabrechnungsdaten). Unterstützt werden nur Resourcen mit dem Profil `https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_Bundle|1.3.0`.
+Dieses Modul bietet eine experimentelle Umsetzung zur performanten Validierung von großen [TA7-FHIR-Abrechnungsdateien](https://simplifier.net/erezeptabrechnungsdaten). Unterstützt werden nur Ressourcen mit dem Profil `https://fhir.gkvsv.de/StructureDefinition/GKVSV_PR_TA7_Rechnung_Bundle|1.3.0`.
 
 Das Modul mit der id `erpta7` kann auf die gleiche Art und Weise verwendet werden wie das E-Rezept-Modul, z.B.
 
@@ -277,7 +277,7 @@ Unterstützte Modulnamen:
 - `erpta7` (E-Rezept Abrechnungsdaten)
 
 Optionen:
-- `--verbose` - Verbode-Modus mit Debug-Protokoll-Ausgaben und INFORMATION- bzw. WARNING-Validierungsnachrichten 
+- `--verbose` - Verbose-Modus mit Debug-Protokoll-Ausgaben und INFORMATION- bzw. WARNING-Validierungsnachrichten 
 - `--no-profile-validity-period-check` - Deaktivierung der Zeitraumgültigkeitsprüfung der Profilversionen
 - `--profile` - Angabe einer Profil-Canonical-URL zur Validierung. Falls angegeben, wird die Angabe der Instanz unter meta.profile ignoriert
 - `--profile-filter` - Angabe eines regulären Ausdrucks zur Prüfung der unter meta.profile referenzierten Profile. Falls kein referenzierstes Profil dem regulären Ausdruck entspricht, wird die Instanz als invalide betrachtet. Beispiele zur Nutzung:
