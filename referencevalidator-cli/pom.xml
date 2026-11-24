@@ -6,7 +6,7 @@
     <parent>
         <groupId>de.gematik.refv</groupId>
         <artifactId>referencevalidator</artifactId>
-        <version>3.0.0.rc1-SNAPSHOT</version>
+        <version>3.0.0.rc1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -123,7 +123,8 @@
                                 <resource>
                                     <directory>target</directory>
                                     <includes>
-                                        <include>referencevalidator-cli-${project.version}-jar-with-dependencies.jar</include>
+                                        <include>referencevalidator-cli-${project.version}-jar-with-dependencies.jar
+                                        </include>
                                     </includes>
                                 </resource>
                             </resources>
@@ -138,7 +139,9 @@
                     <execution>
                         <id>add-generated-sources</id>
                         <phase>generate-sources</phase>
-                        <goals><goal>add-source</goal></goals>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
                         <configuration>
                             <sources>
                                 <source>${project.build.directory}/generated-sources/de/gematik/refv/cli</source>
@@ -172,7 +175,7 @@
             <groupId>de.gematik.refv</groupId>
             <artifactId>referencevalidator-lib</artifactId>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
         </dependency>
@@ -204,4 +207,37 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>sign-cli</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven.gpg.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
