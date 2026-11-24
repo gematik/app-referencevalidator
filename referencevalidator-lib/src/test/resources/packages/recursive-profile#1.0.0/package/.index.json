@@ -1,0 +1,35 @@
+{
+  "index-version": 2,
+  "files": [
+    {
+      "filename": "StructureDefinition-recursive-patient.json",
+      "resourceType": "StructureDefinition",
+      "id": "recursive-patient",
+      "url": "http://example.org/StructureDefinition/recursive-patient",
+      "version": "1.0.0",
+      "kind": "resource",
+      "type": "Patient",
+      "derivation": "constraint"
+    },
+    {
+      "filename": "StructureDefinition-recursive-patient-loose.json",
+      "resourceType": "StructureDefinition",
+      "id": "recursive-patient-loose",
+      "url": "http://example.org/StructureDefinition/recursive-patient-loose",
+      "version": "1.0.0",
+      "kind": "resource",
+      "type": "Patient",
+      "derivation": "constraint"
+    },
+    {
+      "filename": "StructureDefinition-recursive-parameters.json",
+      "resourceType": "StructureDefinition",
+      "id": "recursive-parameters",
+      "url": "http://example.org/StructureDefinition/recursive-parameters",
+      "version": "1.0.0",
+      "kind": "resource",
+      "type": "Parameters",
+      "derivation": "constraint"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "minimal.example",
+  "version": "1.0.0",
+  "description": "Package for snapshot generation testing purposes.",
+  "fhirVersions": [
+    "4.0.1"
+  ],
+  "dependencies": {
+    "hl7.fhir.r4.core": "4.0.1"
+  }
+}

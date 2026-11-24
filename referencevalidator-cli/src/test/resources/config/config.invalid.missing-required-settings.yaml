@@ -1,0 +1,20 @@
+---
+context:
+  locale: "de-DE"
+  displayBehavior:
+    displayWarnings: "DISABLED"
+    displayMessagesFromReferences: "DISABLED"
+    displayMessageIds: "DISABLED"
+    displayInvariantsInMessage: "DISABLED"
+    displayHintAboutNonMustSupport: "DISABLED"
+    displayExtensibleBindingsWarnings: "DISABLED"
+    displayBestPracticeMessageLevel: "IGNORE"
+  validationPolicy:
+    validationLevelPolicy: "SHOW_WARNINGS_AND_ERRORS"
+    unknownCodeSystemsPolicy: "DISALLOWED"
+    exampleCodeSystemsUsagePolicy: "DISALLOWED"
+    exampleUrlsUsagePolicy: "ALLOWED"
+    exampleRestReferencesPolicy: "ALLOWED"
+    recursiveModePolicy: "DISALLOWED"
+moduleConfig:
+validationOptions:

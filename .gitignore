@@ -6,7 +6,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 *.iml
-*.versionsBackup
+*.xml.versionsBackup
+referencevalidator-cli/output.html
+/performance-benchmarks/
 jenkinsfile.*
 .githubignore
 tools

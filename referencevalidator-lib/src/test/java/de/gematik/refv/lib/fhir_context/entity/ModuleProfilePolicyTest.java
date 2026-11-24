@@ -1,0 +1,223 @@
+/*-
+ * #%L
+ * Reference Validator Library
+ * %%
+ * Copyright (C) 2024 - 2026 gematik GmbH
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes
+ * by gematik, find details in the "Readme" file.
+ * #L%
+ */
+package de.gematik.refv.lib.fhir_context.entity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import de.gematik.refv.lib.validation.entity.ProfileCanonical;
+import de.gematik.refv.valmodule.api.entity.PackageGroup;
+import de.gematik.refv.valmodule.api.entity.PackageGroupReference;
+import de.gematik.refv.valmodule.api.entity.ProfileDefinition;
+import de.gematik.refv.valmodule.api.entity.ProfileFamily;
+import de.gematik.refv.valmodule.api.entity.ProfileVersion;
+import de.gematik.refv.valmodule.api.entity.ValidationModuleManifest;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class ModuleProfilePolicyTest {
+  private static final String BASE = "https://example.org/fhir/StructureDefinition";
+
+  @DisplayName("Matches explicitly declared profiles and profiles covered by a family prefix")
+  @Test
+  void supportsDeclaredAndPrefixFallbackProfiles() {
+    var policy = ModuleProfilePolicy.fromManifest(manifest());
+
+    assertTrue(policy.supports(ProfileCanonical.fromCanonical(BASE + "/Explicit|1.0.0")));
+    assertTrue(policy.supports(ProfileCanonical.fromCanonical(BASE + "/Other|1.1.0")));
+    assertTrue(policy.supports(ProfileCanonical.fromCanonical("https://example.org/other/P|5.0")));
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3.10"),
+        policy
+            .resolveProfileVersion(ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3"))
+            .orElseThrow());
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3.3"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3"), List.of("1.3.2", "1.3.3"))
+            .orElseThrow());
+    assertEquals(
+        ProfileCanonical.fromCanonical("https://example.org/exact/P|1.3"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical("https://example.org/exact/P|1.3"))
+            .orElseThrow());
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.0.3"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit|1.0"),
+                List.of("1.0.0", "1.0.2", "1.0.3"))
+            .orElseThrow());
+  }
+
+  @Test
+  void resolvesDeclaredMinorVersionToLoadedPatchVersion() {
+    var policy =
+        new ModuleProfilePolicy(
+            false,
+            List.of(
+                new ModuleProfilePolicy.ProfileFamilySupport(
+                    BASE, "1.6", Set.of("1.6"), Set.of("Explicit"))));
+    var loadedVersions = List.of("1.6.4");
+
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.6.4"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit|1.6"), loadedVersions)
+            .orElseThrow());
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.6.4"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit"), loadedVersions)
+            .orElseThrow());
+    assertTrue(
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit|1.6.5"), loadedVersions)
+            .isEmpty());
+  }
+
+  @Test
+  void resolvesVersionlessDefaultToHighestLoadedPatchInSameMinor() {
+    var policy =
+        new ModuleProfilePolicy(
+            false,
+            List.of(
+                new ModuleProfilePolicy.ProfileFamilySupport(
+                    BASE, "1.3.5", Set.of("1.3.0", "1.3.2", "1.3.5"), Set.of("Explicit"))));
+
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.3.2"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit"), List.of("1.3.2"))
+            .orElseThrow());
+    assertTrue(
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit"), List.of("1.2.9"))
+            .isEmpty());
+  }
+
+  @DisplayName("Uses the default version for versionless canonicals only when one is declared")
+  @Test
+  void resolvesVersionlessProfilesThroughTheirFamilyDefault() {
+    var policy = ModuleProfilePolicy.fromManifest(manifest());
+
+    assertTrue(policy.supports(ProfileCanonical.fromCanonical(BASE + "/Explicit")));
+    assertTrue(policy.supports(ProfileCanonical.fromCanonical("https://example.org/other/P")));
+    assertEquals(
+        ProfileCanonical.fromCanonical(BASE + "/Explicit|1.0.0"),
+        policy
+            .resolveProfileVersion(
+                ProfileCanonical.fromCanonical(BASE + "/Explicit"), List.of("1.0.0"))
+            .orElseThrow());
+    assertFalse(
+        policy.supports(ProfileCanonical.fromCanonical("https://example.org/no-default/P")));
+  }
+
+  @DisplayName("Rejects unknown versions, foreign canonicals, and canonical-prefix lookalikes")
+  @Test
+  void rejectsUnsupportedProfileVersionsAndCanonicals() {
+    var policy = ModuleProfilePolicy.fromManifest(manifest());
+
+    assertFalse(policy.supports(ProfileCanonical.fromCanonical(BASE + "/Explicit|9.0.0")));
+    assertFalse(policy.supports(ProfileCanonical.fromCanonical(BASE + "-other/P|1.0.0")));
+    assertFalse(policy.supports(ProfileCanonical.fromCanonical("https://elsewhere.org/P|1.0.0")));
+  }
+
+  private static ValidationModuleManifest manifest() {
+    var packageGroups =
+        Map.of(
+            "one", new PackageGroup(List.of("pkg.one#1.0.0"), null),
+            "two", new PackageGroup(List.of("pkg.two#1.0.0"), null));
+    var firstVersion =
+        new ProfileVersion(
+            List.of(new PackageGroupReference("one", LocalDate.of(2020, 1, 1), null)));
+    var secondVersion =
+        new ProfileVersion(
+            List.of(new PackageGroupReference("two", LocalDate.of(2020, 1, 1), null)));
+    var family =
+        new ProfileFamily(
+            BASE,
+            "1.0.0",
+            Map.of(
+                "1.0.0", firstVersion,
+                "1.0.2", secondVersion,
+                "1.0.3", firstVersion,
+                "1.1.0", secondVersion,
+                "1.3.2", firstVersion,
+                "1.3.3", secondVersion,
+                "1.3.10", firstVersion),
+            Map.of("Explicit", new ProfileDefinition(null, null)));
+    var trailingSlashFamily =
+        new ProfileFamily(
+            "https://example.org/other/",
+            "5.0",
+            Map.of("5.0", firstVersion),
+            Map.of("P", new ProfileDefinition(null, null)));
+    var familyWithoutDefault =
+        new ProfileFamily(
+            "https://example.org/no-default",
+            null,
+            Map.of("1.0.0", firstVersion),
+            Map.of("P", new ProfileDefinition(null, null)));
+    var familyWithExactShortVersion =
+        new ProfileFamily(
+            "https://example.org/exact",
+            "1.3.10",
+            Map.of("1.3", firstVersion, "1.3.10", secondVersion),
+            Map.of("P", new ProfileDefinition(null, null)));
+    return new ValidationModuleManifest(
+        "3.0",
+        "test",
+        "1.0.0",
+        "test",
+        "test",
+        "",
+        false,
+        false,
+        false,
+        List.of(),
+        packageGroups,
+        Map.of(),
+        Map.of(
+            "main", family,
+            "trailing-slash", trailingSlashFamily,
+            "no-default", familyWithoutDefault,
+            "exact", familyWithExactShortVersion),
+        List.of(),
+        List.of());
+  }
+}
