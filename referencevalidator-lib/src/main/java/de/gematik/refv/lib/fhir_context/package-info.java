@@ -85,10 +85,11 @@
 /// - R2.4 If a Bundle or Parameters resource includes embedded resources and the
 ///   RecursiveModePolicy is enabled, then the FHIR Context shall validate each embedded resource
 ///   through the HL7 validator's native traversal, against its declared `meta.profile` values or
-///   its core profile when none are declared. When a declared profile matches a parent-allowed
-///   profile alternative, that alternative shall be selected instead of evaluating unrelated
-///   alternatives. Parent structural constraints and slicing shall remain enforced, and validation
-///   shall retain the owning Bundle or Parameters context for reference resolution.
+///   its core profile when none are declared. When an embedded resource declares a profile, the
+///   FHIR Context shall use a matching definition already loaded in that context, without creating
+///   an ad-hoc context. If multiple loaded definitions share the canonical URL, the FHIR Context
+///   shall select the version declared by the embedded resource according to R2.6. Profile
+///   availability and unknown-profile behavior shall follow R2.3 and R2.5.
 /// - R2.5 If a profile canonical or version is unsupported by the selected module, then the FHIR
 ///   Context shall report a validation failure when `errorOnUnknownProfile` is enabled; otherwise
 ///   it shall report a warning and continue without claiming module-specific profile validation.
