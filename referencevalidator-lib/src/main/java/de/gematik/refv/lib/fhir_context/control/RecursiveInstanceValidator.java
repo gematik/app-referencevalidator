@@ -121,21 +121,20 @@ final class RecursiveInstanceValidator extends InstanceValidator {
     if (meta == null) {
       return definition;
     }
-    var declaredProfileUrls =
+    var declaredProfiles =
         meta.getChildrenByName("profile").stream()
             .map(Element::getValue)
             .filter(Objects::nonNull)
-            .map(RecursiveInstanceValidator::canonicalUrl)
             .distinct()
             .toList();
-    var allowedProfileUrls =
-        type.getProfileList().stream()
-            .map(profile -> canonicalUrl(profile.getValue()))
-            .distinct()
+    var allowedProfiles =
+        type.getProfileList().stream().map(profile -> profile.getValue()).distinct().toList();
+    var selectedProfiles =
+        allowedProfiles.stream()
+            .filter(allowed ->
+                declaredProfiles.stream().anyMatch(declared -> profilesMatch(declared, allowed)))
             .toList();
-    var selectedProfileUrls =
-        allowedProfileUrls.stream().filter(declaredProfileUrls::contains).toList();
-    if (selectedProfileUrls.isEmpty() || selectedProfileUrls.size() == allowedProfileUrls.size()) {
+    if (selectedProfiles.isEmpty() || selectedProfiles.size() == allowedProfiles.size()) {
       return definition;
     }
 
@@ -143,8 +142,42 @@ final class RecursiveInstanceValidator extends InstanceValidator {
     narrowedDefinition
         .getTypeFirstRep()
         .getProfileList()
-        .removeIf(profile -> !selectedProfileUrls.contains(canonicalUrl(profile.getValue())));
+        .removeIf(profile -> !selectedProfiles.contains(profile.getValue()));
     return narrowedDefinition;
+  }
+
+  static boolean profilesMatch(String declaredProfile, String allowedProfile) {
+    if (!canonicalUrl(declaredProfile).equals(canonicalUrl(allowedProfile))) {
+      return false;
+    }
+    var declaredVersion = canonicalVersion(declaredProfile);
+    var allowedVersion = canonicalVersion(allowedProfile);
+    if (declaredVersion.isEmpty() || allowedVersion.isEmpty()) {
+      return true;
+    }
+    if (declaredVersion.equals(allowedVersion)) {
+      return true;
+    }
+    return isMinorPatchPair(declaredVersion, allowedVersion)
+        && minorVersion(declaredVersion).equals(minorVersion(allowedVersion));
+  }
+
+  private static boolean isMinorPatchPair(String left, String right) {
+    return left.matches("\\d+\\.\\d+") && right.matches("\\d+\\.\\d+\\.\\d+")
+        || right.matches("\\d+\\.\\d+") && left.matches("\\d+\\.\\d+\\.\\d+");
+  }
+
+  private static String canonicalVersion(String canonical) {
+    if (canonical == null) {
+      return "";
+    }
+    int versionSeparator = canonical.indexOf('|');
+    return versionSeparator < 0 ? "" : canonical.substring(versionSeparator + 1);
+  }
+
+  private static String minorVersion(String version) {
+    var parts = version.split("\\.");
+    return parts[0] + "." + parts[1];
   }
 
   private static String canonicalUrl(String canonical) {

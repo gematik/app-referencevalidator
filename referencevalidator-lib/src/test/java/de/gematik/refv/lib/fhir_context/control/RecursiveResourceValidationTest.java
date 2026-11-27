@@ -69,6 +69,10 @@ class RecursiveResourceValidationTest {
       "http://example.org/StructureDefinition/ActivePatient|1.0.0";
   private static final String SHORT_PROFILE =
       "http://example.org/StructureDefinition/ActivePatient|1.0";
+  private static final String VERSIONED_PARAMETERS_PROFILE =
+      "http://example.org/StructureDefinition/VersionedRecursiveParameters|1.0.0";
+  private static final String VERSIONED_PATIENT_PROFILE =
+      "http://example.org/StructureDefinition/ActivePatient";
   private static final String GENDER_PROFILE =
       "http://example.org/StructureDefinition/PatientGender";
   private static final String PATIENT_ORGANIZATION_PROFILE =
@@ -449,6 +453,42 @@ class RecursiveResourceValidationTest {
   }
 
   @ParameterizedTest
+  @CsvSource({"1.3, true", "1.4, false"})
+  void embeddedProfileVersionSelectsMatchingParentAlternativeForSharedCanonicalUrl(
+      String version, boolean active) throws Exception {
+    var packageToLoad = versionedProfilePackage(FhirRelease.asR4());
+    var resource =
+        FhirResource.fromJson(
+            """
+            {"resourceType":"Parameters","parameter":[{"name":"patient","resource":{
+              "resourceType":"Patient","meta":{"profile":["%s|%s"]},"active":%s
+            }}]}
+            """
+                .formatted(VERSIONED_PATIENT_PROFILE, version, active));
+    try (var context = context(FhirRelease.asR4(), RecursiveModePolicy.ALLOWED, packageToLoad)) {
+      var messages =
+          context
+              .validate(
+                  resource, List.of(ProfileCanonical.fromCanonical(VERSIONED_PARAMETERS_PROFILE)))
+              .messages();
+
+      assertNoErrors(messages);
+    }
+  }
+
+  @ParameterizedTest
+  @CsvSource({"1.4, 1.4, true", "1.4, 1.4.4, true", "1.4, 1.3, false", "1.4.1, 1.4.4, false"})
+  void parentProfileAlternativeMatchingIncludesCanonicalVersion(
+      String declaredVersion, String allowedVersion, boolean expected) {
+    var canonical = "https://fhir.kbv.de/StructureDefinition/KBV_PR_FOR_Medication|%s";
+
+    assertEquals(
+        expected,
+        RecursiveInstanceValidator.profilesMatch(
+            canonical.formatted(declaredVersion), canonical.formatted(allowedVersion)));
+  }
+
+  @ParameterizedTest
   @CsvSource({"false, false", "true, true"})
   void versionlessProfileUsesHighestLoadedPatchWhenDefaultIsUnavailable(
       boolean embedded, boolean recursive) throws Exception {
@@ -606,6 +646,30 @@ class RecursiveResourceValidationTest {
     writeOrganizationNameProfile(directory, release);
     writePatientOrganizationReferenceProfile(directory, release);
     return new ResolvedPackage(PackageId.parse("recursive-test#1.0.0"), root, List.of());
+  }
+
+  private ResolvedPackage versionedProfilePackage(FhirRelease release) throws Exception {
+    var resolvedPackage = profilePackage(release, List.of("1.3.1"));
+    var packageDirectory = resolvedPackage.packagePath().resolve("package");
+    writeProfile(
+        packageDirectory, release, "ActivePatient", "1.4.4", "active", "\"fixedBoolean\":false");
+    Files.writeString(
+        packageDirectory.resolve("StructureDefinition-VersionedRecursiveParameters.json"),
+        """
+        {"resourceType":"StructureDefinition",
+         "url":"http://example.org/StructureDefinition/VersionedRecursiveParameters",
+         "version":"1.0.0","name":"VersionedRecursiveParameters","status":"active",
+         "fhirVersion":"%s","kind":"resource","abstract":false,"type":"Parameters",
+         "baseDefinition":"http://hl7.org/fhir/StructureDefinition/Parameters",
+         "derivation":"constraint","differential":{"element":[
+           {"id":"Parameters","path":"Parameters"},
+           {"id":"Parameters.parameter.resource","path":"Parameters.parameter.resource",
+            "type":[{"code":"Resource","targetProfile":[
+              "http://example.org/StructureDefinition/ActivePatient|1.3",
+              "http://example.org/StructureDefinition/ActivePatient|1.4"]}]}]}}
+        """
+            .formatted(release.corePackageVersion()));
+    return resolvedPackage;
   }
 
   private static void writeOrganizationNameProfile(Path directory, FhirRelease release)
